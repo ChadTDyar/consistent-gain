@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { GoalCard } from "@/components/GoalCard";
 import { AddGoalDialog } from "@/components/AddGoalDialog";
 import { EditGoalDialog } from "@/components/EditGoalDialog";
+import { CoachChat } from "@/components/CoachChat";
 import momentumLogo from "@/assets/momentum-logo.png";
 
 interface Profile {
@@ -232,6 +233,15 @@ export default function Dashboard() {
         onOpenChange={setShowEditGoal}
         onGoalUpdated={loadGoals}
         goalId={editingGoalId}
+      />
+
+      <CoachChat
+        userContext={{
+          streak: 0, // TODO: Calculate from activity logs
+          goalsCount: goals.length,
+          lastActivity: goals.length > 0 ? "Recently active" : "No recent activity",
+          isPremium: profile?.is_premium || false,
+        }}
       />
     </div>
   );
