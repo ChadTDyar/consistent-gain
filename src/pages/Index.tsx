@@ -23,12 +23,11 @@ const Index = () => {
                 <h2 className="text-2xl font-display font-bold text-foreground">Momentum</h2>
               </div>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
-                Your next goal.<br />
-                <span className="text-primary">Your best growth.</span>
+                Build momentum.<br />
+                <span className="text-primary">Not burnout.</span>
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                For adults who want sustainable progress, not extreme programs. Track goals, celebrate
-                streaks, stay consistent.
+                Fitness is not about breaking yourself. It's about building momentum. Create routines you'll actually stick to. No pressure. No shame. Just small, consistent steps that turn into real results.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-6">
                 <Button 
@@ -138,11 +137,10 @@ const Index = () => {
         </div>
         <div className="container mx-auto px-6 md:px-8 text-center relative z-10">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-8 text-white drop-shadow-lg">
-            Ready to Build Lasting Habits?
+            Start Your Journey Today
           </h2>
           <p className="text-xl md:text-2xl mb-12 max-w-2xl mx-auto text-white font-medium leading-relaxed drop-shadow-md">
-            Join others who are building sustainable fitness routines. Start tracking your first
-            goal today, completely free.
+            👉 Build strength. Build confidence. Build your momentum.
           </p>
           <Button
             size="lg"
@@ -150,7 +148,7 @@ const Index = () => {
             onClick={() => navigate("/auth")}
             className="btn-large shadow-2xl hover:shadow-[0_20px_50px_rgba(255,255,255,0.4)] bg-white text-primary hover:bg-white hover:scale-110 transition-all text-lg h-16 px-12 font-semibold"
           >
-            Get Started Free
+            Start Your Journey Today
           </Button>
         </div>
       </section>
