@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { analytics } from "@/lib/analytics";
+import { chatMessageSchema } from "@/lib/validations";
 
 type Message = {
   role: "user" | "assistant";
@@ -190,8 +191,20 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage }: Coa
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
+
+    // Validate message
+    const validationResult = chatMessageSchema.safeParse({
+      message: input.trim()
+    });
+
+    if (!validationResult.success) {
+      const firstError = validationResult.error.errors[0];
+      toast.error(firstError.message);
+      return;
+    }
+
     analytics.coachMessageSent();
-    const userMessage = input.trim();
+    const userMessage = validationResult.data.message;
     setInput("");
     await streamChat(userMessage);
   };

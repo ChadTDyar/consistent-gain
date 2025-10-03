@@ -20,6 +20,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { goalSchema } from "@/lib/validations";
 
 const CATEGORIES = [
   "Strength",
@@ -88,27 +89,48 @@ export function EditGoalDialog({
     
     setLoading(true);
 
-    const { error } = await supabase
-      .from("goals")
-      .update({
+    try {
+      // Validate input
+      const validationResult = goalSchema.safeParse({
         title,
         description: description || null,
         category: category || null,
         target_days_per_week: parseInt(targetDays),
         start_date: startDate,
-      })
-      .eq("id", goalId);
+      });
 
-    if (error) {
-      toast.error("Failed to update goal");
-      console.error(error);
-    } else {
-      toast.success("Goal updated successfully!");
-      onOpenChange(false);
-      onGoalUpdated();
+      if (!validationResult.success) {
+        const firstError = validationResult.error.errors[0];
+        toast.error(firstError.message);
+        setLoading(false);
+        return;
+      }
+
+      const { error } = await supabase
+        .from("goals")
+        .update({
+          title: validationResult.data.title,
+          description: validationResult.data.description,
+          category: validationResult.data.category,
+          target_days_per_week: validationResult.data.target_days_per_week,
+          start_date: validationResult.data.start_date,
+        })
+        .eq("id", goalId);
+
+      if (error) {
+        toast.error("Failed to update goal");
+        console.error(error);
+      } else {
+        toast.success("Goal updated successfully!");
+        onOpenChange(false);
+        onGoalUpdated();
+      }
+    } catch (error) {
+      console.error('Error updating goal:', error);
+      toast.error("An unexpected error occurred");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   if (loadingGoal) {

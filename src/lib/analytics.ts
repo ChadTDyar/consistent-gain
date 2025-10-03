@@ -7,7 +7,10 @@ declare global {
   }
 }
 
-export const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // Replace with your GA4 Measurement ID
+// IMPORTANT: Update this with your actual Google Analytics 4 Measurement ID
+// Get your GA4 ID from: https://analytics.google.com/analytics/web/#/a{accountId}w{webPropertyId}p{profileId}/admin/streams/table/
+// Format: G-XXXXXXXXXX
+export const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // TODO: Replace with your actual GA4 Measurement ID before launch
 
 // Initialize GA4
 export const initGA = () => {

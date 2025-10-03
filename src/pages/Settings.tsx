@@ -172,28 +172,33 @@ export default function Settings() {
   };
 
   const handleDeleteAccount = async () => {
-    if (!profile) return;
-    
-    setDeleting(true);
+    if (!confirm("Are you absolutely sure? This action cannot be undone and will permanently delete all your data.")) {
+      return;
+    }
+
+    if (!confirm("This is your final warning. All your goals, progress, and data will be permanently deleted. Continue?")) {
+      return;
+    }
+
     try {
-      // Delete user data
-      await supabase.from("chat_messages").delete().eq("user_id", profile.id);
-      await supabase.from("activity_logs").delete().eq("user_id", profile.id);
-      await supabase.from("goals").delete().eq("user_id", profile.id);
-      await supabase.from("profiles").delete().eq("id", profile.id);
-      
-      // Delete auth user
-      const { error } = await supabase.auth.admin.deleteUser(profile.id);
-      
-      if (error) throw error;
-      
+      setSaving(true);
+
+      // Call the secure edge function to delete account
+      const { error } = await supabase.functions.invoke('delete-account', {
+        method: 'POST'
+      });
+
+      if (error) {
+        throw error;
+      }
+
       toast.success("Account deleted successfully");
-      navigate("/");
+      navigate('/auth');
     } catch (error) {
-      console.error('Delete error:', error);
-      toast.error("Failed to delete account. Please contact support.");
+      console.error('Error deleting account:', error);
+      toast.error("Failed to delete account. Please try again or contact support.");
     } finally {
-      setDeleting(false);
+      setSaving(false);
     }
   };
 

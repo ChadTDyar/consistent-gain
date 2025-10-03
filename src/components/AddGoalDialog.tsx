@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import PaywallModal from "./PaywallModal";
 import { analytics } from "@/lib/analytics";
+import { goalSchema } from "@/lib/validations";
 
 const CATEGORIES = [
   "Strength",
@@ -56,59 +57,80 @@ export function AddGoalDialog({
     e.preventDefault();
     setLoading(true);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      // Validate input
+      const validationResult = goalSchema.safeParse({
+        title,
+        description: description || null,
+        category: category || null,
+        target_days_per_week: parseInt(targetDays),
+        start_date: startDate,
+      });
 
-    // Check goal count and premium status
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("is_premium")
-      .eq("id", user.id)
-      .single();
+      if (!validationResult.success) {
+        const firstError = validationResult.error.errors[0];
+        toast.error(firstError.message);
+        setLoading(false);
+        return;
+      }
 
-    const { data: goals } = await supabase
-      .from("goals")
-      .select("id")
-      .eq("user_id", user.id);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
 
-    const goalCount = goals?.length || 0;
-    const isPremium = profile?.is_premium || false;
+      // Check goal count and premium status
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("is_premium")
+        .eq("id", user.id)
+        .single();
 
-    // Enforce 3-goal limit for free users
-    if (!isPremium && goalCount >= 3) {
+      const { data: goals } = await supabase
+        .from("goals")
+        .select("id")
+        .eq("user_id", user.id);
+
+      const goalCount = goals?.length || 0;
+      const isPremium = profile?.is_premium || false;
+
+      // Enforce 3-goal limit for free users
+      if (!isPremium && goalCount >= 3) {
+        setLoading(false);
+        onOpenChange(false);
+        setShowPaywall(true);
+        return;
+      }
+
+      const { error } = await supabase.from("goals").insert({
+        user_id: user.id,
+        title: validationResult.data.title,
+        description: validationResult.data.description,
+        category: validationResult.data.category,
+        target_days_per_week: validationResult.data.target_days_per_week,
+        start_date: validationResult.data.start_date,
+      });
+
+      if (error) {
+        toast.error("Failed to create goal");
+        console.error(error);
+      } else {
+        analytics.goalCreated();
+        toast.success("Goal created successfully!");
+        setTitle("");
+        setDescription("");
+        setCategory("");
+        setTargetDays("5");
+        setStartDate(new Date().toISOString().split('T')[0]);
+        onOpenChange(false);
+        onGoalAdded();
+      }
+    } catch (error) {
+      console.error('Error creating goal:', error);
+      toast.error("An unexpected error occurred");
+    } finally {
       setLoading(false);
-      onOpenChange(false);
-      setShowPaywall(true);
-      return;
     }
-
-    const { error } = await supabase.from("goals").insert({
-      user_id: user.id,
-      title,
-      description: description || null,
-      category: category || null,
-      target_days_per_week: parseInt(targetDays),
-      start_date: startDate,
-    });
-
-    if (error) {
-      toast.error("Failed to create goal");
-      console.error(error);
-    } else {
-      analytics.goalCreated();
-      toast.success("Goal created successfully!");
-      setTitle("");
-      setDescription("");
-      setCategory("");
-      setTargetDays("5");
-      setStartDate(new Date().toISOString().split('T')[0]);
-      onOpenChange(false);
-      onGoalAdded();
-    }
-
-    setLoading(false);
   };
 
   return (
