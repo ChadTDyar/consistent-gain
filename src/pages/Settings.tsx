@@ -14,6 +14,8 @@ interface Profile {
   name: string | null;
   reminder_enabled: boolean;
   is_premium: boolean;
+  subscription_status: string | null;
+  current_period_end: string | null;
 }
 
 export default function Settings() {
@@ -22,6 +24,7 @@ export default function Settings() {
   const [remindersEnabled, setRemindersEnabled] = useState(true);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [portalLoading, setPortalLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -97,6 +100,24 @@ export default function Settings() {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate("/auth");
+  };
+
+  const handleManageSubscription = async () => {
+    setPortalLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('customer-portal');
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Portal error:', error);
+      toast.error("Failed to open subscription management");
+    } finally {
+      setPortalLoading(false);
+    }
   };
 
   if (loading) {
@@ -207,9 +228,34 @@ export default function Settings() {
                         ? "You have access to all premium features"
                         : "Upgrade to unlock all features"}
                     </p>
+                    {profile?.current_period_end && (
+                      <p className="text-sm text-muted-foreground mt-2">
+                        {profile.subscription_status === 'active' 
+                          ? `Renews on ${new Date(profile.current_period_end).toLocaleDateString()}`
+                          : `Expires on ${new Date(profile.current_period_end).toLocaleDateString()}`
+                        }
+                      </p>
+                    )}
                   </div>
                 </div>
-                {!profile?.is_premium && (
+                {profile?.is_premium ? (
+                  <Button 
+                    onClick={handleManageSubscription}
+                    size="lg"
+                    variant="outline"
+                    disabled={portalLoading}
+                    className="w-full border-2 font-semibold"
+                  >
+                    {portalLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      "Manage Subscription"
+                    )}
+                  </Button>
+                ) : (
                   <Button 
                     onClick={() => navigate("/pricing")}
                     size="lg"

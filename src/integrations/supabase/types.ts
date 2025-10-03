@@ -94,27 +94,36 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string | null
+          current_period_end: string | null
           id: string
           is_premium: boolean | null
           name: string | null
           reminder_enabled: boolean | null
           stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_status: string | null
         }
         Insert: {
           created_at?: string | null
+          current_period_end?: string | null
           id: string
           is_premium?: boolean | null
           name?: string | null
           reminder_enabled?: boolean | null
           stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
         }
         Update: {
           created_at?: string | null
+          current_period_end?: string | null
           id?: string
           is_premium?: boolean | null
           name?: string | null
           reminder_enabled?: boolean | null
           stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
         }
         Relationships: []
       }

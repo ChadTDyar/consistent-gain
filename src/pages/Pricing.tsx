@@ -4,18 +4,38 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+const MONTHLY_PRICE_ID = "price_1SE7IvLnv14mW4wINV5ZxleR";
 
 export default function Pricing() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
 
-  const handleUpgrade = async () => {
+  useEffect(() => {
+    checkSubscription();
+  }, []);
+
+  const checkSubscription = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_premium')
+        .eq('id', user.id)
+        .single();
+      
+      if (profile) {
+        setIsPremium(profile.is_premium);
+      }
+    }
+  };
+
+  const handleUpgrade = async (priceId: string) => {
     setLoading(true);
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
         toast.error("Please sign in to upgrade");
@@ -23,8 +43,17 @@ export default function Pricing() {
         return;
       }
 
-      toast.info("Stripe integration coming soon! Premium features will be available shortly.");
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { priceId }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
     } catch (error) {
+      console.error('Checkout error:', error);
       toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -36,10 +65,10 @@ export default function Pricing() {
       <div className="container mx-auto px-4 md:px-8 max-w-5xl">
         <div className="text-center mb-12 md:mb-16">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-foreground">
-            Choose Your Plan
+            Premium unlocks unlimited goals and coaching
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground">
-            Start free, upgrade when you're ready
+            Choose the plan that works for you
           </p>
         </div>
 
@@ -60,15 +89,15 @@ export default function Pricing() {
               <ul className="space-y-3">
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  <span className="text-base">1 fitness goal</span>
+                  <span className="text-base">Up to 3 fitness goals</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
+                  <span className="text-base">Basic streak tracking</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
                   <span className="text-base">7-day activity history</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  <span className="text-base">Streak tracking</span>
                 </li>
               </ul>
               <Button 
@@ -101,32 +130,36 @@ export default function Pricing() {
               <ul className="space-y-3">
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  <span className="font-semibold text-base">3 fitness goals</span>
+                  <span className="font-semibold text-base">Unlimited goals</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  <span className="font-semibold text-base">Unlimited history</span>
+                  <span className="font-semibold text-base">Adaptive programs and AI Coach Flow</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  <span className="text-base">Advanced streak tracking</span>
+                  <span className="text-base">Advanced analytics and insights</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  <span className="text-base">Export your data</span>
+                  <span className="text-base">Custom reminders and categories</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
                   <span className="text-base">Priority support</span>
                 </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
+                  <span className="text-base">Achievement badges</span>
+                </li>
               </ul>
               <Button 
                 className="w-full shadow-md hover:shadow-lg transition-all font-semibold" 
                 size="lg"
-                onClick={handleUpgrade}
-                disabled={loading}
+                onClick={() => handleUpgrade(MONTHLY_PRICE_ID)}
+                disabled={loading || isPremium}
               >
-                Upgrade Now
+                {isPremium ? "Current Plan" : "Upgrade"}
               </Button>
             </CardContent>
           </Card>
