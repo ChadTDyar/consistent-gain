@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Flame, Loader2, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { analytics } from "@/lib/analytics";
 
 interface Goal {
   id: string;
@@ -135,6 +136,10 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
       toast.error("Failed to log activity");
       console.error(error);
     } else {
+      analytics.goalCompleted(streak + 1);
+      if ((streak + 1) % 7 === 0) {
+        analytics.streakMilestone(streak + 1);
+      }
       toast.success("Great job! 🎉 Streak continues!");
       loadActivityData();
       onUpdate();

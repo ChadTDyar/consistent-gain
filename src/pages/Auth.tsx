@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
+import { analytics } from "@/lib/analytics";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -49,6 +50,7 @@ export default function Auth() {
         });
 
         if (error) throw error;
+        analytics.login();
         toast.success("Welcome back!");
       } else {
         const { error } = await supabase.auth.signUp({
@@ -61,6 +63,7 @@ export default function Auth() {
         });
 
         if (error) throw error;
+        analytics.signup();
         toast.success("Account created! Welcome to Momentum!");
       }
     } catch (error: any) {

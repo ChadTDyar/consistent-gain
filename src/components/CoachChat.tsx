@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { analytics } from "@/lib/analytics";
 
 type Message = {
   role: "user" | "assistant";
@@ -189,6 +190,7 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage }: Coa
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
+    analytics.coachMessageSent();
     const userMessage = input.trim();
     setInput("");
     await streamChat(userMessage);
@@ -200,7 +202,10 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage }: Coa
     <>
       {/* Floating button */}
       <Button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (!isOpen) analytics.coachChatOpened();
+          setIsOpen(!isOpen);
+        }}
         className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-xl btn-gradient z-50"
         size="icon"
       >

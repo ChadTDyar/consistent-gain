@@ -5,6 +5,7 @@ import { CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
+import { analytics } from "@/lib/analytics";
 
 const MONTHLY_PRICE_ID = "price_1SE7IvLnv14mW4wINV5ZxleR";
 
@@ -33,6 +34,7 @@ export default function Pricing() {
   };
 
   const handleUpgrade = async (priceId: string) => {
+    analytics.upgradeClicked();
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -43,6 +45,7 @@ export default function Pricing() {
         return;
       }
 
+      analytics.checkoutStarted();
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { priceId }
       });

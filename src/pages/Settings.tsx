@@ -7,7 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, LogOut } from "lucide-react";
+import { ArrowLeft, Loader2, LogOut, Download, Trash2, AlertTriangle } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface Profile {
   id: string;
@@ -25,6 +26,8 @@ export default function Settings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -117,6 +120,79 @@ export default function Settings() {
       toast.error("Failed to open subscription management");
     } finally {
       setPortalLoading(false);
+    }
+  };
+
+  const handleExportData = async () => {
+    if (!profile) return;
+    
+    setExporting(true);
+    try {
+      const { data: goalsData } = await supabase
+        .from("goals")
+        .select("*")
+        .eq("user_id", profile.id);
+      
+      const { data: logsData } = await supabase
+        .from("activity_logs")
+        .select("*")
+        .eq("user_id", profile.id);
+
+      const { data: messagesData } = await supabase
+        .from("chat_messages")
+        .select("*")
+        .eq("user_id", profile.id);
+      
+      const exportData = {
+        profile,
+        goals: goalsData,
+        activity_logs: logsData,
+        chat_messages: messagesData,
+        exported_at: new Date().toISOString()
+      };
+      
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `momentum-data-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast.success("Data exported successfully");
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error("Failed to export data");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!profile) return;
+    
+    setDeleting(true);
+    try {
+      // Delete user data
+      await supabase.from("chat_messages").delete().eq("user_id", profile.id);
+      await supabase.from("activity_logs").delete().eq("user_id", profile.id);
+      await supabase.from("goals").delete().eq("user_id", profile.id);
+      await supabase.from("profiles").delete().eq("id", profile.id);
+      
+      // Delete auth user
+      const { error } = await supabase.auth.admin.deleteUser(profile.id);
+      
+      if (error) throw error;
+      
+      toast.success("Account deleted successfully");
+      navigate("/");
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error("Failed to delete account. Please contact support.");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -265,6 +341,76 @@ export default function Settings() {
                   </Button>
                 )}
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Data Management */}
+          <Card className="border-none shadow-md">
+            <CardHeader>
+              <CardTitle className="text-2xl font-display font-semibold">Data Management</CardTitle>
+              <CardDescription className="text-base">Export or delete your data</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button 
+                onClick={handleExportData}
+                disabled={exporting}
+                variant="outline"
+                size="lg"
+                className="w-full border-2 font-semibold"
+              >
+                {exporting ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Exporting...
+                  </>
+                ) : (
+                  <>
+                    <Download className="mr-2 h-5 w-5" />
+                    Export My Data
+                  </>
+                )}
+              </Button>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button 
+                    variant="destructive"
+                    size="lg"
+                    className="w-full font-semibold"
+                  >
+                    <Trash2 className="mr-2 h-5 w-5" />
+                    Delete Account
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5 text-destructive" />
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="text-base">
+                      This action cannot be undone. This will permanently delete your account and remove all your data from our servers, including goals, activity logs, and chat history.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction 
+                      onClick={handleDeleteAccount}
+                      disabled={deleting}
+                      className="bg-destructive hover:bg-destructive/90"
+                    >
+                      {deleting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Deleting...
+                        </>
+                      ) : (
+                        "Delete Account"
+                      )}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardContent>
           </Card>
 
