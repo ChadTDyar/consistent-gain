@@ -2,6 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, TrendingUp, Award } from "lucide-react";
+import heroRunner from "@/assets/hero-runner.png";
+import groupRunning from "@/assets/group-running.png";
+import momentumLogo from "@/assets/momentum-logo.png";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -9,32 +12,54 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background-cream">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 md:py-32 bg-gradient-to-br from-primary/10 via-background to-background">
-        <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-          <div className="text-center space-y-6">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground leading-tight">
-              Build Lasting Fitness Habits
-            </h1>
-            <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              For adults who want sustainable progress, not extreme programs. Track goals, celebrate
-              streaks, stay consistent.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Button 
-                size="lg" 
-                onClick={() => navigate("/auth")} 
-                className="btn-large shadow-md hover:shadow-lg transition-all"
-              >
-                Start Free
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                onClick={() => navigate("/pricing")}
-                className="border-2 border-primary hover:bg-primary/10"
-              >
-                View Plans
-              </Button>
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-background">
+        <div className="container mx-auto px-4 md:px-8 max-w-7xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-center py-12 md:py-20 lg:py-28">
+            {/* Left Content */}
+            <div className="space-y-8 text-center lg:text-left">
+              <div className="inline-flex items-center gap-3 mb-4">
+                <img src={momentumLogo} alt="Momentum" className="h-12 w-auto" />
+                <h2 className="text-2xl font-display font-bold text-foreground">Momentum</h2>
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground leading-tight">
+                Your next goal.<br />
+                Your best growth.
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                For adults who want sustainable progress, not extreme programs. Track goals, celebrate
+                streaks, stay consistent.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+                <Button 
+                  size="lg" 
+                  onClick={() => navigate("/auth")} 
+                  className="btn-large shadow-md hover:shadow-lg transition-all"
+                >
+                  Start Free
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  onClick={() => navigate("/pricing")}
+                  className="border-2 border-primary hover:bg-primary/10"
+                >
+                  View Plans
+                </Button>
+              </div>
+            </div>
+
+            {/* Right Image */}
+            <div className="relative">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src={heroRunner} 
+                  alt="Runner preparing for workout at sunset" 
+                  className="w-full h-auto object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
+              </div>
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
+              <div className="absolute -top-6 -left-6 w-40 h-40 bg-streak/10 rounded-full blur-3xl" />
             </div>
           </div>
         </div>
@@ -96,10 +121,20 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 md:py-28 bg-gradient-to-r from-primary to-primary-deep text-primary-foreground">
-        <div className="container mx-auto px-4 md:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">Ready to Build Lasting Habits?</h2>
-          <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto opacity-95 leading-relaxed">
+      <section className="relative py-20 md:py-28 overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src={groupRunning} 
+            alt="Diverse group of people running together at sunset" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/95 to-primary-deep/95" />
+        </div>
+        <div className="container mx-auto px-4 md:px-8 text-center relative z-10">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-6 text-white">
+            Ready to Build Lasting Habits?
+          </h2>
+          <p className="text-lg md:text-xl mb-10 max-w-2xl mx-auto text-white/95 leading-relaxed">
             Join others who are building sustainable fitness routines. Start tracking your first
             goal today, completely free.
           </p>
@@ -107,7 +142,7 @@ const Index = () => {
             size="lg"
             variant="secondary"
             onClick={() => navigate("/auth")}
-            className="btn-large shadow-lg hover:shadow-xl bg-white text-primary hover:bg-white/90"
+            className="btn-large shadow-xl hover:shadow-2xl bg-white text-primary hover:bg-white/90 hover:scale-105 transition-all"
           >
             Get Started Free
           </Button>

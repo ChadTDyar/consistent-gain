@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import momentumLogo from "@/assets/momentum-logo.png";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -72,7 +73,10 @@ export default function Auth() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background-cream p-4">
       <Card className="w-full max-w-md border-none shadow-xl">
-        <CardHeader className="space-y-2 pb-6">
+        <CardHeader className="space-y-4 pb-6">
+          <div className="flex justify-center">
+            <img src={momentumLogo} alt="Momentum" className="h-16 w-auto" />
+          </div>
           <CardTitle className="text-3xl md:text-4xl font-display font-bold text-center text-foreground">
             {isLogin ? "Welcome back" : "Get started"}
           </CardTitle>

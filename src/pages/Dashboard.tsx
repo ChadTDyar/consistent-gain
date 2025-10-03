@@ -6,6 +6,7 @@ import { Loader2, Plus, LogOut, Settings as SettingsIcon } from "lucide-react";
 import { toast } from "sonner";
 import { GoalCard } from "@/components/GoalCard";
 import { AddGoalDialog } from "@/components/AddGoalDialog";
+import momentumLogo from "@/assets/momentum-logo.png";
 
 interface Profile {
   id: string;
@@ -122,7 +123,10 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background-cream">
       <header className="border-b border-border bg-card shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center max-w-7xl">
-          <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">Momentum</h1>
+          <div className="flex items-center gap-3">
+            <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
+            <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">Momentum</h1>
+          </div>
           <div className="flex gap-2">
             {!profile?.is_premium && (
               <Button 
