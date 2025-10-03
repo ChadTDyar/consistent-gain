@@ -47,6 +47,24 @@
 
 ---
 
+## 🧪 QUALITY ASSURANCE
+
+### Comprehensive Testing (CRITICAL Before Launch)
+- [ ] **Run QA Test Script** - See `QA_TEST_SCRIPT.md` for detailed step-by-step testing
+- [ ] **Complete Pre-Launch Diagnostics** - See `PRE_LAUNCH_DIAGNOSTICS.md` for full checklist
+- [ ] **Optional: Set up Automated Tests** - See `AUTOMATED_TESTING_SETUP.md` for test automation
+
+**Quick QA Summary:**
+- [ ] Desktop user journey works end-to-end (Test 1 in QA_TEST_SCRIPT.md)
+- [ ] Mobile user journey works on iOS and Android (Tests 2-3)
+- [ ] Input validation catches all invalid entries (Test 4)
+- [ ] Payment flow works in test mode (Test 6)
+- [ ] Performance scores meet targets (Tests 7-8)
+- [ ] Accessibility score >90 (Test 15)
+- [ ] 5 real users can complete first goal in <2 minutes (Test 14)
+
+---
+
 ## 🔧 MANUAL CONFIGURATION REQUIRED
 
 ### Step 1: Update Analytics ID
