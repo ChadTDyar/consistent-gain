@@ -56,6 +56,51 @@ export type Database = {
           },
         ]
       }
+      chat_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coach_triggers: {
+        Row: {
+          id: string
+          sent_at: string | null
+          trigger_type: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          sent_at?: string | null
+          trigger_type: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          sent_at?: string | null
+          trigger_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       goals: {
         Row: {
           category: string | null

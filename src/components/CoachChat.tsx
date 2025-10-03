@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { MessageCircle, X, Send, Loader2 } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Sparkles } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 type Message = {
   role: "user" | "assistant";
@@ -17,19 +19,24 @@ interface CoachChatProps {
     lastActivity?: string;
     isPremium?: boolean;
   };
+  autoOpen?: boolean;
+  welcomeMessage?: string;
 }
 
-export function CoachChat({ userContext }: CoachChatProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export function CoachChat({ userContext, autoOpen = false, welcomeMessage }: CoachChatProps) {
+  const [isOpen, setIsOpen] = useState(autoOpen);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hey there! I'm Coach, your AI fitness companion. I'm here to help you build sustainable habits. What's on your mind today?",
+      content: welcomeMessage || "Hey there! I'm Coach, your AI fitness companion. I'm here to help you build sustainable habits. What's on your mind today?",
     },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [messageCount, setMessageCount] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/coach-chat`;
 
   useEffect(() => {
@@ -37,6 +44,31 @@ export function CoachChat({ userContext }: CoachChatProps) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {
+    const loadUserId = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+        
+        // Load message count for today
+        if (!userContext?.isPremium) {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          
+          const { count } = await supabase
+            .from("chat_messages")
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", user.id)
+            .eq("role", "user")
+            .gte("created_at", today.toISOString());
+          
+          setMessageCount(count || 0);
+        }
+      }
+    };
+    loadUserId();
+  }, [userContext?.isPremium]);
 
   const streamChat = async (userMessage: string) => {
     const newMessages = [...messages, { role: "user" as const, content: userMessage }];
@@ -52,12 +84,24 @@ export function CoachChat({ userContext }: CoachChatProps) {
         },
         body: JSON.stringify({ 
           messages: newMessages.map(m => ({ role: m.role, content: m.content })),
-          userContext 
+          userContext,
+          userId
         }),
       });
 
       if (resp.status === 429) {
-        toast.error("Rate limit reached. Please try again in a moment.");
+        const data = await resp.json();
+        if (data.limitReached) {
+          toast.error("Daily message limit reached!", {
+            description: "Upgrade to Premium for unlimited messages.",
+            action: {
+              label: "Upgrade",
+              onClick: () => navigate("/pricing"),
+            },
+          });
+        } else {
+          toast.error("Rate limit reached. Please try again in a moment.");
+        }
         setIsLoading(false);
         return;
       }
@@ -121,6 +165,20 @@ export function CoachChat({ userContext }: CoachChatProps) {
           }
         }
       }
+
+      // Save assistant message
+      if (userId && assistantContent) {
+        await supabase.from("chat_messages").insert({
+          user_id: userId,
+          message: assistantContent,
+          role: "assistant"
+        });
+      }
+
+      // Update message count
+      if (!userContext?.isPremium) {
+        setMessageCount(prev => prev + 1);
+      }
     } catch (error) {
       console.error("Chat error:", error);
       toast.error("Failed to get response from Coach");
@@ -135,6 +193,8 @@ export function CoachChat({ userContext }: CoachChatProps) {
     setInput("");
     await streamChat(userMessage);
   };
+
+  const remainingMessages = !userContext?.isPremium ? Math.max(0, 10 - messageCount) : null;
 
   return (
     <>
@@ -156,10 +216,16 @@ export function CoachChat({ userContext }: CoachChatProps) {
               <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
                 <span className="text-2xl">💪</span>
               </div>
-              <div>
+              <div className="flex-1">
                 <h3 className="font-bold text-white">Coach</h3>
                 <p className="text-xs text-white/80">Your AI Fitness Companion</p>
               </div>
+              {remainingMessages !== null && (
+                <div className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">
+                  <Sparkles className="h-3 w-3 text-white" />
+                  <span className="text-xs text-white font-semibold">{remainingMessages} left</span>
+                </div>
+              )}
             </div>
           </div>
 

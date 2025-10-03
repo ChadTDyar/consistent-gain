@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.58.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,12 +12,56 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, userContext } = await req.json();
+    const { messages, userContext, userId } = await req.json();
+    
+    // Initialize Supabase client
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Check rate limiting for non-premium users
+    if (!userContext?.isPremium && userId) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const { data: messageCount, error: countError } = await supabase
+        .from("chat_messages")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .eq("role", "user")
+        .gte("created_at", today.toISOString());
+
+      if (countError) {
+        console.error("Error checking rate limit:", countError);
+      } else if (messageCount && (messageCount as any).count >= 10) {
+        return new Response(
+          JSON.stringify({ 
+            error: "Daily message limit reached. Upgrade to Premium for unlimited messages!",
+            limitReached: true 
+          }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+
+    // Save user message to database
+    if (userId && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === "user") {
+        await supabase.from("chat_messages").insert({
+          user_id: userId,
+          message: lastMessage.content,
+          role: "user"
+        });
+      }
+    }
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
+
+    console.log("Processing chat request for user:", userId, "Messages:", messages.length);
 
     // Build system prompt with user context
     const systemPrompt = `You are Coach, the AI fitness companion for Momentum - an app helping adults 40+ build sustainable fitness habits.

@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Flame, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns";
+import { CoachChat } from "@/components/CoachChat";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface Goal {
   id: string;
@@ -27,11 +29,26 @@ export default function GoalDetail() {
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [streak, setStreak] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
     loadGoal();
     loadLogs();
+    loadProfile();
   }, [id]);
+
+  const loadProfile = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("profiles")
+      .select("is_premium")
+      .eq("id", user.id)
+      .single();
+
+    setIsPremium(data?.is_premium || false);
+  };
 
   const loadGoal = async () => {
     const { data, error } = await supabase
@@ -246,6 +263,15 @@ export default function GoalDetail() {
           </Card>
         </div>
       </div>
+
+      <CoachChat
+        userContext={{
+          streak: streak,
+          goalsCount: 1,
+          lastActivity: logs.length > 0 ? `Last activity: ${format(new Date(logs[0].completed_at), "MMM d")}` : "No activity yet",
+          isPremium: isPremium,
+        }}
+      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { GoalCard } from "@/components/GoalCard";
 import { AddGoalDialog } from "@/components/AddGoalDialog";
 import { EditGoalDialog } from "@/components/EditGoalDialog";
 import { CoachChat } from "@/components/CoachChat";
+import { calculateStreak, getUserActivityLogs, getDaysSinceLastActivity } from "@/lib/streakUtils";
 import momentumLogo from "@/assets/momentum-logo.png";
 
 interface Profile {
@@ -32,13 +33,85 @@ export default function Dashboard() {
   const [showAddGoal, setShowAddGoal] = useState(false);
   const [showEditGoal, setShowEditGoal] = useState(false);
   const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
+  const [streak, setStreak] = useState(0);
+  const [daysSinceActivity, setDaysSinceActivity] = useState(0);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [welcomeMessage, setWelcomeMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     checkAuth();
     loadProfile();
     loadGoals();
+    loadStreakData();
+    checkTriggerMessages();
   }, []);
+
+  const loadStreakData = async () => {
+    const logs = await getUserActivityLogs();
+    const currentStreak = calculateStreak(logs);
+    const daysSince = getDaysSinceLastActivity(logs);
+    setStreak(currentStreak);
+    setDaysSinceActivity(daysSince);
+  };
+
+  const checkTriggerMessages = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // Check for new user welcome
+    const { data: goals } = await supabase
+      .from("goals")
+      .select("id")
+      .eq("user_id", user.id);
+
+    const isNewUser = !goals || goals.length === 0;
+
+    // Check if triggers have been sent
+    const { data: triggers } = await supabase
+      .from("coach_triggers")
+      .select("trigger_type")
+      .eq("user_id", user.id);
+
+    const sentTriggers = new Set(triggers?.map(t => t.trigger_type) || []);
+
+    if (isNewUser && !sentTriggers.has("welcome")) {
+      setWelcomeMessage("Welcome to Momentum! I'm Coach, your AI fitness companion. I'm here to help you build sustainable habits. Want help setting your first goal?");
+      setShowWelcome(true);
+      
+      // Mark welcome as sent
+      await supabase.from("coach_triggers").insert({
+        user_id: user.id,
+        trigger_type: "welcome"
+      });
+    } else {
+      // Check for 7-day streak celebration
+      const logs = await getUserActivityLogs();
+      const currentStreak = calculateStreak(logs);
+      
+      if (currentStreak === 7 && !sentTriggers.has("streak_7")) {
+        setWelcomeMessage("🔥 7 days in a row - that's amazing! You're building real consistency. How are you feeling?");
+        setShowWelcome(true);
+        
+        await supabase.from("coach_triggers").insert({
+          user_id: user.id,
+          trigger_type: "streak_7"
+        });
+      }
+
+      // Check for missed 3+ days
+      const daysSince = getDaysSinceLastActivity(logs);
+      if (daysSince >= 3 && !sentTriggers.has("missed_3_days")) {
+        setWelcomeMessage("Hey there! I noticed you haven't checked in lately. No judgment - life happens! Ready to get back on track?");
+        setShowWelcome(true);
+        
+        await supabase.from("coach_triggers").insert({
+          user_id: user.id,
+          trigger_type: "missed_3_days"
+        });
+      }
+    }
+  };
 
   const checkAuth = async () => {
     const {
@@ -237,11 +310,15 @@ export default function Dashboard() {
 
       <CoachChat
         userContext={{
-          streak: 0, // TODO: Calculate from activity logs
+          streak: streak,
           goalsCount: goals.length,
-          lastActivity: goals.length > 0 ? "Recently active" : "No recent activity",
+          lastActivity: daysSinceActivity === 0 ? "Active today" : 
+                       daysSinceActivity === 1 ? "Active yesterday" : 
+                       `${daysSinceActivity} days since last activity`,
           isPremium: profile?.is_premium || false,
         }}
+        autoOpen={showWelcome}
+        welcomeMessage={welcomeMessage}
       />
     </div>
   );
