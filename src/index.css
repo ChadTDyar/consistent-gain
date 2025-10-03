@@ -8,89 +8,144 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 215 20% 20%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 215 20% 20%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 20% 20%;
-
-    --primary: 207 90% 54%;
+    /* Brand Colors */
+    --primary: 147 24% 55%;
     --primary-foreground: 0 0% 100%;
+    --primary-warm: 23 64% 70%;
+    --primary-deep: 148 24% 40%;
 
-    --secondary: 210 16% 93%;
-    --secondary-foreground: 215 20% 20%;
+    /* Backgrounds */
+    --background: 40 38% 97%;
+    --background-cream: 40 38% 97%;
+    --background-subtle: 40 20% 93%;
+    --foreground: 160 20% 20%;
 
-    --muted: 210 16% 93%;
-    --muted-foreground: 215 16% 47%;
+    /* Cards */
+    --card: 0 0% 100%;
+    --card-foreground: 160 20% 20%;
 
-    --accent: 210 16% 93%;
-    --accent-foreground: 215 20% 20%;
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 160 20% 20%;
 
-    --success: 142 76% 36%;
+    /* Secondary */
+    --secondary: 147 24% 55% / 0.1;
+    --secondary-foreground: 147 24% 40%;
+
+    /* Muted */
+    --muted: 40 20% 93%;
+    --muted-foreground: 156 13% 50%;
+
+    /* Accent */
+    --accent: 147 24% 55% / 0.15;
+    --accent-foreground: 147 24% 40%;
+
+    /* Status Colors */
+    --success: 122 39% 53%;
     --success-foreground: 0 0% 100%;
 
     --streak: 25 95% 53%;
     --streak-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --alert: 37 76% 61%;
+    --alert-foreground: 0 0% 100%;
+
+    --info: 209 34% 60%;
+    --info-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 207 90% 54%;
+    /* Borders & Inputs */
+    --border: 147 24% 55% / 0.15;
+    --input: 147 24% 55% / 0.15;
+    --ring: 147 24% 55%;
 
+    /* Radius */
     --radius: 0.75rem;
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
 
-    --gradient-hero: linear-gradient(135deg, hsl(207 90% 54%) 0%, hsl(210 80% 45%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(147 24% 55%) 0%, hsl(148 24% 40%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(147 24% 55% / 0.05) 0%, hsl(147 24% 55% / 0) 100%);
+    --gradient-success: linear-gradient(135deg, hsl(122 39% 53%) 0%, hsl(147 24% 55%) 100%);
     
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(44, 62, 58, 0.08);
+    --shadow-md: 0 4px 12px rgba(44, 62, 58, 0.12);
+    --shadow-lg: 0 8px 24px rgba(44, 62, 58, 0.16);
+    --shadow-xl: 0 16px 48px rgba(44, 62, 58, 0.20);
     
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Transitions */
+    --transition-fast: 150ms ease-in-out;
+    --transition-base: 200ms ease-in-out;
+    --transition-slow: 300ms ease-in-out;
+
+    /* Spacing */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    --space-3xl: 4rem;
+
+    /* Typography */
+    --font-display: 'Poppins', sans-serif;
+    --font-body: 'Inter', sans-serif;
   }
 
   .dark {
-    --background: 215 28% 17%;
-    --foreground: 210 20% 98%;
-
-    --card: 215 25% 20%;
-    --card-foreground: 210 20% 98%;
-
-    --popover: 215 25% 20%;
-    --popover-foreground: 210 20% 98%;
-
-    --primary: 207 90% 54%;
+    --primary: 147 24% 55%;
     --primary-foreground: 0 0% 100%;
+    --primary-warm: 23 64% 70%;
+    --primary-deep: 148 24% 40%;
 
-    --secondary: 215 20% 27%;
-    --secondary-foreground: 210 20% 98%;
+    --background: 160 20% 12%;
+    --background-cream: 160 20% 12%;
+    --background-subtle: 160 15% 18%;
+    --foreground: 160 10% 95%;
 
-    --muted: 215 20% 27%;
-    --muted-foreground: 215 16% 65%;
+    --card: 160 15% 15%;
+    --card-foreground: 160 10% 95%;
 
-    --accent: 215 20% 27%;
-    --accent-foreground: 210 20% 98%;
+    --popover: 160 15% 15%;
+    --popover-foreground: 160 10% 95%;
 
-    --success: 142 76% 36%;
+    --secondary: 147 24% 55% / 0.2;
+    --secondary-foreground: 147 24% 70%;
+
+    --muted: 160 15% 18%;
+    --muted-foreground: 156 10% 60%;
+
+    --accent: 147 24% 55% / 0.2;
+    --accent-foreground: 147 24% 70%;
+
+    --success: 122 39% 53%;
     --success-foreground: 0 0% 100%;
 
     --streak: 25 95% 53%;
     --streak-foreground: 0 0% 100%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 20% 98%;
+    --alert: 37 76% 61%;
+    --alert-foreground: 0 0% 100%;
 
-    --border: 215 20% 27%;
-    --input: 215 20% 27%;
-    --ring: 207 90% 54%;
+    --info: 209 34% 60%;
+    --info-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 147 24% 55% / 0.2;
+    --input: 147 24% 55% / 0.2;
+    --ring: 147 24% 55%;
     
-    --gradient-hero: linear-gradient(135deg, hsl(207 90% 54%) 0%, hsl(210 80% 45%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(215 25% 20%) 0%, hsl(215 28% 17%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(147 24% 55%) 0%, hsl(148 24% 40%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(147 24% 55% / 0.08) 0%, hsl(147 24% 55% / 0) 100%);
+    --gradient-success: linear-gradient(135deg, hsl(122 39% 53%) 0%, hsl(147 24% 55%) 100%);
   }
 }
 
@@ -100,6 +155,38 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .card-lift {
+    @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-lg;
+  }
+
+  .btn-large {
+    @apply px-8 py-4 text-lg rounded-md;
+  }
+
+  @keyframes celebrate {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  .celebrate {
+    animation: celebrate 0.5s ease-in-out;
+  }
+
+  @keyframes flame-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.9; }
+  }
+
+  .flame-pulse {
+    animation: flame-pulse 2s ease-in-out infinite;
   }
 }

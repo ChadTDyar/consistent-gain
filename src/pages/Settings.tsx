@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, Save } from "lucide-react";
+import { ArrowLeft, Loader2, LogOut } from "lucide-react";
 
 interface Profile {
   id: string;
@@ -19,8 +19,7 @@ interface Profile {
 export default function Settings() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [reminderEnabled, setReminderEnabled] = useState(true);
+  const [remindersEnabled, setRemindersEnabled] = useState(true);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
@@ -39,8 +38,6 @@ export default function Settings() {
       return;
     }
 
-    setEmail(user.email || "");
-
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
@@ -52,33 +49,49 @@ export default function Settings() {
     } else if (data) {
       setProfile(data);
       setName(data.name || "");
-      setReminderEnabled(data.reminder_enabled);
+      setRemindersEnabled(data.reminder_enabled);
     }
 
     setLoading(false);
   };
 
-  const handleSave = async () => {
+  const handleUpdateProfile = async () => {
     if (!profile) return;
 
     setSaving(true);
 
     const { error } = await supabase
       .from("profiles")
-      .update({
-        name,
-        reminder_enabled: reminderEnabled,
-      })
+      .update({ name })
       .eq("id", profile.id);
 
     if (error) {
-      toast.error("Failed to save settings");
+      toast.error("Failed to update profile");
       console.error(error);
     } else {
-      toast.success("Settings saved successfully!");
+      toast.success("Profile updated!");
     }
 
     setSaving(false);
+  };
+
+  const handleToggleReminders = async (checked: boolean) => {
+    if (!profile) return;
+
+    setRemindersEnabled(checked);
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ reminder_enabled: checked })
+      .eq("id", profile.id);
+
+    if (error) {
+      toast.error("Failed to update reminders");
+      console.error(error);
+      setRemindersEnabled(!checked);
+    } else {
+      toast.success(checked ? "Reminders enabled" : "Reminders disabled");
+    }
   };
 
   const handleSignOut = async () => {
@@ -95,81 +108,113 @@ export default function Settings() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/dashboard")}
-          className="mb-8"
+    <div className="min-h-screen bg-background-cream">
+      <div className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-3xl">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate("/dashboard")} 
+          className="mb-8 hover:bg-muted"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Dashboard
         </Button>
 
-        <h1 className="text-4xl font-bold mb-8">Settings</h1>
+        <h1 className="text-4xl md:text-5xl font-display font-bold mb-8 md:mb-12 text-foreground">
+          Settings
+        </h1>
 
-        <div className="space-y-6">
-          <Card>
+        <div className="space-y-6 md:space-y-8">
+          {/* Profile Section */}
+          <Card className="border-none shadow-md">
             <CardHeader>
-              <CardTitle>Profile Information</CardTitle>
-              <CardDescription>Update your personal details</CardDescription>
+              <CardTitle className="text-2xl font-display font-semibold">Profile</CardTitle>
+              <CardDescription className="text-base">Manage your account information</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name" className="text-base font-medium">Name</Label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your name"
+                  className="h-11 text-base"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" value={email} disabled />
-                <p className="text-sm text-muted-foreground">
-                  Email cannot be changed
-                </p>
+                <Label htmlFor="email" className="text-base font-medium">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={profile?.id || ""}
+                  disabled
+                  className="bg-muted h-11 text-base"
+                />
               </div>
+              <Button 
+                onClick={handleUpdateProfile} 
+                disabled={saving}
+                size="lg"
+                className="shadow-sm hover:shadow-md font-semibold"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
+              </Button>
             </CardContent>
           </Card>
 
-          <Card>
+          {/* Reminders Section */}
+          <Card className="border-none shadow-md">
             <CardHeader>
-              <CardTitle>Notifications</CardTitle>
-              <CardDescription>Manage your reminder preferences</CardDescription>
+              <CardTitle className="text-2xl font-display font-semibold">Daily Reminders</CardTitle>
+              <CardDescription className="text-base">Get notified to log your daily activity</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="reminders">Daily Reminders</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Get reminded to log your daily progress
-                  </p>
-                </div>
+              <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                <Label htmlFor="reminders" className="flex-1 text-base cursor-pointer">
+                  Enable daily reminder notifications
+                </Label>
                 <Switch
                   id="reminders"
-                  checked={reminderEnabled}
-                  onCheckedChange={setReminderEnabled}
+                  checked={remindersEnabled}
+                  onCheckedChange={handleToggleReminders}
                 />
               </div>
             </CardContent>
           </Card>
 
-          <Card>
+          {/* Subscription Section */}
+          <Card className="border-none shadow-md">
             <CardHeader>
-              <CardTitle>Subscription</CardTitle>
-              <CardDescription>Manage your subscription plan</CardDescription>
+              <CardTitle className="text-2xl font-display font-semibold">Subscription</CardTitle>
+              <CardDescription className="text-base">Manage your premium membership</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div>
-                  <p className="font-semibold">
-                    Current Plan: {profile?.is_premium ? "Premium" : "Free"}
-                  </p>
+                <div className="flex items-center justify-between p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border-l-4 border-l-primary">
+                  <div>
+                    <p className="font-display font-semibold text-lg text-foreground">
+                      {profile?.is_premium ? "Premium" : "Free"} Plan
+                    </p>
+                    <p className="text-base text-muted-foreground mt-1">
+                      {profile?.is_premium
+                        ? "You have access to all premium features"
+                        : "Upgrade to unlock all features"}
+                    </p>
+                  </div>
                 </div>
                 {!profile?.is_premium && (
-                  <Button onClick={() => navigate("/pricing")}>
+                  <Button 
+                    onClick={() => navigate("/pricing")}
+                    size="lg"
+                    className="w-full shadow-sm hover:shadow-md font-semibold"
+                  >
                     Upgrade to Premium
                   </Button>
                 )}
@@ -177,20 +222,16 @@ export default function Settings() {
             </CardContent>
           </Card>
 
-          <div className="flex gap-4">
-            <Button onClick={handleSave} disabled={saving} className="flex-1">
-              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {!saving && <Save className="mr-2 h-4 w-4" />}
-              Save Changes
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleSignOut}
-              className="flex-1"
-            >
-              Sign Out
-            </Button>
-          </div>
+          {/* Sign Out */}
+          <Button 
+            variant="outline" 
+            onClick={handleSignOut} 
+            className="w-full border-2 hover:bg-muted"
+            size="lg"
+          >
+            <LogOut className="mr-2 h-5 w-5" />
+            Sign Out
+          </Button>
         </div>
       </div>
     </div>

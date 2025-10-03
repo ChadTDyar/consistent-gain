@@ -70,13 +70,13 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-3xl font-bold text-center">
+    <div className="min-h-screen flex items-center justify-center bg-background-cream p-4">
+      <Card className="w-full max-w-md border-none shadow-xl">
+        <CardHeader className="space-y-2 pb-6">
+          <CardTitle className="text-3xl md:text-4xl font-display font-bold text-center text-foreground">
             {isLogin ? "Welcome back" : "Get started"}
           </CardTitle>
-          <CardDescription className="text-center">
+          <CardDescription className="text-center text-base leading-relaxed">
             {isLogin
               ? "Sign in to continue your fitness journey"
               : "Create an account to start building lasting habits"}
@@ -120,16 +120,21 @@ export default function Auth() {
                 minLength={6}
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button 
+              type="submit" 
+              className="w-full shadow-md hover:shadow-lg transition-all font-semibold" 
+              size="lg"
+              disabled={loading}
+            >
+              {loading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
               {isLogin ? "Sign In" : "Create Account"}
             </Button>
           </form>
-          <div className="mt-4 text-center text-sm">
+          <div className="mt-6 text-center">
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-primary hover:underline"
+              className="text-primary hover:text-primary-deep font-medium transition-colors"
             >
               {isLogin
                 ? "Don't have an account? Sign up"

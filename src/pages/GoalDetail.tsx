@@ -155,68 +155,88 @@ export default function GoalDetail() {
   if (!goal) return null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <Button variant="ghost" onClick={() => navigate("/dashboard")} className="mb-8">
+    <div className="min-h-screen bg-background-cream">
+      <div className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-6xl">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate("/dashboard")} 
+          className="mb-8 hover:bg-muted"
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Dashboard
         </Button>
 
-        <div className="max-w-4xl mx-auto space-y-6">
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">{goal.title}</h1>
+        <div className="max-w-4xl mx-auto space-y-8">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+            <div className="space-y-2">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground">
+                {goal.title}
+              </h1>
               {goal.description && (
-                <p className="text-muted-foreground">{goal.description}</p>
+                <p className="text-lg text-muted-foreground leading-relaxed">{goal.description}</p>
               )}
             </div>
-            <Button variant="destructive" onClick={handleDeleteGoal}>
-              <Trash2 className="h-4 w-4" />
+            <Button 
+              variant="destructive" 
+              onClick={handleDeleteGoal}
+              className="shadow-sm hover:shadow-md w-full md:w-auto"
+            >
+              <Trash2 className="h-4 w-4 md:mr-2" />
+              <span className="md:inline hidden">Delete</span>
             </Button>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Flame className="h-6 w-6 text-streak" />
-                Current Streak: {streak} {streak === 1 ? "day" : "days"}
-              </CardTitle>
-              <CardDescription>
+          <Card className="border-none shadow-lg bg-gradient-to-br from-success/10 to-primary/5">
+            <CardHeader className="text-center pb-6">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <Flame className="h-10 w-10 text-streak flame-pulse" />
+                <CardTitle className="text-4xl md:text-5xl font-display font-bold text-foreground">
+                  {streak}
+                </CardTitle>
+              </div>
+              <p className="text-xl md:text-2xl font-semibold text-muted-foreground">
+                {streak === 1 ? "day" : "days"} and counting!
+              </p>
+              <CardDescription className="text-base mt-2">
                 Keep it going! Log your activity every day to maintain your streak.
               </CardDescription>
             </CardHeader>
           </Card>
 
-          <Card>
+          <Card className="border-none shadow-md">
             <CardHeader>
-              <CardTitle>Activity Calendar - {format(new Date(), "MMMM yyyy")}</CardTitle>
-              <CardDescription>Your activity for this month</CardDescription>
+              <CardTitle className="text-2xl font-display font-semibold">
+                Activity Calendar - {format(new Date(), "MMMM yyyy")}
+              </CardTitle>
+              <CardDescription className="text-base">Your activity for this month</CardDescription>
             </CardHeader>
-            <CardContent>{renderCalendar()}</CardContent>
+            <CardContent className="px-4 md:px-6">{renderCalendar()}</CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-none shadow-md">
             <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Your last 10 check-ins</CardDescription>
+              <CardTitle className="text-2xl font-display font-semibold">Recent Activity</CardTitle>
+              <CardDescription className="text-base">Your last 10 check-ins</CardDescription>
             </CardHeader>
             <CardContent>
               {logs.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">
-                  No activity logged yet. Start by logging your first check-in!
-                </p>
+                <div className="text-center py-12 bg-muted/30 rounded-lg">
+                  <p className="text-muted-foreground text-base">
+                    No activity logged yet. Start by logging your first check-in!
+                  </p>
+                </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {logs.slice(0, 10).map((log) => (
                     <div
                       key={log.id}
-                      className="flex items-center justify-between p-3 bg-muted rounded-lg"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
                     >
-                      <span className="font-medium">
+                      <span className="font-medium text-foreground">
                         {format(new Date(log.completed_at), "MMMM d, yyyy")}
                       </span>
                       {log.notes && (
-                        <span className="text-sm text-muted-foreground">{log.notes}</span>
+                        <span className="text-sm text-muted-foreground mt-1 sm:mt-0">{log.notes}</span>
                       )}
                     </div>
                   ))}

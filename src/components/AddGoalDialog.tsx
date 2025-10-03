@@ -60,46 +60,58 @@ export function AddGoalDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create New Goal</DialogTitle>
-          <DialogDescription>
-            Add a new fitness goal to track your progress
+          <DialogTitle className="text-2xl font-display font-semibold">Add New Goal</DialogTitle>
+          <DialogDescription className="text-base">
+            Create a new fitness goal to track your progress
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="title">Goal Title</Label>
+            <Label htmlFor="title" className="text-base font-medium">Goal Title</Label>
             <Input
               id="title"
-              placeholder="e.g., Morning Walk, Yoga, Strength Training"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g., Morning Walk"
               required
-              maxLength={200}
+              className="h-11 text-base"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Description (Optional)</Label>
+            <Label htmlFor="description" className="text-base font-medium">Description (Optional)</Label>
             <Textarea
               id="description"
-              placeholder="Add any notes about your goal..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              placeholder="Add any details about your goal..."
               rows={3}
+              className="text-base"
             />
           </div>
-          <div className="flex gap-2 justify-end">
-            <Button
-              type="button"
-              variant="outline"
+          <div className="flex justify-end gap-3 pt-2">
+            <Button 
+              type="button" 
+              variant="outline" 
               onClick={() => onOpenChange(false)}
+              className="border-2"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create Goal
+            <Button 
+              type="submit" 
+              disabled={loading}
+              className="shadow-sm hover:shadow-md font-semibold"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                "Create Goal"
+              )}
             </Button>
           </div>
         </form>

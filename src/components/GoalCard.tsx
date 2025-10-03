@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Circle, Flame } from "lucide-react";
+import { CheckCircle, Flame, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -23,9 +23,9 @@ interface GoalCardProps {
 
 export function GoalCard({ goal, onUpdate }: GoalCardProps) {
   const [streak, setStreak] = useState(0);
-  const [last7Days, setLast7Days] = useState<boolean[]>([]);
-  const [loggedToday, setLoggedToday] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [last7Days, setLast7Days] = useState<Array<{ date: string; completed: boolean }>>([]);
+  const [alreadyLoggedToday, setAlreadyLoggedToday] = useState(false);
+  const [loggingActivity, setLoggingActivity] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,7 +75,7 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
   };
 
   const calculateLast7Days = (logs: ActivityLog[]) => {
-    const days: boolean[] = [];
+    const days: Array<{ date: string; completed: boolean }> = [];
     const today = new Date();
 
     for (let i = 6; i >= 0; i--) {
@@ -89,7 +89,10 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
         return logDate.getTime() === checkDate.getTime();
       });
 
-      days.push(hasLog);
+      days.push({ 
+        date: checkDate.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+        completed: hasLog 
+      });
     }
 
     setLast7Days(days);
@@ -105,13 +108,14 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
       return logDate.getTime() === today.getTime();
     });
 
-    setLoggedToday(!!todayLog);
+    setAlreadyLoggedToday(!!todayLog);
   };
 
-  const handleLogToday = async () => {
-    if (loggedToday) return;
+  const handleLogActivity = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (alreadyLoggedToday) return;
 
-    setLoading(true);
+    setLoggingActivity(true);
     const today = new Date().toISOString().split("T")[0];
 
     const {
@@ -129,52 +133,75 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
       toast.error("Failed to log activity");
       console.error(error);
     } else {
-      toast.success("Great job! Streak continues! 🔥");
+      toast.success("Great job! 🎉 Streak continues!");
       loadActivityData();
       onUpdate();
     }
 
-    setLoading(false);
+    setLoggingActivity(false);
+  };
+
+  const handleCardClick = () => {
+    navigate(`/goal/${goal.id}`);
   };
 
   return (
-    <Card
-      className="cursor-pointer hover:shadow-lg transition-shadow"
-      onClick={() => navigate(`/goal/${goal.id}`)}
+    <Card 
+      className="card-lift cursor-pointer border-none shadow-md hover:shadow-xl bg-card border-l-4 border-l-success overflow-hidden" 
+      onClick={handleCardClick}
     >
-      <CardHeader>
-        <CardTitle className="flex items-start justify-between">
-          <span className="text-xl">{goal.title}</span>
-          {streak > 0 && (
-            <span className="flex items-center gap-1 text-streak font-bold">
-              <Flame className="h-5 w-5" />
-              {streak}
-            </span>
-          )}
-        </CardTitle>
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary-warm to-primary-deep" />
+      <CardHeader className="pb-4">
+        <CardTitle className="text-xl font-display font-semibold text-foreground">{goal.title}</CardTitle>
+        {goal.description && (
+          <CardDescription className="line-clamp-2 text-base leading-relaxed">
+            {goal.description}
+          </CardDescription>
+        )}
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex gap-1 justify-center">
-          {last7Days.map((completed, index) => (
-            <div key={index} className="flex flex-col items-center gap-1">
-              {completed ? (
-                <CheckCircle2 className="h-6 w-6 text-success" />
-              ) : (
-                <Circle className="h-6 w-6 text-muted-foreground" />
-              )}
+        <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-gradient-to-r from-success to-primary shadow-sm">
+          <Flame className="h-6 w-6 text-white flame-pulse" />
+          <span className="font-display font-bold text-xl text-white">
+            {streak} {streak === 1 ? 'day' : 'days'}
+          </span>
+        </div>
+
+        <div className="flex gap-1 justify-center py-2">
+          {last7Days.map((day, index) => (
+            <div
+              key={index}
+              className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all ${
+                day.completed
+                  ? "bg-success text-success-foreground shadow-sm"
+                  : "bg-muted text-muted-foreground"
+              }`}
+              title={day.date}
+            >
+              {day.completed ? "✓" : "−"}
             </div>
           ))}
         </div>
+
         <Button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleLogToday();
-          }}
-          disabled={loggedToday || loading}
-          className="w-full"
-          variant={loggedToday ? "secondary" : "default"}
+          onClick={handleLogActivity}
+          className="w-full shadow-sm hover:shadow-md transition-all font-semibold"
+          size="lg"
+          disabled={alreadyLoggedToday || loggingActivity}
         >
-          {loggedToday ? "Logged Today ✓" : "Log Today"}
+          {loggingActivity ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Logging...
+            </>
+          ) : alreadyLoggedToday ? (
+            <>
+              <CheckCircle className="mr-2 h-5 w-5" />
+              Completed Today
+            </>
+          ) : (
+            "Log Today"
+          )}
         </Button>
       </CardContent>
     </Card>
