@@ -125,7 +125,7 @@ export default function Success() {
               {!isPremium && (
                 <p className="text-sm text-muted-foreground text-center mt-4">
                   If your premium features don't activate within a few minutes, please{" "}
-                  <a href="mailto:support@momentum-app.com" className="text-primary hover:underline">
+                  <a href="mailto:support@momentumfit.app" className="text-primary hover:underline">
                     contact support
                   </a>
                 </p>

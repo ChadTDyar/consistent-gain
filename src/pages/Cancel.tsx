@@ -53,7 +53,7 @@ export default function Cancel() {
 
           <p className="text-sm text-muted-foreground text-center mt-4">
             Questions about premium features?{" "}
-            <a href="mailto:support@momentum-app.com" className="text-primary hover:underline">
+            <a href="mailto:support@momentumfit.app" className="text-primary hover:underline">
               Contact support
             </a>
           </p>

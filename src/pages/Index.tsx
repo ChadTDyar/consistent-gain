@@ -124,6 +124,50 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Story Section */}
+      <section className="py-20 md:py-32 bg-gradient-to-br from-primary/5 to-primary-warm/5">
+        <div className="container mx-auto px-6 md:px-8 max-w-4xl">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 text-foreground">
+              Built by Someone Who Gets It
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Momentum wasn't created by fitness influencers or tech giants
+            </p>
+          </div>
+          
+          <Card className="border-none shadow-xl bg-card">
+            <CardContent className="p-8 md:p-12 space-y-6">
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                I'm approaching 50, and like many people my age, I realized I couldn't keep putting off my health.
+              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                For years, I'd start fitness routines with great intentions—gym memberships, personal trainers, 
+                complicated programs—only to lose momentum after a few weeks. The guilt of missed days would compound, 
+                and I'd give up entirely.
+              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                I needed something different. Not a drill sergeant. Not another app telling me I "crushed it" or "failed." 
+                <strong className="text-foreground"> Just a simple way to build sustainable habits without judgment.</strong>
+              </p>
+              <p className="text-xl font-semibold text-primary">
+                Momentum was built for me. And it turns out, I'm not alone.
+              </p>
+              <div className="pt-4">
+                <Button
+                  onClick={() => navigate("/about")}
+                  variant="outline"
+                  size="lg"
+                  className="border-2 font-semibold"
+                >
+                  Read My Full Story
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="relative py-24 md:py-32 overflow-hidden">
         <div className="absolute inset-0">
@@ -139,7 +183,7 @@ const Index = () => {
             Start Your Journey Today
           </h2>
           <p className="text-xl md:text-2xl mb-12 max-w-2xl mx-auto text-white font-medium leading-relaxed drop-shadow-md slide-up" style={{animationDelay: '0.1s'}}>
-            👉 Build strength. Build confidence. Build your momentum.
+            Build strength. Build confidence. Build your momentum.
           </p>
           <Button
             size="lg"
@@ -159,13 +203,16 @@ const Index = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
             <p className="text-muted-foreground font-medium">© 2025 Momentum. Building better habits, one day at a time.</p>
             <div className="flex gap-6 text-sm">
+              <button onClick={() => navigate("/about")} className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                About
+              </button>
               <button onClick={() => navigate("/privacy")} className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 Privacy Policy
               </button>
               <button onClick={() => navigate("/terms")} className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 Terms of Service
               </button>
-              <a href="mailto:support@momentum-app.com" className="text-muted-foreground hover:text-primary transition-colors font-medium">
+              <a href="mailto:support@momentumfit.app" className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 Contact
               </a>
             </div>

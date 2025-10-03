@@ -148,8 +148,8 @@ export default function Terms() {
             <h2 className="text-2xl font-display font-semibold mb-4">Contact Information</h2>
             <p className="text-muted-foreground leading-relaxed">
               For questions about these Terms of Service, contact us at:{" "}
-              <a href="mailto:support@momentum-app.com" className="text-primary hover:underline">
-                support@momentum-app.com
+              <a href="mailto:support@momentumfit.app" className="text-primary hover:underline">
+                support@momentumfit.app
               </a>
             </p>
           </section>

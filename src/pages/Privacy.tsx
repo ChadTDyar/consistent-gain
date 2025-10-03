@@ -116,8 +116,8 @@ export default function Privacy() {
             <h2 className="text-2xl font-display font-semibold mb-4">Contact Us</h2>
             <p className="text-muted-foreground leading-relaxed">
               If you have questions about this Privacy Policy, please contact us at:{" "}
-              <a href="mailto:support@momentum-app.com" className="text-primary hover:underline">
-                support@momentum-app.com
+              <a href="mailto:support@momentumfit.app" className="text-primary hover:underline">
+                support@momentumfit.app
               </a>
             </p>
           </section>

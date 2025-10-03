@@ -64,7 +64,7 @@ export class ErrorBoundary extends Component<Props, State> {
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground text-center">
                   Try refreshing the page or returning to your dashboard. If the problem persists, please{" "}
-                  <a href="mailto:support@momentum-app.com" className="text-primary hover:underline font-medium">
+                  <a href="mailto:support@momentumfit.app" className="text-primary hover:underline font-medium">
                     contact support
                   </a>
                 </p>
