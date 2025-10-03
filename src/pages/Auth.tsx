@@ -65,6 +65,8 @@ export default function Auth() {
         if (error) throw error;
         analytics.signup();
         toast.success("Account created! Welcome to Momentum!");
+        // Redirect to welcome page for first-time users
+        navigate("/welcome");
       }
     } catch (error: any) {
       toast.error(error.message);

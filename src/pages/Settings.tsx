@@ -13,6 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 interface Profile {
   id: string;
   name: string | null;
+  email?: string;
   reminder_enabled: boolean;
   is_premium: boolean;
   subscription_status: string | null;
@@ -53,7 +54,7 @@ export default function Settings() {
     if (error) {
       console.error("Error loading profile:", error);
     } else if (data) {
-      setProfile(data);
+      setProfile({ ...data, email: user.email || "" });
       setName(data.name || "");
       setRemindersEnabled(data.reminder_enabled);
     }
@@ -243,7 +244,7 @@ export default function Settings() {
                 <Input
                   id="email"
                   type="email"
-                  value={profile?.id || ""}
+                  value={profile?.email || ""}
                   disabled
                   className="bg-muted h-11 text-base"
                 />

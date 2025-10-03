@@ -252,19 +252,25 @@ export default function Dashboard() {
         </div>
 
         {goals.length === 0 ? (
-          <div className="text-center py-16 md:py-24">
-            <div className="max-w-md mx-auto bg-card p-8 md:p-12 rounded-xl shadow-md">
-              <div className="w-16 h-16 mx-auto mb-6 bg-primary/10 rounded-full flex items-center justify-center">
-                <Plus className="h-8 w-8 text-primary" />
+          <div className="flex flex-col items-center justify-center py-16 px-4">
+            <div className="max-w-md text-center space-y-6">
+              <div className="mx-auto h-24 w-24 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
+                <Plus className="h-12 w-12 text-white" />
               </div>
-              <h3 className="text-xl md:text-2xl font-display font-semibold mb-3 text-foreground">
-                Ready to start your journey?
-              </h3>
-              <p className="text-base text-muted-foreground mb-8 leading-relaxed">
-                Create your first goal and start building lasting habits
-              </p>
-              <Button onClick={handleAddGoal} size="lg" className="btn-large shadow-md hover:shadow-lg">
-                <Plus className="mr-2 h-5 w-5" />
+              <div className="space-y-2">
+                <h3 className="text-3xl font-display font-bold text-foreground">
+                  Ready to start your journey?
+                </h3>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Create your first fitness goal and start building momentum. Small consistent steps lead to lasting change.
+                </p>
+              </div>
+              <Button 
+                onClick={handleAddGoal} 
+                size="lg" 
+                className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-lg h-14 px-10 btn-gradient"
+              >
+                <Plus className="mr-2 h-6 w-6" />
                 Create Your First Goal
               </Button>
             </div>
