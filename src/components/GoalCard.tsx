@@ -149,10 +149,10 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
 
   return (
     <Card 
-      className="card-lift cursor-pointer border-none shadow-md hover:shadow-xl bg-card border-l-4 border-l-success overflow-hidden" 
+      className="card-lift cursor-pointer border-none shadow-md hover:shadow-xl bg-card relative overflow-hidden" 
       onClick={handleCardClick}
     >
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary-warm to-primary-deep" />
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-primary" />
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
@@ -172,7 +172,7 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
               e.stopPropagation();
               onEdit(goal.id);
             }}
-            className="h-8 w-8 hover:bg-muted flex-shrink-0"
+            className="h-8 w-8 hover:bg-accent flex-shrink-0"
           >
             <Pencil className="h-4 w-4" />
           </Button>
@@ -184,7 +184,7 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
         )}
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-gradient-to-r from-success to-primary shadow-sm">
+        <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-full shadow-glow" style={{background: 'var(--gradient-secondary)'}}>
           <Flame className="h-6 w-6 text-white flame-pulse" />
           <span className="font-display font-bold text-xl text-white">
             {streak} {streak === 1 ? 'day' : 'days'}

@@ -64,7 +64,7 @@ export default function Pricing() {
     <div className="min-h-screen bg-background-cream py-16 md:py-24">
       <div className="container mx-auto px-4 md:px-8 max-w-5xl">
         <div className="text-center mb-12 md:mb-16">
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-foreground">
+          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-gradient">
             Premium unlocks unlimited goals and coaching
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground">
@@ -112,8 +112,8 @@ export default function Pricing() {
           </Card>
 
           {/* Premium Plan */}
-          <Card className="border-2 border-primary shadow-xl card-lift bg-gradient-to-br from-card to-primary/5 relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-4 py-1 text-sm font-semibold">
+          <Card className="border-2 border-primary shadow-xl card-lift-heavy relative overflow-hidden" style={{background: 'var(--gradient-card)'}}>
+            <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-white" style={{background: 'var(--gradient-primary)'}}>
               Most Popular
             </div>
             <CardHeader className="pb-6 pt-8">
@@ -154,12 +154,12 @@ export default function Pricing() {
                 </li>
               </ul>
               <Button 
-                className="w-full shadow-md hover:shadow-lg transition-all font-semibold" 
+                className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient" 
                 size="lg"
                 onClick={() => handleUpgrade(MONTHLY_PRICE_ID)}
                 disabled={loading || isPremium}
               >
-                {isPremium ? "Current Plan" : "Upgrade"}
+                {isPremium ? "Current Plan" : "Upgrade Now"}
               </Button>
             </CardContent>
           </Card>

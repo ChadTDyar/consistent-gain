@@ -130,17 +130,17 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background-cream">
-      <header className="border-b border-border bg-card shadow-sm sticky top-0 z-10">
+      <header className="border-b border-border bg-card/80 backdrop-blur-md shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center max-w-7xl">
           <div className="flex items-center gap-3">
             <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground">Momentum</h1>
+            <h1 className="text-2xl md:text-3xl font-display font-bold text-gradient">Momentum</h1>
           </div>
           <div className="flex gap-2">
             {!profile?.is_premium && (
               <Button 
                 onClick={() => navigate("/pricing")} 
-                className="hidden sm:flex shadow-sm hover:shadow-md transition-shadow"
+                className="hidden sm:flex shadow-md hover:shadow-lg transition-all btn-gradient"
               >
                 Upgrade to Premium
               </Button>
@@ -167,7 +167,7 @@ export default function Dashboard() {
 
       <main className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-7xl">
         <div className="mb-8 md:mb-12">
-          <h2 className="text-3xl md:text-4xl font-display font-bold mb-2 text-foreground">
+          <h2 className="text-3xl md:text-4xl font-display font-bold mb-2 text-gradient">
             Welcome back, {profile?.name || "there"}!
           </h2>
           <p className="text-lg text-muted-foreground">
