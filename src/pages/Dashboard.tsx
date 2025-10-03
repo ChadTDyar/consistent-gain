@@ -6,6 +6,7 @@ import { Loader2, Plus, LogOut, Settings as SettingsIcon } from "lucide-react";
 import { toast } from "sonner";
 import { GoalCard } from "@/components/GoalCard";
 import { AddGoalDialog } from "@/components/AddGoalDialog";
+import { EditGoalDialog } from "@/components/EditGoalDialog";
 import momentumLogo from "@/assets/momentum-logo.png";
 
 interface Profile {
@@ -18,6 +19,7 @@ interface Goal {
   id: string;
   title: string;
   description: string | null;
+  category: string | null;
   target_days_per_week: number;
   created_at: string;
 }
@@ -27,6 +29,8 @@ export default function Dashboard() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddGoal, setShowAddGoal] = useState(false);
+  const [showEditGoal, setShowEditGoal] = useState(false);
+  const [editingGoalId, setEditingGoalId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -93,9 +97,9 @@ export default function Dashboard() {
 
   const canAddGoal = () => {
     if (profile?.is_premium) {
-      return goals.length < 3;
+      return true; // Unlimited goals for premium
     }
-    return goals.length < 1;
+    return goals.length < 3; // Free users get 3 goals
   };
 
   const handleAddGoal = () => {
@@ -109,6 +113,11 @@ export default function Dashboard() {
       return;
     }
     setShowAddGoal(true);
+  };
+
+  const handleEditGoal = (goalId: string) => {
+    setEditingGoalId(goalId);
+    setShowEditGoal(true);
   };
 
   if (loading) {
@@ -190,7 +199,12 @@ export default function Dashboard() {
           <>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
               {goals.map((goal) => (
-                <GoalCard key={goal.id} goal={goal} onUpdate={loadGoals} />
+                <GoalCard 
+                  key={goal.id} 
+                  goal={goal} 
+                  onUpdate={loadGoals}
+                  onEdit={handleEditGoal}
+                />
               ))}
             </div>
             {canAddGoal() && (
@@ -211,6 +225,13 @@ export default function Dashboard() {
         open={showAddGoal}
         onOpenChange={setShowAddGoal}
         onGoalAdded={loadGoals}
+      />
+
+      <EditGoalDialog
+        open={showEditGoal}
+        onOpenChange={setShowEditGoal}
+        onGoalUpdated={loadGoals}
+        goalId={editingGoalId}
       />
     </div>
   );

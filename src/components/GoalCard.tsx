@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Flame, Loader2 } from "lucide-react";
+import { CheckCircle, Flame, Loader2, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -10,6 +10,7 @@ interface Goal {
   id: string;
   title: string;
   description: string | null;
+  category: string | null;
 }
 
 interface ActivityLog {
@@ -19,9 +20,10 @@ interface ActivityLog {
 interface GoalCardProps {
   goal: Goal;
   onUpdate: () => void;
+  onEdit: (goalId: string) => void;
 }
 
-export function GoalCard({ goal, onUpdate }: GoalCardProps) {
+export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
   const [streak, setStreak] = useState(0);
   const [last7Days, setLast7Days] = useState<Array<{ date: string; completed: boolean }>>([]);
   const [alreadyLoggedToday, setAlreadyLoggedToday] = useState(false);
@@ -152,7 +154,29 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
     >
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary-warm to-primary-deep" />
       <CardHeader className="pb-4">
-        <CardTitle className="text-xl font-display font-semibold text-foreground">{goal.title}</CardTitle>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1">
+            <CardTitle className="text-xl font-display font-semibold text-foreground">{goal.title}</CardTitle>
+            {goal.category && (
+              <div className="mt-2">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary capitalize">
+                  {goal.category}
+                </span>
+              </div>
+            )}
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(goal.id);
+            }}
+            className="h-8 w-8 hover:bg-muted flex-shrink-0"
+          >
+            <Pencil className="h-4 w-4" />
+          </Button>
+        </div>
         {goal.description && (
           <CardDescription className="line-clamp-2 text-base leading-relaxed">
             {goal.description}

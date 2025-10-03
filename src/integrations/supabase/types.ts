@@ -58,25 +58,31 @@ export type Database = {
       }
       goals: {
         Row: {
+          category: string | null
           created_at: string | null
           description: string | null
           id: string
+          start_date: string | null
           target_days_per_week: number | null
           title: string
           user_id: string
         }
         Insert: {
+          category?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
+          start_date?: string | null
           target_days_per_week?: number | null
           title: string
           user_id: string
         }
         Update: {
+          category?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
+          start_date?: string | null
           target_days_per_week?: number | null
           title?: string
           user_id?: string
