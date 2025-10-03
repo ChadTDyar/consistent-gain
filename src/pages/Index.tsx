@@ -12,28 +12,29 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background-cream">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-background">
-        <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-          <div className="grid lg:grid-cols-2 gap-12 items-center py-12 md:py-20 lg:py-28">
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary-warm/5" />
+        <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
+          <div className="grid lg:grid-cols-2 gap-16 items-center py-16 md:py-24 lg:py-32">
             {/* Left Content */}
-            <div className="space-y-8 text-center lg:text-left">
-              <div className="inline-flex items-center gap-3 mb-4">
-                <img src={momentumLogo} alt="Momentum" className="h-12 w-auto" />
+            <div className="space-y-6 text-center lg:text-left">
+              <div className="inline-flex items-center gap-3 mb-2">
+                <img src={momentumLogo} alt="Momentum" className="h-14 w-auto drop-shadow-sm" />
                 <h2 className="text-2xl font-display font-bold text-foreground">Momentum</h2>
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground leading-tight">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
                 Your next goal.<br />
-                Your best growth.
+                <span className="text-primary">Your best growth.</span>
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-xl md:text-2xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
                 For adults who want sustainable progress, not extreme programs. Track goals, celebrate
                 streaks, stay consistent.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-6">
                 <Button 
                   size="lg" 
                   onClick={() => navigate("/auth")} 
-                  className="btn-large shadow-md hover:shadow-lg transition-all"
+                  className="btn-large shadow-lg hover:shadow-xl transition-all hover:scale-105 text-lg h-14 px-10"
                 >
                   Start Free
                 </Button>
@@ -41,7 +42,7 @@ const Index = () => {
                   size="lg" 
                   variant="outline" 
                   onClick={() => navigate("/pricing")}
-                  className="border-2 border-primary hover:bg-primary/10"
+                  className="border-2 border-primary hover:bg-primary/10 text-lg h-14 px-10"
                 >
                   View Plans
                 </Button>
@@ -50,36 +51,41 @@ const Index = () => {
 
             {/* Right Image */}
             <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-primary/10">
                 <img 
                   src={heroRunner} 
                   alt="Runner preparing for workout at sunset" 
                   className="w-full h-auto object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 via-transparent to-transparent" />
               </div>
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/10 rounded-full blur-3xl" />
-              <div className="absolute -top-6 -left-6 w-40 h-40 bg-streak/10 rounded-full blur-3xl" />
+              <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-primary/5 rounded-full blur-3xl" />
+              <div className="absolute -top-8 -left-8 w-56 h-56 bg-primary-warm/5 rounded-full blur-3xl" />
             </div>
           </div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 md:py-24 bg-background">
-        <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-          <h2 className="text-3xl md:text-4xl font-display font-bold text-center mb-12 text-foreground">
-            Why Choose Momentum?
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-            <Card className="text-center card-lift border-none shadow-md">
-              <CardHeader className="pb-4">
-                <div className="mx-auto mb-4 w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/10">
-                  <Target className="h-8 w-8 text-primary" />
+      <section className="py-20 md:py-32">
+        <div className="container mx-auto px-6 md:px-8 max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 text-foreground">
+              Why Choose Momentum?
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Everything you need to build lasting fitness habits
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 lg:gap-10">
+            <Card className="text-center card-lift border border-primary/10 shadow-lg hover:shadow-xl transition-all bg-card/80 backdrop-blur-sm">
+              <CardHeader className="pb-4 pt-8">
+                <div className="mx-auto mb-6 w-20 h-20 rounded-2xl flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/10 shadow-md">
+                  <Target className="h-10 w-10 text-primary" />
                 </div>
-                <CardTitle className="text-xl font-display font-semibold">Track Your Goals</CardTitle>
+                <CardTitle className="text-2xl font-display font-semibold">Track Your Goals</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pb-8">
                 <CardDescription className="text-base leading-relaxed text-muted-foreground">
                   Set up to 3 fitness goals and track your progress with simple daily check-ins.
                   No complicated metrics, just consistent action.
@@ -87,14 +93,14 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center card-lift border-none shadow-md">
-              <CardHeader className="pb-4">
-                <div className="mx-auto mb-4 w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-br from-streak/20 to-streak/10">
-                  <TrendingUp className="h-8 w-8 text-streak" />
+            <Card className="text-center card-lift border border-streak/20 shadow-lg hover:shadow-xl transition-all bg-card/80 backdrop-blur-sm">
+              <CardHeader className="pb-4 pt-8">
+                <div className="mx-auto mb-6 w-20 h-20 rounded-2xl flex items-center justify-center bg-gradient-to-br from-streak/20 to-streak/10 shadow-md">
+                  <TrendingUp className="h-10 w-10 text-streak" />
                 </div>
-                <CardTitle className="text-xl font-display font-semibold">Build Streaks</CardTitle>
+                <CardTitle className="text-2xl font-display font-semibold">Build Streaks</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pb-8">
                 <CardDescription className="text-base leading-relaxed text-muted-foreground">
                   Watch your streak grow day by day. Visual feedback keeps you motivated and
                   accountable to your fitness journey.
@@ -102,14 +108,14 @@ const Index = () => {
               </CardContent>
             </Card>
 
-            <Card className="text-center card-lift border-none shadow-md">
-              <CardHeader className="pb-4">
-                <div className="mx-auto mb-4 w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-br from-success/20 to-success/10">
-                  <Award className="h-8 w-8 text-success" />
+            <Card className="text-center card-lift border border-success/20 shadow-lg hover:shadow-xl transition-all bg-card/80 backdrop-blur-sm">
+              <CardHeader className="pb-4 pt-8">
+                <div className="mx-auto mb-6 w-20 h-20 rounded-2xl flex items-center justify-center bg-gradient-to-br from-success/20 to-success/10 shadow-md">
+                  <Award className="h-10 w-10 text-success" />
                 </div>
-                <CardTitle className="text-xl font-display font-semibold">Stay Motivated</CardTitle>
+                <CardTitle className="text-2xl font-display font-semibold">Stay Motivated</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pb-8">
                 <CardDescription className="text-base leading-relaxed text-muted-foreground">
                   Celebrate every win with streak counters and progress calendars. Build habits
                   that last through positive reinforcement.
@@ -121,20 +127,20 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-20 md:py-28 overflow-hidden">
+      <section className="relative py-24 md:py-32 overflow-hidden">
         <div className="absolute inset-0">
           <img 
             src={groupRunning} 
             alt="Diverse group of people running together at sunset" 
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/95 to-primary-deep/95" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary-deep/90 backdrop-blur-[2px]" />
         </div>
-        <div className="container mx-auto px-4 md:px-8 text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-6 text-white">
+        <div className="container mx-auto px-6 md:px-8 text-center relative z-10">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-8 text-white drop-shadow-lg">
             Ready to Build Lasting Habits?
           </h2>
-          <p className="text-lg md:text-xl mb-10 max-w-2xl mx-auto text-white/95 leading-relaxed">
+          <p className="text-xl md:text-2xl mb-12 max-w-2xl mx-auto text-white font-medium leading-relaxed drop-shadow-md">
             Join others who are building sustainable fitness routines. Start tracking your first
             goal today, completely free.
           </p>
@@ -142,7 +148,7 @@ const Index = () => {
             size="lg"
             variant="secondary"
             onClick={() => navigate("/auth")}
-            className="btn-large shadow-xl hover:shadow-2xl bg-white text-primary hover:bg-white/90 hover:scale-105 transition-all"
+            className="btn-large shadow-2xl hover:shadow-[0_20px_50px_rgba(255,255,255,0.4)] bg-white text-primary hover:bg-white hover:scale-110 transition-all text-lg h-16 px-12 font-semibold"
           >
             Get Started Free
           </Button>
@@ -150,9 +156,9 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 border-t border-border bg-background">
-        <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p className="text-sm">© 2025 Momentum. Building better habits, one day at a time.</p>
+      <footer className="py-12 border-t border-primary/10 bg-card/50 backdrop-blur-sm">
+        <div className="container mx-auto px-6 text-center">
+          <p className="text-muted-foreground font-medium">© 2025 Momentum. Building better habits, one day at a time.</p>
         </div>
       </footer>
     </div>
