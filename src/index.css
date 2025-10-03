@@ -15,10 +15,13 @@ All colors MUST be HSL.
     --primary-deep: 148 24% 40%;
 
     /* Backgrounds */
-    --background: 40 38% 97%;
-    --background-cream: 40 38% 97%;
-    --background-subtle: 40 20% 93%;
+    --background: 250 100% 97%;
+    --background-cream: 250 100% 97%;
+    --background-subtle: 260 60% 95%;
     --foreground: 160 20% 20%;
+    
+    /* Background Gradient */
+    --gradient-background: linear-gradient(135deg, hsl(250 100% 97%) 0%, hsl(280 100% 97%) 50%, hsl(260 80% 96%) 100%);
 
     /* Cards */
     --card: 0 0% 100%;
@@ -104,10 +107,12 @@ All colors MUST be HSL.
     --primary-warm: 23 64% 70%;
     --primary-deep: 148 24% 40%;
 
-    --background: 160 20% 12%;
-    --background-cream: 160 20% 12%;
-    --background-subtle: 160 15% 18%;
+    --background: 250 40% 15%;
+    --background-cream: 250 40% 15%;
+    --background-subtle: 260 30% 20%;
     --foreground: 160 10% 95%;
+    
+    --gradient-background: linear-gradient(135deg, hsl(250 40% 15%) 0%, hsl(280 40% 15%) 50%, hsl(260 35% 18%) 100%);
 
     --card: 160 15% 15%;
     --card-foreground: 160 10% 95%;
@@ -155,7 +160,14 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground font-body;
+    @apply text-foreground font-body;
+    background: linear-gradient(135deg, hsl(250 100% 97%) 0%, hsl(280 100% 97%) 50%, hsl(260 80% 96%) 100%);
+    background-attachment: fixed;
+  }
+  
+  .dark body {
+    background: linear-gradient(135deg, hsl(250 40% 15%) 0%, hsl(280 40% 15%) 50%, hsl(260 35% 18%) 100%);
+    background-attachment: fixed;
   }
 
   h1, h2, h3, h4, h5, h6 {
