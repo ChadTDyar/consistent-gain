@@ -7,10 +7,17 @@ declare global {
   }
 }
 
-// IMPORTANT: Update this with your actual Google Analytics 4 Measurement ID
-// Get your GA4 ID from: https://analytics.google.com/analytics/web/#/a{accountId}w{webPropertyId}p{profileId}/admin/streams/table/
-// Format: G-XXXXXXXXXX
-export const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // TODO: Replace with your actual GA4 Measurement ID before launch
+// ⚠️ REQUIRED BEFORE LAUNCH: Update with your actual Google Analytics 4 Measurement ID
+// 
+// How to get your GA4 ID:
+// 1. Go to https://analytics.google.com
+// 2. Create a new property (or use existing)
+// 3. Navigate to Admin → Data Streams → Web
+// 4. Copy the Measurement ID (format: G-XXXXXXXXXX)
+// 5. Replace the value below
+//
+// Without a valid GA4 ID, no analytics data will be tracked!
+export const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // 🚨 REPLACE THIS BEFORE LAUNCH 🚨
 
 // Initialize GA4
 export const initGA = () => {

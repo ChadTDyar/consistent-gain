@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- TODO: Update domain when deploying to production -->
   <url>
-    <loc>https://yourdomain.com/</loc>
-    <lastmod>2025-10-03</lastmod>
+    <loc>https://af90df1a-1719-4ec1-9421-71d77a47a441.lovableproject.com/</loc>
+    <lastmod>2025-10-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://yourdomain.com/pricing</loc>
-    <lastmod>2025-10-03</lastmod>
+    <loc>https://af90df1a-1719-4ec1-9421-71d77a47a441.lovableproject.com/pricing</loc>
+    <lastmod>2025-10-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://yourdomain.com/privacy</loc>
-    <lastmod>2025-10-03</lastmod>
+    <loc>https://af90df1a-1719-4ec1-9421-71d77a47a441.lovableproject.com/about</loc>
+    <lastmod>2025-10-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://af90df1a-1719-4ec1-9421-71d77a47a441.lovableproject.com/privacy</loc>
+    <lastmod>2025-10-04</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://yourdomain.com/terms</loc>
-    <lastmod>2025-10-03</lastmod>
+    <loc>https://af90df1a-1719-4ec1-9421-71d77a47a441.lovableproject.com/terms</loc>
+    <lastmod>2025-10-04</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
