@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { CookieConsent } from "@/components/CookieConsent";
+import { useEffect } from "react";
+import { notificationService } from "@/services/notifications.service";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -22,7 +24,13 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () => {
+  // Initialize mobile notifications
+  useEffect(() => {
+    notificationService.initialize();
+  }, []);
+
+  return (
   <QueryClientProvider client={queryClient}>
     <ErrorBoundary>
       <TooltipProvider>
@@ -51,6 +59,7 @@ const App = () => (
       </TooltipProvider>
     </ErrorBoundary>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
