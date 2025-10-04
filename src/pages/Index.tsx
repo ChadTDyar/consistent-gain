@@ -5,12 +5,20 @@ import { Target, TrendingUp, Award } from "lucide-react";
 import heroRunner from "@/assets/hero-runner.png";
 import groupRunning from "@/assets/group-running.png";
 import momentumLogo from "@/assets/momentum-logo.png";
+import { SEO } from "@/components/SEO";
+import { FAQ } from "@/components/FAQ";
 
 const Index = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background-cream">
+    <>
+      <SEO 
+        title="Momentum - Fitness Habit Tracker for Adults 40+ | Build Lasting Habits"
+        description="Build sustainable fitness habits without judgment. Track goals, build streaks, stay motivated. Designed for adults 40+ who want consistency, not perfection. Start free today."
+        keywords="fitness tracker adults 40+, habit tracker over 40, fitness habits, workout consistency app, health tracker seniors, streak tracker, goal setting app, fitness motivation, sustainable fitness, middle age fitness"
+      />
+      <div className="min-h-screen bg-background-cream">
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 opacity-30" style={{background: 'var(--gradient-accent)'}} />
         <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
@@ -168,6 +176,9 @@ const Index = () => {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <FAQ />
+
       {/* CTA Section */}
       <section className="relative py-24 md:py-32 overflow-hidden">
         <div className="absolute inset-0">
@@ -220,6 +231,7 @@ const Index = () => {
         </div>
       </footer>
     </div>
+    </>
   );
 };
 

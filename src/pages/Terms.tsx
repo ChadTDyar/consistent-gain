@@ -1,12 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SEO } from "@/components/SEO";
 
 export default function Terms() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background-cream">
+    <>
+      <SEO 
+        title="Terms of Service - Momentum | Fitness Habit Tracker"
+        description="Read Momentum's Terms of Service. Clear, fair terms for our fitness habit tracking app. Free and Premium subscription details included."
+        keywords="momentum terms of service, fitness app terms, user agreement, subscription terms, fitness tracker legal"
+      />
+      <div className="min-h-screen bg-background-cream">
       <div className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-4xl">
         <Button 
           variant="ghost" 
@@ -156,5 +163,6 @@ export default function Terms() {
         </div>
       </div>
     </div>
+    </>
   );
 }

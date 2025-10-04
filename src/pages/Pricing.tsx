@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { analytics } from "@/lib/analytics";
+import { SEO } from "@/components/SEO";
 
 const MONTHLY_PRICE_ID = "price_1SE7IvLnv14mW4wINV5ZxleR";
 
@@ -64,7 +65,13 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen bg-background-cream py-16 md:py-24">
+    <>
+      <SEO 
+        title="Pricing Plans - Momentum | Free & Premium Fitness Habit Tracker"
+        description="Start free with 3 goals. Upgrade to Premium for unlimited goals, AI Coach, and advanced features. Flexible monthly plans starting at $9.99/month."
+        keywords="fitness app pricing, habit tracker cost, premium fitness features, affordable fitness app, fitness subscription plans"
+      />
+      <div className="min-h-screen bg-background-cream py-16 md:py-24">
       <div className="container mx-auto px-4 md:px-8 max-w-5xl">
         <div className="text-center mb-12 md:mb-16">
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-gradient">
@@ -169,5 +176,6 @@ export default function Pricing() {
         </div>
       </div>
     </div>
+    </>
   );
 }

@@ -2,12 +2,19 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Mail, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import momentumLogo from "@/assets/momentum-logo.png";
+import { SEO } from "@/components/SEO";
 
 export default function About() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background-cream">
+    <>
+      <SEO 
+        title="About Momentum - Our Story | Fitness Habit Tracker for Adults 40+"
+        description="Learn why Momentum was created by a 50-year-old who needed sustainable fitness habits. No gimmicks, no judgment - just a tool that helps you build lasting habits."
+        keywords="about momentum app, fitness app story, habit tracking for adults, fitness motivation over 40, sustainable fitness habits"
+      />
+      <div className="min-h-screen bg-background-cream">
       <div className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-4xl">
         <Button 
           variant="ghost" 
@@ -244,5 +251,6 @@ export default function About() {
         </div>
       </div>
     </div>
+    </>
   );
 }

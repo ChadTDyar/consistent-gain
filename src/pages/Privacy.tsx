@@ -1,12 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SEO } from "@/components/SEO";
 
 export default function Privacy() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background-cream">
+    <>
+      <SEO 
+        title="Privacy Policy - Momentum | Your Data is Protected"
+        description="Learn how Momentum protects your privacy and handles your fitness data. We never sell your information. GDPR compliant and secure."
+        keywords="momentum privacy policy, fitness app privacy, data protection, GDPR compliance, secure fitness tracking"
+      />
+      <div className="min-h-screen bg-background-cream">
       <div className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-4xl">
         <Button 
           variant="ghost" 
@@ -124,5 +131,6 @@ export default function Privacy() {
         </div>
       </div>
     </div>
+    </>
   );
 }
