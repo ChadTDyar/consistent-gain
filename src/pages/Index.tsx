@@ -19,8 +19,14 @@ const Index = () => {
         keywords="fitness tracker adults 40+, habit tracker over 40, fitness habits, workout consistency app, health tracker seniors, streak tracker, goal setting app, fitness motivation, sustainable fitness, middle age fitness"
       />
       <div className="min-h-screen bg-background-cream">
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 opacity-30" style={{background: 'var(--gradient-accent)'}} />
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:font-semibold"
+      >
+        Skip to main content
+      </a>
+      <section id="main-content" className="relative overflow-hidden">
+        <div className="absolute inset-0 opacity-30" style={{background: 'var(--gradient-accent)'}} role="presentation" />
         <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
           <div className="grid lg:grid-cols-2 gap-16 items-center py-16 md:py-24 lg:py-32">
             {/* Left Content */}
@@ -62,8 +68,11 @@ const Index = () => {
                   src={heroRunner} 
                   alt="Runner preparing for workout at sunset" 
                   className="w-full h-auto object-cover"
+                  loading="eager"
+                  width="800"
+                  height="600"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/10 via-transparent to-transparent" role="presentation" />
               </div>
               <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-primary/5 rounded-full blur-3xl" />
               <div className="absolute -top-8 -left-8 w-56 h-56 bg-primary-warm/5 rounded-full blur-3xl" />
@@ -83,7 +92,7 @@ const Index = () => {
               Everything you need to build lasting fitness habits
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8 lg:gap-10">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
             <Card className="text-center card-lift-heavy border-none shadow-xl hover:shadow-2xl transition-all" style={{background: 'var(--gradient-card)'}}>
               <CardHeader className="pb-4 pt-8">
                 <div className="mx-auto mb-6 w-20 h-20 rounded-2xl flex items-center justify-center shadow-glow" style={{background: 'var(--gradient-primary)'}}>
@@ -186,8 +195,11 @@ const Index = () => {
             src={groupRunning} 
             alt="Diverse group of people running together at sunset" 
             className="w-full h-full object-cover"
+            loading="lazy"
+            width="1920"
+            height="600"
           />
-          <div className="absolute inset-0 backdrop-blur-[2px]" style={{background: 'linear-gradient(135deg, hsl(248 57% 58% / 0.9) 0%, hsl(256 31% 36% / 0.9) 100%)'}} />
+          <div className="absolute inset-0 backdrop-blur-[2px]" style={{background: 'linear-gradient(135deg, hsl(248 57% 58% / 0.9) 0%, hsl(256 31% 36% / 0.9) 100%)'}} role="presentation" />
         </div>
         <div className="container mx-auto px-6 md:px-8 text-center relative z-10">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-8 text-white drop-shadow-lg slide-up">
@@ -213,20 +225,20 @@ const Index = () => {
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
             <p className="text-muted-foreground font-medium">© 2025 Momentum. Building better habits, one day at a time.</p>
-            <div className="flex gap-6 text-sm">
-              <button onClick={() => navigate("/about")} className="text-muted-foreground hover:text-primary transition-colors font-medium">
+            <nav className="flex gap-6 text-sm" aria-label="Footer navigation">
+              <a href="/about" className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 About
-              </button>
-              <button onClick={() => navigate("/privacy")} className="text-muted-foreground hover:text-primary transition-colors font-medium">
+              </a>
+              <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 Privacy Policy
-              </button>
-              <button onClick={() => navigate("/terms")} className="text-muted-foreground hover:text-primary transition-colors font-medium">
+              </a>
+              <a href="/terms" className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 Terms of Service
-              </button>
+              </a>
               <a href="mailto:support@momentumfit.app" className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 Contact
               </a>
-            </div>
+            </nav>
           </div>
         </div>
       </footer>

@@ -160,8 +160,8 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-primary" />
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between gap-2">
-          <div className="flex-1">
-            <CardTitle className="text-xl font-display font-semibold text-foreground">{goal.title}</CardTitle>
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-xl font-display font-semibold text-foreground line-clamp-2">{goal.title}</CardTitle>
             {goal.category && (
               <div className="mt-2">
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary capitalize">
@@ -177,7 +177,8 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
               e.stopPropagation();
               onEdit(goal.id);
             }}
-            className="h-8 w-8 hover:bg-accent flex-shrink-0"
+            className="h-10 w-10 hover:bg-accent flex-shrink-0 min-w-[44px] min-h-[44px]"
+            aria-label={`Edit ${goal.title}`}
           >
             <Pencil className="h-4 w-4" />
           </Button>

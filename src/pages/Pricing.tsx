@@ -112,9 +112,10 @@ export default function Pricing() {
               </ul>
               <Button 
                 variant="outline" 
-                className="w-full border-2" 
+                className="w-full border-2 min-h-[44px]" 
                 size="lg" 
                 onClick={() => navigate("/dashboard")}
+                aria-label="Go to dashboard - Free plan"
               >
                 Current Plan
               </Button>
@@ -164,10 +165,11 @@ export default function Pricing() {
                 </li>
               </ul>
               <Button 
-                className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient" 
+                className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]" 
                 size="lg"
                 onClick={() => handleUpgrade(MONTHLY_PRICE_ID)}
                 disabled={loading || isPremium}
+                aria-label={isPremium ? "Current plan - Premium" : "Upgrade to Premium plan"}
               >
                 {isPremium ? "Current Plan" : "Upgrade Now"}
               </Button>

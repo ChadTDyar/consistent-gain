@@ -204,6 +204,12 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background-cream">
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:font-semibold"
+      >
+        Skip to main content
+      </a>
       <header className="border-b border-border bg-card/80 backdrop-blur-md shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center max-w-7xl">
           <div className="flex items-center gap-3">
@@ -223,7 +229,8 @@ export default function Dashboard() {
               variant="outline"
               size="icon"
               onClick={() => navigate("/settings")}
-              className="border-2"
+              className="border-2 min-w-[44px] min-h-[44px]"
+              aria-label="Open settings"
             >
               <SettingsIcon className="h-4 w-4" />
             </Button>
@@ -231,7 +238,8 @@ export default function Dashboard() {
               variant="outline" 
               size="icon" 
               onClick={handleSignOut}
-              className="border-2"
+              className="border-2 min-w-[44px] min-h-[44px]"
+              aria-label="Sign out"
             >
               <LogOut className="h-4 w-4" />
             </Button>
@@ -239,7 +247,7 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-7xl">
+      <main id="main-content" className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-7xl">
         <div className="mb-8 md:mb-12">
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-2 text-gradient">
             Welcome back, {profile?.name || "there"}!

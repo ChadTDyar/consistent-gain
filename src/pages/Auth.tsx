@@ -120,6 +120,7 @@ export default function Auth() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required={!isLogin}
+                  aria-required={!isLogin}
                 />
               </div>
             )}
@@ -132,6 +133,8 @@ export default function Auth() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                aria-required="true"
+                autoComplete="email"
               />
             </div>
             <div className="space-y-2">
@@ -144,9 +147,12 @@ export default function Auth() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
+                aria-required="true"
+                aria-describedby={!isLogin ? "password-requirements" : undefined}
+                autoComplete={isLogin ? "current-password" : "new-password"}
               />
               {!isLogin && (
-                <p className="text-xs text-muted-foreground">
+                <p id="password-requirements" className="text-xs text-muted-foreground">
                   Must be at least 8 characters with uppercase, lowercase, and a number
                 </p>
               )}
