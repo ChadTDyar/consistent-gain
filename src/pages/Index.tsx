@@ -36,11 +36,10 @@ const Index = () => {
                 <h2 className="text-2xl font-display font-bold text-gradient">Momentum</h2>
               </div>
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
-                Build momentum.<br />
-                <span className="text-gradient">Not burnout.</span>
+                Build habits that last longer than <span className="text-gradient">motivation.</span>
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                Fitness is not about breaking yourself. It's about building momentum. Create routines you'll actually stick to. No pressure. No shame. Just small, consistent steps that turn into real results.
+                Momentum helps you stay consistent when life gets complicated.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-6">
                 <Button 
@@ -48,7 +47,7 @@ const Index = () => {
                   onClick={() => navigate("/auth")} 
                   className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-lg h-14 px-10 btn-gradient"
                 >
-                  Start Free
+                  Start your streak
                 </Button>
                 <Button 
                   size="lg" 
@@ -81,62 +80,19 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Benefits Section */}
+      {/* How It Works Section */}
       <section className="py-20 md:py-32">
-        <div className="container mx-auto px-6 md:px-8 max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 text-foreground">
-              Why Choose Momentum?
+        <div className="container mx-auto px-6 md:px-8 max-w-4xl">
+          <div className="text-center space-y-8">
+            <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground">
+              How It Works
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Everything you need to build lasting fitness habits
+            <p className="text-2xl md:text-3xl font-display font-semibold text-foreground leading-relaxed">
+              Pick your focus. Log your action. Watch your graph grow.
             </p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-            <Card className="text-center card-lift-heavy border-none shadow-xl hover:shadow-2xl transition-all" style={{background: 'var(--gradient-card)'}}>
-              <CardHeader className="pb-4 pt-8">
-                <div className="mx-auto mb-6 w-20 h-20 rounded-2xl flex items-center justify-center shadow-glow" style={{background: 'var(--gradient-primary)'}}>
-                  <Target className="h-10 w-10 text-white" />
-                </div>
-                <CardTitle className="text-2xl font-display font-semibold">Track Your Goals</CardTitle>
-              </CardHeader>
-              <CardContent className="pb-8">
-                <CardDescription className="text-base leading-relaxed text-muted-foreground">
-                  Set up to 3 fitness goals and track your progress with simple daily check-ins.
-                  No complicated metrics, just consistent action.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center card-lift-heavy border-none shadow-xl hover:shadow-2xl transition-all" style={{background: 'var(--gradient-card)'}}>
-              <CardHeader className="pb-4 pt-8">
-                <div className="mx-auto mb-6 w-20 h-20 rounded-2xl flex items-center justify-center shadow-glow" style={{background: 'var(--gradient-secondary)'}}>
-                  <TrendingUp className="h-10 w-10 text-white" />
-                </div>
-                <CardTitle className="text-2xl font-display font-semibold">Build Streaks</CardTitle>
-              </CardHeader>
-              <CardContent className="pb-8">
-                <CardDescription className="text-base leading-relaxed text-muted-foreground">
-                  Watch your streak grow day by day. Visual feedback keeps you motivated and
-                  accountable to your fitness journey.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center card-lift-heavy border-none shadow-xl hover:shadow-2xl transition-all" style={{background: 'var(--gradient-card)'}}>
-              <CardHeader className="pb-4 pt-8">
-                <div className="mx-auto mb-6 w-20 h-20 rounded-2xl flex items-center justify-center shadow-glow" style={{background: 'var(--gradient-primary)'}}>
-                  <Award className="h-10 w-10 text-white" />
-                </div>
-                <CardTitle className="text-2xl font-display font-semibold">Stay Motivated</CardTitle>
-              </CardHeader>
-              <CardContent className="pb-8">
-                <CardDescription className="text-base leading-relaxed text-muted-foreground">
-                  Celebrate every win with streak counters and progress calendars. Build habits
-                  that last through positive reinforcement.
-                </CardDescription>
-              </CardContent>
-            </Card>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Small steps, tracked daily, add up. No guilt. No complexity. Just follow-through.
+            </p>
           </div>
         </div>
       </section>
@@ -144,42 +100,20 @@ const Index = () => {
       {/* Story Section */}
       <section className="py-20 md:py-32 bg-gradient-to-br from-primary/5 to-primary-warm/5">
         <div className="container mx-auto px-6 md:px-8 max-w-4xl">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 text-foreground">
-              Built by Someone Who Gets It
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Momentum wasn't created by fitness influencers or tech giants
-            </p>
-          </div>
-          
           <Card className="border-none shadow-xl bg-card">
             <CardContent className="p-8 md:p-12 space-y-6">
               <p className="text-lg text-muted-foreground leading-relaxed">
-                I'm approaching 50, and like many people my age, I realized I couldn't keep putting off my health.
+                When I was 30, I lost over a hundred pounds. Keeping it off for twenty years has been the harder part.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                For years, I'd start fitness routines with great intentions—gym memberships, personal trainers, 
-                complicated programs—only to lose momentum after a few weeks. The guilt of missed days would compound, 
-                and I'd give up entirely.
+                In the last few years, time and recovery haven't worked the way they used to. I had to rebuild my entire approach to fitness. Momentum came out of that process. A simple, personal system for showing up even when the spark is gone.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                I needed something different. Not a drill sergeant. Not another app telling me I "crushed it" or "failed." 
-                <strong className="text-foreground"> Just a simple way to build sustainable habits without judgment.</strong>
+                It's not about hype or streaks. It's about keeping promises to yourself.
               </p>
               <p className="text-xl font-semibold text-primary">
-                Momentum was built for me. And it turns out, I'm not alone.
+                Why it exists: Fitness gets harder with age, not because we care less, but because life gets heavier. Momentum is how I've learned to carry it better.
               </p>
-              <div className="pt-4">
-                <Button
-                  onClick={() => navigate("/about")}
-                  variant="outline"
-                  size="lg"
-                  className="border-2 font-semibold"
-                >
-                  Read My Full Story
-                </Button>
-              </div>
             </CardContent>
           </Card>
         </div>
@@ -203,19 +137,16 @@ const Index = () => {
         </div>
         <div className="container mx-auto px-6 md:px-8 text-center relative z-10">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-8 text-white drop-shadow-lg slide-up">
-            Start Your Journey Today
+            Start building momentum today.
           </h2>
-          <p className="text-xl md:text-2xl mb-12 max-w-2xl mx-auto text-white font-medium leading-relaxed drop-shadow-md slide-up" style={{animationDelay: '0.1s'}}>
-            Build strength. Build confidence. Build your momentum.
-          </p>
           <Button
             size="lg"
             variant="secondary"
             onClick={() => navigate("/auth")}
             className="btn-large shadow-2xl hover:shadow-[0_30px_60px_rgba(255,255,255,0.5)] bg-white text-primary hover:bg-white hover:scale-110 transition-all text-lg h-16 px-12 font-semibold slide-up"
-            style={{animationDelay: '0.2s'}}
+            style={{animationDelay: '0.1s'}}
           >
-            Start Your Journey Today
+            Create your first habit
           </Button>
         </div>
       </section>
