@@ -9,6 +9,9 @@ import { AddGoalDialog } from "@/components/AddGoalDialog";
 import { EditGoalDialog } from "@/components/EditGoalDialog";
 import { CoachChat } from "@/components/CoachChat";
 import { calculateStreak, getUserActivityLogs, getDaysSinceLastActivity } from "@/lib/streakUtils";
+import { MicroblockSuggestion } from "@/components/MicroblockSuggestion";
+import { DailyContext } from "@/components/DailyContext";
+import { StreakRepair } from "@/components/StreakRepair";
 import momentumLogo from "@/assets/momentum-logo.png";
 
 interface Profile {
@@ -37,6 +40,8 @@ export default function Dashboard() {
   const [daysSinceActivity, setDaysSinceActivity] = useState(0);
   const [showWelcome, setShowWelcome] = useState(false);
   const [welcomeMessage, setWelcomeMessage] = useState("");
+  const [showStreakRepair, setShowStreakRepair] = useState(false);
+  const [showMicroblock, setShowMicroblock] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -99,11 +104,10 @@ export default function Dashboard() {
         });
       }
 
-      // Check for missed 3+ days
+      // Check for missed 3+ days - show streak repair
       const daysSince = getDaysSinceLastActivity(logs);
       if (daysSince >= 3 && !sentTriggers.has("missed_3_days")) {
-        setWelcomeMessage("Hey there! I noticed you haven't checked in lately. No judgment - life happens! Ready to get back on track?");
-        setShowWelcome(true);
+        setShowStreakRepair(true);
         
         await supabase.from("coach_triggers").insert({
           user_id: user.id,
@@ -259,6 +263,27 @@ export default function Dashboard() {
           </p>
         </div>
 
+        {/* Microblock and Daily Context Section */}
+        <div className="grid gap-6 md:grid-cols-2 mb-8">
+          <DailyContext />
+          {showMicroblock && (
+            <MicroblockSuggestion onComplete={() => {
+              setShowMicroblock(false);
+              loadStreakData();
+            }} />
+          )}
+        </div>
+
+        {!showMicroblock && (
+          <Button
+            onClick={() => setShowMicroblock(true)}
+            variant="outline"
+            className="mb-8"
+          >
+            Show Microblock Suggestion
+          </Button>
+        )}
+
         {goals.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-4">
             <div className="max-w-md text-center space-y-6">
@@ -333,6 +358,12 @@ export default function Dashboard() {
         }}
         autoOpen={showWelcome}
         welcomeMessage={welcomeMessage}
+      />
+
+      <StreakRepair
+        daysMissed={daysSinceActivity}
+        open={showStreakRepair}
+        onClose={() => setShowStreakRepair(false)}
       />
     </div>
   );

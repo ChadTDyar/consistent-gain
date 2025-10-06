@@ -18,25 +18,37 @@ export type Database = {
         Row: {
           completed_at: string
           created_at: string | null
+          duration_minutes: number | null
           goal_id: string
           id: string
+          intensity_level: string | null
           notes: string | null
+          rpe_rating: number | null
+          session_type: string | null
           user_id: string
         }
         Insert: {
           completed_at: string
           created_at?: string | null
+          duration_minutes?: number | null
           goal_id: string
           id?: string
+          intensity_level?: string | null
           notes?: string | null
+          rpe_rating?: number | null
+          session_type?: string | null
           user_id: string
         }
         Update: {
           completed_at?: string
           created_at?: string | null
+          duration_minutes?: number | null
           goal_id?: string
           id?: string
+          intensity_level?: string | null
           notes?: string | null
+          rpe_rating?: number | null
+          session_type?: string | null
           user_id?: string
         }
         Relationships: [
@@ -101,6 +113,39 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_context: {
+        Row: {
+          created_at: string | null
+          date: string
+          energy_level: number | null
+          id: string
+          sleep_notes: string | null
+          sleep_quality: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          date?: string
+          energy_level?: number | null
+          id?: string
+          sleep_notes?: string | null
+          sleep_quality?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          energy_level?: number | null
+          id?: string
+          sleep_notes?: string | null
+          sleep_quality?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       goals: {
         Row: {
           category: string | null
@@ -142,6 +187,39 @@ export type Database = {
           },
         ]
       }
+      microblock_templates: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          exercises: Json | null
+          id: string
+          intensity_level: string | null
+          joint_friendly: boolean | null
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          exercises?: Json | null
+          id?: string
+          intensity_level?: string | null
+          joint_friendly?: boolean | null
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          exercises?: Json | null
+          id?: string
+          intensity_level?: string | null
+          joint_friendly?: boolean | null
+          title?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -175,6 +253,36 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_status?: string | null
+        }
+        Relationships: []
+      }
+      streak_repairs: {
+        Row: {
+          created_at: string | null
+          days_missed: number | null
+          id: string
+          repair_date: string
+          repair_message: string | null
+          user_id: string
+          user_response: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          days_missed?: number | null
+          id?: string
+          repair_date?: string
+          repair_message?: string | null
+          user_id: string
+          user_response?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          days_missed?: number | null
+          id?: string
+          repair_date?: string
+          repair_message?: string | null
+          user_id?: string
+          user_response?: string | null
         }
         Relationships: []
       }
