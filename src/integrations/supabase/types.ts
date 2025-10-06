@@ -19,7 +19,7 @@ export type Database = {
           completed_at: string
           created_at: string | null
           duration_minutes: number | null
-          goal_id: string
+          goal_id: string | null
           id: string
           intensity_level: string | null
           notes: string | null
@@ -31,7 +31,7 @@ export type Database = {
           completed_at: string
           created_at?: string | null
           duration_minutes?: number | null
-          goal_id: string
+          goal_id?: string | null
           id?: string
           intensity_level?: string | null
           notes?: string | null
@@ -43,7 +43,7 @@ export type Database = {
           completed_at?: string
           created_at?: string | null
           duration_minutes?: number | null
-          goal_id?: string
+          goal_id?: string | null
           id?: string
           intensity_level?: string | null
           notes?: string | null
