@@ -71,7 +71,7 @@ export function StreakRepair({ daysMissed, open, onClose }: StreakRepairProps) {
   const { title, message } = getCompassionateMessage(daysMissed);
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">

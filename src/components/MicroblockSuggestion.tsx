@@ -11,7 +11,7 @@ interface MicroblockTemplate {
   title: string;
   description: string;
   duration_minutes: number;
-  intensity_level: string;
+  intensity_level: "low" | "medium" | "high";
   exercises: string[];
 }
 
@@ -41,7 +41,7 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
         .eq("user_id", user.id)
         .order("completed_at", { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       // Get today's context
       const today = new Date().toISOString().split('T')[0];
@@ -50,10 +50,10 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
         .select("*")
         .eq("user_id", user.id)
         .eq("date", today)
-        .single();
+        .maybeSingle();
 
       // Determine suggested intensity based on context
-      let suggestedIntensity = 'medium';
+      let suggestedIntensity: MicroblockTemplate["intensity_level"] = 'medium';
       if (dailyContext?.energy_level && dailyContext.energy_level <= 2) {
         suggestedIntensity = 'low';
       } else if (lastActivity?.rpe_rating && lastActivity.rpe_rating >= 8) {
@@ -70,7 +70,15 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
         .limit(1);
 
       if (templates && templates.length > 0) {
-        setTemplate(templates[0] as MicroblockTemplate);
+        const t = templates[0] as any;
+        setTemplate({
+          id: t.id,
+          title: t.title,
+          description: t.description,
+          duration_minutes: t.duration_minutes,
+          intensity_level: t.intensity_level,
+          exercises: Array.isArray(t.exercises) ? t.exercises : [],
+        });
       }
     } catch (error) {
       console.error("Error loading microblock:", error);
@@ -85,16 +93,31 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user || !template) return;
 
+      // Find any goal to attach this microblock log to (required by schema)
+      const { data: goal } = await supabase
+        .from("goals")
+        .select("id")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (!goal?.id) {
+        toast.error("Create a goal first to log sessions");
+        setCompleting(false);
+        return;
+      }
+
       const { error } = await supabase.from("activity_logs").insert({
         user_id: user.id,
-        goal_id: null, // Microblocks aren't tied to specific goals
+        goal_id: goal.id,
         completed_at: new Date().toISOString().split('T')[0],
         session_type: 'microblock',
         duration_minutes: template.duration_minutes,
         intensity_level: template.intensity_level,
         rpe_rating: rpeRating,
         notes: `Completed: ${template.title}`
-      });
+      } as any);
 
       if (error) throw error;
 
@@ -126,7 +149,7 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
     low: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
     medium: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
     high: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
-  };
+  } as const;
 
   return (
     <Card className="border-2 border-primary/30 bg-gradient-to-br from-card to-primary/5">
@@ -139,7 +162,7 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
             </CardTitle>
             <CardDescription>{template.description}</CardDescription>
           </div>
-          <Badge className={intensityColors[template.intensity_level as keyof typeof intensityColors]}>
+          <Badge className={intensityColors[template.intensity_level]}>
             {template.intensity_level}
           </Badge>
         </div>
