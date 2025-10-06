@@ -155,19 +155,16 @@ const Index = () => {
       <footer className="py-12 border-t border-primary/10 bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-            <p className="text-muted-foreground font-medium">© 2025 Momentum. Building better habits, one day at a time.</p>
+            <p className="text-muted-foreground font-medium">Built by someone who needed it first.</p>
             <nav className="flex gap-6 text-sm" aria-label="Footer navigation">
               <a href="/about" className="text-muted-foreground hover:text-primary transition-colors font-medium">
-                About
-              </a>
-              <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors font-medium">
-                Privacy Policy
-              </a>
-              <a href="/terms" className="text-muted-foreground hover:text-primary transition-colors font-medium">
-                Terms of Service
+                Other Apps
               </a>
               <a href="mailto:support@momentumfit.app" className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 Contact
+              </a>
+              <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                Privacy
               </a>
             </nav>
           </div>

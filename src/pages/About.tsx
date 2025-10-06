@@ -130,14 +130,10 @@ export default function About() {
             <h2 className="text-3xl font-display font-bold mb-4 text-foreground">Why I'm Sharing This</h2>
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                After using Momentum myself for months, I found it genuinely helpful. The streak counter kept me accountable. 
-                The lack of judgment made it sustainable. The simple interface meant I actually used it.
-              </p>
-              <p>
-                I built this for me, but I'm sharing it because I think others might benefit too.
+                I build apps that solve problems I actually have. These tools worked for me, so I'm sharing them with you.
               </p>
               <p className="font-semibold text-foreground text-lg">
-                If you're approaching 50 (or beyond) and want to build fitness habits that stick—this is for you.
+                Real tools built from real life.
               </p>
             </div>
           </section>
