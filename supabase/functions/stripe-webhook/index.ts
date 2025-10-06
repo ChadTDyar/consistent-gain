@@ -42,21 +42,44 @@ serve(async (req) => {
           const customerId = session.customer as string;
           const subscriptionId = session.subscription as string;
           
-          // Update profile with subscription info
-          const { error } = await supabaseClient
-            .from('profiles')
+          // Get user_id from stripe_customers table
+          const { data: customerData, error: customerError } = await supabaseClient
+            .from('stripe_customers')
+            .select('user_id')
+            .eq('stripe_customer_id', customerId)
+            .single();
+          
+          if (customerError) {
+            logStep("Error finding customer", { error: customerError.message });
+            break;
+          }
+          
+          // Update stripe_customers with subscription info
+          const { error: stripeError } = await supabaseClient
+            .from('stripe_customers')
             .update({
-              stripe_customer_id: customerId,
               stripe_subscription_id: subscriptionId,
-              subscription_status: 'active',
-              is_premium: true
+              updated_at: new Date().toISOString()
             })
             .eq('stripe_customer_id', customerId);
           
-          if (error) {
-            logStep("Error updating profile", { error: error.message });
+          if (stripeError) {
+            logStep("Error updating stripe_customers", { error: stripeError.message });
+          }
+          
+          // Update profile with subscription status
+          const { error: profileError } = await supabaseClient
+            .from('profiles')
+            .update({
+              subscription_status: 'active',
+              is_premium: true
+            })
+            .eq('id', customerData.user_id);
+          
+          if (profileError) {
+            logStep("Error updating profile", { error: profileError.message });
           } else {
-            logStep("Profile updated successfully");
+            logStep("Profile and subscription updated successfully");
           }
         }
         break;
@@ -69,19 +92,44 @@ serve(async (req) => {
           status: subscription.status 
         });
         
-        const { error } = await supabaseClient
-          .from('profiles')
+        // Get user_id from stripe_customers table
+        const { data: customerData, error: customerError } = await supabaseClient
+          .from('stripe_customers')
+          .select('user_id')
+          .eq('stripe_subscription_id', subscription.id)
+          .single();
+        
+        if (customerError) {
+          logStep("Error finding customer", { error: customerError.message });
+          break;
+        }
+        
+        // Update stripe_customers with period end
+        const { error: stripeError } = await supabaseClient
+          .from('stripe_customers')
           .update({
-            subscription_status: subscription.status,
             current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-            is_premium: subscription.status === 'active'
+            updated_at: new Date().toISOString()
           })
           .eq('stripe_subscription_id', subscription.id);
         
-        if (error) {
-          logStep("Error updating profile", { error: error.message });
+        if (stripeError) {
+          logStep("Error updating stripe_customers", { error: stripeError.message });
+        }
+        
+        // Update profile with subscription status
+        const { error: profileError } = await supabaseClient
+          .from('profiles')
+          .update({
+            subscription_status: subscription.status,
+            is_premium: subscription.status === 'active'
+          })
+          .eq('id', customerData.user_id);
+        
+        if (profileError) {
+          logStep("Error updating profile", { error: profileError.message });
         } else {
-          logStep("Profile updated successfully");
+          logStep("Profile and subscription updated successfully");
         }
         break;
       }
@@ -90,19 +138,45 @@ serve(async (req) => {
         const subscription = event.data.object as Stripe.Subscription;
         logStep("Subscription deleted", { subscriptionId: subscription.id });
         
-        const { error } = await supabaseClient
-          .from('profiles')
+        // Get user_id from stripe_customers table
+        const { data: customerData, error: customerError } = await supabaseClient
+          .from('stripe_customers')
+          .select('user_id')
+          .eq('stripe_subscription_id', subscription.id)
+          .single();
+        
+        if (customerError) {
+          logStep("Error finding customer", { error: customerError.message });
+          break;
+        }
+        
+        // Clear subscription info from stripe_customers
+        const { error: stripeError } = await supabaseClient
+          .from('stripe_customers')
           .update({
-            subscription_status: 'canceled',
-            is_premium: false,
-            current_period_end: null
+            stripe_subscription_id: null,
+            current_period_end: null,
+            updated_at: new Date().toISOString()
           })
           .eq('stripe_subscription_id', subscription.id);
         
-        if (error) {
-          logStep("Error updating profile", { error: error.message });
+        if (stripeError) {
+          logStep("Error updating stripe_customers", { error: stripeError.message });
+        }
+        
+        // Update profile with canceled status
+        const { error: profileError } = await supabaseClient
+          .from('profiles')
+          .update({
+            subscription_status: 'canceled',
+            is_premium: false
+          })
+          .eq('id', customerData.user_id);
+        
+        if (profileError) {
+          logStep("Error updating profile", { error: profileError.message });
         } else {
-          logStep("Profile updated successfully");
+          logStep("Profile and subscription updated successfully");
         }
         break;
       }

@@ -45,23 +45,44 @@ serve(async (req) => {
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     
-    // Check if customer exists
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    // Check if customer exists in stripe_customers table
+    const supabaseServiceClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+    
+    const { data: existingCustomer } = await supabaseServiceClient
+      .from('stripe_customers')
+      .select('stripe_customer_id')
+      .eq('user_id', user.id)
+      .single();
+    
     let customerId;
     
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
+    if (existingCustomer) {
+      customerId = existingCustomer.stripe_customer_id;
       logStep("Found existing customer", { customerId });
     } else {
-      const customer = await stripe.customers.create({ email: user.email });
-      customerId = customer.id;
-      logStep("Created new customer", { customerId });
+      // Check if customer exists in Stripe
+      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
       
-      // Update profile with customer ID
-      await supabaseClient
-        .from('profiles')
-        .update({ stripe_customer_id: customerId })
-        .eq('id', user.id);
+      if (customers.data.length > 0) {
+        customerId = customers.data[0].id;
+        logStep("Found existing Stripe customer", { customerId });
+      } else {
+        const customer = await stripe.customers.create({ email: user.email });
+        customerId = customer.id;
+        logStep("Created new customer", { customerId });
+      }
+      
+      // Store customer ID in secure table
+      await supabaseServiceClient
+        .from('stripe_customers')
+        .insert({
+          user_id: user.id,
+          stripe_customer_id: customerId
+        });
+      logStep("Stored customer ID in secure table");
     }
 
     const origin = req.headers.get("origin") || Deno.env.get("SUPABASE_URL");
