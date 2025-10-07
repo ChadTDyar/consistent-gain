@@ -17,7 +17,6 @@ interface Profile {
   reminder_enabled: boolean;
   is_premium: boolean;
   subscription_status: string | null;
-  current_period_end: string | null;
 }
 
 export default function Settings() {
@@ -310,14 +309,6 @@ export default function Settings() {
                         ? "You have access to all premium features"
                         : "Upgrade to unlock all features"}
                     </p>
-                    {profile?.current_period_end && (
-                      <p className="text-sm text-muted-foreground mt-2">
-                        {profile.subscription_status === 'active' 
-                          ? `Renews on ${new Date(profile.current_period_end).toLocaleDateString()}`
-                          : `Expires on ${new Date(profile.current_period_end).toLocaleDateString()}`
-                        }
-                      </p>
-                    )}
                   </div>
                 </div>
                 {profile?.is_premium ? (
