@@ -17,7 +17,7 @@ declare global {
 // 5. Replace the value below
 //
 // Without a valid GA4 ID, no analytics data will be tracked!
-export const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // 👉 Get your ID from https://analytics.google.com
+export const GA_MEASUREMENT_ID = 'G-DP3CLJWDZB';
 
 // Initialize GA4
 export const initGA = () => {
