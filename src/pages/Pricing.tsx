@@ -7,13 +7,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { analytics } from "@/lib/analytics";
 import { SEO } from "@/components/SEO";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const MONTHLY_PRICE_ID = "price_1SE7IvLnv14mW4wINV5ZxleR";
+const ANNUAL_PRICE_ID = "price_1SE7IvLnv14mW4wINV5ZxleR"; // TODO: Replace with actual annual price ID
 
 export default function Pricing() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
+  const [isAnnual, setIsAnnual] = useState(false);
 
   useEffect(() => {
     checkSubscription();
@@ -77,9 +81,28 @@ export default function Pricing() {
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-gradient">
             Premium unlocks unlimited goals and coaching
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground">
+          <p className="text-lg md:text-xl text-muted-foreground mb-8">
             Choose the plan that works for you
           </p>
+          
+          {/* Pricing Toggle */}
+          <div className="flex items-center justify-center gap-4 mb-2">
+            <Label htmlFor="annual-toggle" className={`text-base font-medium ${!isAnnual ? 'text-foreground' : 'text-muted-foreground'}`}>
+              Monthly
+            </Label>
+            <Switch 
+              id="annual-toggle"
+              checked={isAnnual} 
+              onCheckedChange={setIsAnnual}
+              aria-label="Toggle between monthly and annual pricing"
+            />
+            <Label htmlFor="annual-toggle" className={`text-base font-medium ${isAnnual ? 'text-foreground' : 'text-muted-foreground'}`}>
+              Annual
+            </Label>
+          </div>
+          {isAnnual && (
+            <p className="text-sm text-primary font-semibold">Save 20% with annual billing</p>
+          )}
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
@@ -99,7 +122,10 @@ export default function Pricing() {
               <ul className="space-y-3">
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  <span className="text-base">Up to 3 fitness goals</span>
+                  <div>
+                    <span className="text-base block">Up to 3 fitness goals</span>
+                    <span className="text-sm text-muted-foreground">Add a 4th goal? Upgrade to Premium</span>
+                  </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
@@ -133,8 +159,18 @@ export default function Pricing() {
               </CardTitle>
               <CardDescription className="text-base">For serious habit builders</CardDescription>
               <div className="mt-6">
-                <span className="text-5xl font-display font-bold text-primary">$9.99</span>
-                <span className="text-lg text-muted-foreground">/month</span>
+                {isAnnual ? (
+                  <>
+                    <span className="text-5xl font-display font-bold text-primary">$95.88</span>
+                    <span className="text-lg text-muted-foreground">/year</span>
+                    <p className="text-sm text-muted-foreground mt-2">($7.99/month billed annually)</p>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-5xl font-display font-bold text-primary">$9.99</span>
+                    <span className="text-lg text-muted-foreground">/month</span>
+                  </>
+                )}
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -145,7 +181,17 @@ export default function Pricing() {
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  <span className="font-semibold text-base">Adaptive programs and AI Coach Flow</span>
+                  <div>
+                    <span className="font-semibold text-base block">AI Coach Flow</span>
+                    <span className="text-sm text-muted-foreground">24/7 personalized coaching & motivation</span>
+                  </div>
+                </li>
+                <li className="flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
+                  <div>
+                    <span className="text-base block">Streak Repair</span>
+                    <span className="text-sm text-muted-foreground">Fix missed days without losing progress</span>
+                  </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
@@ -167,7 +213,7 @@ export default function Pricing() {
               <Button 
                 className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]" 
                 size="lg"
-                onClick={() => handleUpgrade(MONTHLY_PRICE_ID)}
+                onClick={() => handleUpgrade(isAnnual ? ANNUAL_PRICE_ID : MONTHLY_PRICE_ID)}
                 disabled={loading || isPremium}
                 aria-label={isPremium ? "Current plan - Premium" : "Upgrade to Premium plan"}
               >

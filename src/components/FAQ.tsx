@@ -104,12 +104,12 @@ export const FAQ = () => {
             <AccordionItem 
               key={index} 
               value={`item-${index}`}
-              className="bg-card border border-border rounded-lg px-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-card border border-border rounded-lg px-6 shadow-sm hover:shadow-lg transition-all"
             >
-              <AccordionTrigger className="text-left text-lg font-semibold hover:no-underline py-6">
+              <AccordionTrigger className="text-left text-lg font-semibold hover:no-underline hover:text-primary py-6 transition-colors">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed pb-6">
+              <AccordionContent className="text-muted-foreground leading-relaxed pb-6 pt-2">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

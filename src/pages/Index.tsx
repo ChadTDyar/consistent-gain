@@ -7,6 +7,9 @@ import groupRunning from "@/assets/group-running.png";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { SEO } from "@/components/SEO";
 import { FAQ } from "@/components/FAQ";
+import { Testimonials } from "@/components/Testimonials";
+import { ProductShowcase } from "@/components/ProductShowcase";
+import { ComparisonTable } from "@/components/ComparisonTable";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -39,7 +42,7 @@ const Index = () => {
                 Build habits that last longer than <span className="text-gradient">motivation.</span>
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                Momentum helps you stay consistent when life gets complicated.
+                The only habit tracker designed for adults 40+ who need consistency, not perfection. Track with compassion, not judgment.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-6">
                 <Button 
@@ -118,6 +121,15 @@ const Index = () => {
           </Card>
         </div>
       </section>
+
+      {/* Product Showcase */}
+      <ProductShowcase />
+
+      {/* Testimonials Section */}
+      <Testimonials />
+
+      {/* Comparison Table */}
+      <ComparisonTable />
 
       {/* FAQ Section */}
       <FAQ />
