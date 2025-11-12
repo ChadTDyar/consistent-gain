@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.58.0";
+import { z } from "https://esm.sh/zod@3.22.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,15 +13,60 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, userContext, userId } = await req.json();
+    // Validate input
+    const requestSchema = z.object({
+      messages: z.array(z.object({
+        role: z.enum(['user', 'assistant']),
+        content: z.string().min(1).max(2000)
+      })).max(50),
+      userContext: z.object({
+        streak: z.number().optional(),
+        goalsCount: z.number().optional(),
+        lastActivity: z.string().optional()
+      }).optional()
+    });
+
+    const body = await req.json();
+    const { messages, userContext } = requestSchema.parse(body);
     
-    // Initialize Supabase client
+    // Get authenticated user from JWT
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      throw new Error('Missing authorization');
+    }
+
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    
+    // Verify user with anon key
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
+
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !user) {
+      throw new Error('Unauthorized');
+    }
+
+    const userId = user.id;
+
+    // Initialize service client for database operations
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Check premium status from database, not client
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("is_premium")
+      .eq("id", userId)
+      .single();
+
+    if (profileError) {
+      console.error("Error fetching profile:", profileError);
+    }
+
     // Check rate limiting for non-premium users
-    if (!userContext?.isPremium && userId) {
+    if (!profile?.is_premium) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -100,10 +146,10 @@ When relevant:
 
 ${userContext ? `
 ## CURRENT USER CONTEXT
-- Current Streak: ${userContext.streak || 0} days
-- Active Goals: ${userContext.goalsCount || 0}
-- Recent Activity: ${userContext.lastActivity || "No recent activity"}
-- Premium User: ${userContext.isPremium ? "Yes" : "No"}
+- Current Streak: ${userContext?.streak || 0} days
+- Active Goals: ${userContext?.goalsCount || 0}
+- Recent Activity: ${userContext?.lastActivity || "No recent activity"}
+- Premium User: ${profile?.is_premium ? "Yes" : "No"}
 ` : ""}`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
