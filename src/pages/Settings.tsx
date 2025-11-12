@@ -9,6 +9,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, LogOut, Download, Trash2, AlertTriangle } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { DataExport } from "@/components/DataExport";
+import { WorkoutBuddies } from "@/components/WorkoutBuddies";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { DoctorReport } from "@/components/DoctorReport";
 
 interface Profile {
   id: string;
@@ -342,32 +346,21 @@ export default function Settings() {
           </Card>
 
           {/* Data Management */}
+          <div className="grid gap-6 md:grid-cols-2">
+            <DataExport />
+            <DoctorReport />
+          </div>
+
+          {/* Workout Buddies */}
+          <WorkoutBuddies />
+
+          {/* Original Data Management Card - keeping for delete account */}
           <Card className="border-none shadow-md">
             <CardHeader>
-              <CardTitle className="text-2xl font-display font-semibold">Data Management</CardTitle>
-              <CardDescription className="text-base">Export or delete your data</CardDescription>
+              <CardTitle className="text-2xl font-display font-semibold">Danger Zone</CardTitle>
+              <CardDescription className="text-base">Permanent account actions</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button 
-                onClick={handleExportData}
-                disabled={exporting}
-                variant="outline"
-                size="lg"
-                className="w-full border-2 font-semibold"
-              >
-                {exporting ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Exporting...
-                  </>
-                ) : (
-                  <>
-                    <Download className="mr-2 h-5 w-5" />
-                    Export My Data
-                  </>
-                )}
-              </Button>
-
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button 

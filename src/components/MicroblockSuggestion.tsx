@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, Zap, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { WellnessFeedbackModal } from "./WellnessFeedbackModal";
+import { useUndoToast } from "./UndoToast";
 
 interface MicroblockTemplate {
   id: string;
@@ -26,6 +27,7 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
   const [completing, setCompleting] = useState(false);
   const [showExercises, setShowExercises] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const { showUndoToast } = useUndoToast();
 
   useEffect(() => {
     loadSuggestedMicroblock();
@@ -115,7 +117,7 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
         return;
       }
 
-      const { error } = await supabase.from("activity_logs").insert({
+      const { data, error } = await supabase.from("activity_logs").insert({
         user_id: user.id,
         goal_id: goal.id,
         completed_at: new Date().toISOString().split('T')[0],
@@ -124,11 +126,13 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
         intensity_level: template.intensity_level,
         rpe_rating: rating,
         notes: `Completed: ${template.title}`
-      } as any);
+      } as any).select();
 
-      if (error) throw error;
+      if (error || !data) throw error;
 
-      toast.success("Microblock completed! 🎉");
+      // Show undo toast
+      showUndoToast(data[0].id, () => onComplete());
+
       onComplete();
     } catch (error) {
       console.error("Error logging microblock:", error);

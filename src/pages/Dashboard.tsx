@@ -6,6 +6,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Plus, LogOut, Settings as SettingsIcon, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { ProgressTab } from "@/components/ProgressTab";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { BodyMapPainReport } from "@/components/BodyMapPainReport";
+import { WeatherWidget } from "@/components/WeatherWidget";
+import { CostTracker } from "@/components/CostTracker";
+import { DataExport } from "@/components/DataExport";
 import { GoalCard } from "@/components/GoalCard";
 import { AddGoalDialog } from "@/components/AddGoalDialog";
 import { EditGoalDialog } from "@/components/EditGoalDialog";
@@ -231,6 +236,7 @@ export default function Dashboard() {
                 Upgrade to Premium
               </Button>
             )}
+            <ThemeToggle />
             <Button
               variant="outline"
               size="icon"
@@ -277,9 +283,12 @@ export default function Dashboard() {
           </TabsList>
 
           <TabsContent value="goals" className="space-y-8">
-            {/* Microblock and Daily Context Section */}
-            <div className="grid gap-6 md:grid-cols-2">
+            {/* Health Tracking & Context Section */}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               <DailyContext />
+              <BodyMapPainReport onComplete={() => loadStreakData()} />
+              <WeatherWidget />
+              <CostTracker />
               {showMicroblock && (
                 <MicroblockSuggestion onComplete={() => {
                   setShowMicroblock(false);

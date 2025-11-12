@@ -18,11 +18,14 @@ export type Database = {
         Row: {
           completed_at: string
           created_at: string | null
+          deleted_at: string | null
           duration_minutes: number | null
           goal_id: string | null
           id: string
           intensity_level: string | null
+          is_deleted: boolean | null
           notes: string | null
+          photo_url: string | null
           rpe_rating: number | null
           session_type: string | null
           user_id: string
@@ -30,11 +33,14 @@ export type Database = {
         Insert: {
           completed_at: string
           created_at?: string | null
+          deleted_at?: string | null
           duration_minutes?: number | null
           goal_id?: string | null
           id?: string
           intensity_level?: string | null
+          is_deleted?: boolean | null
           notes?: string | null
+          photo_url?: string | null
           rpe_rating?: number | null
           session_type?: string | null
           user_id: string
@@ -42,11 +48,14 @@ export type Database = {
         Update: {
           completed_at?: string
           created_at?: string | null
+          deleted_at?: string | null
           duration_minutes?: number | null
           goal_id?: string | null
           id?: string
           intensity_level?: string | null
+          is_deleted?: boolean | null
           notes?: string | null
+          photo_url?: string | null
           rpe_rating?: number | null
           session_type?: string | null
           user_id?: string
@@ -113,6 +122,36 @@ export type Database = {
         }
         Relationships: []
       }
+      cost_tracking: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string | null
+          date: string
+          description: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string | null
+          date?: string
+          description?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string | null
+          date?: string
+          description?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_context: {
         Row: {
           created_at: string | null
@@ -143,6 +182,33 @@ export type Database = {
           sleep_quality?: number | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      exercise_alternatives: {
+        Row: {
+          alternative_exercise: string
+          body_area: string
+          created_at: string | null
+          description: string | null
+          id: string
+          original_exercise: string
+        }
+        Insert: {
+          alternative_exercise: string
+          body_area: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          original_exercise: string
+        }
+        Update: {
+          alternative_exercise?: string
+          body_area?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          original_exercise?: string
         }
         Relationships: []
       }
@@ -220,6 +286,36 @@ export type Database = {
         }
         Relationships: []
       }
+      pain_reports: {
+        Row: {
+          body_area: string
+          created_at: string | null
+          id: string
+          intensity: number
+          notes: string | null
+          report_date: string
+          user_id: string
+        }
+        Insert: {
+          body_area: string
+          created_at?: string | null
+          id?: string
+          intensity: number
+          notes?: string | null
+          report_date?: string
+          user_id: string
+        }
+        Update: {
+          body_area?: string
+          created_at?: string | null
+          id?: string
+          intensity?: number
+          notes?: string | null
+          report_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -228,6 +324,7 @@ export type Database = {
           name: string | null
           reminder_enabled: boolean | null
           subscription_status: string | null
+          theme_preference: string | null
         }
         Insert: {
           created_at?: string | null
@@ -236,6 +333,7 @@ export type Database = {
           name?: string | null
           reminder_enabled?: boolean | null
           subscription_status?: string | null
+          theme_preference?: string | null
         }
         Update: {
           created_at?: string | null
@@ -244,6 +342,7 @@ export type Database = {
           name?: string | null
           reminder_enabled?: boolean | null
           subscription_status?: string | null
+          theme_preference?: string | null
         }
         Relationships: []
       }
@@ -303,6 +402,30 @@ export type Database = {
           stripe_customer_id?: string
           stripe_subscription_id?: string | null
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      workout_buddies: {
+        Row: {
+          buddy_id: string
+          created_at: string | null
+          id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          buddy_id: string
+          created_at?: string | null
+          id?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          buddy_id?: string
+          created_at?: string | null
+          id?: string
+          status?: string
           user_id?: string
         }
         Relationships: []
