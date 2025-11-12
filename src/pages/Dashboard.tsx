@@ -11,6 +11,7 @@ import { BodyMapPainReport } from "@/components/BodyMapPainReport";
 import { WeatherWidget } from "@/components/WeatherWidget";
 import { CostTracker } from "@/components/CostTracker";
 import { DataExport } from "@/components/DataExport";
+import { CalendarReminder } from "@/components/CalendarReminder";
 import { GoalCard } from "@/components/GoalCard";
 import { AddGoalDialog } from "@/components/AddGoalDialog";
 import { EditGoalDialog } from "@/components/EditGoalDialog";
@@ -289,6 +290,7 @@ export default function Dashboard() {
               <BodyMapPainReport onComplete={() => loadStreakData()} />
               <WeatherWidget />
               <CostTracker />
+              <CalendarReminder />
               {showMicroblock && (
                 <MicroblockSuggestion onComplete={() => {
                   setShowMicroblock(false);

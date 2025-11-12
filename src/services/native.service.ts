@@ -11,8 +11,9 @@ class NativeService {
     }
 
     try {
-      // Set status bar style
-      await StatusBar.setStyle({ style: Style.Light });
+      // Set initial status bar style based on theme
+      const isDark = window.document.documentElement.classList.contains('dark');
+      await StatusBar.setStyle({ style: isDark ? Style.Dark : Style.Light });
       
       // Request push notification permissions
       const permStatus = await PushNotifications.requestPermissions();

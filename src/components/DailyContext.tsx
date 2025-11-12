@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Moon, Battery } from "lucide-react";
 import { toast } from "sonner";
+import { WellnessFeedbackModal } from "./WellnessFeedbackModal";
 
 export function DailyContext() {
   const [sleepQuality, setSleepQuality] = useState<number | null>(null);
@@ -13,6 +14,7 @@ export function DailyContext() {
   const [sleepNotes, setSleepNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [hasLogged, setHasLogged] = useState(false);
+  const [showWellnessModal, setShowWellnessModal] = useState(false);
 
   useEffect(() => {
     loadTodayContext();
@@ -66,13 +68,18 @@ export function DailyContext() {
       if (error) throw error;
 
       setHasLogged(true);
-      toast.success("Daily context saved!");
+      setShowWellnessModal(true);
     } catch (error) {
       console.error("Error saving context:", error);
       toast.error("Failed to save context");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleWellnessRating = (rating: number) => {
+    toast.success(`Wellness check complete! Feeling ${rating}/5`);
+    setShowWellnessModal(false);
   };
 
   const StarRating = ({ 
@@ -162,6 +169,11 @@ export function DailyContext() {
           {loading ? "Saving..." : "Save Check-in"}
         </Button>
       </CardContent>
+
+      <WellnessFeedbackModal 
+        open={showWellnessModal}
+        onRating={handleWellnessRating}
+      />
     </Card>
   );
 }

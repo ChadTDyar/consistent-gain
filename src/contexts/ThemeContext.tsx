@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { nativeService } from "@/services/native.service";
 
 type Theme = "light" | "dark" | "system";
 
@@ -55,6 +56,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     root.classList.add(applied);
     setEffectiveTheme(applied);
+    
+    // Update native status bar for mobile apps
+    nativeService.setStatusBarStyle(applied);
   };
 
   const setTheme = async (newTheme: Theme) => {
