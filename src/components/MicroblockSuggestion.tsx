@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Zap, Heart } from "lucide-react";
 import { toast } from "sonner";
+import { WellnessFeedbackModal } from "./WellnessFeedbackModal";
 
 interface MicroblockTemplate {
   id: string;
@@ -24,6 +25,7 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
   const [loading, setLoading] = useState(true);
   const [completing, setCompleting] = useState(false);
   const [showExercises, setShowExercises] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   useEffect(() => {
     loadSuggestedMicroblock();
@@ -87,7 +89,12 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
     }
   };
 
-  const handleComplete = async (rpeRating: number) => {
+  const handleMarkComplete = () => {
+    setShowFeedbackModal(true);
+  };
+
+  const handleRating = async (rating: number) => {
+    setShowFeedbackModal(false);
     setCompleting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -115,7 +122,7 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
         session_type: 'microblock',
         duration_minutes: template.duration_minutes,
         intensity_level: template.intensity_level,
-        rpe_rating: rpeRating,
+        rpe_rating: rating,
         notes: `Completed: ${template.title}`
       } as any);
 
@@ -203,46 +210,19 @@ export function MicroblockSuggestion({ onComplete }: MicroblockSuggestionProps) 
           </Button>
         </div>
 
-        {!completing && (
-          <div className="space-y-2">
-            <p className="text-sm font-semibold">Mark as done:</p>
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant="outline"
-                onClick={() => handleComplete(3)}
-                disabled={completing}
-                className="text-green-600 hover:bg-green-50 dark:hover:bg-green-950"
-              >
-                Easy (RPE 3)
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => handleComplete(5)}
-                disabled={completing}
-                className="text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-950"
-              >
-                Just Right (RPE 5)
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => handleComplete(7)}
-                disabled={completing}
-                className="text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950"
-              >
-                Challenging (RPE 7)
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => handleComplete(9)}
-                disabled={completing}
-                className="text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
-              >
-                Very Hard (RPE 9)
-              </Button>
-            </div>
-          </div>
-        )}
+        <Button
+          onClick={handleMarkComplete}
+          disabled={completing}
+          className="w-full mt-2"
+        >
+          Mark as Complete
+        </Button>
       </CardContent>
+
+      <WellnessFeedbackModal 
+        open={showFeedbackModal} 
+        onRating={handleRating}
+      />
     </Card>
   );
 }

@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus, LogOut, Settings as SettingsIcon } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, Plus, LogOut, Settings as SettingsIcon, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import { ProgressTab } from "@/components/ProgressTab";
 import { GoalCard } from "@/components/GoalCard";
 import { AddGoalDialog } from "@/components/AddGoalDialog";
 import { EditGoalDialog } from "@/components/EditGoalDialog";
@@ -263,28 +265,40 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* Microblock and Daily Context Section */}
-        <div className="grid gap-6 md:grid-cols-2 mb-8">
-          <DailyContext />
-          {showMicroblock && (
-            <MicroblockSuggestion onComplete={() => {
-              setShowMicroblock(false);
-              loadStreakData();
-            }} />
-          )}
-        </div>
+        <Tabs defaultValue="goals" className="w-full">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+            <TabsTrigger value="goals" className="text-base">
+              Goals
+            </TabsTrigger>
+            <TabsTrigger value="progress" className="text-base">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Progress
+            </TabsTrigger>
+          </TabsList>
 
-        {!showMicroblock && (
-          <Button
-            onClick={() => setShowMicroblock(true)}
-            variant="outline"
-            className="mb-8"
-          >
-            Show Microblock Suggestion
-          </Button>
-        )}
+          <TabsContent value="goals" className="space-y-8">
+            {/* Microblock and Daily Context Section */}
+            <div className="grid gap-6 md:grid-cols-2">
+              <DailyContext />
+              {showMicroblock && (
+                <MicroblockSuggestion onComplete={() => {
+                  setShowMicroblock(false);
+                  loadStreakData();
+                }} />
+              )}
+            </div>
 
-        {goals.length === 0 ? (
+            {!showMicroblock && (
+              <Button
+                onClick={() => setShowMicroblock(true)}
+                variant="outline"
+                className="mb-4"
+              >
+                Show Microblock Suggestion
+              </Button>
+            )}
+
+            {goals.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-4">
             <div className="max-w-md text-center space-y-6">
               <div className="mx-auto h-24 w-24 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
@@ -332,6 +346,12 @@ export default function Dashboard() {
             )}
           </>
         )}
+          </TabsContent>
+
+          <TabsContent value="progress">
+            <ProgressTab />
+          </TabsContent>
+        </Tabs>
       </main>
 
       <AddGoalDialog

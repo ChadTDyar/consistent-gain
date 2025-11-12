@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Flame, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns";
@@ -20,6 +21,7 @@ interface ActivityLog {
   id: string;
   completed_at: string;
   notes: string | null;
+  rpe_rating: number | null;
 }
 
 export default function GoalDetail() {
@@ -30,6 +32,7 @@ export default function GoalDetail() {
   const [streak, setStreak] = useState(0);
   const [loading, setLoading] = useState(true);
   const [isPremium, setIsPremium] = useState(false);
+  const [adaptiveBadge, setAdaptiveBadge] = useState<{ type: 'easier' | 'progress' | null, message: string }>({ type: null, message: '' });
 
   useEffect(() => {
     loadGoal();
@@ -81,6 +84,41 @@ export default function GoalDetail() {
 
     setLogs(data || []);
     calculateStreak(data || []);
+    calculateAdaptiveBadge(data || []);
+  };
+
+  const calculateAdaptiveBadge = (logs: ActivityLog[]) => {
+    const recentLogs = logs.slice(0, 3);
+    const ratings = recentLogs.map(log => log.rpe_rating).filter((r): r is number => r !== null);
+    
+    if (ratings.length < 2) {
+      setAdaptiveBadge({ type: null, message: '' });
+      return;
+    }
+
+    // Check last 2 ratings for "Easier" badge
+    const lastTwoRatings = ratings.slice(0, 2);
+    if (lastTwoRatings.length === 2 && lastTwoRatings.every(r => r <= 2)) {
+      setAdaptiveBadge({ 
+        type: 'easier', 
+        message: 'Reduce intensity by 20% - You might be overdoing it' 
+      });
+      return;
+    }
+
+    // Check last 3 ratings for "Progress" badge
+    if (ratings.length >= 3) {
+      const lastThreeRatings = ratings.slice(0, 3);
+      if (lastThreeRatings.every(r => r >= 4)) {
+        setAdaptiveBadge({ 
+          type: 'progress', 
+          message: 'Increase reps by 10% - You\'re ready for more!' 
+        });
+        return;
+      }
+    }
+
+    setAdaptiveBadge({ type: null, message: '' });
   };
 
   const calculateStreak = (logs: ActivityLog[]) => {
@@ -217,6 +255,20 @@ export default function GoalDetail() {
               <CardDescription className="text-base mt-2">
                 Keep it going! Log your activity every day to maintain your streak.
               </CardDescription>
+              {adaptiveBadge.type && (
+                <div className="mt-4">
+                  <Badge 
+                    className={`text-base px-4 py-2 ${
+                      adaptiveBadge.type === 'easier' 
+                        ? 'bg-yellow-500 hover:bg-yellow-600' 
+                        : 'bg-green-500 hover:bg-green-600'
+                    }`}
+                  >
+                    {adaptiveBadge.type === 'easier' ? '⚠️ Easier' : '🎯 Ready to Progress'}
+                  </Badge>
+                  <p className="text-sm text-muted-foreground mt-2">{adaptiveBadge.message}</p>
+                </div>
+              )}
             </CardHeader>
           </Card>
 
@@ -249,9 +301,16 @@ export default function GoalDetail() {
                       key={log.id}
                       className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-muted/50 rounded-lg hover:bg-muted transition-colors"
                     >
-                      <span className="font-medium text-foreground">
-                        {format(new Date(log.completed_at), "MMMM d, yyyy")}
-                      </span>
+                      <div className="flex items-center gap-3">
+                        <span className="font-medium text-foreground">
+                          {format(new Date(log.completed_at), "MMMM d, yyyy")}
+                        </span>
+                        {log.rpe_rating && (
+                          <Badge variant="outline" className="text-xs">
+                            Rating: {log.rpe_rating}/5
+                          </Badge>
+                        )}
+                      </div>
                       {log.notes && (
                         <span className="text-sm text-muted-foreground mt-1 sm:mt-0">{log.notes}</span>
                       )}

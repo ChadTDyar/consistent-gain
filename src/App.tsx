@@ -20,6 +20,7 @@ import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
 import Welcome from "./pages/Welcome";
 import About from "./pages/About";
+import Progress from "./pages/Progress";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -57,6 +58,7 @@ const App = () => {
             <Route path="/cancel" element={<Cancel />} />
             <Route path="/welcome" element={<Welcome />} />
             <Route path="/about" element={<About />} />
+            <Route path="/progress" element={<Progress />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
