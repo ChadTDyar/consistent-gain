@@ -167,7 +167,7 @@ const Index = () => {
       <footer className="py-12 border-t border-primary/10 bg-card/50 backdrop-blur-sm">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-            <p className="text-muted-foreground font-medium">Built by someone who needed it first.</p>
+            <p className="text-muted-foreground font-medium">Built by <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chad T Dyar</a></p>
             <nav className="flex gap-6 text-sm" aria-label="Footer navigation">
               <a href="/about" className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 Other Apps
