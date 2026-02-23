@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Plus, LogOut, Settings as SettingsIcon, TrendingUp } from "lucide-react";
+import { Loader2, Plus, LogOut, Settings as SettingsIcon, TrendingUp, UserCircle } from "lucide-react";
 import { toast } from "sonner";
 import { ProgressTab } from "@/components/ProgressTab";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -224,7 +224,12 @@ export default function Dashboard() {
       </a>
       <header className="border-b border-border bg-card/80 backdrop-blur-md shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center max-w-7xl">
-          <div className="flex items-center gap-3">
+          <div
+            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={() => navigate("/profile")}
+            role="link"
+            aria-label="Go to profile"
+          >
             <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
             <h1 className="text-2xl md:text-3xl font-display font-bold text-gradient">Momentum</h1>
           </div>
@@ -238,6 +243,15 @@ export default function Dashboard() {
               </Button>
             )}
             <ThemeToggle />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => navigate("/profile")}
+              className="border-2 min-w-[44px] min-h-[44px]"
+              aria-label="View profile"
+            >
+              <UserCircle className="h-4 w-4" />
+            </Button>
             <Button
               variant="outline"
               size="icon"
