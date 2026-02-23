@@ -2,61 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Momentum App - Blue-Purple-Silver Gradient Design System
+/* Momentum App - Deep Teal & Warm Amber Design System
    All colors MUST be HSL format for proper theming.
+   Primary: Deep Teal (#0D7377) | Secondary: Warm Amber (#F5A623)
 */
 
 @layer base {
   :root {
-    /* Base Brand Colors - Blue/Purple/Silver Palette */
-    --midnight-blue: 233 38% 16%;
-    --deep-purple: 256 31% 36%;
-    --royal-purple: 248 57% 58%;
-    --lavender: 249 58% 75%;
-    --silver: 228 16% 92%;
-    --pearl: 230 23% 98%;
+    /* Base Brand Colors - Teal/Amber Palette */
+    --teal-deep: 182 82% 26%;
+    --teal-mid: 180 62% 38%;
+    --teal-light: 178 52% 58%;
+    --amber: 37 91% 55%;
+    --amber-light: 40 95% 70%;
+    --silver: 210 16% 92%;
+    --pearl: 40 20% 98%;
     
-    /* Primary Color System */
-    --primary: 248 57% 58%;
+    /* Primary Color System - Deep Teal */
+    --primary: 182 82% 26%;
     --primary-foreground: 0 0% 100%;
-    --primary-deep: 256 31% 36%;
-    --primary-light: 249 58% 75%;
+    --primary-deep: 184 90% 18%;
+    --primary-light: 178 52% 58%;
     
-    /* Backgrounds */
+    /* Backgrounds - Off-white per spec (#FAFAFA) */
     --background: 0 0% 100%;
-    --background-cream: 230 23% 98%;
-    --background-subtle: 228 16% 92%;
-    --foreground: 233 38% 16%;
+    --background-cream: 0 0% 98%;
+    --background-subtle: 210 16% 92%;
+    --foreground: 220 20% 16%;
     
     /* Cards */
     --card: 0 0% 100%;
-    --card-foreground: 233 38% 16%;
+    --card-foreground: 220 20% 16%;
     
     /* Glass Effect */
-    --glass-bg: 230 23% 98% / 0.8;
+    --glass-bg: 0 0% 98% / 0.8;
     
     /* Popover */
     --popover: 0 0% 100%;
-    --popover-foreground: 233 38% 16%;
+    --popover-foreground: 220 20% 16%;
     
-    /* Secondary */
-    --secondary: 228 16% 92%;
-    --secondary-foreground: 256 31% 36%;
+    /* Secondary - Warm Amber */
+    --secondary: 37 91% 55%;
+    --secondary-foreground: 220 20% 16%;
     
     /* Muted */
-    --muted: 230 23% 98%;
+    --muted: 210 16% 95%;
     --muted-foreground: 220 9% 46%;
     
-    /* Accent */
-    --accent: 228 16% 92%;
-    --accent-foreground: 248 57% 58%;
+    /* Accent - Amber tint */
+    --accent: 40 95% 94%;
+    --accent-foreground: 182 82% 26%;
     
     /* Status Colors */
     --success: 162 73% 44%;
     --success-foreground: 0 0% 100%;
     
-    --warning: 43 100% 70%;
-    --warning-foreground: 233 38% 16%;
+    --warning: 37 91% 55%;
+    --warning-foreground: 220 20% 16%;
     
     --error: 349 77% 61%;
     --error-foreground: 0 0% 100%;
@@ -68,9 +70,9 @@
     --destructive-foreground: 0 0% 100%;
     
     /* Borders & Inputs */
-    --border: 248 57% 58% / 0.1;
-    --input: 228 16% 92%;
-    --ring: 248 57% 58%;
+    --border: 182 82% 26% / 0.12;
+    --input: 210 16% 92%;
+    --ring: 182 82% 26%;
     
     /* Radius */
     --radius: 0.75rem;
@@ -84,20 +86,20 @@
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
     
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(248 57% 58%) 0%, hsl(256 31% 36%) 100%);
-    --gradient-secondary: linear-gradient(135deg, hsl(249 58% 75%) 0%, hsl(248 57% 58%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(228 16% 92%) 0%, hsl(249 58% 75%) 100%);
-    --gradient-shimmer: linear-gradient(90deg, rgba(157, 141, 241, 0) 0%, rgba(157, 141, 241, 0.4) 50%, rgba(157, 141, 241, 0) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(248 57% 58%) 0%, hsl(256 31% 36%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(248 57% 58% / 0.05) 0%, hsl(248 57% 58% / 0) 100%);
+    /* Gradients - Teal/Amber */
+    --gradient-primary: linear-gradient(135deg, hsl(182 82% 26%) 0%, hsl(184 90% 18%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(37 91% 55%) 0%, hsl(25 95% 53%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(40 95% 94%) 0%, hsl(37 91% 55% / 0.3) 100%);
+    --gradient-shimmer: linear-gradient(90deg, rgba(13, 115, 119, 0) 0%, rgba(13, 115, 119, 0.3) 50%, rgba(13, 115, 119, 0) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(182 82% 26%) 0%, hsl(184 90% 18%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(182 82% 26% / 0.05) 0%, hsl(182 82% 26% / 0) 100%);
     
     /* Shadows */
-    --shadow-sm: 0 1px 2px rgba(74, 63, 122, 0.1);
-    --shadow-md: 0 4px 6px rgba(74, 63, 122, 0.1);
-    --shadow-lg: 0 10px 15px rgba(74, 63, 122, 0.15);
-    --shadow-xl: 0 20px 25px rgba(74, 63, 122, 0.2);
-    --shadow-glow: 0 0 20px rgba(107, 92, 204, 0.3);
+    --shadow-sm: 0 1px 2px rgba(13, 115, 119, 0.08);
+    --shadow-md: 0 4px 6px rgba(13, 115, 119, 0.1);
+    --shadow-lg: 0 10px 15px rgba(13, 115, 119, 0.12);
+    --shadow-xl: 0 20px 25px rgba(13, 115, 119, 0.15);
+    --shadow-glow: 0 0 20px rgba(13, 115, 119, 0.25);
     
     /* Transitions */
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -105,38 +107,39 @@
     --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  /* Dark mode per spec: #1A1A2E */
   @media (prefers-color-scheme: dark) {
     :root {
-      --background: 233 38% 16%;
-      --background-cream: 237 29% 18%;
-      --background-subtle: 240 25% 22%;
-      --foreground: 0 0% 100%;
+      --background: 240 29% 14%;
+      --background-cream: 240 25% 16%;
+      --background-subtle: 240 20% 20%;
+      --foreground: 0 0% 96%;
       
-      --card: 237 29% 18%;
-      --card-foreground: 0 0% 100%;
+      --card: 240 25% 16%;
+      --card-foreground: 0 0% 96%;
       
-      --glass-bg: 233 38% 16% / 0.8;
+      --glass-bg: 240 29% 14% / 0.8;
       
-      --popover: 237 29% 18%;
-      --popover-foreground: 0 0% 100%;
+      --popover: 240 25% 16%;
+      --popover-foreground: 0 0% 96%;
       
-      --secondary: 240 25% 22%;
-      --secondary-foreground: 249 58% 75%;
+      --secondary: 37 80% 50%;
+      --secondary-foreground: 0 0% 100%;
       
-      --muted: 237 29% 18%;
-      --muted-foreground: 220 13% 69%;
+      --muted: 240 20% 20%;
+      --muted-foreground: 220 13% 65%;
       
-      --accent: 240 25% 22%;
-      --accent-foreground: 249 58% 75%;
+      --accent: 240 20% 22%;
+      --accent-foreground: 178 52% 58%;
       
-      --border: 248 57% 58% / 0.2;
-      --input: 240 25% 22%;
+      --border: 182 60% 40% / 0.2;
+      --input: 240 20% 22%;
       
       --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
       --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
       --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
       --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
-      --shadow-glow: 0 0 20px rgba(107, 92, 204, 0.5);
+      --shadow-glow: 0 0 20px rgba(13, 115, 119, 0.4);
     }
   }
 }
@@ -148,14 +151,12 @@
 
   body {
     @apply text-foreground font-body antialiased;
-    background: linear-gradient(135deg, hsl(230 23% 98%) 0%, hsl(228 16% 92%) 100%);
-    background-attachment: fixed;
+    background: hsl(0 0% 98%);
   }
   
   @media (prefers-color-scheme: dark) {
     body {
-      background: linear-gradient(135deg, hsl(233 38% 16%) 0%, hsl(237 29% 18%) 100%);
-      background-attachment: fixed;
+      background: hsl(240 29% 14%);
     }
   }
 
@@ -286,8 +287,8 @@
   }
   
   @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 10px rgba(107, 92, 204, 0.3); }
-    50% { box-shadow: 0 0 20px rgba(107, 92, 204, 0.6); }
+    0%, 100% { box-shadow: 0 0 10px rgba(13, 115, 119, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(13, 115, 119, 0.6); }
   }
   
   @keyframes celebrate {
@@ -380,4 +381,8 @@
   .btn-primary, .btn-secondary {
     @apply w-full justify-center;
   }
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }

@@ -74,16 +74,15 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        midnight: {
-          blue: "hsl(var(--midnight-blue))",
+        teal: {
+          deep: "hsl(var(--teal-deep))",
+          mid: "hsl(var(--teal-mid))",
+          light: "hsl(var(--teal-light))",
         },
-        deep: {
-          purple: "hsl(var(--deep-purple))",
+        amber: {
+          DEFAULT: "hsl(var(--amber))",
+          light: "hsl(var(--amber-light))",
         },
-        royal: {
-          purple: "hsl(var(--royal-purple))",
-        },
-        lavender: "hsl(var(--lavender))",
         silver: "hsl(var(--silver))",
         pearl: "hsl(var(--pearl))",
       },

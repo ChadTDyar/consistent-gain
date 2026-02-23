@@ -23,10 +23,11 @@ interface CoachChatProps {
   };
   autoOpen?: boolean;
   welcomeMessage?: string;
+  fullPage?: boolean;
 }
 
-export function CoachChat({ userContext, autoOpen = false, welcomeMessage }: CoachChatProps) {
-  const [isOpen, setIsOpen] = useState(autoOpen);
+export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullPage = false }: CoachChatProps) {
+  const [isOpen, setIsOpen] = useState(autoOpen || fullPage);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -224,6 +225,64 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage }: Coa
 
   const remainingMessages = !userContext?.isPremium ? Math.max(0, 10 - messageCount) : null;
 
+  if (fullPage) {
+    return (
+      <div className="flex flex-col h-full bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+        {/* Header */}
+        <div className="p-4 border-b bg-gradient-primary">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
+              <span className="text-2xl">💪</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-white">Coach</h3>
+              <p className="text-xs text-white/80">Your AI Fitness Companion</p>
+            </div>
+            {remainingMessages !== null && (
+              <div className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">
+                <Sparkles className="h-3 w-3 text-white" />
+                <span className="text-xs text-white font-semibold">{remainingMessages} left</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Messages */}
+        <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+          <div className="space-y-4">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                  msg.role === "user" ? "bg-gradient-primary text-white" : "bg-muted text-foreground"
+                }`}>
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                </div>
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-muted rounded-2xl px-4 py-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                </div>
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+
+        {/* Input */}
+        <div className="p-4 border-t">
+          <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
+            <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Coach anything..." disabled={isLoading} className="flex-1" />
+            <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="btn-gradient">
+              <Send className="h-4 w-4" />
+            </Button>
+          </form>
+          <p className="text-xs text-muted-foreground mt-2 text-center">Coach is AI-powered. Always consult your doctor for medical advice.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Floating button */}
@@ -232,7 +291,7 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage }: Coa
           if (!isOpen) analytics.coachChatOpened();
           setIsOpen(!isOpen);
         }}
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-xl btn-gradient z-50"
+        className="fixed bottom-20 right-6 h-14 w-14 rounded-full shadow-xl btn-gradient z-50"
         size="icon"
       >
         {isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
@@ -240,7 +299,7 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage }: Coa
 
       {/* Chat window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-[380px] h-[500px] bg-card rounded-2xl shadow-2xl border-2 border-primary/20 flex flex-col z-50 slide-up">
+        <div className="fixed bottom-36 right-6 w-[380px] h-[500px] bg-card rounded-2xl shadow-2xl border-2 border-primary/20 flex flex-col z-50 slide-up">
           {/* Header */}
           <div className="p-4 border-b bg-gradient-primary rounded-t-2xl">
             <div className="flex items-center gap-3">
@@ -264,17 +323,10 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage }: Coa
           <ScrollArea className="flex-1 p-4" ref={scrollRef}>
             <div className="space-y-4">
               {messages.map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-2xl px-4 py-2 ${
-                      msg.role === "user"
-                        ? "bg-gradient-primary text-white"
-                        : "bg-muted text-foreground"
-                    }`}
-                  >
+                <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <div className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                    msg.role === "user" ? "bg-gradient-primary text-white" : "bg-muted text-foreground"
+                  }`}>
                     <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                   </div>
                 </div>
@@ -291,32 +343,13 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage }: Coa
 
           {/* Input */}
           <div className="p-4 border-t">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSend();
-              }}
-              className="flex gap-2"
-            >
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask Coach anything..."
-                disabled={isLoading}
-                className="flex-1"
-              />
-              <Button
-                type="submit"
-                size="icon"
-                disabled={isLoading || !input.trim()}
-                className="btn-gradient"
-              >
+            <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
+              <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Coach anything..." disabled={isLoading} className="flex-1" />
+              <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="btn-gradient">
                 <Send className="h-4 w-4" />
               </Button>
             </form>
-            <p className="text-xs text-muted-foreground mt-2 text-center">
-              Coach is AI-powered. Always consult your doctor for medical advice.
-            </p>
+            <p className="text-xs text-muted-foreground mt-2 text-center">Coach is AI-powered. Always consult your doctor for medical advice.</p>
           </div>
         </div>
       )}
