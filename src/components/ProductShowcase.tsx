@@ -1,6 +1,4 @@
 import { Card, CardContent } from "@/components/ui/card";
-import dashboardImage from "@/assets/app-screenshot-dashboard.png";
-import trackingImage from "@/assets/app-screenshot-tracking.png";
 import { Target, TrendingUp, Heart, Calendar } from "lucide-react";
 
 const features = [
@@ -37,34 +35,6 @@ export const ProductShowcase = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             A simple, clean interface designed for consistency, not complexity
           </p>
-        </div>
-
-        {/* Screenshots */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
-          <Card className="border-primary/10 shadow-xl overflow-hidden">
-            <CardContent className="p-0">
-              <img 
-                src={dashboardImage} 
-                alt="Momentum dashboard showing goal cards, streak counters, and daily progress"
-                className="w-full h-auto"
-                loading="lazy"
-                width="1024"
-                height="768"
-              />
-            </CardContent>
-          </Card>
-          <Card className="border-primary/10 shadow-xl overflow-hidden">
-            <CardContent className="p-0">
-              <img 
-                src={trackingImage} 
-                alt="Goal tracking interface with weekly calendar and check-in history"
-                className="w-full h-auto"
-                loading="lazy"
-                width="1024"
-                height="768"
-              />
-            </CardContent>
-          </Card>
         </div>
 
         {/* Feature Grid */}
