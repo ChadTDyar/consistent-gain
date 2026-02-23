@@ -13,6 +13,7 @@ import { DataExport } from "@/components/DataExport";
 import { WorkoutBuddies } from "@/components/WorkoutBuddies";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DoctorReport } from "@/components/DoctorReport";
+import { FeedbackForm } from "@/components/FeedbackForm";
 
 interface Profile {
   id: string;
@@ -403,6 +404,9 @@ export default function Settings() {
               </AlertDialog>
             </CardContent>
           </Card>
+
+          {/* Feedback */}
+          <FeedbackForm />
 
           {/* Sign Out */}
           <Button 

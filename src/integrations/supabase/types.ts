@@ -406,6 +406,42 @@ export type Database = {
         }
         Relationships: []
       }
+      testimonials: {
+        Row: {
+          achievement: string | null
+          created_at: string
+          display_name: string
+          id: string
+          is_approved: boolean
+          location: string | null
+          quote: string
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          achievement?: string | null
+          created_at?: string
+          display_name: string
+          id?: string
+          is_approved?: boolean
+          location?: string | null
+          quote: string
+          rating?: number
+          user_id: string
+        }
+        Update: {
+          achievement?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_approved?: boolean
+          location?: string | null
+          quote?: string
+          rating?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       workout_buddies: {
         Row: {
           buddy_id: string
