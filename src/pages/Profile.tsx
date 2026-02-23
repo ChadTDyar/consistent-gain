@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { SEO } from "@/components/SEO";
 import {
   ArrowLeft, Loader2, Target, Activity, Flame, Calendar,
-  Crown, Mail, User, Edit2, Check, X, Trophy
+  Crown, Mail, User, Edit2, Check, X, Trophy, Camera
 } from "lucide-react";
 import { toast } from "sonner";
 import { calculateStreak, getUserActivityLogs } from "@/lib/streakUtils";
@@ -18,6 +18,7 @@ import { calculateStreak, getUserActivityLogs } from "@/lib/streakUtils";
 interface ProfileData {
   id: string;
   name: string | null;
+  avatar_url: string | null;
   is_premium: boolean | null;
   subscription_status: string | null;
   created_at: string | null;
@@ -47,6 +48,7 @@ export default function Profile() {
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState("");
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     loadAll();
@@ -130,6 +132,57 @@ export default function Profile() {
     setSaving(false);
   };
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !profile) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image must be under 2MB");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const filePath = `${profile.id}/avatar.${ext}`;
+
+      // Remove old avatar if exists
+      await supabase.storage.from("avatars").remove([filePath]);
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      const avatarUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: avatarUrl })
+        .eq("id", profile.id);
+
+      if (updateError) throw updateError;
+
+      setProfile({ ...profile, avatar_url: avatarUrl });
+      toast.success("Profile photo updated!");
+    } catch (err: any) {
+      console.error("Avatar upload error:", err);
+      toast.error("Failed to upload photo");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -172,10 +225,34 @@ export default function Profile() {
             </Button>
 
             <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6">
-              {/* Avatar */}
-              <div className="w-24 h-24 rounded-full bg-primary/20 border-4 border-background shadow-lg flex items-center justify-center text-primary text-3xl font-bold">
-                {initials}
-              </div>
+              {/* Avatar with upload */}
+              <label className="relative group cursor-pointer">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarUpload}
+                  disabled={uploading}
+                />
+                <div className="w-24 h-24 rounded-full border-4 border-background shadow-lg overflow-hidden bg-primary/20 flex items-center justify-center">
+                  {profile?.avatar_url ? (
+                    <img
+                      src={profile.avatar_url}
+                      alt="Profile photo"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-primary text-3xl font-bold">{initials}</span>
+                  )}
+                </div>
+                <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  {uploading ? (
+                    <Loader2 className="h-6 w-6 text-white animate-spin" />
+                  ) : (
+                    <Camera className="h-6 w-6 text-white" />
+                  )}
+                </div>
+              </label>
 
               <div className="text-center sm:text-left flex-1">
                 {editing ? (
