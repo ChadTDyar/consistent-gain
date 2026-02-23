@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { CookieConsent } from "@/components/CookieConsent";
+import { BottomTabBar } from "@/components/BottomTabBar";
 import { useEffect } from "react";
 import { notificationService } from "@/services/notifications.service";
 import Index from "./pages/Index";
@@ -21,6 +22,9 @@ import Cancel from "./pages/Cancel";
 import Welcome from "./pages/Welcome";
 import About from "./pages/About";
 import Progress from "./pages/Progress";
+import Library from "./pages/Library";
+import Track from "./pages/Track";
+import Coach from "./pages/Coach";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -59,9 +63,13 @@ const App = () => {
             <Route path="/welcome" element={<Welcome />} />
             <Route path="/about" element={<About />} />
             <Route path="/progress" element={<Progress />} />
+            <Route path="/library" element={<Library />} />
+            <Route path="/track" element={<Track />} />
+            <Route path="/coach" element={<Coach />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <BottomTabBar />
         </BrowserRouter>
       </TooltipProvider>
     </ErrorBoundary>
