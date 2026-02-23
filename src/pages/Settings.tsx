@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, LogOut, Download, Trash2, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Loader2, LogOut, Download, Trash2, AlertTriangle, ShieldCheck } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { DataExport } from "@/components/DataExport";
 import { WorkoutBuddies } from "@/components/WorkoutBuddies";
@@ -33,11 +34,35 @@ export default function Settings() {
   const [portalLoading, setPortalLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     loadProfile();
+    checkAdminStatus();
   }, []);
+
+  const checkAdminStatus = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id);
+
+    const hasAdmin = roles?.some((r: any) => r.role === "admin") ?? false;
+    setIsAdmin(hasAdmin);
+
+    if (hasAdmin) {
+      const { count } = await supabase
+        .from("testimonials")
+        .select("*", { count: "exact", head: true })
+        .eq("is_approved", false);
+      setPendingCount(count ?? 0);
+    }
+  };
 
   const loadProfile = async () => {
     const {
@@ -231,6 +256,28 @@ export default function Settings() {
         </h1>
 
         <div className="space-y-6 md:space-y-8">
+          {/* Admin Link */}
+          {isAdmin && (
+            <Card
+              className="border-none shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => navigate("/admin")}
+            >
+              <CardContent className="flex items-center justify-between py-5">
+                <div className="flex items-center gap-3">
+                  <ShieldCheck className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="font-display font-semibold text-foreground">Admin Dashboard</p>
+                    <p className="text-sm text-muted-foreground">Manage testimonials & feedback</p>
+                  </div>
+                </div>
+                {pendingCount > 0 && (
+                  <Badge variant="destructive" className="text-sm px-2.5 py-0.5">
+                    {pendingCount} pending
+                  </Badge>
+                )}
+              </CardContent>
+            </Card>
+          )}
           {/* Profile Section */}
           <Card className="border-none shadow-md">
             <CardHeader>
