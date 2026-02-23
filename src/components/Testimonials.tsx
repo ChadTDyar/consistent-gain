@@ -1,37 +1,57 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Star } from "lucide-react";
-import sarahImage from "@/assets/testimonial-sarah.jpg";
-import mikeImage from "@/assets/testimonial-mike.jpg";
-import jenniferImage from "@/assets/testimonial-jennifer.jpg";
+import { Star, MessageSquareHeart } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-const testimonials = [
-  {
-    name: "Sarah Mitchell",
-    age: 45,
-    location: "Portland, OR",
-    image: sarahImage,
-    quote: "After years of trying different apps, Momentum finally clicked. It doesn't judge me for missing days - it helps me get back on track. Down 22 lbs in 6 months.",
-    achievement: "6-month streak"
-  },
-  {
-    name: "Mike Rodriguez",
-    age: 52,
-    location: "Austin, TX",
-    image: mikeImage,
-    quote: "I'm not trying to be 25 again. I just want to feel good. Momentum gets that. Simple tracking, no pressure, real results.",
-    achievement: "Lost 18 lbs"
-  },
-  {
-    name: "Jennifer Chen",
-    age: 48,
-    location: "Seattle, WA",
-    image: jenniferImage,
-    quote: "The AI coach feels like having a supportive friend who understands that some weeks are harder than others. Game changer for staying consistent.",
-    achievement: "4-month streak"
-  }
-];
+interface Testimonial {
+  id: string;
+  display_name: string;
+  location: string | null;
+  quote: string;
+  achievement: string | null;
+  rating: number;
+}
 
 export const Testimonials = () => {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchApproved = async () => {
+      const { data } = await supabase
+        .from("testimonials")
+        .select("id, display_name, location, quote, achievement, rating")
+        .eq("is_approved", true)
+        .order("created_at", { ascending: false })
+        .limit(6);
+      setTestimonials(data ?? []);
+      setLoading(false);
+    };
+    fetchApproved();
+  }, []);
+
+  if (loading) return null;
+
+  // If no approved testimonials yet, show a CTA to leave feedback
+  if (testimonials.length === 0) {
+    return (
+      <section className="py-20 md:py-32 bg-background">
+        <div className="container mx-auto px-6 md:px-8 max-w-3xl text-center space-y-6">
+          <MessageSquareHeart className="h-12 w-12 text-primary mx-auto" />
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground">
+            What Our Users Say
+          </h2>
+          <p className="text-xl text-muted-foreground">
+            We're just getting started! Real stories from real users will appear here as our community grows.
+          </p>
+          <p className="text-muted-foreground">
+            Already a member? Share your experience from the Settings page.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-20 md:py-32 bg-background">
       <div className="container mx-auto px-6 md:px-8 max-w-7xl">
@@ -40,35 +60,33 @@ export const Testimonials = () => {
             Real People, Real Results
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Join over 5,000+ adults building sustainable fitness habits
+            Hear from members building sustainable fitness habits
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <Card key={index} className="border-primary/10 shadow-lg hover:shadow-xl transition-shadow">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {testimonials.map((t) => (
+            <Card key={t.id} className="border-primary/10 shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="pt-6 space-y-4">
                 <div className="flex gap-1 mb-2">
-                  {[...Array(5)].map((_, i) => (
+                  {[...Array(t.rating)].map((_, i) => (
                     <Star key={i} className="w-5 h-5 fill-primary text-primary" />
+                  ))}
+                  {[...Array(5 - t.rating)].map((_, i) => (
+                    <Star key={`e-${i}`} className="w-5 h-5 text-muted-foreground/30" />
                   ))}
                 </div>
                 <p className="text-foreground leading-relaxed italic">
-                  "{testimonial.quote}"
+                  "{t.quote}"
                 </p>
                 <div className="flex items-center gap-4 pt-4 border-t border-primary/10">
-                  <img 
-                    src={testimonial.image} 
-                    alt={`${testimonial.name}, age ${testimonial.age}`}
-                    className="w-16 h-16 rounded-full object-cover border-2 border-primary/20"
-                    loading="lazy"
-                    width="64"
-                    height="64"
-                  />
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
+                    {t.display_name.charAt(0).toUpperCase()}
+                  </div>
                   <div>
-                    <p className="font-semibold text-foreground">{testimonial.name}, {testimonial.age}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.location}</p>
-                    <p className="text-sm text-primary font-semibold mt-1">{testimonial.achievement}</p>
+                    <p className="font-semibold text-foreground">{t.display_name}</p>
+                    {t.location && <p className="text-sm text-muted-foreground">{t.location}</p>}
+                    {t.achievement && <p className="text-sm text-primary font-semibold mt-1">{t.achievement}</p>}
                   </div>
                 </div>
               </CardContent>
