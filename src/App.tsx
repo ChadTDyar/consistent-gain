@@ -26,6 +26,7 @@ import Library from "./pages/Library";
 import Track from "./pages/Track";
 import Coach from "./pages/Coach";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => {
             <Route path="/library" element={<Library />} />
             <Route path="/track" element={<Track />} />
             <Route path="/coach" element={<Coach />} />
+            <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
