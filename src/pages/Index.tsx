@@ -109,7 +109,7 @@ const Index = () => {
               <a href="#faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</a>
             </div>
             <Button size="sm" onClick={() => navigate("/auth")} className="btn-gradient">
-              Get Started
+              Start Free
             </Button>
           </div>
         </nav>
