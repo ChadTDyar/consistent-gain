@@ -4,11 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, ShieldCheck, BarChart3, Users, Star } from "lucide-react";
+import { ArrowLeft, ShieldCheck, BarChart3, Users, Star, FileText } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { AdminStats } from "@/components/admin/AdminStats";
 import { AdminUsers } from "@/components/admin/AdminUsers";
 import { AdminTestimonials } from "@/components/admin/AdminTestimonials";
+import { AdminBlog } from "@/components/admin/AdminBlog";
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ export default function Admin() {
           </div>
 
           <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4" /> Overview
               </TabsTrigger>
@@ -85,6 +86,9 @@ export default function Admin() {
               </TabsTrigger>
               <TabsTrigger value="testimonials" className="flex items-center gap-2">
                 <Star className="h-4 w-4" /> Testimonials
+              </TabsTrigger>
+              <TabsTrigger value="blog" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" /> Blog
               </TabsTrigger>
             </TabsList>
 
@@ -98,6 +102,10 @@ export default function Admin() {
 
             <TabsContent value="testimonials">
               <AdminTestimonials />
+            </TabsContent>
+
+            <TabsContent value="blog">
+              <AdminBlog />
             </TabsContent>
           </Tabs>
         </div>
