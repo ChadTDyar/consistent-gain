@@ -83,8 +83,26 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Navigation */}
+      <nav className="sticky top-0 z-20 bg-card/80 backdrop-blur-md border-b border-border shadow-sm">
+        <div className="container mx-auto px-6 md:px-8 max-w-7xl flex items-center justify-between py-3">
+          <div className="flex items-center gap-2">
+            <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
+            <span className="font-display font-bold text-lg text-gradient">Momentum</span>
+          </div>
+          <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <a href="#how-it-works" className="text-muted-foreground hover:text-primary transition-colors">How It Works</a>
+            <a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }}>Pricing</a>
+            <a href="#faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</a>
+          </div>
+          <Button size="sm" onClick={() => navigate("/auth")} className="btn-gradient">
+            Get Started
+          </Button>
+        </div>
+      </nav>
+
       {/* How It Works Section */}
-      <section className="py-20 md:py-32">
+      <section id="how-it-works" className="py-20 md:py-32">
         <div className="container mx-auto px-6 md:px-8 max-w-4xl">
           <div className="text-center space-y-8">
             <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground">
@@ -132,7 +150,9 @@ const Index = () => {
       <ComparisonTable />
 
       {/* FAQ Section */}
-      <FAQ />
+      <div id="faq">
+        <FAQ />
+      </div>
 
       {/* CTA Section */}
       <section className="relative py-24 md:py-32 overflow-hidden">

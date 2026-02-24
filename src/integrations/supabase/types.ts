@@ -323,6 +323,7 @@ export type Database = {
           id: string
           is_premium: boolean | null
           name: string | null
+          plan: string
           reminder_enabled: boolean | null
           subscription_status: string | null
           theme_preference: string | null
@@ -333,6 +334,7 @@ export type Database = {
           id: string
           is_premium?: boolean | null
           name?: string | null
+          plan?: string
           reminder_enabled?: boolean | null
           subscription_status?: string | null
           theme_preference?: string | null
@@ -343,6 +345,7 @@ export type Database = {
           id?: string
           is_premium?: boolean | null
           name?: string | null
+          plan?: string
           reminder_enabled?: boolean | null
           subscription_status?: string | null
           theme_preference?: string | null

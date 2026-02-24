@@ -9,16 +9,17 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, Sparkles } from "lucide-react";
+import { Heart, Sparkles, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 interface StreakRepairProps {
   daysMissed: number;
   open: boolean;
   onClose: () => void;
+  plan?: string;
 }
 
-export function StreakRepair({ daysMissed, open, onClose }: StreakRepairProps) {
+export function StreakRepair({ daysMissed, open, onClose, plan = 'free' }: StreakRepairProps) {
   const [response, setResponse] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -104,13 +105,24 @@ export function StreakRepair({ daysMissed, open, onClose }: StreakRepairProps) {
             >
               Just browsing
             </Button>
-            <Button
-              onClick={handleSave}
-              disabled={saving}
-              className="flex-1"
-            >
-              {saving ? "Saving..." : "Let's go"}
-            </Button>
+            {plan === 'free' ? (
+              <Button
+                onClick={() => { onClose(); window.location.href = '/pricing'; }}
+                className="flex-1"
+                variant="secondary"
+              >
+                <Lock className="mr-2 h-4 w-4" />
+                Upgrade to Repair
+              </Button>
+            ) : (
+              <Button
+                onClick={handleSave}
+                disabled={saving}
+                className="flex-1"
+              >
+                {saving ? "Saving..." : "Let's go"}
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>

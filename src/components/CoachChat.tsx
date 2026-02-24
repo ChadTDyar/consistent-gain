@@ -20,6 +20,7 @@ interface CoachChatProps {
     goalsCount?: number;
     lastActivity?: string;
     isPremium?: boolean;
+    plan?: string;
   };
   autoOpen?: boolean;
   welcomeMessage?: string;

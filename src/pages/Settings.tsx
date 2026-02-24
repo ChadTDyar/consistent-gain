@@ -23,6 +23,7 @@ interface Profile {
   reminder_enabled: boolean;
   is_premium: boolean;
   subscription_status: string | null;
+  plan: string;
 }
 
 export default function Settings() {
@@ -347,19 +348,24 @@ export default function Settings() {
           <Card className="border-none shadow-md">
             <CardHeader>
               <CardTitle className="text-2xl font-display font-semibold">Subscription</CardTitle>
-              <CardDescription className="text-base">Manage your premium membership</CardDescription>
+              <CardDescription className="text-base">Manage your membership</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border-l-4 border-l-primary">
                   <div>
-                    <p className="font-display font-semibold text-lg text-foreground">
-                      {profile?.is_premium ? "Premium" : "Free"} Plan
+                    <p className="font-display font-semibold text-lg text-foreground flex items-center gap-2">
+                      {(profile?.plan || 'free').charAt(0).toUpperCase() + (profile?.plan || 'free').slice(1)} Plan
+                      {profile?.plan && profile.plan !== 'free' && (
+                        <Badge className="text-xs uppercase">{profile.plan}</Badge>
+                      )}
                     </p>
                     <p className="text-base text-muted-foreground mt-1">
-                      {profile?.is_premium
-                        ? "You have access to all premium features"
-                        : "Upgrade to unlock all features"}
+                      {profile?.plan === 'pro' 
+                        ? "You have access to all features including AI Coach"
+                        : profile?.plan === 'plus'
+                        ? "You have access to unlimited goals & streak repair"
+                        : "Upgrade to unlock more features"}
                     </p>
                   </div>
                 </div>
@@ -386,7 +392,7 @@ export default function Settings() {
                     size="lg"
                     className="w-full shadow-sm hover:shadow-md font-semibold"
                   >
-                    Upgrade to Premium
+                    Upgrade
                   </Button>
                 )}
               </div>
