@@ -31,6 +31,9 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import Profile from "./pages/Profile";
 import ResetPassword from "./pages/ResetPassword";
+import HabitStreaksScience from "./pages/HabitStreaksScience";
+import FitnessHabitGuide from "./pages/FitnessHabitGuide";
+import FitnessTrackerVsHabitTracker from "./pages/FitnessTrackerVsHabitTracker";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +80,9 @@ const App = () => {
             <Route path="/admin" element={<Admin />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/resources/habit-streaks-science" element={<HabitStreaksScience />} />
+            <Route path="/resources/fitness-habit-guide" element={<FitnessHabitGuide />} />
+            <Route path="/resources/fitness-tracker-vs-habit-tracker" element={<FitnessTrackerVsHabitTracker />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

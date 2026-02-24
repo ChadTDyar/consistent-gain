@@ -46,7 +46,11 @@ const faqData: FAQItem[] = [
   },
   {
     question: "What if I miss a day? Will I lose my streak?",
-    answer: "If you miss a day, your streak resets, but your history remains. Momentum is about building consistent habits, not perfection. Every day is a new opportunity to continue building momentum."
+    answer: "Your streak doesn't reset on one bad day. Momentum uses a momentum score that rewards consistency over perfection. Plus, with Streak Repair (available on Plus and Pro plans), you can acknowledge missed days within 48 hours without losing your progress."
+  },
+  {
+    question: "How does accountability actually work?",
+    answer: "You set your preferred reminder time. Momentum sends a daily nudge. If you miss a day, you get a supportive 'get back on track' message — not a guilt trip. Your momentum score tracks your overall consistency, so a single missed day doesn't erase weeks of effort."
   },
   {
     question: "Do I need any special equipment or gym membership?",
