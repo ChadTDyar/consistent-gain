@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Plus, LogOut, Settings as SettingsIcon, TrendingUp, UserCircle } from "lucide-react";
+import { Loader2, Plus, LogOut, Settings as SettingsIcon, TrendingUp, UserCircle, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { ProgressTab } from "@/components/ProgressTab";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -20,12 +20,16 @@ import { calculateStreak, getUserActivityLogs, getDaysSinceLastActivity } from "
 import { MicroblockSuggestion } from "@/components/MicroblockSuggestion";
 import { DailyContext } from "@/components/DailyContext";
 import { StreakRepair } from "@/components/StreakRepair";
+import PaywallModal from "@/components/PaywallModal";
 import momentumLogo from "@/assets/momentum-logo.png";
+import { type PlanTier, canAccessFeature, getGoalLimit } from "@/lib/plans";
+import { Badge } from "@/components/ui/badge";
 
 interface Profile {
   id: string;
   name: string | null;
   is_premium: boolean;
+  plan: string;
 }
 
 interface Goal {
@@ -50,7 +54,12 @@ export default function Dashboard() {
   const [welcomeMessage, setWelcomeMessage] = useState("");
   const [showStreakRepair, setShowStreakRepair] = useState(false);
   const [showMicroblock, setShowMicroblock] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [paywallFeature, setPaywallFeature] = useState<string>('goals');
+  const [paywallPlan, setPaywallPlan] = useState<PlanTier>('plus');
   const navigate = useNavigate();
+
+  const plan = (profile?.plan || 'free') as PlanTier;
 
   useEffect(() => {
     checkAuth();
@@ -58,7 +67,20 @@ export default function Dashboard() {
     loadGoals();
     loadStreakData();
     checkTriggerMessages();
+    checkSubscription();
   }, []);
+
+  const checkSubscription = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('check-subscription');
+      if (!error && data?.plan) {
+        // Profile will be updated server-side, just reload
+        loadProfile();
+      }
+    } catch (e) {
+      // Silent fail - profile data is still available
+    }
+  };
 
   const loadStreakData = async () => {
     const logs = await getUserActivityLogs();
@@ -72,7 +94,6 @@ export default function Dashboard() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    // Check for new user welcome
     const { data: goals } = await supabase
       .from("goals")
       .select("id")
@@ -80,7 +101,6 @@ export default function Dashboard() {
 
     const isNewUser = !goals || goals.length === 0;
 
-    // Check if triggers have been sent
     const { data: triggers } = await supabase
       .from("coach_triggers")
       .select("trigger_type")
@@ -92,13 +112,11 @@ export default function Dashboard() {
       setWelcomeMessage("Welcome to Momentum! I'm Coach, your AI fitness companion. I'm here to help you build sustainable habits. Want help setting your first goal?");
       setShowWelcome(true);
       
-      // Mark welcome as sent
       await supabase.from("coach_triggers").insert({
         user_id: user.id,
         trigger_type: "welcome"
       });
     } else {
-      // Check for 7-day streak celebration
       const logs = await getUserActivityLogs();
       const currentStreak = calculateStreak(logs);
       
@@ -112,7 +130,6 @@ export default function Dashboard() {
         });
       }
 
-      // Check for missed 3+ days - show streak repair
       const daysSince = getDaysSinceLastActivity(logs);
       if (daysSince >= 3 && !sentTriggers.has("missed_3_days")) {
         setShowStreakRepair(true);
@@ -126,18 +143,14 @@ export default function Dashboard() {
   };
 
   const checkAuth = async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+    const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       navigate("/auth");
     }
   };
 
   const loadProfile = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
     const { data, error } = await supabase
@@ -156,9 +169,7 @@ export default function Dashboard() {
 
   const loadGoals = async () => {
     setLoading(true);
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
     const { data, error } = await supabase
@@ -182,20 +193,16 @@ export default function Dashboard() {
   };
 
   const canAddGoal = () => {
-    if (profile?.is_premium) {
-      return true; // Unlimited goals for premium
-    }
-    return goals.length < 3; // Free users get 3 goals
+    const limit = getGoalLimit(plan);
+    if (limit === null) return true;
+    return goals.length < limit;
   };
 
   const handleAddGoal = () => {
     if (!canAddGoal()) {
-      toast.error("Upgrade to premium to add more goals", {
-        action: {
-          label: "Upgrade",
-          onClick: () => navigate("/pricing"),
-        },
-      });
+      setPaywallFeature('goals');
+      setPaywallPlan('plus');
+      setShowPaywall(true);
       return;
     }
     setShowAddGoal(true);
@@ -232,14 +239,19 @@ export default function Dashboard() {
           >
             <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
             <h1 className="text-2xl md:text-3xl font-display font-bold text-gradient">Momentum</h1>
+            {plan !== 'free' && (
+              <Badge variant="secondary" className="text-xs font-bold uppercase">
+                {plan}
+              </Badge>
+            )}
           </div>
           <div className="flex gap-2">
-            {!profile?.is_premium && (
+            {plan === 'free' && (
               <Button 
                 onClick={() => navigate("/pricing")} 
                 className="hidden sm:flex shadow-md hover:shadow-lg transition-all btn-gradient"
               >
-                Upgrade to Premium
+                Upgrade
               </Button>
             )}
             <ThemeToggle />
@@ -359,22 +371,21 @@ export default function Dashboard() {
                 />
               ))}
             </div>
-            {canAddGoal() && (
-              <Button 
-                onClick={handleAddGoal} 
-                size="lg"
-                className="w-full md:w-auto shadow-sm hover:shadow-md"
-              >
-                <Plus className="mr-2 h-5 w-5" />
-                Add New Goal
-              </Button>
-            )}
+            <Button 
+              onClick={handleAddGoal} 
+              size="lg"
+              className="w-full md:w-auto shadow-sm hover:shadow-md"
+            >
+              <Plus className="mr-2 h-5 w-5" />
+              Add New Goal
+              {!canAddGoal() && <Lock className="ml-2 h-4 w-4" />}
+            </Button>
           </>
         )}
           </TabsContent>
 
           <TabsContent value="progress">
-            <ProgressTab />
+            <ProgressTab plan={plan} />
           </TabsContent>
         </Tabs>
       </main>
@@ -400,6 +411,7 @@ export default function Dashboard() {
                        daysSinceActivity === 1 ? "Active yesterday" : 
                        `${daysSinceActivity} days since last activity`,
           isPremium: profile?.is_premium || false,
+          plan,
         }}
         autoOpen={showWelcome}
         welcomeMessage={welcomeMessage}
@@ -409,6 +421,14 @@ export default function Dashboard() {
         daysMissed={daysSinceActivity}
         open={showStreakRepair}
         onClose={() => setShowStreakRepair(false)}
+        plan={plan}
+      />
+
+      <PaywallModal
+        open={showPaywall}
+        onOpenChange={setShowPaywall}
+        feature={paywallFeature}
+        requiredPlan={paywallPlan}
       />
     </div>
   );

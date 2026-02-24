@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Flame, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Flame, Loader2, Lock } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { subDays, startOfWeek, endOfWeek, isWithinInterval, format } from "date-fns";
+import { type PlanTier, getHistoryDays } from "@/lib/plans";
 
 interface ActivityLog {
   id: string;
@@ -12,7 +14,11 @@ interface ActivityLog {
   rpe_rating: number | null;
 }
 
-export function ProgressTab() {
+interface ProgressTabProps {
+  plan?: PlanTier;
+}
+
+export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState<any[]>([]);
@@ -31,13 +37,13 @@ export function ProgressTab() {
       return;
     }
 
-    // Load last 30 days of activity logs with ratings
-    const thirtyDaysAgo = subDays(new Date(), 30);
+    const historyDays = getHistoryDays(plan) ?? 365;
+    const daysAgo = subDays(new Date(), historyDays);
     const { data, error } = await supabase
       .from("activity_logs")
       .select("*")
       .eq("user_id", user.id)
-      .gte("completed_at", thirtyDaysAgo.toISOString())
+      .gte("completed_at", daysAgo.toISOString())
       .order("completed_at", { ascending: true });
 
     if (error) {
@@ -172,8 +178,14 @@ export function ProgressTab() {
       {/* Ratings Chart */}
       <Card className="border-none shadow-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-display font-semibold">Wellness Ratings (Last 30 Days)</CardTitle>
-          <CardDescription className="text-base">Track how you feel after workouts</CardDescription>
+          <CardTitle className="text-2xl font-display font-semibold">
+            Wellness Ratings (Last {getHistoryDays(plan) ?? '∞'} Days)
+            {plan === 'free' && <Lock className="inline ml-2 h-4 w-4 text-muted-foreground" />}
+          </CardTitle>
+          <CardDescription className="text-base">
+            Track how you feel after workouts
+            {plan === 'free' && <span className="text-primary ml-1 text-xs font-semibold">Upgrade for 30+ days</span>}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={300}>
