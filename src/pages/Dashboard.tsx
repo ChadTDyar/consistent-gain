@@ -239,11 +239,15 @@ export default function Dashboard() {
           >
             <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
             <h1 className="text-2xl md:text-3xl font-display font-bold text-gradient">Momentum</h1>
-            {plan !== 'free' && (
-              <Badge variant="secondary" className="text-xs font-bold uppercase">
-                {plan}
-              </Badge>
-            )}
+            <Badge 
+              variant={plan === 'free' ? 'outline' : 'secondary'} 
+              className={`text-xs font-bold uppercase ${
+                plan === 'pro' ? 'bg-secondary text-secondary-foreground' : 
+                plan === 'plus' ? 'badge-premium' : ''
+              }`}
+            >
+              {plan}
+            </Badge>
           </div>
           <div className="flex gap-2">
             {plan === 'free' && (
