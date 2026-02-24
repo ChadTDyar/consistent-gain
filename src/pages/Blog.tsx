@@ -127,7 +127,7 @@ export default function Blog() {
                 </a>
               </p>
               <nav className="flex gap-6 text-sm">
-                <a href="/about" className="text-muted-foreground hover:text-primary transition-colors font-medium">Other Apps</a>
+                <a href="/story" className="text-muted-foreground hover:text-primary transition-colors font-medium">Our Story</a>
                 <a href="mailto:support@momentumfit.app" className="text-muted-foreground hover:text-primary transition-colors font-medium">Contact</a>
                 <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors font-medium">Privacy</a>
               </nav>

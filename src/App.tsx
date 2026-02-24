@@ -66,6 +66,7 @@ const App = () => {
             <Route path="/success" element={<Success />} />
             <Route path="/cancel" element={<Cancel />} />
             <Route path="/welcome" element={<Welcome />} />
+            <Route path="/story" element={<About />} />
             <Route path="/about" element={<About />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
