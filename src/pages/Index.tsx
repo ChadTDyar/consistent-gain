@@ -10,6 +10,7 @@ import { FAQ } from "@/components/FAQ";
 import { Testimonials } from "@/components/Testimonials";
 import { ProductShowcase } from "@/components/ProductShowcase";
 import { ComparisonTable } from "@/components/ComparisonTable";
+import { DemoPreview } from "@/components/DemoPreview";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -144,6 +145,9 @@ const Index = () => {
 
       {/* Product Showcase */}
       <ProductShowcase />
+
+      {/* Interactive Demo */}
+      <DemoPreview />
 
       {/* Testimonials Section */}
       <Testimonials />
