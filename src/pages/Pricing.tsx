@@ -294,7 +294,14 @@ export default function Pricing() {
                       <th className="text-left p-4 font-semibold text-foreground">Feature</th>
                       <th className="text-center p-4 font-semibold text-foreground">Free</th>
                       <th className="text-center p-4 font-semibold text-primary">Plus</th>
-                      <th className="text-center p-4 font-semibold text-secondary">Pro</th>
+                      <th className="text-center p-4 font-semibold text-secondary relative">
+                        <div className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-full">
+                          <span className="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-t-lg font-bold text-secondary-foreground" style={{ background: 'var(--gradient-secondary)' }}>
+                            <Crown className="h-3 w-3" /> Best Value
+                          </span>
+                        </div>
+                        Pro
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -312,7 +319,7 @@ export default function Pricing() {
                       <tr key={i} className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors">
                         <td className="p-4 font-medium text-foreground">{row.feature}</td>
                         {[row.free, row.plus, row.pro].map((val, j) => (
-                          <td key={j} className="p-4 text-center">
+                          <td key={j} className={`p-4 text-center ${j === 2 ? 'bg-secondary/5' : ''}`}>
                             {val === true ? (
                               <CheckCircle className="h-5 w-5 text-success mx-auto" />
                             ) : val === false ? (
