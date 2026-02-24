@@ -281,6 +281,55 @@ export default function Pricing() {
             No ads. No data selling. Cancel anytime.
           </p>
 
+          {/* Feature Comparison Table */}
+          <div className="mt-20 max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-center mb-8 text-foreground">
+              Compare All Features
+            </h2>
+            <Card className="border-primary/10 shadow-xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="text-left p-4 font-semibold text-foreground">Feature</th>
+                      <th className="text-center p-4 font-semibold text-foreground">Free</th>
+                      <th className="text-center p-4 font-semibold text-primary">Plus</th>
+                      <th className="text-center p-4 font-semibold text-secondary">Pro</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { feature: "Fitness goals", free: "Up to 3", plus: "Unlimited", pro: "Unlimited" },
+                      { feature: "Daily check-ins", free: true, plus: true, pro: true },
+                      { feature: "Streak tracking", free: "7 days", plus: "30 days", pro: "Unlimited" },
+                      { feature: "Progress graphs", free: "Basic", plus: "Enhanced", pro: "Full" },
+                      { feature: "Streak Repair", free: false, plus: true, pro: true },
+                      { feature: "Weekly email summary", free: false, plus: true, pro: true },
+                      { feature: "AI Coach", free: false, plus: false, pro: true },
+                      { feature: "CSV data export", free: false, plus: false, pro: true },
+                      { feature: "Priority support", free: false, plus: false, pro: true },
+                    ].map((row, i) => (
+                      <tr key={i} className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors">
+                        <td className="p-4 font-medium text-foreground">{row.feature}</td>
+                        {[row.free, row.plus, row.pro].map((val, j) => (
+                          <td key={j} className="p-4 text-center">
+                            {val === true ? (
+                              <CheckCircle className="h-5 w-5 text-success mx-auto" />
+                            ) : val === false ? (
+                              <span className="text-muted-foreground/40">—</span>
+                            ) : (
+                              <span className="text-muted-foreground">{val}</span>
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          </div>
+
           {/* FAQ Section */}
           <div className="mt-20 max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-display font-bold text-center mb-8 text-foreground">
