@@ -1,21 +1,26 @@
 // Stripe plan configuration
 export const PLANS = {
-  free: { name: 'Free', price: 0, price_id: null, product_id: null },
+  free: { name: 'Free', price: 0, annualPrice: 0, price_id: null, annual_price_id: null, product_id: null },
   plus: {
     name: 'Plus',
     price: 4.99,
+    annualPrice: 47.90,
     price_id: 'price_1T49SULnv14mW4wIBpFYk44h',
+    annual_price_id: 'price_1T49idLnv14mW4wImXTvjP2r',
     product_id: 'prod_U2Duyohl5m98ud',
   },
   pro: {
     name: 'Pro',
     price: 9.99,
+    annualPrice: 95.90,
     price_id: 'price_1T49VZLnv14mW4wIoZHM6DtD',
+    annual_price_id: 'price_1T49j5Lnv14mW4wIXnGPA0dn',
     product_id: 'prod_U2Dxf2eZc9xwan',
   },
 } as const;
 
 export type PlanTier = 'free' | 'plus' | 'pro';
+export type BillingInterval = 'monthly' | 'annual';
 
 export function getPlanFromProductId(productId: string | null): PlanTier {
   if (!productId) return 'free';

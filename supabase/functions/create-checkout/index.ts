@@ -7,9 +7,15 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const PRICES: Record<string, string> = {
-  plus: "price_1T49SULnv14mW4wIBpFYk44h",
-  pro: "price_1T49VZLnv14mW4wIoZHM6DtD",
+const PRICES: Record<string, Record<string, string>> = {
+  plus: {
+    monthly: "price_1T49SULnv14mW4wIBpFYk44h",
+    annual: "price_1T49idLnv14mW4wImXTvjP2r",
+  },
+  pro: {
+    monthly: "price_1T49VZLnv14mW4wIoZHM6DtD",
+    annual: "price_1T49j5Lnv14mW4wIXnGPA0dn",
+  },
 };
 
 const logStep = (step: string, details?: any) => {
@@ -30,18 +36,19 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const { plan, priceId: legacyPriceId } = await req.json();
+    const { plan, interval = 'monthly', priceId: legacyPriceId } = await req.json();
     
     // Support both new plan-based and legacy priceId-based requests
     let resolvedPriceId: string;
     if (plan && PRICES[plan]) {
-      resolvedPriceId = PRICES[plan];
+      const billingInterval = interval === 'annual' ? 'annual' : 'monthly';
+      resolvedPriceId = PRICES[plan][billingInterval];
     } else if (legacyPriceId) {
       resolvedPriceId = legacyPriceId;
     } else {
       throw new Error("plan ('plus' or 'pro') or priceId is required");
     }
-    logStep("Request parsed", { plan, priceId: resolvedPriceId });
+    logStep("Request parsed", { plan, interval, priceId: resolvedPriceId });
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");

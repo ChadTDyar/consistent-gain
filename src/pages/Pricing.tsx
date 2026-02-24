@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Star, Crown, Zap } from "lucide-react";
+import { CheckCircle, Star, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { analytics } from "@/lib/analytics";
 import { SEO } from "@/components/SEO";
-import { PLANS, type PlanTier } from "@/lib/plans";
+import { PLANS, type PlanTier, type BillingInterval } from "@/lib/plans";
 import {
   Accordion,
   AccordionContent,
@@ -19,6 +19,7 @@ export default function Pricing() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<PlanTier>('free');
+  const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
 
   useEffect(() => {
     checkSubscription();
@@ -48,7 +49,7 @@ export default function Pricing() {
       }
       analytics.checkoutStarted();
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { plan }
+        body: { plan, interval: billingInterval }
       });
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
@@ -58,6 +59,14 @@ export default function Pricing() {
     } finally {
       setLoading(null);
     }
+  };
+
+  const getPrice = (plan: 'plus' | 'pro') => {
+    if (billingInterval === 'annual') {
+      const monthlyEquiv = (PLANS[plan].annualPrice / 12).toFixed(2);
+      return monthlyEquiv;
+    }
+    return PLANS[plan].price.toFixed(2);
   };
 
   const freeFeatures = [
@@ -115,9 +124,36 @@ export default function Pricing() {
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-gradient">
               Choose your plan
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground">
+            <p className="text-lg md:text-xl text-muted-foreground mb-8">
               Sustainable fitness starts here. Pick what works for you.
             </p>
+
+            {/* Billing Toggle */}
+            <div className="inline-flex items-center gap-1 rounded-full bg-muted p-1">
+              <button
+                onClick={() => setBillingInterval('monthly')}
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                  billingInterval === 'monthly'
+                    ? 'bg-primary text-primary-foreground shadow-md'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setBillingInterval('annual')}
+                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-2 ${
+                  billingInterval === 'annual'
+                    ? 'bg-primary text-primary-foreground shadow-md'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Annual
+                <span className="inline-flex items-center rounded-full bg-success/20 text-success px-2 py-0.5 text-xs font-bold">
+                  Save 20%
+                </span>
+              </button>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
@@ -162,8 +198,16 @@ export default function Pricing() {
                 </CardTitle>
                 <CardDescription className="text-base">Unlimited goals & streak repair</CardDescription>
                 <div className="mt-6">
-                  <span className="text-5xl font-display font-bold text-primary">$4.99</span>
-                  <span className="text-lg text-muted-foreground">/month</span>
+                  <span className="text-5xl font-display font-bold text-primary">${getPrice('plus')}</span>
+                  <span className="text-lg text-muted-foreground">/mo</span>
+                  {billingInterval === 'annual' && (
+                    <div className="mt-1">
+                      <span className="text-sm text-muted-foreground line-through">${PLANS.plus.price.toFixed(2)}/mo</span>
+                      <span className="text-sm font-semibold text-success ml-2">
+                        ${PLANS.plus.annualPrice.toFixed(2)}/yr
+                      </span>
+                    </div>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -198,8 +242,16 @@ export default function Pricing() {
                 </CardTitle>
                 <CardDescription className="text-base">AI Coach & unlimited everything</CardDescription>
                 <div className="mt-6">
-                  <span className="text-5xl font-display font-bold text-secondary">$9.99</span>
-                  <span className="text-lg text-muted-foreground">/month</span>
+                  <span className="text-5xl font-display font-bold text-secondary">${getPrice('pro')}</span>
+                  <span className="text-lg text-muted-foreground">/mo</span>
+                  {billingInterval === 'annual' && (
+                    <div className="mt-1">
+                      <span className="text-sm text-muted-foreground line-through">${PLANS.pro.price.toFixed(2)}/mo</span>
+                      <span className="text-sm font-semibold text-success ml-2">
+                        ${PLANS.pro.annualPrice.toFixed(2)}/yr
+                      </span>
+                    </div>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
