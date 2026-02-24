@@ -19,7 +19,7 @@ export const SEO = ({
   schema
 }: SEOProps) => {
   const location = useLocation();
-  const currentUrl = `https://af90df1a-1719-4ec1-9421-71d77a47a441.lovableproject.com${location.pathname}`;
+  const currentUrl = `https://momentumfit.app${location.pathname}`;
   const canonicalUrl = canonical || currentUrl;
 
   useEffect(() => {
