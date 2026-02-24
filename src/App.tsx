@@ -34,6 +34,7 @@ import ResetPassword from "./pages/ResetPassword";
 import HabitStreaksScience from "./pages/HabitStreaksScience";
 import FitnessHabitGuide from "./pages/FitnessHabitGuide";
 import FitnessTrackerVsHabitTracker from "./pages/FitnessTrackerVsHabitTracker";
+import Insights from "./pages/Insights";
 
 const queryClient = new QueryClient();
 
@@ -80,6 +81,7 @@ const App = () => {
             <Route path="/admin" element={<Admin />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/insights" element={<Insights />} />
             <Route path="/resources/habit-streaks-science" element={<HabitStreaksScience />} />
             <Route path="/resources/fitness-habit-guide" element={<FitnessHabitGuide />} />
             <Route path="/resources/fitness-tracker-vs-habit-tracker" element={<FitnessTrackerVsHabitTracker />} />
