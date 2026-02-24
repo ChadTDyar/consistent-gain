@@ -15,6 +15,7 @@ import { WorkoutBuddies } from "@/components/WorkoutBuddies";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DoctorReport } from "@/components/DoctorReport";
 import { FeedbackForm } from "@/components/FeedbackForm";
+import { IntegrationHooks } from "@/components/IntegrationHooks";
 
 interface Profile {
   id: string;
@@ -407,6 +408,9 @@ export default function Settings() {
 
           {/* Workout Buddies */}
           <WorkoutBuddies />
+
+          {/* Integrations Roadmap */}
+          <IntegrationHooks />
 
           {/* Original Data Management Card - keeping for delete account */}
           <Card className="border-none shadow-md">
