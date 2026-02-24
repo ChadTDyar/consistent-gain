@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { format } from "date-fns";
+import DOMPurify from "dompurify";
 
 export default function BlogPost() {
   const navigate = useNavigate();
@@ -118,7 +119,12 @@ export default function BlogPost() {
                   prose-strong:text-foreground
                   prose-li:text-muted-foreground
                   prose-blockquote:border-primary prose-blockquote:text-muted-foreground"
-                dangerouslySetInnerHTML={{ __html: post.content }}
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(post.content, {
+                    ALLOWED_TAGS: ['h2', 'h3', 'h4', 'p', 'a', 'ul', 'ol', 'li', 'strong', 'em', 'blockquote', 'br', 'span'],
+                    ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+                  }),
+                }}
               />
 
               {/* CTA */}
