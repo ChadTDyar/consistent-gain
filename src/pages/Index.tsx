@@ -93,8 +93,9 @@ const Index = () => {
           <div className="hidden md:flex items-center gap-6 text-sm font-medium">
             <a href="#how-it-works" className="text-muted-foreground hover:text-primary transition-colors">How It Works</a>
             <a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }}>Pricing</a>
-            <a href="#faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</a>
             <a href="/blog" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/blog"); }}>Blog</a>
+            <a href="/story" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/story"); }}>Our Story</a>
+            <a href="#faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</a>
           </div>
           <Button size="sm" onClick={() => navigate("/auth")} className="btn-gradient">
             Get Started
@@ -193,8 +194,8 @@ const Index = () => {
               <a href="/blog" className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 Blog
               </a>
-              <a href="/about" className="text-muted-foreground hover:text-primary transition-colors font-medium">
-                Other Apps
+              <a href="/story" className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                Our Story
               </a>
               <a href="mailto:support@momentumfit.app" className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 Contact
