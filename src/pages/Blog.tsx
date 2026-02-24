@@ -41,7 +41,7 @@ export default function Blog() {
               <span className="font-display font-bold text-lg text-gradient">Momentum</span>
             </div>
             <Button size="sm" onClick={() => navigate("/auth")} className="btn-gradient">
-              Get Started
+              Start Free
             </Button>
           </div>
         </nav>

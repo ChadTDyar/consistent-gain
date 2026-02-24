@@ -50,7 +50,7 @@ export default function About() {
               <a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }}>Pricing</a>
             </div>
             <Button size="sm" onClick={() => navigate("/auth")} className="btn-gradient">
-              Get Started
+              Start Free
             </Button>
           </div>
         </nav>

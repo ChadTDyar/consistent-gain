@@ -66,7 +66,7 @@ export default function BlogPost() {
               <span className="font-display font-bold text-lg text-gradient">Momentum</span>
             </div>
             <Button size="sm" onClick={() => navigate("/auth")} className="btn-gradient">
-              Get Started
+              Start Free
             </Button>
           </div>
         </nav>
@@ -137,7 +137,7 @@ export default function BlogPost() {
                   variant="secondary"
                   className="bg-white text-primary hover:bg-white hover:scale-105 transition-all font-semibold"
                 >
-                  Start Your Journey
+                  Start your streak — free for 30 days
                 </Button>
               </div>
             </>

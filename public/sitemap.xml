@@ -2,32 +2,56 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://momentumfit.app/</loc>
-    <lastmod>2025-10-04</lastmod>
+    <lastmod>2026-02-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://momentumfit.app/pricing</loc>
-    <lastmod>2025-10-04</lastmod>
+    <lastmod>2026-02-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://momentumfit.app/about</loc>
-    <lastmod>2025-10-04</lastmod>
+    <loc>https://momentumfit.app/story</loc>
+    <lastmod>2026-02-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://momentumfit.app/blog</loc>
+    <lastmod>2026-02-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://momentumfit.app/resources/habit-streaks-science</loc>
+    <lastmod>2026-02-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://momentumfit.app/resources/fitness-habit-guide</loc>
+    <lastmod>2026-02-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://momentumfit.app/resources/fitness-tracker-vs-habit-tracker</loc>
+    <lastmod>2026-02-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://momentumfit.app/privacy</loc>
-    <lastmod>2025-10-04</lastmod>
+    <lastmod>2026-02-24</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.3</priority>
   </url>
   <url>
     <loc>https://momentumfit.app/terms</loc>
-    <lastmod>2025-10-04</lastmod>
+    <lastmod>2026-02-24</lastmod>
     <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.3</priority>
   </url>
 </urlset>
