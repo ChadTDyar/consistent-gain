@@ -89,7 +89,7 @@ export default function Insights() {
 
   return (
     <>
-      <SEO title="Insights — Momentum" description="AI-powered weekly intelligence report on your fitness habits." />
+      <SEO title="Insights - Momentum" description="AI-powered weekly intelligence report on your fitness habits." />
       <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} feature="ai_coach" requiredPlan="plus" />
 
       <div className="min-h-screen bg-background-cream pb-24">
@@ -261,7 +261,7 @@ export default function Insights() {
                 <Sparkles className="h-5 w-5 text-primary" />
                 AI Pattern Analysis
                 {plan === "free" && <Lock className="h-4 w-4 text-muted-foreground" />}
-                {plan === "pro" && <Badge className="text-xs">Pro — Deep Analysis</Badge>}
+                {plan === "pro" && <Badge className="text-xs">Pro - Deep Analysis</Badge>}
                 {plan === "plus" && <Badge variant="secondary" className="text-xs">Plus</Badge>}
               </CardTitle>
               <CardDescription>

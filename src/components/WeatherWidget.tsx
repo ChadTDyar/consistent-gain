@@ -52,26 +52,26 @@ export function WeatherWidget() {
           // Weather recommendations based on temperature
           if (temp >= 90) {
             condition = "Hot";
-            recommendation = "It's very hot—consider indoor workouts or early morning exercise";
+            recommendation = "It's very hot - consider indoor workouts or early morning exercise";
           } else if (temp >= 80) {
             condition = "Warm";
-            recommendation = "Warm weather—stay hydrated during outdoor activities";
+            recommendation = "Warm weather - stay hydrated during outdoor activities";
           } else if (temp <= 32) {
             condition = "Cold";
-            recommendation = "It's cold—warm up properly before outdoor exercise";
+            recommendation = "It's cold - warm up properly before outdoor exercise";
           } else if (windSpeed > 20) {
             condition = "Windy";
-            recommendation = "High winds—indoor activities recommended";
+            recommendation = "High winds - indoor activities recommended";
           }
 
           // Air quality recommendations
           let airQuality: "good" | "moderate" | "poor" = "good";
           if (aqi > 100) {
             airQuality = "poor";
-            recommendation = "Poor air quality—indoor exercise recommended";
+            recommendation = "Poor air quality - indoor exercise recommended";
           } else if (aqi > 50) {
             airQuality = "moderate";
-            recommendation = "Moderate air quality—limit intense outdoor activity";
+            recommendation = "Moderate air quality - limit intense outdoor activity";
           }
 
           setWeather({

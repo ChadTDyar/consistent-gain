@@ -61,7 +61,7 @@ export default function Blog() {
               The Momentum Blog
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Real advice for building fitness habits that stick — written for adults who've been around the block.
+              Real advice for building fitness habits that stick - written for adults who've been around the block.
             </p>
           </div>
 
@@ -111,7 +111,7 @@ export default function Blog() {
             </div>
           ) : (
             <p className="text-center text-muted-foreground text-lg">
-              No posts yet — check back soon!
+              No posts yet - check back soon!
             </p>
           )}
         </div>

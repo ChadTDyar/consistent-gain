@@ -50,7 +50,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "How does accountability actually work?",
-    answer: "You set your preferred reminder time. Momentum sends a daily nudge. If you miss a day, you get a supportive 'get back on track' message — not a guilt trip. Your momentum score tracks your overall consistency, so a single missed day doesn't erase weeks of effort."
+    answer: "You set your preferred reminder time. Momentum sends a daily nudge. If you miss a day, you get a supportive 'get back on track' message - not a guilt trip. Your momentum score tracks your overall consistency, so a single missed day doesn't erase weeks of effort."
   },
   {
     question: "Do I need any special equipment or gym membership?",

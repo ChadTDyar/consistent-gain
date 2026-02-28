@@ -8,7 +8,7 @@ const storySchema = {
   "@context": "https://schema.org",
   "@type": "Article",
   headline: "Our Story: Why Momentum Was Built for Adults 40+ Who Need Sustainable Fitness Habits",
-  description: "After losing 100 pounds at 30 and maintaining it for 20 years, the founder built Momentum — a fitness habit tracker for adults 40+ who need consistency over intensity.",
+  description: "After losing 100 pounds at 30 and maintaining it for 20 years, the founder built Momentum - a fitness habit tracker for adults 40+ who need consistency over intensity.",
   author: {
     "@type": "Person",
     name: "Chad T Dyar",
@@ -31,8 +31,8 @@ export default function About() {
   return (
     <>
       <SEO 
-        title="Our Story — How Losing 100lbs Led to Momentum | Fitness Habits for Adults 40+"
-        description="After losing 100 pounds at 30 and spending 20 years keeping it off, I built Momentum — a fitness habit tracker for adults 40+ who need consistency, not perfection."
+        title="Our Story - How Losing 100lbs Led to Momentum | Fitness Habits for Adults 40+"
+        description="After losing 100 pounds at 30 and spending 20 years keeping it off, I built Momentum - a fitness habit tracker for adults 40+ who need consistency, not perfection."
         keywords="fitness journey after 40, weight loss maintenance, sustainable fitness habits, fitness app origin story, building habits over 40, fitness consistency, habit tracker for adults, midlife fitness, exercise motivation over 50"
         canonical="https://consistent-gain.lovable.app/story"
         schema={storySchema}
@@ -77,18 +77,18 @@ export default function About() {
 
           <div className="prose prose-lg max-w-none space-y-8 text-foreground">
             
-            {/* The Origin — SEO-rich narrative */}
+            {/* The Origin - SEO-rich narrative */}
             <section className="bg-card rounded-xl p-6 md:p-8 shadow-md">
               <h2 className="text-3xl font-display font-bold mb-4 text-foreground">The 100-Pound Wake-Up Call</h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  When I was 30, I lost over a hundred pounds. It changed everything — my confidence, my energy, my outlook. But here's what nobody tells you about massive weight loss: <strong className="text-foreground">keeping it off is the harder part.</strong>
+                  When I was 30, I lost over a hundred pounds. It changed everything - my confidence, my energy, my outlook. But here's what nobody tells you about massive weight loss: <strong className="text-foreground">keeping it off is the harder part.</strong>
                 </p>
                 <p>
                   For twenty years, I've fought to maintain that loss. In the last few years, as I approached 50, things changed. Recovery took longer. Joints started complaining. The routines that worked at 35 stopped working at 45. I needed to completely rebuild my approach to fitness.
                 </p>
                 <p>
-                  I looked for tools to help. Every fitness app I found was designed for 25-year-olds chasing six-packs — not for someone my age trying to stay consistent after a health setback.
+                  I looked for tools to help. Every fitness app I found was designed for 25-year-olds chasing six-packs - not for someone my age trying to stay consistent after a health setback.
                 </p>
                 <p className="font-semibold text-foreground">
                   <Heart className="inline h-5 w-5 text-primary mr-1" />
@@ -101,26 +101,26 @@ export default function About() {
             <section>
               <h2 className="text-3xl font-display font-bold mb-4 text-foreground">Why Momentum Is Different from Other Fitness Apps</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Momentum is a <strong className="text-foreground">fitness habit tracker built specifically for adults 40+</strong> who want lasting routines — not quick transformations.
+                Momentum is a <strong className="text-foreground">fitness habit tracker built specifically for adults 40+</strong> who want lasting routines - not quick transformations.
               </p>
               <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 space-y-3">
                 <p className="font-semibold text-foreground text-lg">What it actually does:</p>
                 <ul className="space-y-2 text-muted-foreground">
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span><strong className="text-foreground">Tracks daily fitness goals</strong> — walking, stretching, gym sessions, whatever you choose</span>
+                    <span><strong className="text-foreground">Tracks daily fitness goals</strong> - walking, stretching, gym sessions, whatever you choose</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span><strong className="text-foreground">Builds consistency through streaks</strong> — with a unique <a href="/blog/streak-repair-missing-workout-days" className="text-primary hover:underline font-semibold" onClick={(e) => { e.preventDefault(); navigate("/blog/streak-repair-missing-workout-days"); }}>Streak Repair</a> feature for missed days</span>
+                    <span><strong className="text-foreground">Builds consistency through streaks</strong> - with a unique <a href="/blog/streak-repair-missing-workout-days" className="text-primary hover:underline font-semibold" onClick={(e) => { e.preventDefault(); navigate("/blog/streak-repair-missing-workout-days"); }}>Streak Repair</a> feature for missed days</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span><strong className="text-foreground">Shows progress without overwhelm</strong> — clean visual graphs, not spreadsheets</span>
+                    <span><strong className="text-foreground">Shows progress without overwhelm</strong> - clean visual graphs, not spreadsheets</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span><strong className="text-foreground">Supports <a href="/blog/joint-friendly-exercises-over-40" className="text-primary hover:underline" onClick={(e) => { e.preventDefault(); navigate("/blog/joint-friendly-exercises-over-40"); }}>joint-friendly exercises</a></strong> — because your knees have earned some respect</span>
+                    <span><strong className="text-foreground">Supports <a href="/blog/joint-friendly-exercises-over-40" className="text-primary hover:underline" onClick={(e) => { e.preventDefault(); navigate("/blog/joint-friendly-exercises-over-40"); }}>joint-friendly exercises</a></strong> - because your knees have earned some respect</span>
                   </li>
                 </ul>
                 <p className="font-semibold text-foreground pt-2 italic">
@@ -152,7 +152,7 @@ export default function About() {
                   Most fitness apps punish you for missing days. Momentum was built on the opposite philosophy: <strong className="text-foreground">showing up imperfectly is better than not showing up at all.</strong>
                 </p>
                 <p>
-                  That's why we built <a href="/blog/streak-repair-missing-workout-days" className="text-primary hover:underline font-semibold" onClick={(e) => { e.preventDefault(); navigate("/blog/streak-repair-missing-workout-days"); }}>Streak Repair</a> — a feature that lets you acknowledge missed days without losing your progress. Because real life has sick days, travel, and low-energy weeks. A good system expects that.
+                  That's why we built <a href="/blog/streak-repair-missing-workout-days" className="text-primary hover:underline font-semibold" onClick={(e) => { e.preventDefault(); navigate("/blog/streak-repair-missing-workout-days"); }}>Streak Repair</a> - a feature that lets you acknowledge missed days without losing your progress. Because real life has sick days, travel, and low-energy weeks. A good system expects that.
                 </p>
                 <p>
                   Read more about <a href="/blog/fitness-consistency-over-50" className="text-primary hover:underline" onClick={(e) => { e.preventDefault(); navigate("/blog/fitness-consistency-over-50"); }}>why consistency beats intensity after 50</a>.
@@ -187,14 +187,14 @@ export default function About() {
             <section>
               <h2 className="text-3xl font-display font-bold mb-4 text-foreground">Who Built This?</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                I'm <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">Chad T Dyar</a> — a 50-year-old who builds apps to solve problems in my own life:
+                I'm <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">Chad T Dyar</a> - a 50-year-old who builds apps to solve problems in my own life:
               </p>
               <div className="bg-muted/30 rounded-lg p-6 space-y-3 text-muted-foreground">
-                <p><strong className="text-foreground">Momentum</strong> — Because my fitness couldn't wait any longer</p>
-                <p><strong className="text-foreground">HomeGrown</strong> — Because I garden and waste too much produce</p>
-                <p><strong className="text-foreground">Out Tonight</strong> — Because I want to support local businesses and events</p>
-                <p><strong className="text-foreground">PillPal</strong> — Because managing my heart medications was chaotic</p>
-                <p><strong className="text-foreground">Pawformance</strong> — Because my dog's health matters as much as mine</p>
+                <p><strong className="text-foreground">Momentum</strong> - Because my fitness couldn't wait any longer</p>
+                <p><strong className="text-foreground">HomeGrown</strong> - Because I garden and waste too much produce</p>
+                <p><strong className="text-foreground">Out Tonight</strong> - Because I want to support local businesses and events</p>
+                <p><strong className="text-foreground">PillPal</strong> - Because managing my heart medications was chaotic</p>
+                <p><strong className="text-foreground">Pawformance</strong> - Because my dog's health matters as much as mine</p>
               </div>
               <p className="text-muted-foreground leading-relaxed mt-4 italic">
                 I'm not a developer by trade. I'm just someone who saw problems and built solutions.
@@ -261,7 +261,7 @@ export default function About() {
                 Thanks for being here. Let's build lasting habits together.
               </p>
               <p className="text-muted-foreground italic">
-                — <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chad T Dyar</a>, Creator of Momentum
+                - <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chad T Dyar</a>, Creator of Momentum
               </p>
               <p className="text-sm text-muted-foreground mt-4">
                 Last updated: 2025

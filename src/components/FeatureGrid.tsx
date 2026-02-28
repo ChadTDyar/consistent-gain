@@ -30,7 +30,7 @@ const features = [
   {
     icon: Trophy,
     title: "Milestone Celebrations",
-    description: "Hit 7, 30, 90, 365 days — Momentum celebrates with you.",
+    description: "Hit 7, 30, 90, 365 days - Momentum celebrates with you.",
   },
 ];
 

@@ -21,7 +21,7 @@ const Index = () => {
   return (
     <>
       <SEO 
-        title="Momentum — Fitness Habit Tracker & Daily Streak App"
+        title="Momentum - Fitness Habit Tracker & Daily Streak App"
         description="Build unstoppable fitness habits with daily check-ins, streak tracking, and AI coaching. Join 10,000+ people who show up every day."
         keywords="fitness habit tracker, daily streak app, workout consistency, habit tracker over 40, fitness habits, streak tracking, AI coaching, fitness motivation, sustainable fitness"
       />
@@ -44,14 +44,14 @@ const Index = () => {
                   <h2 className="text-2xl font-display font-bold text-gradient">Momentum</h2>
                 </div>
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
-                  Build Unstoppable Fitness Habits — <span className="text-gradient">One Day at a Time</span>
+                  Build Unstoppable Fitness Habits - <span className="text-gradient">One Day at a Time</span>
                 </h1>
                 <p className="text-xl md:text-2xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
                   Not another workout logger. Momentum tracks what matters: showing up. Daily check-ins, streak tracking, and AI coaching that adapts to real life.
                 </p>
                 <div className="bg-card border border-border rounded-xl p-5 max-w-xl mx-auto lg:mx-0">
                   <p className="text-muted-foreground leading-relaxed">
-                    You've tried 5 fitness apps. You know what to do. The problem isn't information — it's <strong className="text-foreground">consistency</strong>. Most people quit in 3 weeks. Momentum is designed for week 4 and beyond.
+                    You've tried 5 fitness apps. You know what to do. The problem isn't information - it's <strong className="text-foreground">consistency</strong>. Most people quit in 3 weeks. Momentum is designed for week 4 and beyond.
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
@@ -60,7 +60,7 @@ const Index = () => {
                     onClick={() => navigate("/auth")} 
                     className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-lg h-14 px-10 btn-gradient"
                   >
-                    Start your streak — free for 30 days
+                    Start your streak - free for 30 days
                   </Button>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
@@ -167,7 +167,7 @@ const Index = () => {
               className="btn-large shadow-2xl hover:shadow-[0_30px_60px_rgba(255,255,255,0.5)] bg-white text-primary hover:bg-white hover:scale-110 transition-all text-lg h-16 px-12 font-semibold slide-up"
               style={{animationDelay: '0.1s'}}
             >
-              Start your streak — free for 30 days
+              Start your streak - free for 30 days
             </Button>
           </div>
         </section>

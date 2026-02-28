@@ -22,7 +22,7 @@ export const DemoPreview = () => {
             See It in Action
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            This is what your dashboard looks like — no account needed to explore
+            This is what your dashboard looks like - no account needed to explore
           </p>
         </div>
 

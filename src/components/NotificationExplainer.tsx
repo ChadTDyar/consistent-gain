@@ -16,7 +16,7 @@ export const NotificationExplainer = () => {
               </h3>
             </div>
             <p className="text-muted-foreground leading-relaxed text-lg">
-              You set your preferred reminder time. Momentum sends a daily nudge. If you miss a day, you get a supportive "get back on track" message — not a guilt trip.
+              You set your preferred reminder time. Momentum sends a daily nudge. If you miss a day, you get a supportive "get back on track" message - not a guilt trip.
             </p>
             <div className="flex items-start gap-3 bg-primary/5 rounded-xl p-5">
               <Heart className="w-5 h-5 text-primary mt-0.5 shrink-0" />

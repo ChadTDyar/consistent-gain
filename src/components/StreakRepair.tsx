@@ -27,7 +27,7 @@ export function StreakRepair({ daysMissed, open, onClose, plan = 'free' }: Strea
     if (days <= 3) {
       return {
         title: "Hey there, you're okay 👋",
-        message: `I noticed you haven't checked in for ${days} day${days > 1 ? 's' : ''}. Life happens—meetings pile up, energy dips, or you just needed a break. No judgment here. Want to ease back in with a gentle 10-minute session?`,
+        message: `I noticed you haven't checked in for ${days} day${days > 1 ? 's' : ''}. Life happens - meetings pile up, energy dips, or you just needed a break. No judgment here. Want to ease back in with a gentle 10-minute session?`,
       };
     } else if (days <= 7) {
       return {
@@ -37,7 +37,7 @@ export function StreakRepair({ daysMissed, open, onClose, plan = 'free' }: Strea
     } else {
       return {
         title: "No pressure, just support 💙",
-        message: `${days} days is a while, and that's completely okay. You don't need to jump back to where you were. Let's start with the gentlest option—something that feels more like waking up than working out. You've got this.`,
+        message: `${days} days is a while, and that's completely okay. You don't need to jump back to where you were. Let's start with the gentlest option - something that feels more like waking up than working out. You've got this.`,
       };
     }
   };

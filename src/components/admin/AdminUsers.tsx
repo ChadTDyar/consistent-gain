@@ -152,7 +152,7 @@ export function AdminUsers() {
                       </div>
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm">
-                      {user.created_at ? new Date(user.created_at).toLocaleDateString() : "—"}
+                      {user.created_at ? new Date(user.created_at).toLocaleDateString() : "-"}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button

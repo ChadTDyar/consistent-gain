@@ -4,7 +4,7 @@ import { Check, X } from "lucide-react";
 const comparisons = [
   {
     feature: "48-hour streak repair window",
-    description: "Miss a day? Log it within 48hrs — no reset.",
+    description: "Miss a day? Log it within 48hrs - no reset.",
     momentum: true,
     others: false,
   },
@@ -40,7 +40,7 @@ const comparisons = [
   },
   {
     feature: "Free tier with no time limit",
-    description: "3 goals, daily check-ins, 7-day streaks — forever free.",
+    description: "3 goals, daily check-ins, 7-day streaks - forever free.",
     momentum: true,
     others: "Limited trials",
   },
