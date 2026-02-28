@@ -60,13 +60,21 @@ const Index = () => {
                     onClick={() => navigate("/auth")} 
                     className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-lg h-14 px-10 btn-gradient"
                   >
-                    Start your streak - free for 30 days
+                    Start your streak - it's free
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    onClick={() => navigate("/pricing")} 
+                    className="text-lg h-14 px-8 border-2"
+                  >
+                    See plans
                   </Button>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
                   <span>No credit card required</span>
                   <span className="hidden sm:inline">•</span>
-                  <span className="font-semibold text-foreground">Free for 30 days. Then $5/month or $40/year.</span>
+                  <span className="font-semibold text-foreground">Free forever. Plus from $4.99/mo, Pro from $9.99/mo.</span>
                 </div>
               </div>
 
@@ -167,7 +175,7 @@ const Index = () => {
               className="btn-large shadow-2xl hover:shadow-[0_30px_60px_rgba(255,255,255,0.5)] bg-white text-primary hover:bg-white hover:scale-110 transition-all text-lg h-16 px-12 font-semibold slide-up"
               style={{animationDelay: '0.1s'}}
             >
-              Start your streak - free for 30 days
+              Start your streak - it's free
             </Button>
           </div>
         </section>
