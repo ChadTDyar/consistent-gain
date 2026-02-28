@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Workout Motivation Tips | Momentum</title>
-<meta name="description" content="Struggling with workout motivation? Take our free Motivation Score Quiz to identify what's holding you back — and get personalized tips to stay on track."/>
+<meta name="description" content="Struggling with workout motivation? Take our free Motivation Score Quiz to identify what's holding you back and get personalized tips to stay on track."/>
 <meta name="keywords" content="workout motivation tips, exercise motivation, fitness motivation quiz, how to stay motivated to work out"/>
 <meta property="og:title" content="Workout Motivation Tips | Momentum"/>
 <meta property="og:description" content="Take our free Motivation Score Quiz and get personalized tips to stay on track."/>
@@ -57,7 +57,7 @@
 <label><input type="radio" name="q4" value="1"/> I'm not sure / too many to count</label>
 </div>
 <div class="quiz-q"><p>5. How do you feel about tracking habits?</p>
-<label><input type="radio" name="q5" value="3"/> Love it — the data motivates me</label>
+<label><input type="radio" name="q5" value="3"/> Love it, the data motivates me</label>
 <label><input type="radio" name="q5" value="2"/> It helps if it's simple</label>
 <label><input type="radio" name="q5" value="1"/> I find it tedious</label>
 </div>
@@ -66,7 +66,7 @@
 </div>
 
 <h2>The #1 Motivation Tip That Works for Everyone</h2>
-<p class="body">Stop relying on motivation. Build a system instead. A 10-second daily check-in creates a micro-commitment that compounds over time. You don't need to feel motivated — you just need to check in.</p>
+<p class="body">Stop relying on motivation. Build a system instead. A 10-second daily check-in creates a micro-commitment that compounds over time. You don't need to feel motivated. You just need to check in.</p>
 
 <div class="cta-section">
 <h2>Replace Motivation with a System</h2>
@@ -86,13 +86,13 @@ function score(){
   var html='<h4>Your Motivation Score: '+total+'/15</h4>';
   html+='<div class="score-bar"><div class="score-fill" style="width:'+pct+'%"></div></div>';
   if(total>=12){
-    html+='<p><strong>System Builder (High Score)</strong> — You already think in systems. You just need the right tool.</p>';
+    html+='<p><strong>System Builder (High Score)</strong> You already think in systems. You just need the right tool.</p>';
     html+='<div class="tip-box">💡 <strong>Your tip:</strong> Use streak tracking to reinforce what you\'re already doing well. The visual chain will lock in your identity as someone who shows up.</div>';
   }else if(total>=8){
-    html+='<p><strong>Flexible Achiever (Medium Score)</strong> — You have good instincts but need structure.</p>';
+    html+='<p><strong>Flexible Achiever (Medium Score)</strong> You have good instincts but need structure.</p>';
     html+='<div class="tip-box">💡 <strong>Your tip:</strong> Reduce your goals to 1-3 and commit to a specific time. Simple check-ins will build the consistency you\'re missing.</div>';
   }else{
-    html+='<p><strong>Fresh Starter (Growth Score)</strong> — You\'re ready for a new approach. The old way wasn\'t working.</p>';
+    html+='<p><strong>Fresh Starter (Growth Score)</strong> You\'re ready for a new approach. The old way wasn\'t working.</p>';
     html+='<div class="tip-box">💡 <strong>Your tip:</strong> Start with ONE goal. Make it so small you can\'t fail (e.g., "move for 5 minutes"). Check in daily and let the streak build your confidence.</div>';
   }
   document.getElementById('res').innerHTML=html;document.getElementById('res').style.display='block';

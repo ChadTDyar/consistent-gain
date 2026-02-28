@@ -43,7 +43,7 @@ const HabitStreaksScience = () => {
 
             <h2 className="text-2xl font-display font-bold text-foreground">Why Streaks Work (When Designed Right)</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Streak tracking leverages what psychologists call the "endowed progress effect." When you can see your effort accumulating, you're more motivated to continue. But there's a critical design choice: what happens when you miss a day?
+              Streak tracking taps into what psychologists call the "endowed progress effect." When you can see your effort accumulating, you're more motivated to continue. The critical design choice: what happens when you miss a day?
             </p>
             <p className="text-muted-foreground leading-relaxed">
               Most apps reset your streak to zero. This is devastating psychologically - it punishes a single bad day by erasing weeks of progress. Research on goal disruption shows this is one of the fastest ways to trigger complete abandonment.

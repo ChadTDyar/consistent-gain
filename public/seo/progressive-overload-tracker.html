@@ -65,7 +65,7 @@ function calc(){
   var ex=document.getElementById('exercise').value||'Exercise',w=parseFloat(document.getElementById('weight').value),r=parseInt(document.getElementById('reps').value),s=parseInt(document.getElementById('sets').value),l=document.getElementById('level').value;
   var inc={beginner:10,intermediate:5,advanced:2.5}[l];
   var weeks=6;
-  var html='<h4>'+ex+' — 6-Week Progression Plan</h4>';
+  var html='<h4>'+ex+': 6-Week Progression Plan</h4>';
   html+='<table class="prog-table"><tr><th>Week</th><th>Weight</th><th>Sets × Reps</th><th>Total Volume</th><th>Action</th></tr>';
   var cw=w,cr=r,cs=s;
   for(var i=1;i<=weeks;i++){

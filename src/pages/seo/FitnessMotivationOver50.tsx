@@ -9,7 +9,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "Article",
   headline: "Fitness Motivation Over 50: Stop Relying on Willpower, Build a System Instead",
-  description: "Fitness motivation over 50 isn't about willpower. It's about systems. Here's the science-backed approach that works when your schedule, body, and priorities have changed.",
+  description: "Fitness motivation over 50 comes down to systems, not willpower. The science-backed approach that works when your schedule, body, and priorities have changed.",
   author: { "@type": "Organization", name: "Momentum" },
   publisher: { "@type": "Organization", name: "Momentum", url: "https://momentumfit.app" },
   datePublished: "2026-02-28",
@@ -23,7 +23,7 @@ export default function FitnessMotivationOver50() {
     <>
       <SEO
         title="Fitness Motivation Over 50 | How to Stay Consistent When Life Is Full"
-        description="Fitness motivation over 50 isn't about willpower. It's about systems. Here's the science-backed approach that works when your schedule, body, and priorities have changed."
+        description="Fitness motivation over 50 comes down to systems, not willpower. The science-backed approach that works when your schedule, body, and priorities have changed."
         keywords="fitness motivation over 50, exercise over 50, staying fit after 50, workout motivation older adults, fitness habits over 50"
         schema={structuredData}
       />
@@ -76,7 +76,7 @@ export default function FitnessMotivationOver50() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">The Shift From Intensity to Consistency</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              Here's the counterintuitive truth: 10 minutes every day beats 60 minutes twice a week. Research consistently shows that frequency of movement matters more than intensity for long-term health outcomes over 50. The goal isn't to crush a workout - it's to move your body every single day, even if it's just a walk around the block.
+              The counterintuitive truth: 10 minutes every day beats 60 minutes twice a week. Research consistently shows that frequency of movement matters more than intensity for long-term health outcomes over 50. The goal is to move your body every single day, even if it's just a walk around the block.
             </p>
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">Building Your System in 3 Steps</h2>

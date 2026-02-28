@@ -73,10 +73,10 @@ function plan(){
   var html='<h4>Your Morning Routine ('+wake+' start)</h4><div class="timeline">';
   var currentM=m;var currentH=h;
   for(var i=0;i<steps.length;i++){
-    html+='<div class="timeline-item"><strong>'+addMin(currentH,currentM,0)+'</strong> — '+steps[i]+' <span>('+perStep+' min)</span></div>';
+    html+='<div class="timeline-item"><strong>'+addMin(currentH,currentM,0)+'</strong> '+steps[i]+' <span>('+perStep+' min)</span></div>';
     currentM+=perStep;while(currentM>=60){currentH++;currentM-=60;}
   }
-  html+='</div><p style="margin-top:1rem;color:#475569">✅ Done by '+addMin(h,m,t)+' — check in on Momentum and start your day with a win!</p>';
+  html+='</div><p style="margin-top:1rem;color:#475569">Done by '+addMin(h,m,t)+'. Check in on Momentum and start your day with a win!</p>';
   document.getElementById('res').innerHTML=html;document.getElementById('res').style.display='block';
 }
 </script>

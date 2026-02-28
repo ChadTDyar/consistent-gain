@@ -46,7 +46,7 @@ export default function WorkoutStreakTracker() {
               The Workout Streak Tracker Built for Real Life (Not Perfect Conditions)
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              A 90-day workout streak sounds impossible. That's because you're thinking about it wrong. The streak isn't about perfect workouts - it's about showing up.
+              A 90-day workout streak sounds impossible. That's because you're thinking about it wrong. The streak is about showing up, not perfect workouts.
             </p>
           </div>
         </section>

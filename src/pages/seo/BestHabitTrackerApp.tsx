@@ -9,7 +9,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "Article",
   headline: "The Best Habit Tracker App for People Who Actually Want to Stay Consistent",
-  description: "Looking for the best habit tracker app? We compared 12 apps. Here's why streak-based tracking beats everything else for long-term consistency.",
+  description: "Looking for the best habit tracker app? We compared 12 apps. Streak-based tracking beats everything else for long-term consistency.",
   author: { "@type": "Organization", name: "Momentum" },
   publisher: { "@type": "Organization", name: "Momentum", url: "https://momentumfit.app" },
   datePublished: "2026-02-28",
@@ -31,7 +31,7 @@ export default function BestHabitTrackerApp() {
     <>
       <SEO
         title="Best Habit Tracker App 2026 | Momentum"
-        description="Looking for the best habit tracker app? We compared 12 apps. Here's why streak-based tracking beats everything else for long-term consistency."
+        description="Looking for the best habit tracker app? We compared 12 apps. Streak-based tracking beats everything else for long-term consistency."
         keywords="best habit tracker app, habit tracker 2026, streak tracker app, best fitness habit app, habit tracking app review"
         schema={structuredData}
       />

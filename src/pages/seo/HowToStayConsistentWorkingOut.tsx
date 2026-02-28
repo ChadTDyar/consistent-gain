@@ -9,7 +9,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "Article",
   headline: "How to Stay Consistent Working Out (Even When Life Gets in the Way)",
-  description: "Can't stay consistent with working out? You don't need more motivation - you need a better system. Here's the exact 3-step framework used by people who never miss.",
+  description: "Can't stay consistent with working out? You need a better system, not more motivation. The exact 3-step framework used by people who never miss.",
   author: { "@type": "Organization", name: "Momentum" },
   publisher: { "@type": "Organization", name: "Momentum", url: "https://momentumfit.app" },
   datePublished: "2026-02-28",
@@ -23,7 +23,7 @@ export default function HowToStayConsistentWorkingOut() {
     <>
       <SEO
         title="How to Stay Consistent Working Out | The Only System That Works Long-Term"
-        description="Can't stay consistent with working out? You don't need more motivation - you need a better system. Here's the exact 3-step framework used by people who never miss."
+        description="Can't stay consistent with working out? You need a better system, not more motivation. The exact 3-step framework used by people who never miss."
         keywords="how to stay consistent working out, workout consistency, exercise consistency tips, never miss a workout, consistent exercise habit"
         schema={structuredData}
       />

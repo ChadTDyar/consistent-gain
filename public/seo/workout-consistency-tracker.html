@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Workout Consistency Tracker | Momentum</title>
-<meta name="description" content="Track your workout consistency and build unbreakable fitness streaks. Use our free consistency calculator to see how consistent you really are — and how to improve."/>
+<meta name="description" content="Track your workout consistency and build unbreakable fitness streaks. Use our free consistency calculator to see how consistent you really are and how to improve."/>
 <meta name="keywords" content="workout consistency tracker, fitness consistency, workout streak, exercise consistency calculator"/>
 <meta property="og:title" content="Workout Consistency Tracker | Momentum"/>
 <meta property="og:description" content="Track your workout consistency and build unbreakable fitness streaks with Momentum's free calculator."/>
@@ -69,7 +69,7 @@ footer a{color:#0D9488}
 <section class="hero">
 <p class="label">Workout Consistency</p>
 <h1>Workout Consistency Tracker: How Consistent Are You Really?</h1>
-<p>Most people overestimate how often they work out. Use our free calculator to find your true consistency score — and learn the one metric that predicts long-term results.</p>
+<p>Most people overestimate how often they work out. Use our free calculator to find your true consistency score and learn the one metric that predicts long-term results.</p>
 </section>
 
 <div class="container">
@@ -89,8 +89,8 @@ footer a{color:#0D9488}
 
 <h2>What Your Score Means</h2>
 <p class="body"><strong>90-100%:</strong> Elite consistency. You've built the habit. Focus on progressive overload.</p>
-<p class="body"><strong>60-89%:</strong> Good foundation. You're showing up — now protect your streak.</p>
-<p class="body"><strong>Below 60%:</strong> This is where most people live. The fix isn't more motivation — it's a simpler system.</p>
+<p class="body"><strong>60-89%:</strong> Good foundation. You're showing up. Now protect your streak.</p>
+<p class="body"><strong>Below 60%:</strong> This is where most people live. The fix is a simpler system, not more motivation.</p>
 
 <h2>How Momentum Helps You Stay Consistent</h2>
 <p class="body">Momentum tracks your daily check-ins, not your reps. A 10-second check-in each day builds the identity of someone who shows up. Rest days count. Missed days can be repaired within 48 hours. The result? Consistency scores that climb month over month.</p>
@@ -110,7 +110,7 @@ function calc(){
   var w=parseInt(document.getElementById('weeks-hit').value)||0;
   var score=Math.round((w/4)*100);
   document.getElementById('score').textContent='Your Consistency Score: '+score+'%';
-  var m=score>=90?'Outstanding! You\'re in the top 5% of exercisers. Keep protecting your streak.':score>=60?'Solid foundation. A daily check-in system can push you above 90%.':'You\'re not alone — most people score here. The solution: simplify your goals and check in daily, even on rest days.';
+  var m=score>=90?'Outstanding! You\'re in the top 5% of exercisers. Keep protecting your streak.':score>=60?'Solid foundation. A daily check-in system can push you above 90%.':'You\'re not alone. Most people score here. The solution: simplify your goals and check in daily, even on rest days.';
   document.getElementById('msg').textContent=m;
   document.getElementById('res').style.display='block';
 }

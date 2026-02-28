@@ -50,7 +50,7 @@ export default function BuildFitnessHabitAfter40() {
               How to Build a Fitness Habit After 40 That Actually Sticks
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              You know what to do. The problem isn't information - it's consistency. Here's why most fitness plans fail after 40, and the science-backed approach that works.
+              You know what to do. The problem is consistency, not information. Most fitness plans fail after 40 because they're built for a different body and schedule. The science-backed approach that works starts here.
             </p>
           </div>
         </section>
