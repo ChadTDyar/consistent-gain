@@ -26,7 +26,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "What kind of habits can I track?",
-    answer: "Any habit you want to build! Reading, meditation, walking, stretching, journaling, hydration — if you can do it daily or regularly, you can track it. You define what matters to you."
+    answer: "Any habit you want to build! Reading, meditation, walking, stretching, journaling, hydration - if you can do it daily or regularly, you can track it. You define what matters to you."
   },
   {
     question: "How does the AI Coach work on Pro?",
@@ -38,7 +38,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "Will Momentum work on my phone and computer?",
-    answer: "Yes! Momentum is a web app that works on any device with a browser — iPhone, Android, tablets, laptops, and desktops. Your data syncs automatically across all devices."
+    answer: "Yes! Momentum is a web app that works on any device with a browser - iPhone, Android, tablets, laptops, and desktops. Your data syncs automatically across all devices."
   },
   {
     question: "Is my data private and secure?",
@@ -50,7 +50,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "How does accountability actually work?",
-    answer: "You set your preferred reminder time. Momentum sends a daily nudge. If you miss a day, you get a supportive 'get back on track' message — not a guilt trip. Your momentum score tracks your overall consistency, so a single missed day doesn't erase weeks of effort."
+    answer: "You set your preferred reminder time. Momentum sends a daily nudge. If you miss a day, you get a supportive 'get back on track' message - not a guilt trip. Your momentum score tracks your overall consistency, so a single missed day doesn't erase weeks of effort."
   },
   {
     question: "Do I need any special equipment?",

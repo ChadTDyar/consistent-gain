@@ -27,7 +27,7 @@ export function StreakRepair({ daysMissed, open, onClose, plan = 'free' }: Strea
     if (days <= 3) {
       return {
         title: "Hey there, you're okay 👋",
-        message: `I noticed you haven't checked in for ${days} day${days > 1 ? 's' : ''}. Life happens — meetings pile up, energy dips, or you just needed a break. No judgment here. Want to ease back in with a small step today?`,
+        message: `I noticed you haven't checked in for ${days} day${days > 1 ? 's' : ''}. Life happens - meetings pile up, energy dips, or you just needed a break. No judgment here. Want to ease back in with a small step today?`,
       };
     } else if (days <= 7) {
       return {
@@ -37,7 +37,7 @@ export function StreakRepair({ daysMissed, open, onClose, plan = 'free' }: Strea
     } else {
       return {
         title: "No pressure, just support 💙",
-        message: `${days} days is a while, and that's completely okay. You don't need to jump back to where you were. Let's start with the smallest possible step — something that takes less than 5 minutes. You've got this.`,
+        message: `${days} days is a while, and that's completely okay. You don't need to jump back to where you were. Let's start with the smallest possible step - something that takes less than 5 minutes. You've got this.`,
       };
     }
   };

@@ -9,7 +9,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "Article",
   headline: "How to Stay Consistent Working Out (Even When Life Gets in the Way)",
-  description: "Can't stay consistent with working out? You don't need more motivation — you need a better system. Here's the exact 3-step framework used by people who never miss.",
+  description: "Can't stay consistent with working out? You don't need more motivation - you need a better system. Here's the exact 3-step framework used by people who never miss.",
   author: { "@type": "Organization", name: "Momentum" },
   publisher: { "@type": "Organization", name: "Momentum", url: "https://momentumfit.app" },
   datePublished: "2026-02-28",
@@ -23,7 +23,7 @@ export default function HowToStayConsistentWorkingOut() {
     <>
       <SEO
         title="How to Stay Consistent Working Out | The Only System That Works Long-Term"
-        description="Can't stay consistent with working out? You don't need more motivation — you need a better system. Here's the exact 3-step framework used by people who never miss."
+        description="Can't stay consistent with working out? You don't need more motivation - you need a better system. Here's the exact 3-step framework used by people who never miss."
         keywords="how to stay consistent working out, workout consistency, exercise consistency tips, never miss a workout, consistent exercise habit"
         schema={structuredData}
       />
@@ -46,7 +46,7 @@ export default function HowToStayConsistentWorkingOut() {
               How to Stay Consistent Working Out (Even When Life Gets in the Way)
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              You've started and stopped more times than you can count. So has everyone. The difference between people who stay consistent and people who don't isn't willpower — it's identity.
+              You've started and stopped more times than you can count. So has everyone. The difference between people who stay consistent and people who don't isn't willpower - it's identity.
             </p>
           </div>
         </section>
@@ -56,12 +56,12 @@ export default function HowToStayConsistentWorkingOut() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">The Real Reason You're Inconsistent</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              It's not laziness. It's all-or-nothing thinking. You tell yourself you need 60 minutes at the gym, and when you can't do that, you do nothing. Then one missed day becomes two, which becomes a week, which becomes "I'll start again Monday." James Clear calls this the "missing twice rule" — missing once is an accident, missing twice is the start of a new habit. The fix isn't more motivation. It's a lower bar.
+              It's not laziness. It's all-or-nothing thinking. You tell yourself you need 60 minutes at the gym, and when you can't do that, you do nothing. Then one missed day becomes two, which becomes a week, which becomes "I'll start again Monday." James Clear calls this the "missing twice rule" - missing once is an accident, missing twice is the start of a new habit. The fix isn't more motivation. It's a lower bar.
             </p>
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">The Identity Shift That Changes Everything</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              Stop trying to "get motivated to work out." Instead, decide: <strong>"I am someone who moves every day."</strong> That's the identity shift. When exercise is part of who you are — not something you do when you feel like it — consistency follows naturally. Every check-in is a vote for that identity. Every streak day is proof.
+              Stop trying to "get motivated to work out." Instead, decide: <strong>"I am someone who moves every day."</strong> That's the identity shift. When exercise is part of who you are - not something you do when you feel like it - consistency follows naturally. Every check-in is a vote for that identity. Every streak day is proof.
             </p>
             <div className="grid sm:grid-cols-2 gap-4 my-8">
               {[
@@ -83,7 +83,7 @@ export default function HowToStayConsistentWorkingOut() {
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">The 3-Step Consistency System</h2>
             <ol className="space-y-4 my-6">
               {[
-                { step: "1", title: "Choose 1-3 small goals", body: "Not \"get ripped.\" Try \"move for 15 minutes\" or \"stretch after work.\" Momentum's free tier tracks up to 3 goals — enough to build a foundation." },
+                { step: "1", title: "Choose 1-3 small goals", body: "Not \"get ripped.\" Try \"move for 15 minutes\" or \"stretch after work.\" Momentum's free tier tracks up to 3 goals - enough to build a foundation." },
                 { step: "2", title: "Check in daily, no matter what", body: "Even if you didn't work out. Even on rest days. The habit is the check-in. It takes 10 seconds and it keeps the chain alive." },
                 { step: "3", title: "Never miss twice", body: "You will miss days. That's life. The rule is simple: never miss two in a row. Plus members can repair a missed day within 48 hours." },
               ].map(({ step, title, body }) => (
@@ -99,7 +99,7 @@ export default function HowToStayConsistentWorkingOut() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">What To Do When You Miss a Day</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              First: don't panic. One missed day doesn't erase your progress. Your streak might break, but your identity doesn't. On Momentum Plus, you can repair a missed day within 48 hours — because real life happens. The important thing is getting back on track immediately. Show up the next day, even if it's just a 10-minute walk. The streak is recoverable. The habit is what matters.
+              First: don't panic. One missed day doesn't erase your progress. Your streak might break, but your identity doesn't. On Momentum Plus, you can repair a missed day within 48 hours - because real life happens. The important thing is getting back on track immediately. Show up the next day, even if it's just a 10-minute walk. The streak is recoverable. The habit is what matters.
             </p>
 
             <div className="my-8">
@@ -108,7 +108,7 @@ export default function HowToStayConsistentWorkingOut() {
                   <h3 className="text-2xl font-display font-bold text-foreground mb-2">Plans that grow with you</h3>
                   <p className="text-muted-foreground mb-6">Start free. Upgrade when you're ready.</p>
                   <div className="space-y-3">
-                    {["Free — 3 goals, 7-day streaks, daily check-ins", "Plus ($4.99/mo) — Unlimited goals, Streak Repair, 30-day history", "Pro ($9.99/mo) — AI Coach, unlimited history, data export"].map((line) => (
+                    {["Free - 3 goals, 7-day streaks, daily check-ins", "Plus ($4.99/mo) - Unlimited goals, Streak Repair, 30-day history", "Pro ($9.99/mo) - AI Coach, unlimited history, data export"].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <span className="text-sm text-foreground">{line}</span>

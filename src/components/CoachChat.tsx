@@ -32,7 +32,7 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: welcomeMessage || "Hey there! I'm Coach, your AI fitness companion. I'm here to help you build sustainable habits. What's on your mind today?",
+      content: welcomeMessage || "Hey there! I'm Coach, your AI habit companion. I'm here to help you build sustainable habits. What's on your mind today?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -237,7 +237,7 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-white">Coach</h3>
-              <p className="text-xs text-white/80">Your AI Fitness Companion</p>
+              <p className="text-xs text-white/80">Your AI Habit Companion</p>
             </div>
             {remainingMessages !== null && (
               <div className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">
@@ -309,7 +309,7 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
               </div>
               <div className="flex-1">
                 <h3 className="font-bold text-white">Coach</h3>
-                <p className="text-xs text-white/80">Your AI Fitness Companion</p>
+                <p className="text-xs text-white/80">Your AI Habit Companion</p>
               </div>
               {remainingMessages !== null && (
                 <div className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">

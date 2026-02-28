@@ -9,7 +9,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "Article",
   headline: "The Workout Streak Tracker Built for Real Life (Not Perfect Conditions)",
-  description: "Track your workout streak and never break the chain. Momentum's streak tracker is designed for real life — rest days count, and you can repair a missed day.",
+  description: "Track your workout streak and never break the chain. Momentum's streak tracker is designed for real life - rest days count, and you can repair a missed day.",
   author: { "@type": "Organization", name: "Momentum" },
   publisher: { "@type": "Organization", name: "Momentum", url: "https://momentumfit.app" },
   datePublished: "2026-02-28",
@@ -23,7 +23,7 @@ export default function WorkoutStreakTracker() {
     <>
       <SEO
         title="Workout Streak Tracker | Build a 30, 60, 90-Day Fitness Streak"
-        description="Track your workout streak and never break the chain. Momentum's streak tracker is designed for real life — rest days count, and you can repair a missed day."
+        description="Track your workout streak and never break the chain. Momentum's streak tracker is designed for real life - rest days count, and you can repair a missed day."
         keywords="workout streak tracker, fitness streak app, 30 day workout streak, don't break the chain fitness, streak tracking app"
         schema={structuredData}
       />
@@ -46,7 +46,7 @@ export default function WorkoutStreakTracker() {
               The Workout Streak Tracker Built for Real Life (Not Perfect Conditions)
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              A 90-day workout streak sounds impossible. That's because you're thinking about it wrong. The streak isn't about perfect workouts — it's about showing up.
+              A 90-day workout streak sounds impossible. That's because you're thinking about it wrong. The streak isn't about perfect workouts - it's about showing up.
             </p>
           </div>
         </section>
@@ -56,7 +56,7 @@ export default function WorkoutStreakTracker() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">The Science Behind Streak Tracking</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              James Clear's <em>Atomic Habits</em> framework shows that identity-based habits are the most durable. When you maintain a streak, you're not just tracking behavior — you're building proof that you're "someone who shows up." Research from the European Journal of Social Psychology confirms it takes an average of 66 days for a behavior to become automatic. Streak tracking gives you a visual countdown to that tipping point.
+              James Clear's <em>Atomic Habits</em> framework shows that identity-based habits are the most durable. When you maintain a streak, you're not just tracking behavior - you're building proof that you're "someone who shows up." Research from the European Journal of Social Psychology confirms it takes an average of 66 days for a behavior to become automatic. Streak tracking gives you a visual countdown to that tipping point.
             </p>
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">What Counts as "Showing Up"</h2>
@@ -64,7 +64,7 @@ export default function WorkoutStreakTracker() {
               {[
                 { icon: Heart, title: "Rest Days Count", desc: "Recovery is part of training. Checking in on a rest day keeps the streak alive." },
                 { icon: Calendar, title: "10-Minute Walks", desc: "A short walk is infinitely better than nothing. Movement is movement." },
-                { icon: TrendingUp, title: "Mobility Work", desc: "Stretching, foam rolling, yoga — it all counts toward your streak." },
+                { icon: TrendingUp, title: "Mobility Work", desc: "Stretching, foam rolling, yoga - it all counts toward your streak." },
                 { icon: Flame, title: "Low-Intensity Days", desc: "Bad sleep? Sore joints? Scale down, but still show up." },
               ].map(({ icon: Icon, title, desc }) => (
                 <Card key={title} className="border-none shadow-md">
@@ -99,7 +99,7 @@ export default function WorkoutStreakTracker() {
               {[
                 { days: "7 Days", label: "Habit Forming", desc: "You've proven you can show up for a full week. The neural pathway is being carved." },
                 { days: "21 Days", label: "Becoming Automatic", desc: "The behavior is starting to feel natural. Skipping feels wrong." },
-                { days: "66 Days", label: "Identity Shift", desc: "Research says this is when a habit becomes part of who you are. You're not trying anymore — you just do it." },
+                { days: "66 Days", label: "Identity Shift", desc: "Research says this is when a habit becomes part of who you are. You're not trying anymore - you just do it." },
               ].map(({ days, label, desc }) => (
                 <Card key={days} className="border-none shadow-md">
                   <CardContent className="pt-6 text-center">
@@ -117,7 +117,7 @@ export default function WorkoutStreakTracker() {
                   <h3 className="text-2xl font-display font-bold text-foreground mb-2">Plans that grow with you</h3>
                   <p className="text-muted-foreground mb-6">Start free. Upgrade when you're ready.</p>
                   <div className="space-y-3">
-                    {["Free — 3 goals, 7-day streaks, daily check-ins", "Plus ($4.99/mo) — Unlimited goals, Streak Repair, 30-day history", "Pro ($9.99/mo) — AI Coach, unlimited history, data export"].map((line) => (
+                    {["Free - 3 goals, 7-day streaks, daily check-ins", "Plus ($4.99/mo) - Unlimited goals, Streak Repair, 30-day history", "Pro ($9.99/mo) - AI Coach, unlimited history, data export"].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <span className="text-sm text-foreground">{line}</span>
