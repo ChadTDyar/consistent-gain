@@ -9,12 +9,12 @@ const corsHeaders = {
 
 const PRICES: Record<string, Record<string, string>> = {
   plus: {
-    monthly: "price_1T49SULnv14mW4wIBpFYk44h",
-    annual: "price_1T49idLnv14mW4wImXTvjP2r",
+    monthly: "price_1T5nbML98dr6Pw0kHQlfSif0",
+    annual: "price_1T5nbML98dr6Pw0kIN3gcS0D",
   },
   pro: {
-    monthly: "price_1T49VZLnv14mW4wIoZHM6DtD",
-    annual: "price_1T49j5Lnv14mW4wIXnGPA0dn",
+    monthly: "price_1T5ncwL98dr6Pw0ktGV0YCL2",
+    annual: "price_1T5ncwL98dr6Pw0kdbGjczhT",
   },
 };
 
