@@ -130,14 +130,14 @@ export default function BlogPost() {
               {/* CTA */}
               <div className="mt-16 p-8 rounded-xl text-center text-white shadow-xl" style={{ background: 'var(--gradient-primary)' }}>
                 <h3 className="text-2xl font-display font-bold mb-3">Ready to build your own momentum?</h3>
-                <p className="text-white/90 mb-6">Start tracking your fitness habits today — free for up to 3 goals.</p>
+                <p className="text-white/90 mb-6">Start tracking your fitness habits today - free for up to 3 goals.</p>
                 <Button
                   onClick={() => navigate("/auth")}
                   size="lg"
                   variant="secondary"
                   className="bg-white text-primary hover:bg-white hover:scale-105 transition-all font-semibold"
                 >
-                  Start your streak — free for 30 days
+                  Start your streak - free for 30 days
                 </Button>
               </div>
             </>

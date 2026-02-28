@@ -38,7 +38,7 @@ const FitnessTrackerVsHabitTracker = () => {
 
             <h2 className="text-2xl font-display font-bold text-foreground">The Behavior-Focused Approach: Habit Trackers</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Habit trackers like Momentum take a different philosophy. Instead of asking "how was your workout?" they ask "did you show up?" The focus shifts from performance metrics to consistency metrics. It's not about how fast you ran — it's about whether you ran at all.
+              Habit trackers like Momentum take a different philosophy. Instead of asking "how was your workout?" they ask "did you show up?" The focus shifts from performance metrics to consistency metrics. It's not about how fast you ran - it's about whether you ran at all.
             </p>
             <p className="text-muted-foreground leading-relaxed">
               <strong className="text-foreground">Best for:</strong> People building or rebuilding fitness routines, busy professionals, beginners, anyone whose primary challenge is consistency rather than optimization.
@@ -46,10 +46,10 @@ const FitnessTrackerVsHabitTracker = () => {
 
             <h2 className="text-2xl font-display font-bold text-foreground">The Honest Truth</h2>
             <p className="text-muted-foreground leading-relaxed">
-              If you're already working out consistently and want to get faster, stronger, or more efficient — a fitness tracker is the better tool. The data helps you train smarter.
+              If you're already working out consistently and want to get faster, stronger, or more efficient - a fitness tracker is the better tool. The data helps you train smarter.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              But if your biggest challenge is <em>showing up</em> — if you've downloaded Strava three times and abandoned it because the data felt overwhelming or irrelevant — then the tool you need isn't a better tracker. It's a better accountability system.
+              But if your biggest challenge is <em>showing up</em> - if you've downloaded Strava three times and abandoned it because the data felt overwhelming or irrelevant - then the tool you need isn't a better tracker. It's a better accountability system.
             </p>
             <p className="text-muted-foreground leading-relaxed">
               The irony is that most people who buy fitness trackers don't need more data. They need more days. A simple streak counter that celebrates your 15-minute walk is more powerful than a VO2 max chart you never look at.
@@ -57,13 +57,13 @@ const FitnessTrackerVsHabitTracker = () => {
 
             <h2 className="text-2xl font-display font-bold text-foreground">Can You Use Both?</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Absolutely. Many Momentum users pair it with a fitness tracker. They use Strava or Apple Fitness for workout details and Momentum for the daily habit layer — the accountability, streaks, and AI coaching that keeps them coming back. The two approaches complement each other when used intentionally.
+              Absolutely. Many Momentum users pair it with a fitness tracker. They use Strava or Apple Fitness for workout details and Momentum for the daily habit layer - the accountability, streaks, and AI coaching that keeps them coming back. The two approaches complement each other when used intentionally.
             </p>
 
             <div className="border-t border-border pt-8 mt-8 space-y-4">
               <p className="text-foreground font-semibold text-lg">If consistency is your goal, try Momentum.</p>
               <Button onClick={() => navigate("/auth")} className="btn-gradient">
-                Start your streak — free for 30 days
+                Start your streak - free for 30 days
               </Button>
             </div>
 

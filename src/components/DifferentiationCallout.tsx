@@ -9,7 +9,7 @@ export const DifferentiationCallout = () => {
             <ShieldCheck className="w-8 h-8 text-primary" />
           </div>
           <p className="text-lg md:text-xl text-foreground leading-relaxed font-medium">
-            <strong>Not another workout logger.</strong> Miss a day? You don't lose everything. Momentum uses streak psychology and adaptive coaching to keep you moving forward — even when life gets in the way.
+            <strong>Not another workout logger.</strong> Miss a day? You don't lose everything. Momentum uses streak psychology and adaptive coaching to keep you moving forward - even when life gets in the way.
           </p>
         </div>
       </div>

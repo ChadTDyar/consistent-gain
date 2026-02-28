@@ -11,7 +11,7 @@ interface SEOProps {
 }
 
 export const SEO = ({
-  title = "Momentum — Fitness Habit Tracker & Daily Streak App",
+  title = "Momentum - Fitness Habit Tracker & Daily Streak App",
   description = "Build unstoppable fitness habits with daily check-ins, streak tracking, and AI coaching. Join 10,000+ people who show up every day.",
   keywords = "fitness tracker, habit tracker, adults 40+, fitness habits, workout consistency, health app, streak tracker, goal setting, fitness motivation",
   ogImage = "https://momentumfit.app/og-image.jpg",

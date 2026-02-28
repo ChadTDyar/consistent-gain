@@ -297,7 +297,7 @@ export default function Profile() {
                     </Badge>
                   ) : (
                     <Badge variant="secondary" className="cursor-pointer" onClick={() => navigate("/pricing")}>
-                      Free Plan — Upgrade
+                      Free Plan - Upgrade
                     </Badge>
                   )}
                 </div>

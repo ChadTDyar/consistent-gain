@@ -323,7 +323,7 @@ export default function Pricing() {
                             {val === true ? (
                               <CheckCircle className="h-5 w-5 text-success mx-auto" />
                             ) : val === false ? (
-                              <span className="text-muted-foreground/40">—</span>
+                              <span className="text-muted-foreground/40">-</span>
                             ) : (
                               <span className="text-muted-foreground">{val}</span>
                             )}
