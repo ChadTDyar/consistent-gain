@@ -222,7 +222,7 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
                   size="lg"
-                  onClick={() => window.open('https://buy.stripe.com/7sYbJ2a7WliK2jmazt3ZK02', '_blank')}
+                  onClick={() => window.open('https://buy.stripe.com/7sYbJ2a7W1iK2jmazt', '_blank')}
                   disabled={currentPlan === 'plus' || currentPlan === 'pro'}
                 >
                   {currentPlan === 'plus' ? "Current Plan" : currentPlan === 'pro' ? "Included in Pro" : "Start 7-day free trial"}
