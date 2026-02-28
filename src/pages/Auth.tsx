@@ -82,7 +82,7 @@ export default function Auth() {
         });
 
         if (error) throw error;
-        analytics.signup();
+        analytics.completeSignup();
         toast.success("Account created! Welcome to Momentum!");
         // Redirect to welcome page for first-time users
         navigate("/welcome");
@@ -106,7 +106,7 @@ export default function Auth() {
           </CardTitle>
           <CardDescription className="text-center text-base leading-relaxed">
             {isLogin
-              ? "Sign in to continue your fitness journey"
+              ? "Sign in to continue building habits"
               : "Create an account to start building lasting habits"}
           </CardDescription>
         </CardHeader>

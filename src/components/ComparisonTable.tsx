@@ -4,19 +4,19 @@ import { Check, X } from "lucide-react";
 const comparisons = [
   {
     feature: "48-hour streak repair window",
-    description: "Miss a day? Log it within 48hrs - no reset.",
+    description: "Miss a day? Log it within 48hrs — no reset.",
     momentum: true,
     others: false,
   },
   {
-    feature: "Joint-safe exercise alternatives",
-    description: "Built-in library of low-impact swaps by body area.",
+    feature: "Context-aware suggestions",
+    description: "Adapts to your energy, sleep, and schedule.",
     momentum: true,
     others: false,
   },
   {
-    feature: "Body-map pain tracking",
-    description: "Log discomfort by body area; correlates with exercises.",
+    feature: "Body & wellness tracking",
+    description: "Log how you feel so your habits flex with your life.",
     momentum: true,
     others: false,
   },
@@ -27,20 +27,20 @@ const comparisons = [
     others: false,
   },
   {
-    feature: "10-min microblock workouts",
+    feature: "10-min microblock sessions",
     description: "Pre-built routines when you only have a few minutes.",
     momentum: true,
     others: "Some apps",
   },
   {
     feature: "AI coaching from your data",
-    description: "Suggestions based on your streaks, pain, and energy patterns.",
+    description: "Suggestions based on your streaks, wellness, and energy patterns.",
     momentum: "Pro plan",
     others: "Paid only",
   },
   {
     feature: "Free tier with no time limit",
-    description: "3 goals, daily check-ins, 7-day streaks - forever free.",
+    description: "3 habits, daily check-ins, 7-day streaks — forever free.",
     momentum: true,
     others: "Limited trials",
   },
@@ -55,7 +55,7 @@ export const ComparisonTable = () => {
             What Makes Momentum Different
           </h2>
           <p className="text-xl text-muted-foreground">
-            Features built for bodies that need more recovery, not more intensity
+            Features built for busy professionals who need flexibility, not rigidity
           </p>
         </div>
 

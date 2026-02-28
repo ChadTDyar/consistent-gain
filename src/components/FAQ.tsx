@@ -14,53 +14,52 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     question: "Is Momentum really free to use?",
-    answer: "Yes! Our free plan allows you to track up to 3 fitness goals with basic streak tracking and 7-day activity history. No credit card required to get started."
+    answer: "Yes! Our free plan allows you to track up to 3 habits with basic streak tracking and 7-day history. No credit card required to get started."
   },
   {
-    question: "What makes Momentum different from other fitness apps?",
-    answer: "Momentum is designed specifically for adults 40+ who want sustainable habits, not quick transformations. We focus on consistency over intensity, with no judgmental language or complicated metrics. It's about building momentum that lasts."
+    question: "What makes Momentum different from other habit apps?",
+    answer: "Momentum is designed for busy professionals who want sustainable habits, not quick fixes. We focus on consistency over perfection, with no judgmental language or complicated metrics. It's about building momentum that lasts."
   },
   {
     question: "Do I need to be tech-savvy to use Momentum?",
-    answer: "Not at all! Momentum is intentionally simple. Just set your goals and check them off daily. The interface is clean, intuitive, and designed for ease of use."
+    answer: "Not at all! Momentum is intentionally simple. Just set your habits and check them off daily. The interface is clean, intuitive, and designed for ease of use."
   },
   {
-    question: "What kind of fitness goals can I track?",
-    answer: "Any fitness activity you want! Walking, stretching, gym sessions, yoga, swimming, cycling - if you can do it daily or regularly, you can track it. You define what fitness means for you."
+    question: "What kind of habits can I track?",
+    answer: "Any habit you want to build! Reading, meditation, walking, stretching, journaling, hydration — if you can do it daily or regularly, you can track it. You define what matters to you."
   },
   {
-    question: "How does the AI Coach work in Premium?",
-    answer: "The AI Coach provides personalized motivation, answers fitness questions, and helps you overcome obstacles. It's like having a supportive fitness buddy who understands your journey and adapts to your needs."
+    question: "How does the AI Coach work on Pro?",
+    answer: "The AI Coach provides personalized suggestions based on your check-in patterns, habit types, and consistency data. It's like having a supportive accountability partner who adapts to your schedule and real life."
   },
   {
-    question: "Can I cancel my Premium subscription anytime?",
-    answer: "Absolutely. Cancel anytime from your account settings. You'll retain Premium access until the end of your billing period, and you can always reactivate later."
+    question: "Can I cancel my subscription anytime?",
+    answer: "Absolutely. Cancel anytime from your account settings. You'll retain access until the end of your billing period, and you can always reactivate later."
   },
   {
     question: "Will Momentum work on my phone and computer?",
-    answer: "Yes! Momentum is a web app that works on any device with a browser - iPhone, Android, tablets, laptops, and desktops. Your data syncs automatically across all devices."
+    answer: "Yes! Momentum is a web app that works on any device with a browser — iPhone, Android, tablets, laptops, and desktops. Your data syncs automatically across all devices."
   },
   {
-    question: "Is my fitness data private and secure?",
-    answer: "Yes. We use industry-standard encryption to protect your data. We never sell your information to third parties. Your fitness journey is yours alone."
+    question: "Is my data private and secure?",
+    answer: "Yes. We use industry-standard encryption to protect your data. We never sell your information to third parties. Your habits are yours alone."
   },
   {
     question: "What if I miss a day? Will I lose my streak?",
-    answer: "Your streak doesn't reset on one bad day. Momentum uses a momentum score that rewards consistency over perfection. Plus, with Streak Repair (available on Plus and Pro plans), you can acknowledge missed days within 48 hours without losing your progress."
+    answer: "Your streak doesn't reset on one bad day. Momentum uses a momentum score that rewards consistency over perfection. Plus, with Streak Repair (available on Starter and Pro plans), you can acknowledge missed days within 48 hours without losing your progress."
   },
   {
     question: "How does accountability actually work?",
-    answer: "You set your preferred reminder time. Momentum sends a daily nudge. If you miss a day, you get a supportive 'get back on track' message - not a guilt trip. Your momentum score tracks your overall consistency, so a single missed day doesn't erase weeks of effort."
+    answer: "You set your preferred reminder time. Momentum sends a daily nudge. If you miss a day, you get a supportive 'get back on track' message — not a guilt trip. Your momentum score tracks your overall consistency, so a single missed day doesn't erase weeks of effort."
   },
   {
-    question: "Do I need any special equipment or gym membership?",
-    answer: "No! Momentum tracks habits, not specific workouts. Whether you walk around your neighborhood, do bodyweight exercises at home, or have a full gym membership, Momentum works for your lifestyle."
+    question: "Do I need any special equipment?",
+    answer: "No! Momentum tracks habits, not specific activities. Whether you read a book, meditate, go for a walk, or hit the gym, Momentum works for your lifestyle."
   }
 ];
 
 export const FAQ = () => {
   useEffect(() => {
-    // Add FAQ schema markup
     const schema = {
       "@context": "https://schema.org",
       "@type": "FAQPage",

@@ -2,13 +2,20 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Download, Loader2 } from "lucide-react";
+import { Download, Loader2, Lock } from "lucide-react";
 import { toast } from "sonner";
+import { type PlanTier, canAccessFeature } from "@/lib/plans";
 
-export function DataExport() {
+interface DataExportProps {
+  plan?: PlanTier;
+}
+
+export function DataExport({ plan = 'free' }: DataExportProps) {
   const [exporting, setExporting] = useState(false);
+  const isAllowed = canAccessFeature(plan, 'pro');
 
   const exportData = async () => {
+    if (!isAllowed) return;
     setExporting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -17,7 +24,6 @@ export function DataExport() {
         return;
       }
 
-      // Fetch all user data
       const [goals, activities, painReports, costs, profile] = await Promise.all([
         supabase.from("goals").select("*").eq("user_id", user.id),
         supabase.from("activity_logs").select("*").eq("user_id", user.id),
@@ -26,7 +32,7 @@ export function DataExport() {
         supabase.from("profiles").select("*").eq("id", user.id).single(),
       ]);
 
-      const exportData = {
+      const data = {
         exported_at: new Date().toISOString(),
         user_id: user.id,
         profile: profile.data,
@@ -36,8 +42,7 @@ export function DataExport() {
         cost_tracking: costs.data || [],
       };
 
-      // Create and download JSON file
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: "application/json",
       });
       const url = URL.createObjectURL(blob);
@@ -69,21 +74,39 @@ export function DataExport() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Button
-          onClick={exportData}
-          disabled={exporting}
-          className="w-full"
-        >
-          {exporting ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Download className="mr-2 h-4 w-4" />
-          )}
-          Export All Data
-        </Button>
-        <p className="text-xs text-muted-foreground mt-2">
-          Includes goals, activity logs, pain reports, and cost tracking
-        </p>
+        {isAllowed ? (
+          <>
+            <Button
+              onClick={exportData}
+              disabled={exporting}
+              className="w-full"
+            >
+              {exporting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="mr-2 h-4 w-4" />
+              )}
+              Export All Data
+            </Button>
+            <p className="text-xs text-muted-foreground mt-2">
+              Includes goals, activity logs, wellness reports, and cost tracking
+            </p>
+          </>
+        ) : (
+          <>
+            <Button
+              onClick={() => window.location.href = '/pricing'}
+              variant="secondary"
+              className="w-full"
+            >
+              <Lock className="mr-2 h-4 w-4" />
+              Upgrade to Pro to Export
+            </Button>
+            <p className="text-xs text-muted-foreground mt-2">
+              CSV and JSON data export is available on the Pro plan.
+            </p>
+          </>
+        )}
       </CardContent>
     </Card>
   );

@@ -213,7 +213,7 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
                   size="lg"
-                  onClick={() => window.open('https://buy.stripe.com/7sYbJ2a7W1iK2jmazt', '_blank')}
+                  onClick={() => { analytics.startCheckout('starter'); window.open('https://buy.stripe.com/7sYbJ2a7W1iK2jmazt', '_blank'); }}
                 >
                   Start 7-day free trial
                 </Button>
@@ -260,7 +260,7 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold min-h-[44px] bg-secondary text-secondary-foreground hover:bg-secondary/90"
                   size="lg"
-                  onClick={() => window.open('https://buy.stripe.com/5kQeVe3Jyd1s5vy0YT3ZK03', '_blank')}
+                  onClick={() => { analytics.startCheckout('pro'); window.open('https://buy.stripe.com/5kQeVe3Jyd1s5vy0YT3ZK03', '_blank'); }}
                 >
                   Upgrade for Pro coaching
                 </Button>

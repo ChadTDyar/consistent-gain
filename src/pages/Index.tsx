@@ -97,7 +97,7 @@ const Index = () => {
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-primary/10">
                   <img 
                     src={heroRunner} 
-                    alt="Professional preparing for a morning workout" 
+                    alt="Professional starting their morning routine" 
                     className="w-full h-auto object-cover"
                     loading="eager"
                     width="800"
@@ -171,7 +171,7 @@ const Index = () => {
           <div className="absolute inset-0">
             <img 
               src={groupRunning} 
-              alt="Diverse group of professionals exercising together" 
+              alt="Diverse group of professionals building habits together" 
               className="w-full h-full object-cover"
               loading="lazy"
               width="1920"

@@ -5,7 +5,7 @@ const features = [
   {
     icon: CheckCircle,
     title: "Daily Check-In",
-    description: "One tap to log your workout. Fast enough that you'll actually do it.",
+    description: "One tap to log your habit. Fast enough that you'll actually do it.",
   },
   {
     icon: CalendarDays,
