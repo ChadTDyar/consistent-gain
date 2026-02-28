@@ -35,6 +35,7 @@ import HabitStreaksScience from "./pages/HabitStreaksScience";
 import FitnessHabitGuide from "./pages/FitnessHabitGuide";
 import FitnessTrackerVsHabitTracker from "./pages/FitnessTrackerVsHabitTracker";
 import Insights from "./pages/Insights";
+import BuildFitnessHabitAfter40 from "./pages/seo/BuildFitnessHabitAfter40";
 
 const queryClient = new QueryClient();
 
@@ -85,6 +86,7 @@ const App = () => {
             <Route path="/resources/habit-streaks-science" element={<HabitStreaksScience />} />
             <Route path="/resources/fitness-habit-guide" element={<FitnessHabitGuide />} />
             <Route path="/resources/fitness-tracker-vs-habit-tracker" element={<FitnessTrackerVsHabitTracker />} />
+            <Route path="/fitness-habit-after-40" element={<BuildFitnessHabitAfter40 />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
