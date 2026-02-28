@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Star, Crown } from "lucide-react";
+import { CheckCircle, Star, Crown, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
@@ -37,30 +37,6 @@ export default function Pricing() {
     }
   };
 
-  const handleUpgrade = async (plan: 'plus' | 'pro') => {
-    analytics.upgradeClicked();
-    setLoading(plan);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("Please sign in first");
-        navigate("/auth");
-        return;
-      }
-      analytics.checkoutStarted();
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { plan, interval: billingInterval }
-      });
-      if (error) throw error;
-      if (data?.url) window.location.href = data.url;
-    } catch (error) {
-      console.error('Checkout error:', error);
-      toast.error("Something went wrong. Please try again.");
-    } finally {
-      setLoading(null);
-    }
-  };
-
   const getPrice = (plan: 'plus' | 'pro') => {
     if (billingInterval === 'annual') {
       const monthlyEquiv = (PLANS[plan].annualPrice / 12).toFixed(2);
@@ -70,23 +46,23 @@ export default function Pricing() {
   };
 
   const freeFeatures = [
-    "Track up to 3 fitness goals",
+    "Track up to 3 habits",
     "Daily check-ins",
     "7-day streak tracking",
     "Basic progress graphs",
   ];
 
-  const plusFeatures = [
+  const starterFeatures = [
     "Everything in Free",
-    "Unlimited fitness goals",
-    "Streak Repair (fix missed days)",
+    "Unlimited habits",
+    "Streak Repair (fix missed days within 48hrs)",
     "30-day progress history",
     "Weekly progress email summary",
   ];
 
   const proFeatures = [
-    "Everything in Plus",
-    "AI Coach (personalized suggestions)",
+    "Everything in Starter",
+    "AI Coach — personalized habit guidance",
     "Unlimited progress history",
     "Priority support",
     "CSV data export",
@@ -95,37 +71,44 @@ export default function Pricing() {
   const faqData = [
     {
       question: "Is Momentum really free?",
-      answer: "Yes, the free tier is free forever with up to 3 goals. No credit card required, no hidden fees.",
+      answer: "Yes. The Free plan includes up to 3 habits, daily check-ins, and 7-day streaks — forever free, no credit card required.",
     },
     {
       question: "What is Streak Repair?",
-      answer: "Life happens. Plus and Pro members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
+      answer: "Life happens. Starter and Pro members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
     },
     {
       question: "How does the AI Coach work?",
-      answer: "Pro members get personalized suggestions based on their check-in patterns, goal types, and consistency data. It learns what works for you.",
+      answer: "Pro members get personalized suggestions based on their check-in patterns, habit types, and consistency data. It learns what works for you and adjusts recommendations to your schedule.",
     },
     {
       question: "Can I cancel anytime?",
-      answer: "Yes. Cancel from Settings. You keep access through the end of your billing period.",
+      answer: "Absolutely. Cancel from Settings anytime. You keep access through the end of your billing period. No commitments, no questions asked.",
+    },
+    {
+      question: "What happens in my first week?",
+      answer: "You'll set up 1–3 realistic habits, configure reminders that fit your schedule, and complete your first 7-day streak. Most users are set up in under 5 minutes.",
     },
   ];
 
   return (
     <>
       <SEO
-        title="Pricing - Momentum | Free, Plus & Pro Plans"
-        description="Start free with 3 goals and daily check-ins. Upgrade to Plus ($4.99/mo) for unlimited goals or Pro ($9.99/mo) for AI coaching and unlimited history."
-        keywords="fitness app pricing, habit tracker cost, premium fitness features, affordable fitness app"
+        title="Pricing - Momentum | Free, Starter & Pro Plans"
+        description="Start free with 3 habits. Upgrade to Starter ($9/mo) for unlimited habits or Pro ($19/mo) for AI coaching and unlimited history."
+        keywords="habit tracker pricing, habit app cost, premium habit features, affordable habit tracker"
       />
       <div className="min-h-screen bg-background-cream py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
           <div className="text-center mb-12 md:mb-16">
+            <p className="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
+              For busy professionals who need habits that stick
+            </p>
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-gradient">
-              Choose your plan
+              Pick the plan that fits your life
             </h1>
-            <p className="text-lg md:text-xl text-muted-foreground mb-8">
-              Sustainable fitness starts here. Pick what works for you.
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Set up in under 5 minutes. Complete your first 7-day streak this week. Cancel anytime.
             </p>
 
             {/* Billing Toggle */}
@@ -161,13 +144,17 @@ export default function Pricing() {
             <Card className="border-none shadow-md card-lift">
               <CardHeader className="pb-6">
                 <CardTitle className="text-2xl font-display font-bold text-foreground">Free</CardTitle>
-                <CardDescription className="text-base">Perfect for getting started</CardDescription>
+                <CardDescription className="text-base">Try the basics, no strings attached</CardDescription>
                 <div className="mt-6">
                   <span className="text-5xl font-display font-bold text-foreground">$0</span>
                   <span className="text-lg text-muted-foreground">/month</span>
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
+                <div className="bg-muted/50 rounded-lg p-3">
+                  <p className="text-xs font-semibold text-foreground mb-1">This is for you if…</p>
+                  <p className="text-xs text-muted-foreground">You want to test whether daily check-ins work before committing.</p>
+                </div>
                 <ul className="space-y-3">
                   {freeFeatures.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
@@ -180,23 +167,23 @@ export default function Pricing() {
                   variant="outline"
                   className="w-full border-2 min-h-[44px]"
                   size="lg"
-                  onClick={() => navigate(currentPlan === 'free' ? "/auth" : "/dashboard")}
+                  onClick={() => navigate("/auth")}
                 >
-                  {currentPlan === 'free' ? "Start free" : "Current Plan"}
+                  Start free
                 </Button>
               </CardContent>
             </Card>
 
-            {/* Plus Plan - Most Popular */}
+            {/* Starter Plan */}
             <Card className="border-2 border-primary shadow-xl card-lift-heavy relative overflow-hidden" style={{ background: 'var(--gradient-card)' }}>
               <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-primary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-primary)' }}>
                 <Star className="h-3 w-3" /> Most Popular
               </div>
               <CardHeader className="pb-6 pt-8">
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
-                  Plus <span className="badge-premium text-xs px-2 py-0.5">PLUS</span>
+                  Starter <span className="badge-premium text-xs px-2 py-0.5">STARTER</span>
                 </CardTitle>
-                <CardDescription className="text-base">Unlimited goals & streak repair</CardDescription>
+                <CardDescription className="text-base">Unlimited habits & streak protection</CardDescription>
                 <div className="mt-6">
                   <span className="text-5xl font-display font-bold text-primary">${getPrice('plus')}</span>
                   <span className="text-lg text-muted-foreground">/mo</span>
@@ -211,8 +198,12 @@ export default function Pricing() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
+                <div className="bg-primary/10 rounded-lg p-3">
+                  <p className="text-xs font-semibold text-foreground mb-1">This is for you if…</p>
+                  <p className="text-xs text-muted-foreground">You're building 2–3 core habits, want light reminders, and need streak protection so one bad day doesn't erase your progress.</p>
+                </div>
                 <ul className="space-y-3">
-                  {plusFeatures.map((feature) => (
+                  {starterFeatures.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>
@@ -223,9 +214,8 @@ export default function Pricing() {
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
                   size="lg"
                   onClick={() => window.open('https://buy.stripe.com/7sYbJ2a7W1iK2jmazt', '_blank')}
-                  disabled={currentPlan === 'plus' || currentPlan === 'pro'}
                 >
-                  {currentPlan === 'plus' ? "Current Plan" : currentPlan === 'pro' ? "Included in Pro" : "Start 7-day free trial"}
+                  Start 7-day free trial
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">7-day free trial, cancel anytime</p>
               </CardContent>
@@ -234,13 +224,13 @@ export default function Pricing() {
             {/* Pro Plan */}
             <Card className="border-2 border-secondary shadow-xl card-lift-heavy relative overflow-hidden">
               <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-secondary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-secondary)' }}>
-                <Crown className="h-3 w-3" /> Full Suite
+                <Crown className="h-3 w-3" /> Best Value
               </div>
               <CardHeader className="pb-6 pt-8">
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
                   Pro <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--gradient-secondary)', color: 'white' }}>PRO</span>
                 </CardTitle>
-                <CardDescription className="text-base">AI Coach & unlimited everything</CardDescription>
+                <CardDescription className="text-base">AI coaching & unlimited everything</CardDescription>
                 <div className="mt-6">
                   <span className="text-5xl font-display font-bold text-secondary">${getPrice('pro')}</span>
                   <span className="text-lg text-muted-foreground">/mo</span>
@@ -255,6 +245,10 @@ export default function Pricing() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
+                <div className="bg-secondary/10 rounded-lg p-3">
+                  <p className="text-xs font-semibold text-foreground mb-1">This is for you if…</p>
+                  <p className="text-xs text-muted-foreground">You want multiple routines, deeper analytics, and an AI coach that adapts to your schedule, energy, and real life.</p>
+                </div>
                 <ul className="space-y-3">
                   {proFeatures.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
@@ -267,18 +261,43 @@ export default function Pricing() {
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold min-h-[44px] bg-secondary text-secondary-foreground hover:bg-secondary/90"
                   size="lg"
                   onClick={() => window.open('https://buy.stripe.com/5kQeVe3Jyd1s5vy0YT3ZK03', '_blank')}
-                  disabled={currentPlan === 'pro'}
                 >
-                  {currentPlan === 'pro' ? "Current Plan" : "Start 7-day free trial"}
+                  Upgrade for Pro coaching
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">7-day free trial, cancel anytime</p>
               </CardContent>
             </Card>
           </div>
 
+          {/* Guarantee & First Week */}
+          <div className="mt-12 grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <Card className="border-primary/10 shadow-md">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Shield className="h-5 w-5 text-primary" />
+                  <h3 className="font-semibold text-foreground">Our guarantee</h3>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Cancel anytime, no commitments. No ads, no data selling. You keep access through the end of your billing period — no questions asked.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="border-primary/10 shadow-md">
+              <CardContent className="pt-6">
+                <h3 className="font-semibold text-foreground mb-3">What you'll accomplish in week 1</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1–3 realistic daily habits</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Configure reminders that fit your schedule</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Complete your first 7-day streak</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> See your consistency visualized</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Trust line */}
           <p className="text-center text-muted-foreground mt-10 text-base font-medium">
-            No ads. No data selling. Cancel anytime.
+            No ads. No data selling. Cancel anytime, no commitments.
           </p>
 
           {/* Feature Comparison Table */}
@@ -293,7 +312,7 @@ export default function Pricing() {
                     <tr className="border-b border-border">
                       <th className="text-left p-4 font-semibold text-foreground">Feature</th>
                       <th className="text-center p-4 font-semibold text-foreground">Free</th>
-                      <th className="text-center p-4 font-semibold text-primary">Plus</th>
+                      <th className="text-center p-4 font-semibold text-primary">Starter</th>
                       <th className="text-center p-4 font-semibold text-secondary relative">
                         <div className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-full">
                           <span className="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-t-lg font-bold text-secondary-foreground" style={{ background: 'var(--gradient-secondary)' }}>
@@ -306,11 +325,11 @@ export default function Pricing() {
                   </thead>
                   <tbody>
                     {[
-                      { feature: "Fitness goals", free: "Up to 3", plus: "Unlimited", pro: "Unlimited" },
+                      { feature: "Habits", free: "Up to 3", plus: "Unlimited", pro: "Unlimited" },
                       { feature: "Daily check-ins", free: true, plus: true, pro: true },
                       { feature: "Streak tracking", free: "7 days", plus: "30 days", pro: "Unlimited" },
                       { feature: "Progress graphs", free: "Basic", plus: "Enhanced", pro: "Full" },
-                      { feature: "Streak Repair", free: false, plus: true, pro: true },
+                      { feature: "Streak Repair (48hr window)", free: false, plus: true, pro: true },
                       { feature: "Weekly email summary", free: false, plus: true, pro: true },
                       { feature: "AI Coach", free: false, plus: false, pro: true },
                       { feature: "CSV data export", free: false, plus: false, pro: true },
@@ -358,6 +377,13 @@ export default function Pricing() {
                 </AccordionItem>
               ))}
             </Accordion>
+          </div>
+
+          {/* Cross-promo footer */}
+          <div className="mt-16 text-center">
+            <p className="text-xs text-muted-foreground">
+              Also by <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chad</a>: tools for pets, health, design, and gardening.
+            </p>
           </div>
         </div>
       </div>

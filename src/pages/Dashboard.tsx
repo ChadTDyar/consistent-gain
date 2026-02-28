@@ -24,6 +24,8 @@ import PaywallModal from "@/components/PaywallModal";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { type PlanTier, canAccessFeature, getGoalLimit } from "@/lib/plans";
 import { Badge } from "@/components/ui/badge";
+import { OnboardingChecklist } from "@/components/OnboardingChecklist";
+import { analytics } from "@/lib/analytics";
 
 interface Profile {
   id: string;
@@ -69,6 +71,13 @@ export default function Dashboard() {
     checkTriggerMessages();
     checkSubscription();
   }, []);
+
+  // Fire activation event when user has both goals and a streak
+  useEffect(() => {
+    if (goals.length > 0 && streak > 0) {
+      analytics.activation();
+    }
+  }, [goals.length, streak]);
 
   const checkSubscription = async () => {
     try {
@@ -301,6 +310,12 @@ export default function Dashboard() {
               : `You have ${goals.length} active ${goals.length === 1 ? "goal" : "goals"}`}
           </p>
         </div>
+
+        <OnboardingChecklist
+          hasGoals={goals.length > 0}
+          hasCheckin={streak > 0}
+          onCreateGoal={handleAddGoal}
+        />
 
         <Tabs defaultValue="goals" className="w-full">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
