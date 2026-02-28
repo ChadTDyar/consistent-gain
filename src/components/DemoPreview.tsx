@@ -50,7 +50,7 @@ export const DemoPreview = () => {
             {/* Welcome banner */}
             <div>
               <h3 className="text-xl md:text-2xl font-display font-bold text-foreground">
-                Welcome back, Sarah!
+                Welcome back, Chad!
               </h3>
               <p className="text-sm text-muted-foreground">You have 3 active goals</p>
             </div>
