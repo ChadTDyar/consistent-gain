@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Track Fitness Progress | Momentum</title>
+<meta name="description" content="Track your fitness progress the right way. Our free progress calculator shows your improvement rate and predicts when you'll hit your goals."/>
+<meta name="keywords" content="track fitness progress, fitness progress tracker, workout progress, fitness improvement calculator"/>
+<meta property="og:title" content="Track Fitness Progress | Momentum"/>
+<meta property="og:description" content="Track your fitness progress and predict when you'll hit your goals."/>
+<meta property="og:url" content="https://momentumfit.app/seo/track-fitness-progress.html"/>
+<meta property="og:image" content="https://momentumfit.app/og-image.jpg"/>
+<meta property="og:type" content="website"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="canonical" href="https://momentumfit.app/seo/track-fitness-progress.html"/>
+<link rel="icon" type="image/png" href="/app-icon.png"/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Track Fitness Progress","description":"Track your fitness progress and predict when you'll hit your goals.","url":"https://momentumfit.app/seo/track-fitness-progress.html","mainEntity":{"@type":"SoftwareApplication","name":"Momentum","applicationCategory":"HealthApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1a1a2e;background:#f8fffe;line-height:1.6}.nav{background:#fff;border-bottom:1px solid #e2e8f0;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}.nav-brand{font-weight:800;font-size:1.25rem;color:#0D9488;text-decoration:none}.btn{background:#0D9488;color:#fff;border:none;padding:.75rem 1.5rem;border-radius:.5rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;font-size:1rem;transition:background .2s}.btn:hover{background:#0f766e}.hero{padding:4rem 2rem;text-align:center;max-width:800px;margin:0 auto}.hero .label{color:#0D9488;font-weight:700;font-size:.875rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}.hero h1{font-size:2.5rem;font-weight:800;line-height:1.2;margin-bottom:1rem}.hero p{font-size:1.125rem;color:#64748b;max-width:600px;margin:0 auto}.container{max-width:800px;margin:0 auto;padding:2rem}h2{font-size:1.75rem;font-weight:700;margin:2.5rem 0 1rem}p.body{color:#475569;margin-bottom:1rem}.tool-card{background:#fff;border:2px solid #e2e8f0;border-radius:1rem;padding:2rem;margin:2rem 0;box-shadow:0 4px 20px rgba(0,0,0,.06)}.tool-card h3{font-size:1.25rem;font-weight:700;margin-bottom:1rem;color:#0D9488}.form-group{margin-bottom:1rem}.form-group label{display:block;font-weight:600;margin-bottom:.25rem;font-size:.9rem}.form-group input,.form-group select{width:100%;padding:.6rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:1rem}.result{background:#f0fdfa;border:2px solid #0D9488;border-radius:.75rem;padding:1.5rem;margin-top:1rem;display:none}.result h4{color:#0D9488;font-weight:700;margin-bottom:.5rem}.stat{display:inline-block;background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;padding:1rem;margin:.5rem;text-align:center;min-width:140px}.stat .num{font-size:1.5rem;font-weight:800;color:#0D9488}.stat .label2{font-size:.8rem;color:#64748b}.cta-section{text-align:center;padding:3rem 2rem;background:#f0fdfa;border-radius:1rem;margin:2rem 0}.cta-section h2{margin-top:0}footer{text-align:center;padding:2rem;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:.875rem}footer a{color:#0D9488}@media(max-width:640px){.hero h1{font-size:1.75rem}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="/" class="nav-brand">Momentum</a><a href="/auth" class="btn">Start Free</a></nav>
+
+<section class="hero">
+<p class="label">Progress Tracking</p>
+<h1>Track Fitness Progress: See How Far You've Come</h1>
+<p>Progress is often invisible day-to-day. Our calculator quantifies your improvement so you can see the trajectory you're on — even when it doesn't feel like it.</p>
+</section>
+
+<div class="container">
+<h2>Why Tracking Progress Matters</h2>
+<p class="body">People who track their fitness progress are 33% more likely to achieve their goals. But most people track the wrong things. Reps and weight matter less than consistency and showing up.</p>
+
+<div class="tool-card">
+<h3>📈 Progress Calculator</h3>
+<div class="form-group"><label>Metric to track</label><select id="metric"><option value="weight">Weight lifted (lbs)</option><option value="distance">Distance (miles)</option><option value="time">Exercise duration (minutes)</option></select></div>
+<div class="form-group"><label>Starting value</label><input type="number" id="start" value="100"/></div>
+<div class="form-group"><label>Current value</label><input type="number" id="current" value="135"/></div>
+<div class="form-group"><label>Weeks of training</label><input type="number" id="weeks" value="8"/></div>
+<div class="form-group"><label>Goal value</label><input type="number" id="goal" value="185"/></div>
+<button class="btn" onclick="calc()">Calculate Progress</button>
+<div class="result" id="res"></div>
+</div>
+
+<h2>The Most Important Metric You're Not Tracking</h2>
+<p class="body">It's not your bench press or mile time. It's your consistency rate. How many of the last 30 days did you show up? That number predicts your results better than any single workout metric.</p>
+
+<div class="cta-section">
+<h2>Track What Actually Matters</h2>
+<p class="body">Momentum tracks your daily consistency — the metric that predicts everything else.</p>
+<a href="/auth" class="btn">Start Free with Momentum</a>
+</div>
+</div>
+
+<footer>Built by <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer">Chad T Dyar</a> · <a href="/">Momentum</a></footer>
+
+<script>
+function calc(){
+  var s=parseFloat(document.getElementById('start').value),c=parseFloat(document.getElementById('current').value),w=parseInt(document.getElementById('weeks').value),g=parseFloat(document.getElementById('goal').value);
+  var imp=c-s,pct=((imp/s)*100).toFixed(1),weeklyRate=(imp/w).toFixed(1);
+  var remaining=g-c,weeksToGoal=weeklyRate>0?Math.ceil(remaining/parseFloat(weeklyRate)):'∞';
+  var html='<h4>Your Progress Report</h4><div style="display:flex;flex-wrap:wrap;justify-content:center">';
+  html+='<div class="stat"><div class="num">'+pct+'%</div><div class="label2">Total Improvement</div></div>';
+  html+='<div class="stat"><div class="num">'+weeklyRate+'</div><div class="label2">Per Week Gain</div></div>';
+  html+='<div class="stat"><div class="num">'+weeksToGoal+'</div><div class="label2">Weeks to Goal</div></div>';
+  html+='</div><p style="margin-top:1rem;color:#475569">At your current rate, you\'ll reach your goal in about '+weeksToGoal+' weeks. Stay consistent and track daily with Momentum.</p>';
+  document.getElementById('res').innerHTML=html;document.getElementById('res').style.display='block';
+}
+</script>
+</body>
+</html>

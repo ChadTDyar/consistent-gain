@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Progressive Overload Tracker | Momentum</title>
+<meta name="description" content="Track progressive overload with our free weight progression calculator. See when to increase weight, reps, or sets based on your training history."/>
+<meta name="keywords" content="progressive overload tracker, weight progression calculator, when to increase weight, progressive overload calculator"/>
+<meta property="og:title" content="Progressive Overload Tracker | Momentum"/>
+<meta property="og:description" content="Track progressive overload and know exactly when to increase weight."/>
+<meta property="og:url" content="https://momentumfit.app/seo/progressive-overload-tracker.html"/>
+<meta property="og:image" content="https://momentumfit.app/og-image.jpg"/>
+<meta property="og:type" content="website"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="canonical" href="https://momentumfit.app/seo/progressive-overload-tracker.html"/>
+<link rel="icon" type="image/png" href="/app-icon.png"/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Progressive Overload Tracker","description":"Track progressive overload and weight progression.","url":"https://momentumfit.app/seo/progressive-overload-tracker.html","mainEntity":{"@type":"SoftwareApplication","name":"Momentum","applicationCategory":"HealthApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1a1a2e;background:#f8fffe;line-height:1.6}.nav{background:#fff;border-bottom:1px solid #e2e8f0;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}.nav-brand{font-weight:800;font-size:1.25rem;color:#0D9488;text-decoration:none}.btn{background:#0D9488;color:#fff;border:none;padding:.75rem 1.5rem;border-radius:.5rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;font-size:1rem;transition:background .2s}.btn:hover{background:#0f766e}.hero{padding:4rem 2rem;text-align:center;max-width:800px;margin:0 auto}.hero .label{color:#0D9488;font-weight:700;font-size:.875rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}.hero h1{font-size:2.5rem;font-weight:800;line-height:1.2;margin-bottom:1rem}.hero p{font-size:1.125rem;color:#64748b;max-width:600px;margin:0 auto}.container{max-width:800px;margin:0 auto;padding:2rem}h2{font-size:1.75rem;font-weight:700;margin:2.5rem 0 1rem}p.body{color:#475569;margin-bottom:1rem}.tool-card{background:#fff;border:2px solid #e2e8f0;border-radius:1rem;padding:2rem;margin:2rem 0;box-shadow:0 4px 20px rgba(0,0,0,.06)}.tool-card h3{font-size:1.25rem;font-weight:700;margin-bottom:1rem;color:#0D9488}.form-group{margin-bottom:1rem}.form-group label{display:block;font-weight:600;margin-bottom:.25rem;font-size:.9rem}.form-group input,.form-group select{width:100%;padding:.6rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:1rem}.result{background:#f0fdfa;border:2px solid #0D9488;border-radius:.75rem;padding:1.5rem;margin-top:1rem;display:none}.result h4{color:#0D9488;font-weight:700;margin-bottom:.5rem}.prog-table{width:100%;border-collapse:collapse;margin:1rem 0}.prog-table th{background:#0D9488;color:#fff;padding:.6rem;text-align:left;font-size:.9rem}.prog-table td{padding:.6rem;border-bottom:1px solid #e2e8f0;font-size:.9rem}.prog-table tr:nth-child(even){background:#f8fffe}.highlight{background:#f0fdfa !important;font-weight:700;color:#0D9488}.cta-section{text-align:center;padding:3rem 2rem;background:#f0fdfa;border-radius:1rem;margin:2rem 0}.cta-section h2{margin-top:0}footer{text-align:center;padding:2rem;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:.875rem}footer a{color:#0D9488}@media(max-width:640px){.hero h1{font-size:1.75rem}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="/" class="nav-brand">Momentum</a><a href="/auth" class="btn">Start Free</a></nav>
+
+<section class="hero">
+<p class="label">Strength Training</p>
+<h1>Progressive Overload Tracker: Know When to Level Up</h1>
+<p>Progressive overload is the #1 principle for getting stronger. Our calculator tells you exactly when and how to increase your training load.</p>
+</section>
+
+<div class="container">
+<h2>What Is Progressive Overload?</h2>
+<p class="body">Progressive overload means gradually increasing the stress placed on your body during training. This can mean more weight, more reps, more sets, or less rest time. Without progressive overload, your body adapts and progress stalls.</p>
+
+<div class="tool-card">
+<h3>📊 Weight Progression Calculator</h3>
+<div class="form-group"><label>Exercise</label><input type="text" id="exercise" value="Bench Press" placeholder="e.g. Bench Press"/></div>
+<div class="form-group"><label>Current weight (lbs)</label><input type="number" id="weight" value="135"/></div>
+<div class="form-group"><label>Current reps per set</label><input type="number" id="reps" value="8"/></div>
+<div class="form-group"><label>Current sets</label><input type="number" id="sets" value="3"/></div>
+<div class="form-group"><label>Experience level</label><select id="level"><option value="beginner">Beginner</option><option value="intermediate" selected>Intermediate</option><option value="advanced">Advanced</option></select></div>
+<button class="btn" onclick="calc()">Calculate Progression</button>
+<div class="result" id="res"></div>
+</div>
+
+<h2>The Double Progression Method</h2>
+<p class="body">The simplest overload system: set a rep range (e.g., 8-12). When you can hit the top of the range for all sets, increase weight by 5-10 lbs and drop back to the bottom of the range. Repeat forever.</p>
+
+<h2>When to Deload</h2>
+<p class="body">Every 4-6 weeks, reduce weight by 40-50% for one week. This allows your joints, tendons, and nervous system to recover. After a deload, you'll typically come back stronger.</p>
+
+<div class="cta-section">
+<h2>Track Your Training Consistency</h2>
+<p class="body">Progressive overload only works if you show up. Momentum tracks the habit that makes strength gains possible.</p>
+<a href="/auth" class="btn">Start Free with Momentum</a>
+</div>
+</div>
+
+<footer>Built by <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer">Chad T Dyar</a> · <a href="/">Momentum</a></footer>
+
+<script>
+function calc(){
+  var ex=document.getElementById('exercise').value||'Exercise',w=parseFloat(document.getElementById('weight').value),r=parseInt(document.getElementById('reps').value),s=parseInt(document.getElementById('sets').value),l=document.getElementById('level').value;
+  var inc={beginner:10,intermediate:5,advanced:2.5}[l];
+  var weeks=6;
+  var html='<h4>'+ex+' — 6-Week Progression Plan</h4>';
+  html+='<table class="prog-table"><tr><th>Week</th><th>Weight</th><th>Sets × Reps</th><th>Total Volume</th><th>Action</th></tr>';
+  var cw=w,cr=r,cs=s;
+  for(var i=1;i<=weeks;i++){
+    var vol=cw*cr*cs;
+    var action='',cls='';
+    if(i===1){action='Baseline';}
+    else if(i%3===0){action='⬆ Add '+inc+' lbs';cls='highlight';}
+    else{action='Add 1 rep/set';}
+    html+='<tr class="'+cls+'"><td>Week '+i+'</td><td>'+cw+' lbs</td><td>'+cs+' × '+cr+'</td><td>'+vol.toLocaleString()+' lbs</td><td>'+action+'</td></tr>';
+    if((i+1)%3===1){cw+=inc;cr=r;}else{cr++;}
+  }
+  html+='</table>';
+  var finalVol=cw*cr*cs,startVol=w*r*s;
+  html+='<p style="margin-top:1rem;color:#475569">📈 Projected volume increase: <strong>'+Math.round(((finalVol-startVol)/startVol)*100)+'%</strong> over 6 weeks. Show up consistently and the numbers take care of themselves.</p>';
+  document.getElementById('res').innerHTML=html;document.getElementById('res').style.display='block';
+}
+</script>
+</body>
+</html>
