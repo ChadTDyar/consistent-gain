@@ -402,7 +402,7 @@ export default function Settings() {
 
           {/* Data Management */}
           <div className="grid gap-6 md:grid-cols-2">
-            <DataExport />
+            <DataExport plan={(profile?.plan || 'free') as any} />
             <DoctorReport />
           </div>
 

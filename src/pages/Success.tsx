@@ -18,6 +18,7 @@ export default function Success() {
   const checkSubscription = async () => {
     try {
       // Track successful purchase
+      analytics.checkoutSuccess();
       analytics.purchaseCompleted(9.99);
       
       const { data: { user } } = await supabase.auth.getUser();
@@ -87,7 +88,7 @@ export default function Success() {
                 <ul className="space-y-2 text-muted-foreground">
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span>Unlimited fitness goals</span>
+                    <span>Unlimited habits</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />

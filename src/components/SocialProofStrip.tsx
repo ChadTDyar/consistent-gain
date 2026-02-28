@@ -1,4 +1,4 @@
-import { Flame, Dumbbell, Calendar } from "lucide-react";
+import { Flame, Target, Calendar } from "lucide-react";
 
 export const SocialProofStrip = () => {
   return (
@@ -10,7 +10,7 @@ export const SocialProofStrip = () => {
             <span className="text-lg font-semibold text-foreground">10,000+ active streaks</span>
           </div>
           <div className="flex items-center justify-center gap-3">
-            <Dumbbell className="w-6 h-6 text-primary" />
+            <Target className="w-6 h-6 text-primary" />
             <span className="text-lg font-semibold text-foreground">2M habits tracked</span>
           </div>
           <div className="flex items-center justify-center gap-3">

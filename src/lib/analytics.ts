@@ -9,6 +9,15 @@ declare global {
 
 export const GA_MEASUREMENT_ID = 'G-DP3CLJWDZB';
 
+// Session-level dedup guards
+const _firedEvents = new Set<string>();
+
+function fireOnce(key: string, fn: () => void) {
+  if (_firedEvents.has(key)) return;
+  _firedEvents.add(key);
+  fn();
+}
+
 // Initialize GA4
 export const initGA = () => {
   if (typeof window === 'undefined') return;
@@ -62,17 +71,17 @@ export const analytics = {
   upgradeClicked: () => trackEvent('upgrade_clicked', 'conversion'),
   checkoutStarted: () => trackEvent('begin_checkout', 'conversion'),
   purchaseCompleted: (value: number) => trackEvent('purchase', 'conversion', 'premium', value),
-  
+
   // Engagement events
   streakMilestone: (days: number) => trackEvent('streak_milestone', 'engagement', `${days}_days`, days),
   coachChatOpened: () => trackEvent('coach_chat_opened', 'engagement'),
   coachMessageSent: () => trackEvent('coach_message_sent', 'engagement'),
 
-  // Product-led growth events
-  visitLanding: () => trackEvent('momentum_visit_landing', 'acquisition'),
-  startSignup: () => trackEvent('momentum_start_signup', 'acquisition'),
-  completeSignup: () => trackEvent('momentum_complete_signup', 'acquisition'),
-  startCheckout: () => trackEvent('momentum_start_checkout', 'conversion'),
-  checkoutSuccess: () => trackEvent('momentum_checkout_success', 'conversion'),
-  activation: () => trackEvent('momentum_activation', 'activation', 'first_habit_and_checkin'),
+  // Product-led growth events (with dedup guards where needed)
+  visitLanding: () => fireOnce('visit_landing', () => trackEvent('momentum_visit_landing', 'acquisition')),
+  startSignup: () => fireOnce('start_signup', () => trackEvent('momentum_start_signup', 'acquisition')),
+  completeSignup: () => fireOnce('complete_signup', () => trackEvent('momentum_complete_signup', 'acquisition')),
+  startCheckout: (tier: string) => trackEvent('momentum_start_checkout', 'conversion', tier),
+  checkoutSuccess: () => fireOnce('checkout_success', () => trackEvent('momentum_checkout_success', 'conversion')),
+  activation: () => fireOnce('activation', () => trackEvent('momentum_activation', 'activation', 'first_habit_and_checkin')),
 };

@@ -5,7 +5,7 @@ const features = [
   {
     icon: Target,
     title: "Simple Goal Tracking",
-    description: "Set up to 3 fitness goals on free plan. No complicated menus or settings."
+    description: "Set up to 3 habits on the free plan. No complicated menus or settings."
   },
   {
     icon: TrendingUp,

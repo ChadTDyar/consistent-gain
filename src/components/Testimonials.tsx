@@ -60,7 +60,7 @@ export const Testimonials = () => {
             Real People, Real Results
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Hear from members building sustainable fitness habits
+            Hear from members building sustainable habits
           </p>
         </div>
 

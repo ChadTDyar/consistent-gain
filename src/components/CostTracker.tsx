@@ -15,12 +15,12 @@ import { toast } from "sonner";
 import { DollarSign, Plus } from "lucide-react";
 
 const CATEGORIES = [
-  "Gym Membership",
+  "Subscriptions",
   "Equipment",
   "Classes",
-  "Personal Trainer",
+  "Coaching",
+  "Books & Courses",
   "Nutrition",
-  "Supplements",
   "Apparel",
   "Other",
 ];
@@ -109,10 +109,10 @@ export function CostTracker() {
           <div>
             <CardTitle className="text-2xl font-display font-semibold flex items-center gap-2">
               <DollarSign className="h-6 w-6 text-primary" />
-              Fitness Budget
+              Habit Budget
             </CardTitle>
             <CardDescription className="text-base">
-              Track your fitness expenses
+              Track your habit-related expenses
             </CardDescription>
           </div>
           <Button
@@ -166,7 +166,7 @@ export function CostTracker() {
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="e.g., Monthly gym fee"
+                placeholder="e.g., Monthly app subscription"
               />
             </div>
 
