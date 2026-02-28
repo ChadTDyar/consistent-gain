@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Rest Day Calculator | Momentum</title>
+<meta name="description" content="How many rest days do you actually need? Our free calculator determines your optimal rest frequency based on training intensity, age, and recovery capacity."/>
+<meta name="keywords" content="rest day calculator, workout rest days, recovery days, how many rest days per week"/>
+<meta property="og:title" content="Rest Day Calculator | Momentum"/>
+<meta property="og:description" content="Find your optimal rest day frequency with our free calculator."/>
+<meta property="og:url" content="https://momentumfit.app/seo/workout-rest-day-calculator.html"/>
+<meta property="og:image" content="https://momentumfit.app/og-image.jpg"/>
+<meta property="og:type" content="website"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="canonical" href="https://momentumfit.app/seo/workout-rest-day-calculator.html"/>
+<link rel="icon" type="image/png" href="/app-icon.png"/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Rest Day Calculator","description":"Find your optimal rest day frequency.","url":"https://momentumfit.app/seo/workout-rest-day-calculator.html","mainEntity":{"@type":"SoftwareApplication","name":"Momentum","applicationCategory":"HealthApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1a1a2e;background:#f8fffe;line-height:1.6}.nav{background:#fff;border-bottom:1px solid #e2e8f0;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}.nav-brand{font-weight:800;font-size:1.25rem;color:#0D9488;text-decoration:none}.btn{background:#0D9488;color:#fff;border:none;padding:.75rem 1.5rem;border-radius:.5rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;font-size:1rem;transition:background .2s}.btn:hover{background:#0f766e}.hero{padding:4rem 2rem;text-align:center;max-width:800px;margin:0 auto}.hero .label{color:#0D9488;font-weight:700;font-size:.875rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}.hero h1{font-size:2.5rem;font-weight:800;line-height:1.2;margin-bottom:1rem}.hero p{font-size:1.125rem;color:#64748b;max-width:600px;margin:0 auto}.container{max-width:800px;margin:0 auto;padding:2rem}h2{font-size:1.75rem;font-weight:700;margin:2.5rem 0 1rem}p.body{color:#475569;margin-bottom:1rem}.tool-card{background:#fff;border:2px solid #e2e8f0;border-radius:1rem;padding:2rem;margin:2rem 0;box-shadow:0 4px 20px rgba(0,0,0,.06)}.tool-card h3{font-size:1.25rem;font-weight:700;margin-bottom:1rem;color:#0D9488}.form-group{margin-bottom:1rem}.form-group label{display:block;font-weight:600;margin-bottom:.25rem;font-size:.9rem}.form-group select,.form-group input{width:100%;padding:.6rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:1rem}.result{background:#f0fdfa;border:2px solid #0D9488;border-radius:.75rem;padding:1.5rem;margin-top:1rem;display:none}.result h4{color:#0D9488;font-weight:700;margin-bottom:.5rem}.rec-box{background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;padding:1rem;margin:.75rem 0;display:flex;gap:1rem;align-items:center}.rec-num{font-size:2rem;font-weight:800;color:#0D9488;min-width:60px;text-align:center}.cta-section{text-align:center;padding:3rem 2rem;background:#f0fdfa;border-radius:1rem;margin:2rem 0}.cta-section h2{margin-top:0}footer{text-align:center;padding:2rem;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:.875rem}footer a{color:#0D9488}@media(max-width:640px){.hero h1{font-size:1.75rem}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="/" class="nav-brand">Momentum</a><a href="/auth" class="btn">Start Free</a></nav>
+
+<section class="hero">
+<p class="label">Recovery Science</p>
+<h1>Rest Day Calculator: How Many Recovery Days Do You Actually Need?</h1>
+<p>Rest days aren't lazy — they're where your muscles rebuild and your nervous system recovers. Find the right balance for your body.</p>
+</section>
+
+<div class="container">
+<h2>The Science of Recovery</h2>
+<p class="body">Muscle protein synthesis peaks 24-48 hours after training and can last up to 72 hours. Training a muscle before it's fully recovered limits growth and increases injury risk. Age, sleep quality, and training intensity all affect recovery speed.</p>
+
+<div class="tool-card">
+<h3>🛌 Rest Day Calculator</h3>
+<div class="form-group"><label>Age range</label><select id="age"><option value="under30">Under 30</option><option value="30-40">30-40</option><option value="40-50" selected>40-50</option><option value="50+">50+</option></select></div>
+<div class="form-group"><label>Training intensity</label><select id="intensity"><option value="light">Light (walking, yoga)</option><option value="moderate">Moderate (weights, running)</option><option value="high">High (HIIT, heavy lifting)</option></select></div>
+<div class="form-group"><label>Sleep quality</label><select id="sleep"><option value="poor">Poor (< 6 hours)</option><option value="ok">OK (6-7 hours)</option><option value="good" selected>Good (7-8 hours)</option><option value="great">Great (8+ hours)</option></select></div>
+<div class="form-group"><label>Stress level</label><select id="stress"><option value="low">Low</option><option value="moderate" selected>Moderate</option><option value="high">High</option></select></div>
+<button class="btn" onclick="calc()">Calculate Rest Days</button>
+<div class="result" id="res"></div>
+</div>
+
+<h2>Rest Days Still Count on Momentum</h2>
+<p class="body">In Momentum, rest days are part of your streak. You check in, note it's a recovery day, and your streak stays intact. Because showing up mentally is as important as showing up physically.</p>
+
+<div class="cta-section">
+<h2>Build a Streak That Includes Recovery</h2>
+<p class="body">Momentum's streak tracker counts rest days. Because recovery is training too.</p>
+<a href="/auth" class="btn">Start Free with Momentum</a>
+</div>
+</div>
+
+<footer>Built by <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer">Chad T Dyar</a> · <a href="/">Momentum</a></footer>
+
+<script>
+function calc(){
+  var scores={age:{under30:0,'30-40':1,'40-50':2,'50+':3},intensity:{light:0,moderate:1,high:2},sleep:{great:0,good:0,ok:1,poor:2},stress:{low:0,moderate:1,high:2}};
+  var total=scores.age[document.getElementById('age').value]+scores.intensity[document.getElementById('intensity').value]+scores.sleep[document.getElementById('sleep').value]+scores.stress[document.getElementById('stress').value];
+  var rest,msg;
+  if(total<=2){rest='1-2';msg='You recover well. 1-2 full rest days per week is sufficient. Consider active recovery (walking, light yoga) on off days.';}
+  else if(total<=4){rest='2-3';msg='Your body needs moderate recovery time. Schedule 2-3 rest days per week and prioritize sleep quality.';}
+  else if(total<=6){rest='3-4';msg='Recovery is especially important for you. Take 3-4 rest days per week and focus on sleep, nutrition, and stress management.';}
+  else{rest='4+';msg='Your recovery needs are high. Prioritize gentle movement (walking, stretching) over intense training. 3 training days per week may be your sweet spot.';}
+  var html='<h4>Your Recovery Recommendation</h4><div class="rec-box"><div class="rec-num">'+rest+'</div><div><strong>rest days per week</strong><br><span style="color:#64748b;font-size:.9rem">'+msg+'</span></div></div>';
+  html+='<p style="margin-top:1rem;color:#475569">💡 Remember: rest days count as check-ins on Momentum. Your streak never breaks for smart recovery.</p>';
+  document.getElementById('res').innerHTML=html;document.getElementById('res').style.display='block';
+}
+</script>
+</body>
+</html>
