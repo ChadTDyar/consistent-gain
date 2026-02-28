@@ -62,7 +62,7 @@ export default function Pricing() {
 
   const proFeatures = [
     "Everything in Starter",
-    "AI Coach — personalized habit guidance",
+    "AI Coach - personalized habit guidance",
     "Unlimited progress history",
     "Priority support",
     "CSV data export",
@@ -71,7 +71,7 @@ export default function Pricing() {
   const faqData = [
     {
       question: "Is Momentum really free?",
-      answer: "Yes. The Free plan includes up to 3 habits, daily check-ins, and 7-day streaks — forever free, no credit card required.",
+      answer: "Yes. The Free plan includes up to 3 habits, daily check-ins, and 7-day streaks - forever free, no credit card required.",
     },
     {
       question: "What is Streak Repair?",
@@ -87,7 +87,7 @@ export default function Pricing() {
     },
     {
       question: "What happens in my first week?",
-      answer: "You'll set up 1–3 realistic habits, configure reminders that fit your schedule, and complete your first 7-day streak. Most users are set up in under 5 minutes.",
+      answer: "You'll set up 1-3 realistic habits, configure reminders that fit your schedule, and complete your first 7-day streak. Most users are set up in under 5 minutes.",
     },
   ];
 
@@ -200,7 +200,7 @@ export default function Pricing() {
               <CardContent className="space-y-6">
                 <div className="bg-primary/10 rounded-lg p-3">
                   <p className="text-xs font-semibold text-foreground mb-1">This is for you if…</p>
-                  <p className="text-xs text-muted-foreground">You're building 2–3 core habits, want light reminders, and need streak protection so one bad day doesn't erase your progress.</p>
+                  <p className="text-xs text-muted-foreground">You're building 2-3 core habits, want light reminders, and need streak protection so one bad day doesn't erase your progress.</p>
                 </div>
                 <ul className="space-y-3">
                   {starterFeatures.map((feature) => (
@@ -278,7 +278,7 @@ export default function Pricing() {
                   <h3 className="font-semibold text-foreground">Our guarantee</h3>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Cancel anytime, no commitments. No ads, no data selling. You keep access through the end of your billing period — no questions asked.
+                  Cancel anytime, no commitments. No ads, no data selling. You keep access through the end of your billing period - no questions asked.
                 </p>
               </CardContent>
             </Card>
@@ -286,7 +286,7 @@ export default function Pricing() {
               <CardContent className="pt-6">
                 <h3 className="font-semibold text-foreground mb-3">What you'll accomplish in week 1</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1–3 realistic daily habits</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1-3 realistic daily habits</li>
                   <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Configure reminders that fit your schedule</li>
                   <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Complete your first 7-day streak</li>
                   <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> See your consistency visualized</li>

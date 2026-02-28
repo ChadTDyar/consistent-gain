@@ -4,8 +4,8 @@ const steps = [
   {
     number: 1,
     icon: Target,
-    title: "Pick 1–3 habits",
-    description: "Fitness, reading, meditation — whatever matters to you.",
+    title: "Pick 1-3 habits",
+    description: "Fitness, reading, meditation - whatever matters to you.",
   },
   {
     number: 2,

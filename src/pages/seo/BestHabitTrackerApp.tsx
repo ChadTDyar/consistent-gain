@@ -54,7 +54,7 @@ export default function BestHabitTrackerApp() {
               The Best Habit Tracker App for People Who Actually Want to Stay Consistent
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              Most habit tracker apps track streaks but don't explain why streaks work. The best one isn't the most feature-rich — it's the one you'll still be using in month 4.
+              Most habit tracker apps track streaks but don't explain why streaks work. The best one isn't the most feature-rich - it's the one you'll still be using in month 4.
             </p>
           </div>
         </section>
@@ -84,7 +84,7 @@ export default function BestHabitTrackerApp() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">What Makes a Habit Tracker Actually Work</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              The research is clear: streak psychology taps into loss aversion — once you've built a chain, you're motivated not to break it. Identity-based habits (James Clear's framework) mean the tracker should reinforce who you're becoming, not just what you did. The best habit tracker makes you feel like "someone who shows up every day."
+              The research is clear: streak psychology taps into loss aversion - once you've built a chain, you're motivated not to break it. Identity-based habits (James Clear's framework) mean the tracker should reinforce who you're becoming, not just what you did. The best habit tracker makes you feel like "someone who shows up every day."
             </p>
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">The 5 Apps We Tested</h2>
@@ -142,9 +142,9 @@ export default function BestHabitTrackerApp() {
                   <p className="text-muted-foreground mb-6">Start free. Upgrade when you're ready.</p>
                   <div className="space-y-3">
                     {[
-                      "Free — 3 goals, 7-day streaks, daily check-ins",
-                      "Plus ($4.99/mo) — Unlimited goals, Streak Repair, 30-day history",
-                      "Pro ($9.99/mo) — AI Coach, unlimited history, data export",
+                      "Free - 3 goals, 7-day streaks, daily check-ins",
+                      "Plus ($4.99/mo) - Unlimited goals, Streak Repair, 30-day history",
+                      "Pro ($9.99/mo) - AI Coach, unlimited history, data export",
                     ].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />

@@ -46,7 +46,7 @@ export default function FitnessMotivationOver50() {
               Fitness Motivation Over 50: Stop Relying on Willpower, Build a System Instead
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              You've been motivated before. Multiple times. The problem isn't motivation — motivation is temporary. What works at 50+ is a system that runs even when you don't feel like it.
+              You've been motivated before. Multiple times. The problem isn't motivation - motivation is temporary. What works at 50+ is a system that runs even when you don't feel like it.
             </p>
           </div>
         </section>
@@ -56,12 +56,12 @@ export default function FitnessMotivationOver50() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">Why Motivation Fails After 50</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              After 50, the game changes. Hormonal shifts affect energy and recovery. Your schedule is packed with career responsibilities, family obligations, and the reality that your body doesn't bounce back like it used to. Willpower is a finite resource — and you're spending it on a hundred other things before you even think about exercise.
+              After 50, the game changes. Hormonal shifts affect energy and recovery. Your schedule is packed with career responsibilities, family obligations, and the reality that your body doesn't bounce back like it used to. Willpower is a finite resource - and you're spending it on a hundred other things before you even think about exercise.
             </p>
             <div className="grid sm:grid-cols-3 gap-4 my-8">
               {[
                 { icon: Battery, title: "Energy Changes", desc: "Hormonal shifts mean your energy patterns are different. Morning motivation isn't guaranteed." },
-                { icon: Clock, title: "Schedule Complexity", desc: "Work, family, health appointments — your calendar is fuller than it was at 30." },
+                { icon: Clock, title: "Schedule Complexity", desc: "Work, family, health appointments - your calendar is fuller than it was at 30." },
                 { icon: RefreshCw, title: "Recovery Time", desc: "Your body needs more time between intense sessions. That's biology, not weakness." },
               ].map(({ icon: Icon, title, desc }) => (
                 <Card key={title} className="border-none shadow-md">
@@ -76,13 +76,13 @@ export default function FitnessMotivationOver50() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">The Shift From Intensity to Consistency</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              Here's the counterintuitive truth: 10 minutes every day beats 60 minutes twice a week. Research consistently shows that frequency of movement matters more than intensity for long-term health outcomes over 50. The goal isn't to crush a workout — it's to move your body every single day, even if it's just a walk around the block.
+              Here's the counterintuitive truth: 10 minutes every day beats 60 minutes twice a week. Research consistently shows that frequency of movement matters more than intensity for long-term health outcomes over 50. The goal isn't to crush a workout - it's to move your body every single day, even if it's just a walk around the block.
             </p>
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">Building Your System in 3 Steps</h2>
             <ol className="space-y-4 my-6">
               {[
-                { step: "1", title: "Set 1-3 small goals", body: "\"Move for 15 minutes\" is better than \"train for a marathon.\" Momentum's free tier lets you track up to 3 goals — that's enough to start." },
+                { step: "1", title: "Set 1-3 small goals", body: "\"Move for 15 minutes\" is better than \"train for a marathon.\" Momentum's free tier lets you track up to 3 goals - that's enough to start." },
                 { step: "2", title: "Check in daily, no matter what", body: "Even on rest days. The habit is the check-in itself, not the workout intensity. It takes 10 seconds." },
                 { step: "3", title: "Let the streak be your scoreboard", body: "After 7 days you'll feel ownership. After 21 it becomes automatic. After 66 days, it's who you are." },
               ].map(({ step, title, body }) => (
@@ -98,7 +98,7 @@ export default function FitnessMotivationOver50() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">Why Rest Days Are Part of the Streak</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              At 50+, recovery isn't optional — it's the workout. Your muscles rebuild during rest, your joints need time to recover, and your nervous system needs downtime. Momentum lets you check in on rest days because showing up mentally is just as important as showing up physically. The streak doesn't break because you took a recovery day.
+              At 50+, recovery isn't optional - it's the workout. Your muscles rebuild during rest, your joints need time to recover, and your nervous system needs downtime. Momentum lets you check in on rest days because showing up mentally is just as important as showing up physically. The streak doesn't break because you took a recovery day.
             </p>
 
             <div className="my-8">
@@ -107,7 +107,7 @@ export default function FitnessMotivationOver50() {
                   <h3 className="text-2xl font-display font-bold text-foreground mb-2">Plans that grow with you</h3>
                   <p className="text-muted-foreground mb-6">Start free. Upgrade when you're ready.</p>
                   <div className="space-y-3">
-                    {["Free — 3 goals, 7-day streaks, daily check-ins", "Plus ($4.99/mo) — Unlimited goals, Streak Repair, 30-day history", "Pro ($9.99/mo) — AI Coach, unlimited history, data export"].map((line) => (
+                    {["Free - 3 goals, 7-day streaks, daily check-ins", "Plus ($4.99/mo) - Unlimited goals, Streak Repair, 30-day history", "Pro ($9.99/mo) - AI Coach, unlimited history, data export"].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <span className="text-sm text-foreground">{line}</span>

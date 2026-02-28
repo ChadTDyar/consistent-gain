@@ -8,9 +8,9 @@ interface OnboardingChecklistProps {
 }
 
 const steps = [
-  { key: "goal", label: "Choose 1–3 realistic habits", sublabel: "What do you want to show up for daily?" },
+  { key: "goal", label: "Choose 1-3 realistic habits", sublabel: "What do you want to show up for daily?" },
   { key: "schedule", label: "Set your schedule & reminders", sublabel: "Pick days and a time that fits your life" },
-  { key: "checkin", label: "Complete your first check-in", sublabel: "Tap 'Done' on any habit — that's it!" },
+  { key: "checkin", label: "Complete your first check-in", sublabel: "Tap 'Done' on any habit - that's it!" },
 ];
 
 export const OnboardingChecklist = ({ hasGoals, hasCheckin, onCreateGoal }: OnboardingChecklistProps) => {

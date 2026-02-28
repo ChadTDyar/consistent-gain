@@ -57,12 +57,12 @@ const Index = () => {
                   Build Habits That <span className="text-gradient">Actually Stick</span>
                 </h1>
                 <p className="text-xl md:text-2xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  You juggle work, life, and health — and your habit app becomes another task to maintain. Momentum is different: set up a realistic routine in 5 minutes and complete your first 7-day streak this week.
+                  You juggle work, life, and health - and your habit app becomes another task to maintain. Momentum is different: set up a realistic routine in 5 minutes and complete your first 7-day streak this week.
                 </p>
                 <div className="bg-card border border-border rounded-xl p-5 max-w-xl mx-auto lg:mx-0">
                   <p className="text-sm font-semibold text-foreground mb-2">In your first week, you'll:</p>
                   <ul className="space-y-1.5 text-sm text-muted-foreground">
-                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1–3 realistic daily habits</li>
+                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1-3 realistic daily habits</li>
                     <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Get smart reminders that fit your schedule</li>
                     <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Complete your first 7-day streak</li>
                   </ul>
@@ -73,7 +73,7 @@ const Index = () => {
                     onClick={() => { analytics.startSignup(); navigate("/auth"); }} 
                     className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-lg h-14 px-10 btn-gradient"
                   >
-                    Start my habit plan — free
+                    Start my habit plan - free
                   </Button>
                   <Button 
                     size="lg" 
@@ -193,7 +193,7 @@ const Index = () => {
               className="btn-large shadow-2xl hover:shadow-[0_30px_60px_rgba(255,255,255,0.5)] bg-white text-primary hover:bg-white hover:scale-110 transition-all text-lg h-16 px-12 font-semibold slide-up"
               style={{animationDelay: '0.1s'}}
             >
-              Start my habit plan — free
+              Start my habit plan - free
             </Button>
           </div>
         </section>

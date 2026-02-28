@@ -9,7 +9,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "Article",
   headline: "The Daily Fitness Check-In App That Takes 10 Seconds (and Actually Works)",
-  description: "A daily fitness check-in app that takes 10 seconds. Momentum's check-in builds accountability, streaks, and habit identity — without logging every rep and calorie.",
+  description: "A daily fitness check-in app that takes 10 seconds. Momentum's check-in builds accountability, streaks, and habit identity - without logging every rep and calorie.",
   author: { "@type": "Organization", name: "Momentum" },
   publisher: { "@type": "Organization", name: "Momentum", url: "https://momentumfit.app" },
   datePublished: "2026-02-28",
@@ -23,7 +23,7 @@ export default function DailyFitnessCheckinApp() {
     <>
       <SEO
         title="Daily Fitness Check-In App | 10 Seconds a Day to Build Lasting Habits"
-        description="A daily fitness check-in app that takes 10 seconds. Momentum's check-in builds accountability, streaks, and habit identity — without logging every rep and calorie."
+        description="A daily fitness check-in app that takes 10 seconds. Momentum's check-in builds accountability, streaks, and habit identity - without logging every rep and calorie."
         keywords="daily fitness check-in app, daily workout check in, fitness accountability app, simple habit tracker, quick fitness log"
         schema={structuredData}
       />
@@ -99,7 +99,7 @@ export default function DailyFitnessCheckinApp() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">How Check-Ins Build Identity Over Time</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              James Clear calls it "proof accumulation." Every time you check in, you're casting a vote for the type of person you want to become. After 7 days, you have a week of proof. After 30 days, you have a month. After 66 days — the research-backed tipping point — the behavior becomes part of who you are. You're not "trying to exercise." You're "someone who moves every day." The check-in is the mechanism that makes that identity shift happen.
+              James Clear calls it "proof accumulation." Every time you check in, you're casting a vote for the type of person you want to become. After 7 days, you have a week of proof. After 30 days, you have a month. After 66 days - the research-backed tipping point - the behavior becomes part of who you are. You're not "trying to exercise." You're "someone who moves every day." The check-in is the mechanism that makes that identity shift happen.
             </p>
 
             <div className="my-8">
@@ -108,7 +108,7 @@ export default function DailyFitnessCheckinApp() {
                   <h3 className="text-2xl font-display font-bold text-foreground mb-2">Plans that grow with you</h3>
                   <p className="text-muted-foreground mb-6">Start free. Upgrade when you're ready.</p>
                   <div className="space-y-3">
-                    {["Free — 3 goals, 7-day streaks, daily check-ins", "Plus ($4.99/mo) — Unlimited goals, Streak Repair, 30-day history", "Pro ($9.99/mo) — AI Coach, unlimited history, data export"].map((line) => (
+                    {["Free - 3 goals, 7-day streaks, daily check-ins", "Plus ($4.99/mo) - Unlimited goals, Streak Repair, 30-day history", "Pro ($9.99/mo) - AI Coach, unlimited history, data export"].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <span className="text-sm text-foreground">{line}</span>
