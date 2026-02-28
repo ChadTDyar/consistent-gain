@@ -36,6 +36,11 @@ import FitnessHabitGuide from "./pages/FitnessHabitGuide";
 import FitnessTrackerVsHabitTracker from "./pages/FitnessTrackerVsHabitTracker";
 import Insights from "./pages/Insights";
 import BuildFitnessHabitAfter40 from "./pages/seo/BuildFitnessHabitAfter40";
+import BestHabitTrackerApp from "./pages/seo/BestHabitTrackerApp";
+import WorkoutStreakTracker from "./pages/seo/WorkoutStreakTracker";
+import FitnessMotivationOver50 from "./pages/seo/FitnessMotivationOver50";
+import HowToStayConsistentWorkingOut from "./pages/seo/HowToStayConsistentWorkingOut";
+import DailyFitnessCheckinApp from "./pages/seo/DailyFitnessCheckinApp";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +92,11 @@ const App = () => {
             <Route path="/resources/fitness-habit-guide" element={<FitnessHabitGuide />} />
             <Route path="/resources/fitness-tracker-vs-habit-tracker" element={<FitnessTrackerVsHabitTracker />} />
             <Route path="/fitness-habit-after-40" element={<BuildFitnessHabitAfter40 />} />
+            <Route path="/best-habit-tracker-app" element={<BestHabitTrackerApp />} />
+            <Route path="/workout-streak-tracker" element={<WorkoutStreakTracker />} />
+            <Route path="/fitness-motivation-over-50" element={<FitnessMotivationOver50 />} />
+            <Route path="/how-to-stay-consistent-working-out" element={<HowToStayConsistentWorkingOut />} />
+            <Route path="/daily-fitness-checkin-app" element={<DailyFitnessCheckinApp />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
