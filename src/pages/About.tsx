@@ -82,7 +82,7 @@ export default function About() {
               <h2 className="text-3xl font-display font-bold mb-4 text-foreground">The 100-Pound Wake-Up Call</h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  When I was 30, I lost over a hundred pounds. It changed everything - my confidence, my energy, my outlook. But here's what nobody tells you about massive weight loss: <strong className="text-foreground">keeping it off is the harder part.</strong>
+                  When I was 30, I lost over a hundred pounds. It changed everything: my confidence, my energy, my outlook. What nobody tells you about massive weight loss: <strong className="text-foreground">keeping it off is the harder part.</strong>
                 </p>
                 <p>
                   For twenty years, I've fought to maintain that loss. In the last few years, as I approached 50, things changed. Recovery took longer. Joints started complaining. The routines that worked at 35 stopped working at 45. I needed to completely rebuild my approach to fitness.
