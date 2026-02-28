@@ -222,11 +222,7 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
                   size="lg"
-                  onClick={() => {
-                    if (currentPlan === 'plus' || currentPlan === 'pro') return;
-                    analytics.upgradeClicked();
-                    window.open('https://buy.stripe.com/7sYbJ2a7WliK2jmazt3ZK02', '_blank');
-                  }}
+                  onClick={() => window.open('https://buy.stripe.com/7sYbJ2a7WliK2jmazt3ZK02', '_blank')}
                   disabled={currentPlan === 'plus' || currentPlan === 'pro'}
                 >
                   {currentPlan === 'plus' ? "Current Plan" : currentPlan === 'pro' ? "Included in Pro" : "Start 7-day free trial"}
@@ -270,11 +266,7 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold min-h-[44px] bg-secondary text-secondary-foreground hover:bg-secondary/90"
                   size="lg"
-                  onClick={() => {
-                    if (currentPlan === 'pro') return;
-                    analytics.upgradeClicked();
-                    window.open('https://buy.stripe.com/5kQeVe3Jyd1s5vy0YT3ZK03', '_blank');
-                  }}
+                  onClick={() => window.open('https://buy.stripe.com/5kQeVe3Jyd1s5vy0YT3ZK03', '_blank')}
                   disabled={currentPlan === 'pro'}
                 >
                   {currentPlan === 'pro' ? "Current Plan" : "Start 7-day free trial"}
