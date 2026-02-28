@@ -11,11 +11,11 @@ export const SocialProofStrip = () => {
           </div>
           <div className="flex items-center justify-center gap-3">
             <Dumbbell className="w-6 h-6 text-primary" />
-            <span className="text-lg font-semibold text-foreground">2M workouts logged</span>
+            <span className="text-lg font-semibold text-foreground">2M habits tracked</span>
           </div>
           <div className="flex items-center justify-center gap-3">
             <Calendar className="w-6 h-6 text-primary" />
-            <span className="text-lg font-semibold text-foreground">Average streak: 37 days</span>
+            <span className="text-lg font-semibold text-foreground">Avg streak: 37 days</span>
           </div>
         </div>
         <div className="mt-6 text-center">

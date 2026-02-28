@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import momentumLogo from "@/assets/momentum-logo.png";
 import heroRunner from "@/assets/hero-runner.png";
@@ -14,16 +15,22 @@ import { NotificationExplainer } from "@/components/NotificationExplainer";
 import { HowItWorks } from "@/components/HowItWorks";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { DifferentiationCallout } from "@/components/DifferentiationCallout";
+import { analytics } from "@/lib/analytics";
+import { CheckCircle, Shield } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    analytics.visitLanding();
+  }, []);
+
   return (
     <>
       <SEO 
-        title="Momentum - Fitness Habit Tracker & Daily Streak App"
-        description="Build unstoppable fitness habits with daily check-ins, streak tracking, and AI coaching. Join 10,000+ people who show up every day."
-        keywords="fitness habit tracker, daily streak app, workout consistency, habit tracker over 40, fitness habits, streak tracking, AI coaching, fitness motivation, sustainable fitness"
+        title="Momentum - Build Habits That Actually Stick"
+        description="For busy professionals who keep restarting habit apps. Set up a realistic routine in 5 minutes and complete your first 7-day streak this week."
+        keywords="habit tracker for professionals, daily habit app, streak tracker, build habits, consistency app, habit coaching, fitness habits"
       />
       <div className="min-h-screen bg-background-cream">
         <a 
@@ -43,24 +50,30 @@ const Index = () => {
                   <img src={momentumLogo} alt="Momentum" className="h-14 w-auto drop-shadow-sm" />
                   <h2 className="text-2xl font-display font-bold text-gradient">Momentum</h2>
                 </div>
+                <p className="text-sm font-semibold text-primary uppercase tracking-wide">
+                  For busy professionals who keep restarting habit apps but never make them stick.
+                </p>
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
-                  Build Unstoppable Fitness Habits - <span className="text-gradient">One Day at a Time</span>
+                  Build Habits That <span className="text-gradient">Actually Stick</span>
                 </h1>
                 <p className="text-xl md:text-2xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  Not another workout logger. Momentum tracks what matters: showing up. Daily check-ins, streak tracking, and AI coaching that adapts to real life.
+                  You juggle work, life, and health — and your habit app becomes another task to maintain. Momentum is different: set up a realistic routine in 5 minutes and complete your first 7-day streak this week.
                 </p>
                 <div className="bg-card border border-border rounded-xl p-5 max-w-xl mx-auto lg:mx-0">
-                  <p className="text-muted-foreground leading-relaxed">
-                    You've tried 5 fitness apps. You know what to do. The problem isn't information - it's <strong className="text-foreground">consistency</strong>. Most people quit in 3 weeks. Momentum is designed for week 4 and beyond.
-                  </p>
+                  <p className="text-sm font-semibold text-foreground mb-2">In your first week, you'll:</p>
+                  <ul className="space-y-1.5 text-sm text-muted-foreground">
+                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1–3 realistic daily habits</li>
+                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Get smart reminders that fit your schedule</li>
+                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Complete your first 7-day streak</li>
+                  </ul>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
                   <Button 
                     size="lg" 
-                    onClick={() => navigate("/auth")} 
+                    onClick={() => { analytics.startSignup(); navigate("/auth"); }} 
                     className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-lg h-14 px-10 btn-gradient"
                   >
-                    Start your streak - it's free
+                    Start my habit plan — free
                   </Button>
                   <Button 
                     size="lg" 
@@ -72,9 +85,11 @@ const Index = () => {
                   </Button>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
-                  <span>No credit card required</span>
+                  <span className="flex items-center gap-1"><Shield className="h-4 w-4" /> No credit card required</span>
                   <span className="hidden sm:inline">•</span>
-                  <span className="font-semibold text-foreground">Free forever. Plus from $4.99/mo, Pro from $9.99/mo.</span>
+                  <span>Cancel anytime, no commitments</span>
+                  <span className="hidden sm:inline">•</span>
+                  <span className="font-semibold text-foreground">Free forever. Starter from $9/mo.</span>
                 </div>
               </div>
 
@@ -82,7 +97,7 @@ const Index = () => {
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-primary/10">
                   <img 
                     src={heroRunner} 
-                    alt="Runner preparing for workout at sunset" 
+                    alt="Professional preparing for a morning workout" 
                     className="w-full h-auto object-cover"
                     loading="eager"
                     width="800"
@@ -156,7 +171,7 @@ const Index = () => {
           <div className="absolute inset-0">
             <img 
               src={groupRunning} 
-              alt="Diverse group of people running together at sunset" 
+              alt="Diverse group of professionals exercising together" 
               className="w-full h-full object-cover"
               loading="lazy"
               width="1920"
@@ -165,9 +180,12 @@ const Index = () => {
             <div className="absolute inset-0 backdrop-blur-[2px]" style={{background: 'linear-gradient(135deg, hsl(182 82% 26% / 0.9) 0%, hsl(184 90% 18% / 0.9) 100%)'}} role="presentation" />
           </div>
           <div className="container mx-auto px-6 md:px-8 text-center relative z-10">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-8 text-white drop-shadow-lg slide-up">
-              Start building momentum today.
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4 text-white drop-shadow-lg slide-up">
+              Your streak starts today.
             </h2>
+            <p className="text-lg text-white/80 mb-8 max-w-xl mx-auto">
+              Set up your habit plan in under 5 minutes. No credit card, no commitment.
+            </p>
             <Button
               size="lg"
               variant="secondary"
@@ -175,7 +193,7 @@ const Index = () => {
               className="btn-large shadow-2xl hover:shadow-[0_30px_60px_rgba(255,255,255,0.5)] bg-white text-primary hover:bg-white hover:scale-110 transition-all text-lg h-16 px-12 font-semibold slide-up"
               style={{animationDelay: '0.1s'}}
             >
-              Start your streak - it's free
+              Start my habit plan — free
             </Button>
           </div>
         </section>
@@ -184,7 +202,12 @@ const Index = () => {
         <footer className="py-12 border-t border-primary/10 bg-card/50 backdrop-blur-sm">
           <div className="container mx-auto px-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-              <p className="text-muted-foreground font-medium">Built by <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chad T Dyar</a></p>
+              <div>
+                <p className="text-muted-foreground font-medium">Built by <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chad T Dyar</a></p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Also by Chad: tools for <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">pets, health, design, and gardening</a>.
+                </p>
+              </div>
               <nav className="flex gap-6 text-sm" aria-label="Footer navigation">
                 <a href="/blog" className="text-muted-foreground hover:text-primary transition-colors font-medium">Blog</a>
                 <a href="/story" className="text-muted-foreground hover:text-primary transition-colors font-medium">Our Story</a>

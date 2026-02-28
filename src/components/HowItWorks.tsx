@@ -4,20 +4,20 @@ const steps = [
   {
     number: 1,
     icon: Target,
-    title: "Set your fitness goal",
-    description: "Strength, cardio, flexibility, or all three.",
+    title: "Pick 1–3 habits",
+    description: "Fitness, reading, meditation — whatever matters to you.",
   },
   {
     number: 2,
     icon: Zap,
-    title: "Log your first workout",
-    description: "Takes 30 seconds.",
+    title: "Check in daily",
+    description: "One tap. Takes 30 seconds.",
   },
   {
     number: 3,
     icon: Flame,
-    title: "Start your streak",
-    description: "Momentum reminds you daily and celebrates progress.",
+    title: "Build your streak",
+    description: "Smart reminders and coaching keep you going past week 4.",
   },
 ];
 
@@ -27,7 +27,7 @@ export const HowItWorks = () => {
       <div className="container mx-auto px-6 md:px-8 max-w-4xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
-            How It Works
+            Set up in under 5 minutes
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Three steps. No complexity. Just follow-through.
