@@ -225,7 +225,7 @@ export default function Pricing() {
                   onClick={() => {
                     if (currentPlan === 'plus' || currentPlan === 'pro') return;
                     analytics.upgradeClicked();
-                    window.location.href = 'https://buy.stripe.com/7sYbJ2a7WliK2jmazt3ZK02';
+                    window.open('https://buy.stripe.com/7sYbJ2a7WliK2jmazt3ZK02', '_blank');
                   }}
                   disabled={currentPlan === 'plus' || currentPlan === 'pro'}
                 >
@@ -273,7 +273,7 @@ export default function Pricing() {
                   onClick={() => {
                     if (currentPlan === 'pro') return;
                     analytics.upgradeClicked();
-                    window.location.href = 'https://buy.stripe.com/5kQeVe3Jyd1s5vy0YT3ZK03';
+                    window.open('https://buy.stripe.com/5kQeVe3Jyd1s5vy0YT3ZK03', '_blank');
                   }}
                   disabled={currentPlan === 'pro'}
                 >
