@@ -222,10 +222,14 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
                   size="lg"
-                  onClick={() => handleUpgrade('plus')}
-                  disabled={loading !== null || currentPlan === 'plus' || currentPlan === 'pro'}
+                  onClick={() => {
+                    if (currentPlan === 'plus' || currentPlan === 'pro') return;
+                    analytics.upgradeClicked();
+                    window.location.href = 'https://buy.stripe.com/7sYbJ2a7WliK2jmazt3ZK02';
+                  }}
+                  disabled={currentPlan === 'plus' || currentPlan === 'pro'}
                 >
-                  {loading === 'plus' ? "Loading..." : currentPlan === 'plus' ? "Current Plan" : currentPlan === 'pro' ? "Included in Pro" : "Start 7-day free trial"}
+                  {currentPlan === 'plus' ? "Current Plan" : currentPlan === 'pro' ? "Included in Pro" : "Start 7-day free trial"}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">7-day free trial, cancel anytime</p>
               </CardContent>
@@ -266,10 +270,14 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold min-h-[44px] bg-secondary text-secondary-foreground hover:bg-secondary/90"
                   size="lg"
-                  onClick={() => handleUpgrade('pro')}
-                  disabled={loading !== null || currentPlan === 'pro'}
+                  onClick={() => {
+                    if (currentPlan === 'pro') return;
+                    analytics.upgradeClicked();
+                    window.location.href = 'https://buy.stripe.com/5kQeVe3Jyd1s5vy0YT3ZK03';
+                  }}
+                  disabled={currentPlan === 'pro'}
                 >
-                  {loading === 'pro' ? "Loading..." : currentPlan === 'pro' ? "Current Plan" : "Start 7-day free trial"}
+                  {currentPlan === 'pro' ? "Current Plan" : "Start 7-day free trial"}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">7-day free trial, cancel anytime</p>
               </CardContent>
