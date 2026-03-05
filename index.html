@@ -39,6 +39,18 @@
       posthog.init('phc_LARV0p468D0BoYSBVO8giU7HEyALPke2JlaUNnI6uuy', {api_host: 'https://us.i.posthog.com'});
     </script>
 
+    <!-- PostHog Custom Events -->
+    <script>
+      window.addEventListener('load', function() {
+        if (window.posthog) {
+          if (window.location.pathname.includes('pricing') || window.location.pathname.includes('plan')) {
+            posthog.capture('pricing_page_viewed', { app_name: 'Momentum' });
+          }
+          posthog.register({ app_name: 'Momentum' });
+        }
+      });
+    </script>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
