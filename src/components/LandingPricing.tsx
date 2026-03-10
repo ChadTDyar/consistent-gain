@@ -7,44 +7,38 @@ const tiers = [
   {
     name: "Free",
     price: "$0",
-    period: "forever",
+    period: "/mo",
     highlight: false,
-    forYou: "you want to build 1-3 simple daily habits.",
+    cta: "Get Started Free",
     features: [
-      "3 habits",
-      "Daily check-ins",
-      "7-day streaks",
-      "Basic reminders",
+      "1 activity",
+      "Basic habit tracking",
+      "Weekly summary",
     ],
   },
   {
     name: "Plus",
     price: "$3.99",
     period: "/mo",
-    highlight: true,
-    forYou: "you're serious about consistency and want streak protection.",
+    highlight: false,
+    cta: "Start Plus",
     features: [
-      "10 habits",
-      "30-day streaks",
-      "Smart reminders",
-      "Progress graphs",
-      "Streak repair (48hr window)",
+      "Unlimited activities",
+      "AI plan adjustments",
+      "Streak insights",
     ],
   },
   {
     name: "Premium",
     price: "$7.99",
     period: "/mo",
-    highlight: false,
-    forYou: "you want AI coaching that adapts to your energy and schedule.",
+    highlight: true,
+    cta: "Start Premium",
     features: [
-      "Unlimited habits",
-      "AI coaching",
-      "Body/wellness tracking",
-      "Sleep/energy context",
-      "10-min microblock sessions",
-      "Milestone celebrations",
-      "CSV export",
+      "Everything in Plus",
+      "Nutrition tracking",
+      "Coach mode",
+      "Export data",
     ],
   },
 ];
@@ -93,16 +87,12 @@ export function LandingPricing() {
                     </li>
                   ))}
                 </ul>
-                <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
-                  <span className="font-semibold text-foreground">This is for you if </span>
-                  {tier.forYou}
-                </div>
                 <Button
                   onClick={() => navigate("/auth")}
                   variant={tier.highlight ? "default" : "outline"}
                   className={tier.highlight ? "btn-gradient w-full" : "w-full"}
                 >
-                  {tier.price === "$0" ? "Start Free" : "Get Started"}
+                  {tier.cta}
                 </Button>
               </CardContent>
             </Card>
