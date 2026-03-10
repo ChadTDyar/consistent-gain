@@ -29,9 +29,9 @@ const Index = () => {
   return (
     <>
       <SEO 
-        title="Momentum - Build Habits That Actually Stick"
-        description="For busy professionals who keep restarting habit apps. Set up a realistic routine in 5 minutes and complete your first 7-day streak this week."
-        keywords="habit tracker for professionals, daily habit app, streak tracker, build habits, consistency app, habit coaching, fitness habits"
+        title="Momentum - Build Fitness Habits That Actually Stick"
+        description="AI-guided movement plans for adults 40+ and busy professionals. No gym required. No guilt. Just clarity."
+        keywords="fitness habits over 40, habit tracker for professionals, AI fitness coach, build habits, consistency app, no gym workout, fitness habits"
       />
       <div className="min-h-screen bg-background-cream">
         <a 
