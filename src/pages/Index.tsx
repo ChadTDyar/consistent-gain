@@ -17,7 +17,7 @@ import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { DifferentiationCallout } from "@/components/DifferentiationCallout";
 import { LandingPricing } from "@/components/LandingPricing";
 import { analytics } from "@/lib/analytics";
-import { CheckCircle, Shield } from "lucide-react";
+import { Shield, Star } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -29,9 +29,9 @@ const Index = () => {
   return (
     <>
       <SEO 
-        title="Momentum - Build Habits That Actually Stick"
-        description="For busy professionals who keep restarting habit apps. Set up a realistic routine in 5 minutes and complete your first 7-day streak this week."
-        keywords="habit tracker for professionals, daily habit app, streak tracker, build habits, consistency app, habit coaching, fitness habits"
+        title="Momentum - Build Fitness Habits That Actually Stick"
+        description="AI-guided movement plans for adults 40+ and busy professionals. No gym required. No guilt. Just clarity."
+        keywords="fitness habits over 40, habit tracker for professionals, AI fitness coach, build habits, consistency app, no gym workout, fitness habits"
       />
       <div className="min-h-screen bg-background-cream">
         <a 
@@ -51,45 +51,34 @@ const Index = () => {
                   <img src={momentumLogo} alt="Momentum" className="h-10 md:h-14 w-auto drop-shadow-sm" />
                   <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</h2>
                 </div>
-                <p className="text-xs md:text-sm font-semibold text-primary uppercase tracking-wide">
-                  For busy professionals who keep restarting habit apps but never make them stick.
-                </p>
                 <h1 className="text-3xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
-                  Build Habits That <span className="text-gradient">Actually Stick</span>
+                  Build Fitness Habits That <span className="text-gradient">Actually Stick</span>
                 </h1>
-                <p className="text-base md:text-2xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  You juggle work, life, and health -- and your habit app becomes another task to maintain. Momentum is different: set up a realistic routine in 5 minutes and complete your first 7-day streak this week.
+                <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                  AI-guided movement plans for adults 40+ and busy professionals. No gym required. No guilt. Just clarity.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start pt-2 md:pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
                   <Button 
                     size="lg" 
                     onClick={() => { analytics.startSignup(); navigate("/auth"); }} 
                     className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-base md:text-lg h-12 md:h-14 px-8 md:px-10 btn-gradient"
                   >
-                    Start my habit plan - free
-                  </Button>
-                  <Button 
-                    size="lg" 
-                    variant="outline"
-                    onClick={() => navigate("/pricing")} 
-                    className="text-base md:text-lg h-12 md:h-14 px-6 md:px-8 border-2"
-                  >
-                    See plans
+                    Start Free
                   </Button>
                 </div>
-                <div className="hidden md:block bg-card border border-border rounded-xl p-5 max-w-xl mx-auto lg:mx-0">
-                  <p className="text-sm font-semibold text-foreground mb-2">In your first week, you'll:</p>
-                  <ul className="space-y-1.5 text-sm text-muted-foreground">
-                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1-3 realistic daily habits</li>
-                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Get smart reminders that fit your schedule</li>
-                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Complete your first 7-day streak</li>
-                  </ul>
+                <p className="text-xs md:text-sm text-muted-foreground">
+                  Free forever for one activity. Upgrade for unlimited.
+                </p>
+                <div className="flex items-center gap-2 justify-center lg:justify-start text-xs md:text-sm text-muted-foreground pt-1">
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-3.5 w-3.5 fill-primary text-primary" />
+                    ))}
+                  </div>
+                  <span>4.8 stars from 127 users.</span>
+                  <span className="hidden sm:inline">Built for people who want consistency, not intensity.</span>
                 </div>
-                <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 justify-center lg:justify-start text-xs md:text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1"><Shield className="h-4 w-4" /> No credit card required</span>
-                  <span className="hidden sm:inline">•</span>
-                  <span>Cancel anytime, no commitments</span>
-                </div>
+                <p className="sm:hidden text-xs text-muted-foreground">Built for people who want consistency, not intensity.</p>
               </div>
 
               <div className="relative">
