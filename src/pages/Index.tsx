@@ -45,34 +45,26 @@ const Index = () => {
         <section id="main-content" className="relative overflow-hidden">
           <div className="absolute inset-0 opacity-30" style={{background: 'var(--gradient-accent)'}} role="presentation" />
           <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
-            <div className="grid lg:grid-cols-2 gap-16 items-center py-16 md:py-24 lg:py-32">
-              <div className="space-y-6 text-center lg:text-left fade-in">
-                <div className="inline-flex items-center gap-3 mb-2">
-                  <img src={momentumLogo} alt="Momentum" className="h-14 w-auto drop-shadow-sm" />
-                  <h2 className="text-2xl font-display font-bold text-gradient">Momentum</h2>
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center py-8 md:py-24 lg:py-32">
+              <div className="space-y-4 md:space-y-6 text-center lg:text-left fade-in">
+                <div className="inline-flex items-center gap-3 mb-1 md:mb-2">
+                  <img src={momentumLogo} alt="Momentum" className="h-10 md:h-14 w-auto drop-shadow-sm" />
+                  <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</h2>
                 </div>
-                <p className="text-sm font-semibold text-primary uppercase tracking-wide">
+                <p className="text-xs md:text-sm font-semibold text-primary uppercase tracking-wide">
                   For busy professionals who keep restarting habit apps but never make them stick.
                 </p>
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
+                <h1 className="text-3xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
                   Build Habits That <span className="text-gradient">Actually Stick</span>
                 </h1>
-                <p className="text-xl md:text-2xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  You juggle work, life, and health - and your habit app becomes another task to maintain. Momentum is different: set up a realistic routine in 5 minutes and complete your first 7-day streak this week.
+                <p className="text-base md:text-2xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                  You juggle work, life, and health -- and your habit app becomes another task to maintain. Momentum is different: set up a realistic routine in 5 minutes and complete your first 7-day streak this week.
                 </p>
-                <div className="bg-card border border-border rounded-xl p-5 max-w-xl mx-auto lg:mx-0">
-                  <p className="text-sm font-semibold text-foreground mb-2">In your first week, you'll:</p>
-                  <ul className="space-y-1.5 text-sm text-muted-foreground">
-                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1-3 realistic daily habits</li>
-                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Get smart reminders that fit your schedule</li>
-                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Complete your first 7-day streak</li>
-                  </ul>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center lg:justify-start pt-2 md:pt-4">
                   <Button 
                     size="lg" 
                     onClick={() => { analytics.startSignup(); navigate("/auth"); }} 
-                    className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-lg h-14 px-10 btn-gradient"
+                    className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-base md:text-lg h-12 md:h-14 px-8 md:px-10 btn-gradient"
                   >
                     Start my habit plan - free
                   </Button>
@@ -80,17 +72,23 @@ const Index = () => {
                     size="lg" 
                     variant="outline"
                     onClick={() => navigate("/pricing")} 
-                    className="text-lg h-14 px-8 border-2"
+                    className="text-base md:text-lg h-12 md:h-14 px-6 md:px-8 border-2"
                   >
                     See plans
                   </Button>
                 </div>
-                <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
+                <div className="hidden md:block bg-card border border-border rounded-xl p-5 max-w-xl mx-auto lg:mx-0">
+                  <p className="text-sm font-semibold text-foreground mb-2">In your first week, you'll:</p>
+                  <ul className="space-y-1.5 text-sm text-muted-foreground">
+                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1-3 realistic daily habits</li>
+                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Get smart reminders that fit your schedule</li>
+                    <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Complete your first 7-day streak</li>
+                  </ul>
+                </div>
+                <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 justify-center lg:justify-start text-xs md:text-sm text-muted-foreground">
                   <span className="flex items-center gap-1"><Shield className="h-4 w-4" /> No credit card required</span>
                   <span className="hidden sm:inline">•</span>
                   <span>Cancel anytime, no commitments</span>
-                  <span className="hidden sm:inline">•</span>
-                  <span className="font-semibold text-foreground">Free forever. Starter from $9/mo.</span>
                 </div>
               </div>
 
