@@ -157,6 +157,9 @@ const Index = () => {
         {/* Testimonials */}
         <Testimonials />
 
+        {/* Pricing */}
+        <LandingPricing />
+
         {/* Comparison Table */}
         <ComparisonTable />
 
