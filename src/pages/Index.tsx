@@ -17,7 +17,7 @@ import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { DifferentiationCallout } from "@/components/DifferentiationCallout";
 import { LandingPricing } from "@/components/LandingPricing";
 import { analytics } from "@/lib/analytics";
-import { CheckCircle, Shield } from "lucide-react";
+import { Shield, Star } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
