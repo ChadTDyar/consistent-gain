@@ -15,6 +15,7 @@ import { NotificationExplainer } from "@/components/NotificationExplainer";
 import { HowItWorks } from "@/components/HowItWorks";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { DifferentiationCallout } from "@/components/DifferentiationCallout";
+import { LandingPricing } from "@/components/LandingPricing";
 import { analytics } from "@/lib/analytics";
 import { CheckCircle, Shield } from "lucide-react";
 
