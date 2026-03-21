@@ -52,7 +52,7 @@ const Index = () => {
                   <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</h2>
                 </div>
                 <h1 className="text-3xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
-                  Build Fitness Habits That <span className="text-gradient">Actually Stick</span>
+                  Fitness Habit Tracker for <span className="text-gradient">Adults 40+</span>
                 </h1>
                 <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
                   AI-guided movement plans for adults 40+ and busy professionals. No gym required. No guilt. Just clarity.
