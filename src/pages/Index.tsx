@@ -75,8 +75,7 @@ const Index = () => {
                       <Star key={i} className="h-3.5 w-3.5 fill-primary text-primary" />
                     ))}
                   </div>
-                  <span>4.8 stars from 127 users.</span>
-                  <span className="hidden sm:inline">Built for people who want consistency, not intensity.</span>
+                  <span>Built for people who want consistency, not intensity.</span>
                 </div>
                 <p className="sm:hidden text-xs text-muted-foreground">Built for people who want consistency, not intensity.</p>
               </div>
