@@ -7,21 +7,16 @@ export const SocialProofStrip = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
           <div className="flex items-center justify-center gap-3">
             <Flame className="w-6 h-6 text-primary" />
-            <span className="text-lg font-semibold text-foreground">10,000+ active streaks</span>
+            <span className="text-lg font-semibold text-foreground">Daily streak tracking</span>
           </div>
           <div className="flex items-center justify-center gap-3">
             <Target className="w-6 h-6 text-primary" />
-            <span className="text-lg font-semibold text-foreground">2M habits tracked</span>
+            <span className="text-lg font-semibold text-foreground">Built for consistency</span>
           </div>
           <div className="flex items-center justify-center gap-3">
             <Calendar className="w-6 h-6 text-primary" />
-            <span className="text-lg font-semibold text-foreground">Avg streak: 37 days</span>
+            <span className="text-lg font-semibold text-foreground">5-minute setup</span>
           </div>
-        </div>
-        <div className="mt-6 text-center">
-          <p className="text-muted-foreground italic text-lg">
-            "I went from 0 to 90-day streak. Momentum made it feel achievable."
-          </p>
         </div>
       </div>
     </section>
