@@ -1,23 +1,25 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import momentumLogo from "@/assets/momentum-logo.png";
 import heroRunner from "@/assets/hero-runner.png";
 import groupRunning from "@/assets/group-running.png";
 import { SEO } from "@/components/SEO";
-import { FAQ } from "@/components/FAQ";
-import { Testimonials } from "@/components/Testimonials";
-import { ProductShowcase } from "@/components/ProductShowcase";
-import { ComparisonTable } from "@/components/ComparisonTable";
-import { DemoPreview } from "@/components/DemoPreview";
-import { FeatureGrid } from "@/components/FeatureGrid";
-import { NotificationExplainer } from "@/components/NotificationExplainer";
-import { HowItWorks } from "@/components/HowItWorks";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
-import { DifferentiationCallout } from "@/components/DifferentiationCallout";
-import { LandingPricing } from "@/components/LandingPricing";
 import { analytics } from "@/lib/analytics";
-import { Shield, Star } from "lucide-react";
+import { Star } from "lucide-react";
+
+// Lazy load below-the-fold sections
+const FAQ = lazy(() => import("@/components/FAQ").then(m => ({ default: m.FAQ })));
+const Testimonials = lazy(() => import("@/components/Testimonials").then(m => ({ default: m.Testimonials })));
+const ProductShowcase = lazy(() => import("@/components/ProductShowcase").then(m => ({ default: m.ProductShowcase })));
+const ComparisonTable = lazy(() => import("@/components/ComparisonTable").then(m => ({ default: m.ComparisonTable })));
+const DemoPreview = lazy(() => import("@/components/DemoPreview").then(m => ({ default: m.DemoPreview })));
+const FeatureGrid = lazy(() => import("@/components/FeatureGrid").then(m => ({ default: m.FeatureGrid })));
+const NotificationExplainer = lazy(() => import("@/components/NotificationExplainer").then(m => ({ default: m.NotificationExplainer })));
+const HowItWorks = lazy(() => import("@/components/HowItWorks").then(m => ({ default: m.HowItWorks })));
+const DifferentiationCallout = lazy(() => import("@/components/DifferentiationCallout").then(m => ({ default: m.DifferentiationCallout })));
+const LandingPricing = lazy(() => import("@/components/LandingPricing").then(m => ({ default: m.LandingPricing })));
 
 const Index = () => {
   const navigate = useNavigate();
@@ -87,6 +89,7 @@ const Index = () => {
                     alt="Professional starting their morning routine" 
                     className="w-full h-auto object-cover"
                     loading="eager"
+                    fetchPriority="high"
                     width="800"
                     height="600"
                   />
@@ -124,37 +127,40 @@ const Index = () => {
           </div>
         </nav>
 
-        {/* How It Works */}
-        <HowItWorks />
+        {/* Below-the-fold lazy-loaded sections */}
+        <Suspense fallback={<div className="py-16" />}>
+          {/* How It Works */}
+          <HowItWorks />
 
-        {/* Differentiation Callout */}
-        <DifferentiationCallout />
+          {/* Differentiation Callout */}
+          <DifferentiationCallout />
 
-        {/* Feature Grid */}
-        <FeatureGrid />
+          {/* Feature Grid */}
+          <FeatureGrid />
 
-        {/* Product Showcase */}
-        <ProductShowcase />
+          {/* Product Showcase */}
+          <ProductShowcase />
 
-        {/* Interactive Demo */}
-        <DemoPreview />
+          {/* Interactive Demo */}
+          <DemoPreview />
 
-        {/* Notification Explainer */}
-        <NotificationExplainer />
+          {/* Notification Explainer */}
+          <NotificationExplainer />
 
-        {/* Testimonials */}
-        <Testimonials />
+          {/* Testimonials */}
+          <Testimonials />
 
-        {/* Pricing */}
-        <LandingPricing />
+          {/* Pricing */}
+          <LandingPricing />
 
-        {/* Comparison Table */}
-        <ComparisonTable />
+          {/* Comparison Table */}
+          <ComparisonTable />
 
-        {/* FAQ */}
-        <div id="faq">
-          <FAQ />
-        </div>
+          {/* FAQ */}
+          <div id="faq">
+            <FAQ />
+          </div>
+        </Suspense>
 
         {/* CTA Section */}
         <section className="relative py-24 md:py-32 overflow-hidden">
