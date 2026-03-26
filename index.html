@@ -18,43 +18,15 @@
     <link rel="apple-touch-icon" href="/app-icon.png" />
     <link rel="shortcut icon" href="/app-icon.png" />
     
-    <!-- Google Analytics 4 with Consent Mode -->
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      
-      // Default consent to denied
-      gtag('consent', 'default', {
-        'analytics_storage': 'denied',
-        'ad_storage': 'denied',
-        'wait_for_update': 500
-      });
-      
-      gtag('js', new Date());
-    </script>
-    
-    <!-- PostHog Analytics -->
-    <script>
-      !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString()+" (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-      posthog.init('phc_LARV0p468D0BoYSBVO8giU7HEyALPke2JlaUNnI6uuy', {api_host: 'https://us.i.posthog.com'});
-    </script>
-
-    <!-- PostHog Custom Events -->
-    <script>
-      window.addEventListener('load', function() {
-        if (window.posthog) {
-          if (window.location.pathname.includes('pricing') || window.location.pathname.includes('plan')) {
-            posthog.capture('pricing_page_viewed', { app_name: 'Momentum' });
-          }
-          posthog.register({ app_name: 'Momentum' });
-        }
-      });
-    </script>
-
-    <!-- Google Fonts -->
+    <!-- Google Fonts - non-render-blocking with preload -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+
+    <!-- Preload LCP hero image -->
+    <link rel="preload" as="image" href="/hero-runner.png" type="image/png">
     
     <title>Momentum - Fitness Habit Tracker for Adults Over 40 | Build Sustainable Habits</title>
     <meta name="description" content="The fitness habit tracker designed for adults 40+. Build workout consistency, track daily habits, and maintain sustainable fitness routines. Free to start." />
