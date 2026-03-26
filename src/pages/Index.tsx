@@ -31,9 +31,9 @@ const Index = () => {
   return (
     <>
       <SEO 
-        title="Momentum — Daily Fitness Habit Tracker | Build Streaks That Stick"
-        description="Momentum is a free daily fitness habit tracker. Build streaks, track progress, and stay consistent. Simple, visual, and designed to keep you moving."
-        keywords="habit tracker app, streak tracker, daily habit app, fitness habit tracker, build healthy habits, fitness habits over 40, workout consistency"
+        title="MomentumFit — Daily Fitness Habit Tracker App | Build Streaks That Stick"
+        description="MomentumFit is a free daily fitness habit tracker app. Build streaks, track progress, and stay consistent. The streak tracker designed to keep you moving."
+        keywords="habit tracker app, streak tracker, daily habit app, fitness habit tracker, build healthy habits, momentumfit, fitness habits over 40, workout consistency"
         ogImage="https://momentumfit.app/og-share.jpg"
       />
       <div className="min-h-screen bg-background-cream">
@@ -52,13 +52,13 @@ const Index = () => {
               <div className="space-y-4 md:space-y-6 text-center lg:text-left fade-in">
                 <div className="inline-flex items-center gap-3 mb-1 md:mb-2">
                   <img src={momentumLogo} alt="Momentum" className="h-10 md:h-14 w-auto drop-shadow-sm" width="56" height="56" />
-                  <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</h2>
+                  <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">MomentumFit</h2>
                 </div>
                 <h1 className="text-3xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
                   Daily Fitness Habit Tracker — <span className="text-gradient">Build Streaks That Stick</span>
                 </h1>
                 <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  The daily habit app that helps you build healthy habits with streak tracking, progress charts, and zero guilt. Free to start.
+                  The daily habit app and streak tracker that helps you build healthy habits with progress charts and zero guilt. Free to start.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
                   <Button 
@@ -111,7 +111,7 @@ const Index = () => {
           <div className="container mx-auto px-6 md:px-8 max-w-7xl flex items-center justify-between py-3">
             <div className="flex items-center gap-2">
               <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" width="32" height="32" />
-              <span className="font-display font-bold text-lg text-gradient">Momentum</span>
+              <span className="font-display font-bold text-lg text-gradient">MomentumFit</span>
             </div>
             <div className="hidden md:flex items-center gap-6 text-sm font-medium">
               <a href="#how-it-works" className="text-muted-foreground hover:text-primary transition-colors">How It Works</a>
@@ -167,19 +167,19 @@ const Index = () => {
         <section className="py-16 md:py-24 bg-background-cream">
           <div className="container mx-auto px-6 md:px-8 max-w-5xl">
             <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground text-center mb-12">
-              Why Momentum?
+              Why MomentumFit?
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center space-y-3">
                 <h3 className="text-lg font-semibold text-foreground">Habit Tracker App, Simplified</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  Momentum is a fitness habit tracker built for one thing: keeping you consistent. Log your activity in seconds and watch your streaks grow.
+                  MomentumFit is a fitness habit tracker app built for one thing: keeping you consistent. Log your activity in seconds and watch your streaks grow.
                 </p>
               </div>
               <div className="text-center space-y-3">
                 <h3 className="text-lg font-semibold text-foreground">Streak Tracker That Motivates</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  Your streak is your scoreboard. Every day you check in, your streak tracker counts it. Miss a day? Momentum helps you recover and keep going.
+                  Your streak is your scoreboard. Every day you check in, MomentumFit counts it. Miss a day? The 48-hour streak repair window keeps you going.
                 </p>
               </div>
               <div className="text-center space-y-3">
@@ -187,6 +187,36 @@ const Index = () => {
                 <p className="text-muted-foreground text-sm leading-relaxed">
                   This daily habit app uses proven consistency techniques to help you build healthy habits that last. Progress charts show exactly how far you have come.
                 </p>
+              </div>
+            </div>
+
+            {/* MomentumFit vs Competitors */}
+            <div className="mt-16">
+              <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground text-center mb-4">
+                MomentumFit vs Other Habit Trackers
+              </h2>
+              <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-10 text-sm">
+                Apps like Streaks, Habitify, and Loop are great general habit trackers. MomentumFit is different: it is built specifically for fitness habits with features like body-map pain tracking, joint-safe exercise swaps, and a 48-hour streak repair window.
+              </p>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-card rounded-xl p-6 border border-border">
+                  <h3 className="font-semibold text-foreground mb-2">General habit trackers</h3>
+                  <ul className="text-sm text-muted-foreground space-y-1.5">
+                    <li>Track any habit (water, reading, meditation)</li>
+                    <li>Basic streak counting</li>
+                    <li>No fitness-specific insights</li>
+                    <li>Streak resets to zero when you miss a day</li>
+                  </ul>
+                </div>
+                <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
+                  <h3 className="font-semibold text-primary mb-2">MomentumFit</h3>
+                  <ul className="text-sm text-foreground space-y-1.5">
+                    <li>Purpose-built for fitness and workout habits</li>
+                    <li>48-hour streak repair so one missed day does not erase your progress</li>
+                    <li>Body-map pain tracking and joint-safe exercise alternatives</li>
+                    <li>AI coach that adapts to your energy levels and schedule</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
@@ -231,7 +261,7 @@ const Index = () => {
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
               <div>
                 <p className="text-muted-foreground font-medium">Built by <a href="https://chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chad T. Dyar</a></p>
-                <p className="text-xs text-muted-foreground mt-1">&copy; 2026 Momentum. All rights reserved.</p>
+                <p className="text-xs text-muted-foreground mt-1">&copy; 2026 MomentumFit. All rights reserved.</p>
               </div>
               <nav className="flex flex-wrap gap-6 text-sm justify-center" aria-label="Footer navigation">
                 <a href="/features" className="text-muted-foreground hover:text-primary transition-colors font-medium">Features</a>

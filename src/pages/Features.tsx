@@ -7,7 +7,7 @@ const features = [
   {
     icon: Flame,
     title: "Streak Tracking That Keeps You Going",
-    description: "Every day you check in, your streak grows. Momentum tracks your daily fitness habits and shows your longest streaks. Visual streak counters make consistency feel rewarding. Miss a day? The streak repair feature helps you bounce back without starting over."
+    description: "Every day you check in, your streak grows. MomentumFit tracks your daily fitness habits and shows your longest streaks. Visual streak counters make consistency feel rewarding. Miss a day? The 48-hour streak repair feature helps you bounce back without starting over."
   },
   {
     icon: BarChart3,
@@ -17,12 +17,12 @@ const features = [
   {
     icon: Bell,
     title: "Daily Reminders to Stay on Track",
-    description: "Set custom reminders for your daily habit check-ins. Momentum sends gentle nudges at the times you choose so you never forget to log your activity. Morning, evening, or any time that fits your routine."
+    description: "Set custom reminders for your daily habit check-ins. MomentumFit sends gentle nudges at the times you choose so you never forget to log your activity. Morning, evening, or any time that fits your routine."
   },
   {
     icon: Target,
     title: "Goal Setting for Any Fitness Habit",
-    description: "Track any fitness activity: walking, running, yoga, gym sessions, stretching, or custom goals. Set your target days per week and let Momentum measure your consistency. One goal is free forever."
+    description: "Track any fitness activity: walking, running, yoga, gym sessions, stretching, or custom goals. Set your target days per week and let MomentumFit measure your consistency. One goal is free forever."
   },
   {
     icon: CheckCircle,
@@ -42,19 +42,19 @@ const Features = () => {
   return (
     <>
       <SEO
-        title="Momentum Features — Streak Tracking, Progress Charts & Daily Reminders"
-        description="Track daily fitness habits, build streaks, and visualize progress with Momentum. Free habit tracker with reminders and charts."
-        keywords="streak tracking, progress charts, daily reminders, habit tracker features, fitness habit tracker, daily habit app"
+        title="MomentumFit Features — Streak Tracking, Progress Charts & Daily Reminders"
+        description="Track daily fitness habits, build streaks, and visualize progress with MomentumFit. Free habit tracker app with reminders, charts, and streak repair."
+        keywords="streak tracking, progress charts, daily reminders, habit tracker app features, fitness habit tracker, daily habit app, momentumfit"
         canonical="https://momentumfit.app/features"
         ogImage="https://momentumfit.app/og-share.jpg"
       />
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-6 md:px-8 max-w-4xl py-16 md:py-24">
           <h1 className="text-3xl md:text-5xl font-display font-bold text-foreground text-center mb-4">
-            What Can Momentum Do?
+            What Can MomentumFit Do?
           </h1>
           <p className="text-lg text-muted-foreground text-center max-w-2xl mx-auto mb-16">
-            A fitness habit tracker built for consistency. Here is everything Momentum offers to help you build streaks and stay on track.
+            A fitness habit tracker app built for consistency. Here is everything MomentumFit offers to help you build streaks and stay on track.
           </p>
 
           <div className="space-y-12">
@@ -73,6 +73,16 @@ const Features = () => {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Comparison callout */}
+          <div className="mt-16 bg-primary/5 rounded-xl p-8 border border-primary/20 text-center">
+            <h2 className="text-xl md:text-2xl font-display font-bold text-foreground mb-3">
+              Why MomentumFit Instead of a General Habit Tracker?
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-sm leading-relaxed">
+              Apps like Streaks, Habitify, Loop, and HabitNow are built for any habit. MomentumFit is purpose-built for fitness: body-map pain tracking, joint-safe exercise alternatives, AI coaching that adapts to your energy levels, and a 48-hour streak repair window so one missed day does not erase weeks of progress.
+            </p>
           </div>
 
           <div className="text-center mt-16">
