@@ -1,23 +1,25 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import momentumLogo from "@/assets/momentum-logo.png";
 import heroRunner from "@/assets/hero-runner.png";
 import groupRunning from "@/assets/group-running.png";
 import { SEO } from "@/components/SEO";
-import { FAQ } from "@/components/FAQ";
-import { Testimonials } from "@/components/Testimonials";
-import { ProductShowcase } from "@/components/ProductShowcase";
-import { ComparisonTable } from "@/components/ComparisonTable";
-import { DemoPreview } from "@/components/DemoPreview";
-import { FeatureGrid } from "@/components/FeatureGrid";
-import { NotificationExplainer } from "@/components/NotificationExplainer";
-import { HowItWorks } from "@/components/HowItWorks";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
-import { DifferentiationCallout } from "@/components/DifferentiationCallout";
-import { LandingPricing } from "@/components/LandingPricing";
 import { analytics } from "@/lib/analytics";
-import { Shield, Star } from "lucide-react";
+import { Star } from "lucide-react";
+
+// Lazy load below-the-fold sections
+const FAQ = lazy(() => import("@/components/FAQ").then(m => ({ default: m.FAQ })));
+const Testimonials = lazy(() => import("@/components/Testimonials").then(m => ({ default: m.Testimonials })));
+const ProductShowcase = lazy(() => import("@/components/ProductShowcase").then(m => ({ default: m.ProductShowcase })));
+const ComparisonTable = lazy(() => import("@/components/ComparisonTable").then(m => ({ default: m.ComparisonTable })));
+const DemoPreview = lazy(() => import("@/components/DemoPreview").then(m => ({ default: m.DemoPreview })));
+const FeatureGrid = lazy(() => import("@/components/FeatureGrid").then(m => ({ default: m.FeatureGrid })));
+const NotificationExplainer = lazy(() => import("@/components/NotificationExplainer").then(m => ({ default: m.NotificationExplainer })));
+const HowItWorks = lazy(() => import("@/components/HowItWorks").then(m => ({ default: m.HowItWorks })));
+const DifferentiationCallout = lazy(() => import("@/components/DifferentiationCallout").then(m => ({ default: m.DifferentiationCallout })));
+const LandingPricing = lazy(() => import("@/components/LandingPricing").then(m => ({ default: m.LandingPricing })));
 
 const Index = () => {
   const navigate = useNavigate();
@@ -48,7 +50,7 @@ const Index = () => {
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center py-8 md:py-24 lg:py-32">
               <div className="space-y-4 md:space-y-6 text-center lg:text-left fade-in">
                 <div className="inline-flex items-center gap-3 mb-1 md:mb-2">
-                  <img src={momentumLogo} alt="Momentum" className="h-10 md:h-14 w-auto drop-shadow-sm" />
+                  <img src={momentumLogo} alt="Momentum" className="h-10 md:h-14 w-auto drop-shadow-sm" width="56" height="56" />
                   <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</h2>
                 </div>
                 <h1 className="text-3xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
@@ -87,6 +89,7 @@ const Index = () => {
                     alt="Professional starting their morning routine" 
                     className="w-full h-auto object-cover"
                     loading="eager"
+                    fetchPriority="high"
                     width="800"
                     height="600"
                   />
@@ -106,7 +109,7 @@ const Index = () => {
         <nav className="sticky top-0 z-20 bg-card/80 backdrop-blur-md border-b border-border shadow-sm">
           <div className="container mx-auto px-6 md:px-8 max-w-7xl flex items-center justify-between py-3">
             <div className="flex items-center gap-2">
-              <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
+              <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" width="32" height="32" />
               <span className="font-display font-bold text-lg text-gradient">Momentum</span>
             </div>
             <div className="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -124,37 +127,40 @@ const Index = () => {
           </div>
         </nav>
 
-        {/* How It Works */}
-        <HowItWorks />
+        {/* Below-the-fold lazy-loaded sections */}
+        <Suspense fallback={<div className="py-16" />}>
+          {/* How It Works */}
+          <HowItWorks />
 
-        {/* Differentiation Callout */}
-        <DifferentiationCallout />
+          {/* Differentiation Callout */}
+          <DifferentiationCallout />
 
-        {/* Feature Grid */}
-        <FeatureGrid />
+          {/* Feature Grid */}
+          <FeatureGrid />
 
-        {/* Product Showcase */}
-        <ProductShowcase />
+          {/* Product Showcase */}
+          <ProductShowcase />
 
-        {/* Interactive Demo */}
-        <DemoPreview />
+          {/* Interactive Demo */}
+          <DemoPreview />
 
-        {/* Notification Explainer */}
-        <NotificationExplainer />
+          {/* Notification Explainer */}
+          <NotificationExplainer />
 
-        {/* Testimonials */}
-        <Testimonials />
+          {/* Testimonials */}
+          <Testimonials />
 
-        {/* Pricing */}
-        <LandingPricing />
+          {/* Pricing */}
+          <LandingPricing />
 
-        {/* Comparison Table */}
-        <ComparisonTable />
+          {/* Comparison Table */}
+          <ComparisonTable />
 
-        {/* FAQ */}
-        <div id="faq">
-          <FAQ />
-        </div>
+          {/* FAQ */}
+          <div id="faq">
+            <FAQ />
+          </div>
+        </Suspense>
 
         {/* CTA Section */}
         <section className="relative py-24 md:py-32 overflow-hidden">
@@ -166,6 +172,7 @@ const Index = () => {
               loading="lazy"
               width="1920"
               height="600"
+              decoding="async"
             />
             <div className="absolute inset-0 backdrop-blur-[2px]" style={{background: 'linear-gradient(135deg, hsl(182 82% 26% / 0.9) 0%, hsl(184 90% 18% / 0.9) 100%)'}} role="presentation" />
           </div>
