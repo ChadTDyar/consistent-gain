@@ -50,7 +50,7 @@ const Index = () => {
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center py-8 md:py-24 lg:py-32">
               <div className="space-y-4 md:space-y-6 text-center lg:text-left fade-in">
                 <div className="inline-flex items-center gap-3 mb-1 md:mb-2">
-                  <img src={momentumLogo} alt="Momentum" className="h-10 md:h-14 w-auto drop-shadow-sm" />
+                  <img src={momentumLogo} alt="Momentum" className="h-10 md:h-14 w-auto drop-shadow-sm" width="56" height="56" />
                   <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</h2>
                 </div>
                 <h1 className="text-3xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
@@ -109,7 +109,7 @@ const Index = () => {
         <nav className="sticky top-0 z-20 bg-card/80 backdrop-blur-md border-b border-border shadow-sm">
           <div className="container mx-auto px-6 md:px-8 max-w-7xl flex items-center justify-between py-3">
             <div className="flex items-center gap-2">
-              <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
+              <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" width="32" height="32" />
               <span className="font-display font-bold text-lg text-gradient">Momentum</span>
             </div>
             <div className="hidden md:flex items-center gap-6 text-sm font-medium">
