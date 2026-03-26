@@ -45,6 +45,7 @@ const WorkoutStreakTracker = lazy(() => import("./pages/seo/WorkoutStreakTracker
 const FitnessMotivationOver50 = lazy(() => import("./pages/seo/FitnessMotivationOver50"));
 const HowToStayConsistentWorkingOut = lazy(() => import("./pages/seo/HowToStayConsistentWorkingOut"));
 const DailyFitnessCheckinApp = lazy(() => import("./pages/seo/DailyFitnessCheckinApp"));
+const Features = lazy(() => import("./pages/Features"));
 
 const queryClient = new QueryClient();
 
