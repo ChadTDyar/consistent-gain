@@ -45,6 +45,7 @@ const WorkoutStreakTracker = lazy(() => import("./pages/seo/WorkoutStreakTracker
 const FitnessMotivationOver50 = lazy(() => import("./pages/seo/FitnessMotivationOver50"));
 const HowToStayConsistentWorkingOut = lazy(() => import("./pages/seo/HowToStayConsistentWorkingOut"));
 const DailyFitnessCheckinApp = lazy(() => import("./pages/seo/DailyFitnessCheckinApp"));
+const Features = lazy(() => import("./pages/Features"));
 
 const queryClient = new QueryClient();
 
@@ -108,6 +109,7 @@ const App = () => {
               <Route path="/fitness-motivation-over-50" element={<FitnessMotivationOver50 />} />
               <Route path="/how-to-stay-consistent-working-out" element={<HowToStayConsistentWorkingOut />} />
               <Route path="/daily-fitness-checkin-app" element={<DailyFitnessCheckinApp />} />
+              <Route path="/features" element={<Features />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
