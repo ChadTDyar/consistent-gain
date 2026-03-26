@@ -172,6 +172,7 @@ const Index = () => {
               loading="lazy"
               width="1920"
               height="600"
+              decoding="async"
             />
             <div className="absolute inset-0 backdrop-blur-[2px]" style={{background: 'linear-gradient(135deg, hsl(182 82% 26% / 0.9) 0%, hsl(184 90% 18% / 0.9) 100%)'}} role="presentation" />
           </div>
