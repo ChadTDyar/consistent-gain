@@ -31,9 +31,10 @@ const Index = () => {
   return (
     <>
       <SEO 
-        title="Momentum - Build Fitness Habits That Actually Stick"
-        description="AI-guided movement plans for adults 40+ and busy professionals. No gym required. No guilt. Just clarity."
-        keywords="fitness habits over 40, habit tracker for professionals, AI fitness coach, build habits, consistency app, no gym workout, fitness habits"
+        title="Momentum — Daily Fitness Habit Tracker | Build Streaks That Stick"
+        description="Momentum is a free daily fitness habit tracker. Build streaks, track progress, and stay consistent. Simple, visual, and designed to keep you moving."
+        keywords="habit tracker app, streak tracker, daily habit app, fitness habit tracker, build healthy habits, fitness habits over 40, workout consistency"
+        ogImage="https://momentumfit.app/og-share.jpg"
       />
       <div className="min-h-screen bg-background-cream">
         <a 
@@ -54,10 +55,10 @@ const Index = () => {
                   <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</h2>
                 </div>
                 <h1 className="text-3xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
-                  Fitness Habit Tracker for <span className="text-gradient">Adults 40+</span>
+                  Daily Fitness Habit Tracker — <span className="text-gradient">Build Streaks That Stick</span>
                 </h1>
                 <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  AI-guided movement plans for adults 40+ and busy professionals. No gym required. No guilt. Just clarity.
+                  The daily habit app that helps you build healthy habits with streak tracking, progress charts, and zero guilt. Free to start.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
                   <Button 
@@ -162,6 +163,35 @@ const Index = () => {
           </div>
         </Suspense>
 
+        {/* Why Momentum */}
+        <section className="py-16 md:py-24 bg-background-cream">
+          <div className="container mx-auto px-6 md:px-8 max-w-5xl">
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground text-center mb-12">
+              Why Momentum?
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="text-center space-y-3">
+                <h3 className="text-lg font-semibold text-foreground">Habit Tracker App, Simplified</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Momentum is a fitness habit tracker built for one thing: keeping you consistent. Log your activity in seconds and watch your streaks grow.
+                </p>
+              </div>
+              <div className="text-center space-y-3">
+                <h3 className="text-lg font-semibold text-foreground">Streak Tracker That Motivates</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  Your streak is your scoreboard. Every day you check in, your streak tracker counts it. Miss a day? Momentum helps you recover and keep going.
+                </p>
+              </div>
+              <div className="text-center space-y-3">
+                <h3 className="text-lg font-semibold text-foreground">Build Healthy Habits for Life</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  This daily habit app uses proven consistency techniques to help you build healthy habits that last. Progress charts show exactly how far you have come.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="relative py-24 md:py-32 overflow-hidden">
           <div className="absolute inset-0">
@@ -198,19 +228,18 @@ const Index = () => {
         {/* Footer */}
         <footer className="py-12 border-t border-primary/10 bg-card/50 backdrop-blur-sm">
           <div className="container mx-auto px-6">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
               <div>
-                <p className="text-muted-foreground font-medium">Built by <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chad T Dyar</a></p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Also by Chad: tools for <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">pets, health, design, and gardening</a>.
-                </p>
+                <p className="text-muted-foreground font-medium">Built by <a href="https://chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chad T. Dyar</a></p>
+                <p className="text-xs text-muted-foreground mt-1">&copy; 2026 Momentum. All rights reserved.</p>
               </div>
-              <nav className="flex gap-6 text-sm" aria-label="Footer navigation">
+              <nav className="flex flex-wrap gap-6 text-sm justify-center" aria-label="Footer navigation">
+                <a href="/features" className="text-muted-foreground hover:text-primary transition-colors font-medium">Features</a>
                 <a href="/blog" className="text-muted-foreground hover:text-primary transition-colors font-medium">Blog</a>
                 <a href="/story" className="text-muted-foreground hover:text-primary transition-colors font-medium">Our Story</a>
                 <a href="/resources/habit-streaks-science" className="text-muted-foreground hover:text-primary transition-colors font-medium">Resources</a>
                 <a href="mailto:support@momentumfit.app" className="text-muted-foreground hover:text-primary transition-colors font-medium">Contact</a>
-                <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors font-medium">Privacy</a>
+                <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors font-medium">Privacy Policy</a>
               </nav>
             </div>
           </div>
