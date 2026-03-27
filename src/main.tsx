@@ -2,8 +2,12 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { initGA } from "./lib/analytics";
+import { initSentry } from "./lib/sentry";
 import { nativeService } from "./services/native.service";
 import { ThemeProvider } from "./contexts/ThemeContext";
+
+// Initialize Sentry error tracking
+initSentry();
 
 // Register service worker for offline mode
 if ('serviceWorker' in navigator) {
