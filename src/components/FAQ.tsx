@@ -46,7 +46,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "What if I miss a day? Will I lose my streak?",
-    answer: "Your streak doesn't reset on one bad day. Momentum uses a momentum score that rewards consistency over perfection. Plus, with Streak Repair (available on Starter and Pro plans), you can acknowledge missed days within 48 hours without losing your progress."
+    answer: "Your streak doesn't reset on one bad day. Momentum uses a momentum score that rewards consistency over perfection. Plus, with Streak Repair (available on Pro and Premium plans), you can acknowledge missed days within 48 hours without losing your progress."
   },
   {
     question: "How does accountability actually work?",
