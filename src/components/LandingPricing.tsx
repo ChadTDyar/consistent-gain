@@ -17,11 +17,11 @@ const tiers = [
     ],
   },
   {
-    name: "Plus",
+    name: "Pro",
     price: "$3.99",
     period: "/mo",
     highlight: false,
-    cta: "Start Plus",
+    cta: "Start Pro",
     features: [
       "Unlimited activities",
       "AI plan adjustments",
@@ -35,7 +35,7 @@ const tiers = [
     highlight: true,
     cta: "Start Premium",
     features: [
-      "Everything in Plus",
+      "Everything in Pro",
       "Nutrition tracking",
       "Coach mode",
       "Export data",

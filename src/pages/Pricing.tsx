@@ -52,7 +52,7 @@ export default function Pricing() {
     "Basic progress graphs",
   ];
 
-  const starterFeatures = [
+  const proFeatures_list = [
     "Everything in Free",
     "Unlimited habits",
     "Streak Repair (fix missed days within 48hrs)",
@@ -60,8 +60,8 @@ export default function Pricing() {
     "Weekly progress email summary",
   ];
 
-  const proFeatures = [
-    "Everything in Starter",
+  const premiumFeatures = [
+    "Everything in Pro",
     "AI Coach - personalized habit guidance",
     "Unlimited progress history",
     "Priority support",
@@ -75,7 +75,7 @@ export default function Pricing() {
     },
     {
       question: "What is Streak Repair?",
-      answer: "Life happens. Starter and Pro members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
+      answer: "Life happens. Pro and Premium members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
     },
     {
       question: "How does the AI Coach work?",
@@ -94,8 +94,8 @@ export default function Pricing() {
   return (
     <>
       <SEO
-        title="Pricing - Momentum | Free, Starter & Pro Plans"
-        description="Start free with 3 habits. Upgrade to Starter ($9/mo) for unlimited habits or Pro ($19/mo) for AI coaching and unlimited history."
+        title="Pricing - Momentum | Free, Pro & Premium Plans"
+        description="Start free with 3 habits. Upgrade to Pro ($3.99/mo) for unlimited habits or Premium ($7.99/mo) for AI coaching and unlimited history."
         keywords="habit tracker pricing, habit app cost, premium habit features, affordable habit tracker"
       />
       <div className="min-h-screen bg-background-cream py-16 md:py-24">
@@ -174,14 +174,14 @@ export default function Pricing() {
               </CardContent>
             </Card>
 
-            {/* Starter Plan */}
+            {/* Pro Plan */}
             <Card className="border-2 border-primary shadow-xl card-lift-heavy relative overflow-hidden" style={{ background: 'var(--gradient-card)' }}>
               <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-primary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-primary)' }}>
                 <Star className="h-3 w-3" /> Most Popular
               </div>
               <CardHeader className="pb-6 pt-8">
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
-                  Starter <span className="badge-premium text-xs px-2 py-0.5">STARTER</span>
+                  Pro <span className="badge-premium text-xs px-2 py-0.5">PRO</span>
                 </CardTitle>
                 <CardDescription className="text-base">Unlimited habits & streak protection</CardDescription>
                 <div className="mt-6">
@@ -203,7 +203,7 @@ export default function Pricing() {
                   <p className="text-xs text-muted-foreground">You're building 2-3 core habits, want light reminders, and need streak protection so one bad day doesn't erase your progress.</p>
                 </div>
                 <ul className="space-y-3">
-                  {starterFeatures.map((feature) => (
+                  {proFeatures_list.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>
@@ -213,7 +213,7 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
                   size="lg"
-                  onClick={() => { analytics.startCheckout('starter'); window.open('https://buy.stripe.com/7sYbJ2a7W1iK2jmazt', '_blank'); }}
+                  onClick={() => { analytics.startCheckout('pro'); window.open('https://buy.stripe.com/7sY5kE0xm5z08HK5f93ZK0c', '_blank'); }}
                 >
                   Start 7-day free trial
                 </Button>
@@ -221,14 +221,14 @@ export default function Pricing() {
               </CardContent>
             </Card>
 
-            {/* Pro Plan */}
+            {/* Premium Plan */}
             <Card className="border-2 border-secondary shadow-xl card-lift-heavy relative overflow-hidden">
               <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-secondary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-secondary)' }}>
                 <Crown className="h-3 w-3" /> Best Value
               </div>
               <CardHeader className="pb-6 pt-8">
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
-                  Pro <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--gradient-secondary)', color: 'white' }}>PRO</span>
+                  Premium <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--gradient-secondary)', color: 'white' }}>PREMIUM</span>
                 </CardTitle>
                 <CardDescription className="text-base">AI coaching & unlimited everything</CardDescription>
                 <div className="mt-6">
@@ -250,7 +250,7 @@ export default function Pricing() {
                   <p className="text-xs text-muted-foreground">You want multiple routines, deeper analytics, and an AI coach that adapts to your schedule, energy, and real life.</p>
                 </div>
                 <ul className="space-y-3">
-                  {proFeatures.map((feature) => (
+                  {premiumFeatures.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-secondary flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>
@@ -260,9 +260,9 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold min-h-[44px] bg-secondary text-secondary-foreground hover:bg-secondary/90"
                   size="lg"
-                  onClick={() => { analytics.startCheckout('pro'); window.open('https://buy.stripe.com/5kQeVe3Jyd1s5vy0YT3ZK03', '_blank'); }}
+                  onClick={() => { analytics.startCheckout('premium'); window.open('https://buy.stripe.com/3cIfZicg43qS1fi3713ZK0d', '_blank'); }}
                 >
-                  Upgrade for Pro coaching
+                  Upgrade for Premium coaching
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">7-day free trial, cancel anytime</p>
               </CardContent>
@@ -312,14 +312,14 @@ export default function Pricing() {
                     <tr className="border-b border-border">
                       <th className="text-left p-4 font-semibold text-foreground">Feature</th>
                       <th className="text-center p-4 font-semibold text-foreground">Free</th>
-                      <th className="text-center p-4 font-semibold text-primary">Starter</th>
+                      <th className="text-center p-4 font-semibold text-primary">Pro</th>
                       <th className="text-center p-4 font-semibold text-secondary relative">
                         <div className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-full">
                           <span className="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-t-lg font-bold text-secondary-foreground" style={{ background: 'var(--gradient-secondary)' }}>
                             <Crown className="h-3 w-3" /> Best Value
                           </span>
                         </div>
-                        Pro
+                        Premium
                       </th>
                     </tr>
                   </thead>
