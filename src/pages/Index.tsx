@@ -8,6 +8,7 @@ import { SEO } from "@/components/SEO";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { analytics } from "@/lib/analytics";
 import { Star } from "lucide-react";
+import { KitSignupForm } from "@/components/KitSignupForm";
 
 // Lazy load below-the-fold sections
 const FAQ = lazy(() => import("@/components/FAQ").then(m => ({ default: m.FAQ })));
@@ -253,6 +254,15 @@ const Index = () => {
               Start my habit plan - free
             </Button>
           </div>
+        </section>
+
+        {/* Email Signup */}
+        <section className="py-12 px-6 text-center">
+          <h3 className="text-lg font-medium mb-2">Stay in the loop</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            Updates on new features and what's shipping next.
+          </p>
+          <KitSignupForm className="max-w-md mx-auto" />
         </section>
 
         {/* Footer */}
