@@ -255,7 +255,7 @@ export default function Dashboard() {
                 plan === 'plus' ? 'badge-premium' : ''
               }`}
             >
-              {plan}
+              {plan === 'free' ? 'Free' : plan === 'plus' ? 'Pro' : 'Premium'}
             </Badge>
           </div>
           <div className="flex gap-2">
