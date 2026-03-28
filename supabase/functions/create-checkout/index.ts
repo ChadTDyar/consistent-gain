@@ -9,12 +9,10 @@ const corsHeaders = {
 
 const PRICES: Record<string, Record<string, string>> = {
   plus: {
-    monthly: "price_1T5nbML98dr6Pw0kHQlfSif0",
-    annual: "price_1T5nbML98dr6Pw0kIN3gcS0D",
+    monthly: "price_1TFkLzL98dr6Pw0kxjO4cJvA",  // Pro $3.99/mo
   },
   pro: {
-    monthly: "price_1T5ncwL98dr6Pw0ktGV0YCL2",
-    annual: "price_1T5ncwL98dr6Pw0kdbGjczhT",
+    monthly: "price_1TFkM0L98dr6Pw0kXiu1hjbs",  // Premium $7.99/mo
   },
 };
 

@@ -52,7 +52,7 @@ export default function Pricing() {
     "Basic progress graphs",
   ];
 
-  const proFeatures_list = [
+  const starterFeatures = [
     "Everything in Free",
     "Unlimited habits",
     "Streak Repair (fix missed days within 48hrs)",
@@ -60,8 +60,8 @@ export default function Pricing() {
     "Weekly progress email summary",
   ];
 
-  const premiumFeatures = [
-    "Everything in Pro",
+  const proFeatures = [
+    "Everything in Starter",
     "AI Coach - personalized habit guidance",
     "Unlimited progress history",
     "Priority support",
@@ -75,7 +75,7 @@ export default function Pricing() {
     },
     {
       question: "What is Streak Repair?",
-      answer: "Life happens. Pro and Premium members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
+      answer: "Life happens. Starter and Pro members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
     },
     {
       question: "How does the AI Coach work?",
@@ -94,7 +94,7 @@ export default function Pricing() {
   return (
     <>
       <SEO
-        title="Pricing - Momentum | Free, Pro & Premium Plans"
+        title="Pricing - Momentum | Free, Starter & Pro Plans"
         description="Start free with 3 habits. Upgrade to Pro ($3.99/mo) for unlimited habits or Premium ($7.99/mo) for AI coaching and unlimited history."
         keywords="habit tracker pricing, habit app cost, premium habit features, affordable habit tracker"
       />
@@ -174,7 +174,7 @@ export default function Pricing() {
               </CardContent>
             </Card>
 
-            {/* Pro Plan */}
+            {/* Starter Plan */}
             <Card className="border-2 border-primary shadow-xl card-lift-heavy relative overflow-hidden" style={{ background: 'var(--gradient-card)' }}>
               <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-primary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-primary)' }}>
                 <Star className="h-3 w-3" /> Most Popular
@@ -203,7 +203,7 @@ export default function Pricing() {
                   <p className="text-xs text-muted-foreground">You're building 2-3 core habits, want light reminders, and need streak protection so one bad day doesn't erase your progress.</p>
                 </div>
                 <ul className="space-y-3">
-                  {proFeatures_list.map((feature) => (
+                  {starterFeatures.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>
@@ -221,7 +221,7 @@ export default function Pricing() {
               </CardContent>
             </Card>
 
-            {/* Premium Plan */}
+            {/* Pro Plan */}
             <Card className="border-2 border-secondary shadow-xl card-lift-heavy relative overflow-hidden">
               <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-secondary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-secondary)' }}>
                 <Crown className="h-3 w-3" /> Best Value
@@ -250,7 +250,7 @@ export default function Pricing() {
                   <p className="text-xs text-muted-foreground">You want multiple routines, deeper analytics, and an AI coach that adapts to your schedule, energy, and real life.</p>
                 </div>
                 <ul className="space-y-3">
-                  {premiumFeatures.map((feature) => (
+                  {proFeatures.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-secondary flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>
@@ -262,7 +262,7 @@ export default function Pricing() {
                   size="lg"
                   onClick={() => { analytics.startCheckout('premium'); window.open('https://buy.stripe.com/3cIfZicg43qS1fi3713ZK0d', '_blank'); }}
                 >
-                  Upgrade for Premium coaching
+                  Upgrade for Pro coaching
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">7-day free trial, cancel anytime</p>
               </CardContent>

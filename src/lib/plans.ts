@@ -4,18 +4,18 @@ export const PLANS = {
   plus: {
     name: 'Pro',
     price: 3.99,
-    annualPrice: 38.30,
-    price_id: 'price_1T5nbML98dr6Pw0kHQlfSif0',
-    annual_price_id: 'price_1T5nbML98dr6Pw0kIN3gcS0D',
-    product_id: 'prod_U2Duyohl5m98ud',
+    annualPrice: 0,
+    price_id: 'price_1TFkLzL98dr6Pw0kxjO4cJvA',
+    annual_price_id: null,
+    product_id: 'prod_U3w81PJvJRTiQQ',
   },
   pro: {
     name: 'Premium',
     price: 7.99,
-    annualPrice: 76.70,
-    price_id: 'price_1T5ncwL98dr6Pw0ktGV0YCL2',
-    annual_price_id: 'price_1T5ncwL98dr6Pw0kdbGjczhT',
-    product_id: 'prod_U2Dxf2eZc9xwan',
+    annualPrice: 0,
+    price_id: 'price_1TFkM0L98dr6Pw0kXiu1hjbs',
+    annual_price_id: null,
+    product_id: 'prod_U3w9PqaaJVSOto',
   },
 } as const;
 
@@ -26,6 +26,9 @@ export function getPlanFromProductId(productId: string | null): PlanTier {
   if (!productId) return 'free';
   if (productId === PLANS.plus.product_id) return 'plus';
   if (productId === PLANS.pro.product_id) return 'pro';
+  // Legacy product IDs
+  if (productId === 'prod_U2Duyohl5m98ud' || productId === 'prod_U3vSrPHBDq24U8') return 'plus';
+  if (productId === 'prod_U2Dxf2eZc9xwan' || productId === 'prod_U3vT2StszUp7uL') return 'pro';
   return 'plus';
 }
 
