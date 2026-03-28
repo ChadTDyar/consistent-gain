@@ -2,17 +2,17 @@
 export const PLANS = {
   free: { name: 'Free', price: 0, annualPrice: 0, price_id: null, annual_price_id: null, product_id: null },
   plus: {
-    name: 'Starter',
-    price: 9,
-    annualPrice: 86.40,
+    name: 'Pro',
+    price: 3.99,
+    annualPrice: 38.30,
     price_id: 'price_1T5nbML98dr6Pw0kHQlfSif0',
     annual_price_id: 'price_1T5nbML98dr6Pw0kIN3gcS0D',
     product_id: 'prod_U2Duyohl5m98ud',
   },
   pro: {
-    name: 'Pro',
-    price: 19,
-    annualPrice: 182.40,
+    name: 'Premium',
+    price: 7.99,
+    annualPrice: 76.70,
     price_id: 'price_1T5ncwL98dr6Pw0ktGV0YCL2',
     annual_price_id: 'price_1T5ncwL98dr6Pw0kdbGjczhT',
     product_id: 'prod_U2Dxf2eZc9xwan',
