@@ -10,7 +10,7 @@ export function KitSignupForm({ className }: KitSignupFormProps) {
     if (document.querySelector(`script[data-uid="${uid}"]`)) return;
 
     const script = document.createElement('script');
-    script.src = `https://lab-notes-2.ck.page/${uid}/index.js`;
+    script.src = `https://lab-notes-2.kit.com/${uid}/index.js`;
     script.async = true;
     script.setAttribute('data-uid', uid);
     document.head.appendChild(script);
