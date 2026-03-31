@@ -189,9 +189,9 @@ export default function Pricing() {
                   <span className="text-lg text-muted-foreground">/mo</span>
                   {billingInterval === 'annual' && (
                     <div className="mt-1">
-                      <span className="text-sm text-muted-foreground line-through">${PLANS.plus.price.toFixed(2)}/mo</span>
+                  <span className="text-sm text-muted-foreground line-through">${PLANS.plus.price.toFixed(2)}/mo</span>
                       <span className="text-sm font-semibold text-success ml-2">
-                        ${PLANS.plus.annualPrice.toFixed(2)}/yr
+                        Billed annually at ${PLANS.plus.annualPrice}/yr
                       </span>
                     </div>
                   )}
@@ -236,9 +236,9 @@ export default function Pricing() {
                   <span className="text-lg text-muted-foreground">/mo</span>
                   {billingInterval === 'annual' && (
                     <div className="mt-1">
-                      <span className="text-sm text-muted-foreground line-through">${PLANS.pro.price.toFixed(2)}/mo</span>
+                  <span className="text-sm text-muted-foreground line-through">${PLANS.pro.price.toFixed(2)}/mo</span>
                       <span className="text-sm font-semibold text-success ml-2">
-                        ${PLANS.pro.annualPrice.toFixed(2)}/yr
+                        Billed annually at ${PLANS.pro.annualPrice}/yr
                       </span>
                     </div>
                   )}
