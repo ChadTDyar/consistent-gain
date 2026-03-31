@@ -4,17 +4,17 @@ export const PLANS = {
   plus: {
     name: 'Pro',
     price: 3.99,
-    annualPrice: 0,
+    annualPrice: 38,
     price_id: 'price_1TFkLzL98dr6Pw0kxjO4cJvA',
-    annual_price_id: null,
+    annual_price_id: 'price_1TGqRgL98dr6Pw0kCSlwoZUy',
     product_id: 'prod_U3w81PJvJRTiQQ',
   },
   pro: {
     name: 'Premium',
     price: 7.99,
-    annualPrice: 0,
+    annualPrice: 77,
     price_id: 'price_1TFkM0L98dr6Pw0kXiu1hjbs',
-    annual_price_id: null,
+    annual_price_id: 'price_1TGqRhL98dr6Pw0kZ6OFF98t',
     product_id: 'prod_U3w9PqaaJVSOto',
   },
 } as const;
