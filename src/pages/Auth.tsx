@@ -35,6 +35,23 @@ export default function Auth() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
+        // --- PostHog IDENTITY WIRING ---
+        if (event === 'SIGNED_IN' && session.user) {
+          const user = session.user;
+          posthog.identify(user.email, {
+            user_id: user.id,
+            email: user.email,
+            app_id: 'momentum',
+            created_at: user.created_at,
+            auth_provider: user.app_metadata?.provider || 'email',
+          });
+          posthog.capture('user_authenticated', {
+            app_id: 'momentum',
+            acquisition_source: document.referrer || 'direct',
+            is_new_user: !user.last_sign_in_at || user.last_sign_in_at === user.created_at,
+            auth_provider: user.app_metadata?.provider || 'email',
+          });
+        }
         navigate("/dashboard");
       }
     });
