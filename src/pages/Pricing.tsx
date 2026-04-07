@@ -74,7 +74,7 @@ export default function Pricing() {
     },
     {
       question: "What is Streak Repair?",
-      answer: "Life happens. Starter and Pro members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
+      answer: "Life happens. Pro and Premium members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
     },
     {
       question: "How does the AI Coach work?",
@@ -173,7 +173,7 @@ export default function Pricing() {
               </CardContent>
             </Card>
 
-            {/* Starter Plan */}
+            {/* Pro Plan */}
             <Card className="border-2 border-primary shadow-xl card-lift-heavy relative overflow-hidden" style={{ background: 'var(--gradient-card)' }}>
               <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-primary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-primary)' }}>
                 <Star className="h-3 w-3" /> Most Popular

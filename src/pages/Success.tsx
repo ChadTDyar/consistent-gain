@@ -88,7 +88,7 @@ export default function Success() {
                 <ul className="space-y-2 text-muted-foreground">
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span>Unlimited habits</span>
+                    <span>Unlimited goals</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
