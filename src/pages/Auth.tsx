@@ -11,6 +11,7 @@ import { Loader2 } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { analytics } from "@/lib/analytics";
 import { authSchema } from "@/lib/validations";
+import posthog from "posthog-js";
 import { Separator } from "@/components/ui/separator";
 
 export default function Auth() {
