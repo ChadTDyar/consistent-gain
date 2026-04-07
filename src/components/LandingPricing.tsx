@@ -12,6 +12,7 @@ const tiers = [
     monthlyPrice: "$0",
     annualMonthlyPrice: "$0",
     annualTotal: null,
+    savingsLabel: null,
     highlight: false,
     cta: "Get Started Free",
     href: null,
@@ -26,13 +27,15 @@ const tiers = [
     monthlyPrice: "$3.99",
     annualMonthlyPrice: "$3.17",
     annualTotal: "$38",
+    savingsLabel: "21%",
     highlight: false,
     cta: "Start Pro",
     href: "https://buy.stripe.com/7sY5kE0xm5z08HK5f93ZK0c",
     features: [
-      "Unlimited activities",
-      "AI plan adjustments",
-      "Streak insights",
+      "Unlimited goals",
+      "30-day history",
+      "Streak Repair",
+      "Priority support",
     ],
   },
   {
@@ -40,14 +43,15 @@ const tiers = [
     monthlyPrice: "$7.99",
     annualMonthlyPrice: "$6.42",
     annualTotal: "$77",
+    savingsLabel: "20%",
     highlight: true,
     cta: "Start Premium",
     href: "https://buy.stripe.com/3cIfZicg43qS1fi3713ZK0d",
     features: [
-      "Everything in Pro",
-      "Nutrition tracking",
-      "Coach mode",
-      "Export data",
+      "AI Coach",
+      "Unlimited history",
+      "Data export",
+      "All Pro features",
     ],
   },
 ];
@@ -89,7 +93,7 @@ export function LandingPricing() {
             >
               Annual
               <span className="inline-flex items-center rounded-full bg-success/20 text-success px-2 py-0.5 text-xs font-bold">
-                Save 20%
+                Save 20%+
               </span>
             </button>
           </div>
@@ -121,7 +125,7 @@ export function LandingPricing() {
                   </div>
                   {interval === "annual" && tier.annualTotal && (
                     <p className="text-xs text-muted-foreground mt-1">
-                      Billed annually at {tier.annualTotal}/yr
+                      Billed annually at {tier.annualTotal}/yr — Save {tier.savingsLabel}
                     </p>
                   )}
                 </div>

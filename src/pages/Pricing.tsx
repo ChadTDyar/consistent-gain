@@ -52,20 +52,19 @@ export default function Pricing() {
     "Basic progress graphs",
   ];
 
-  const starterFeatures = [
+  const proFeatures = [
     "Everything in Free",
-    "Unlimited habits",
-    "Streak Repair (fix missed days within 48hrs)",
-    "30-day progress history",
-    "Weekly progress email summary",
+    "Unlimited goals",
+    "30-day history",
+    "Streak Repair",
+    "Priority support",
   ];
 
-  const proFeatures = [
-    "Everything in Starter",
-    "AI Coach - personalized habit guidance",
-    "Unlimited progress history",
-    "Priority support",
-    "CSV data export",
+  const premiumFeatures = [
+    "All Pro features",
+    "AI Coach",
+    "Unlimited history",
+    "Data export",
   ];
 
   const faqData = [
@@ -94,8 +93,8 @@ export default function Pricing() {
   return (
     <>
       <SEO
-        title="Pricing - Momentum | Free, Starter & Pro Plans"
-        description="Start free with 3 habits. Upgrade to Pro ($3.99/mo) for unlimited habits or Premium ($7.99/mo) for AI coaching and unlimited history."
+        title="Pricing - Momentum | Free, Pro & Premium Plans"
+        description="Start free with 3 habits. Upgrade to Pro ($3.99/mo) for unlimited goals and Streak Repair, or Premium ($7.99/mo) for AI coaching and unlimited history."
         keywords="habit tracker pricing, habit app cost, premium habit features, affordable habit tracker"
       />
       <div className="min-h-screen bg-background-cream py-16 md:py-24">
@@ -133,7 +132,7 @@ export default function Pricing() {
               >
                 Annual
                 <span className="inline-flex items-center rounded-full bg-success/20 text-success px-2 py-0.5 text-xs font-bold">
-                  Save 20%
+                  Save 20%+
                 </span>
               </button>
             </div>
@@ -183,7 +182,7 @@ export default function Pricing() {
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
                   Pro <span className="badge-premium text-xs px-2 py-0.5">PRO</span>
                 </CardTitle>
-                <CardDescription className="text-base">Unlimited habits & streak protection</CardDescription>
+                <CardDescription className="text-base">Unlimited goals, 30-day history, Streak Repair, priority support</CardDescription>
                 <div className="mt-6">
                   <span className="text-5xl font-display font-bold text-primary">${getPrice('plus')}</span>
                   <span className="text-lg text-muted-foreground">/mo</span>
@@ -203,7 +202,7 @@ export default function Pricing() {
                   <p className="text-xs text-muted-foreground">You're building 2-3 core habits, want light reminders, and need streak protection so one bad day doesn't erase your progress.</p>
                 </div>
                 <ul className="space-y-3">
-                  {starterFeatures.map((feature) => (
+                  {proFeatures.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>
@@ -230,7 +229,7 @@ export default function Pricing() {
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
                   Premium <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--gradient-secondary)', color: 'white' }}>PREMIUM</span>
                 </CardTitle>
-                <CardDescription className="text-base">AI coaching & unlimited everything</CardDescription>
+                <CardDescription className="text-base">AI Coach, unlimited history, data export, all Pro features</CardDescription>
                 <div className="mt-6">
                   <span className="text-5xl font-display font-bold text-secondary">${getPrice('pro')}</span>
                   <span className="text-lg text-muted-foreground">/mo</span>
@@ -250,7 +249,7 @@ export default function Pricing() {
                   <p className="text-xs text-muted-foreground">You want multiple routines, deeper analytics, and an AI coach that adapts to your schedule, energy, and real life.</p>
                 </div>
                 <ul className="space-y-3">
-                  {proFeatures.map((feature) => (
+                  {premiumFeatures.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
                       <CheckCircle className="h-5 w-5 text-secondary flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>
@@ -333,7 +332,7 @@ export default function Pricing() {
                       { feature: "Weekly email summary", free: false, plus: true, pro: true },
                       { feature: "AI Coach", free: false, plus: false, pro: true },
                       { feature: "CSV data export", free: false, plus: false, pro: true },
-                      { feature: "Priority support", free: false, plus: false, pro: true },
+                      { feature: "Priority support", free: false, plus: true, pro: true },
                     ].map((row, i) => (
                       <tr key={i} className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors">
                         <td className="p-4 font-medium text-foreground">{row.feature}</td>
