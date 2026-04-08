@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import momentumLogo from "@/assets/momentum-logo.png";
 import heroRunner from "@/assets/hero-runner.png";
@@ -7,8 +7,9 @@ import groupRunning from "@/assets/group-running.png";
 import { SEO } from "@/components/SEO";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { analytics } from "@/lib/analytics";
-import { Star } from "lucide-react";
+import { Star, LogIn, LogOut } from "lucide-react";
 import { KitSignupForm } from "@/components/KitSignupForm";
+import { supabase } from "@/integrations/supabase/client";
 
 // Lazy load below-the-fold sections
 const FAQ = lazy(() => import("@/components/FAQ").then(m => ({ default: m.FAQ })));
