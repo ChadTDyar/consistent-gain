@@ -40,7 +40,7 @@ export default function Auth() {
           const user = session.user;
           posthog.identify(user.id, {
             email: user.email,
-            app: 'Momentum',
+            app_id: 'momentum',
             created_at: user.created_at,
             auth_provider: user.app_metadata?.provider || 'email',
           });
