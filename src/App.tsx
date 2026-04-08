@@ -8,6 +8,7 @@ import { CookieConsent } from "@/components/CookieConsent";
 import { BottomTabBar } from "@/components/BottomTabBar";
 import { useEffect, lazy, Suspense } from "react";
 import { notificationService } from "@/services/notifications.service";
+import { usePostHogIdentify } from "@/hooks/usePostHogIdentify";
 
 // Eagerly load the landing page for fast FCP/LCP
 import Index from "./pages/Index";
@@ -56,6 +57,8 @@ const PageFallback = () => (
 );
 
 const App = () => {
+  usePostHogIdentify();
+
   // Initialize mobile notifications
   useEffect(() => {
     notificationService.initialize();
