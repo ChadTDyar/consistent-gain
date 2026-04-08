@@ -25,10 +25,23 @@ const LandingPricing = lazy(() => import("@/components/LandingPricing").then(m =
 
 const Index = () => {
   const navigate = useNavigate();
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
     analytics.visitLanding();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsSignedIn(!!session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsSignedIn(!!session);
+    });
+    return () => subscription.unsubscribe();
   }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setIsSignedIn(false);
+  };
 
   return (
     <>
