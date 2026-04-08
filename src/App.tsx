@@ -57,6 +57,8 @@ const PageFallback = () => (
 );
 
 const App = () => {
+  usePostHogIdentify();
+
   // Initialize mobile notifications
   useEffect(() => {
     notificationService.initialize();
