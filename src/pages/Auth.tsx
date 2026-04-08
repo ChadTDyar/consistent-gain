@@ -38,10 +38,9 @@ export default function Auth() {
         // --- PostHog IDENTITY WIRING ---
         if (event === 'SIGNED_IN' && session.user) {
           const user = session.user;
-          posthog.identify(user.email, {
-            user_id: user.id,
+          posthog.identify(user.id, {
             email: user.email,
-            app_id: 'momentum',
+            app: 'Momentum',
             created_at: user.created_at,
             auth_provider: user.app_metadata?.provider || 'email',
           });
