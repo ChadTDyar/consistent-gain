@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import momentumLogo from "@/assets/momentum-logo.png";
 import heroRunner from "@/assets/hero-runner.png";
@@ -7,8 +7,9 @@ import groupRunning from "@/assets/group-running.png";
 import { SEO } from "@/components/SEO";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { analytics } from "@/lib/analytics";
-import { Star } from "lucide-react";
+import { Star, LogIn, LogOut } from "lucide-react";
 import { KitSignupForm } from "@/components/KitSignupForm";
+import { supabase } from "@/integrations/supabase/client";
 
 // Lazy load below-the-fold sections
 const FAQ = lazy(() => import("@/components/FAQ").then(m => ({ default: m.FAQ })));
@@ -24,10 +25,23 @@ const LandingPricing = lazy(() => import("@/components/LandingPricing").then(m =
 
 const Index = () => {
   const navigate = useNavigate();
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
   useEffect(() => {
     analytics.visitLanding();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsSignedIn(!!session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsSignedIn(!!session);
+    });
+    return () => subscription.unsubscribe();
   }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setIsSignedIn(false);
+  };
 
   return (
     <>
@@ -48,7 +62,24 @@ const Index = () => {
         {/* Hero Section */}
         <section id="main-content" className="relative overflow-hidden">
           <div className="absolute inset-0 opacity-30" style={{background: 'var(--gradient-accent)'}} role="presentation" />
-          <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
+           <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
+            {/* Auth buttons */}
+            <div className="flex justify-end pt-4 pb-2 gap-2">
+              {isSignedIn ? (
+                <>
+                  <Button variant="outline" size="sm" onClick={() => navigate("/dashboard")} className="border-2">
+                    Dashboard
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                    <LogOut className="h-4 w-4 mr-1" /> Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Button variant="outline" size="sm" onClick={() => navigate("/auth")} className="border-2">
+                  <LogIn className="h-4 w-4 mr-1" /> Sign In
+                </Button>
+              )}
+            </div>
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center py-8 md:py-24 lg:py-32">
               <div className="space-y-4 md:space-y-6 text-center lg:text-left fade-in">
                 <div className="inline-flex items-center gap-3 mb-1 md:mb-2">
