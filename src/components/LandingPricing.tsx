@@ -146,6 +146,11 @@ export function LandingPricing() {
                 >
                   {tier.cta}
                 </Button>
+                {tier.href && (
+                  <p className="text-center mt-2 text-xs text-muted-foreground">
+                    Cancel anytime.
+                  </p>
+                )}
               </CardContent>
             </Card>
           ))}
