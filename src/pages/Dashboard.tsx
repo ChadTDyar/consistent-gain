@@ -62,6 +62,8 @@ export default function Dashboard() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallFeature, setPaywallFeature] = useState<string>('goals');
   const [paywallPlan, setPaywallPlan] = useState<PlanTier>('plus');
+  const [showUpgradeWall, setShowUpgradeWall] = useState(false);
+  const [upgradeWallType, setUpgradeWallType] = useState<'habit_limit' | 'partner_lock' | 'analytics_lock'>('habit_limit');
   const navigate = useNavigate();
 
   const plan = (profile?.plan || 'free') as PlanTier;
