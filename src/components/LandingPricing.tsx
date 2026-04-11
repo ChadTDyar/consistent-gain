@@ -17,9 +17,9 @@ const tiers = [
     cta: "Get Started Free",
     href: null,
     features: [
-      "1 activity",
-      "Basic habit tracking",
-      "Weekly summary",
+      "3 habits",
+      "Daily check-ins",
+      "7-day streaks",
     ],
   },
   {
@@ -29,7 +29,7 @@ const tiers = [
     annualTotal: "$38",
     savingsLabel: "21%",
     highlight: false,
-    cta: "Start Pro",
+    cta: "Upgrade to Pro →",
     href: "https://buy.stripe.com/7sY5kE0xm5z08HK5f93ZK0c",
     features: [
       "Unlimited goals",
@@ -45,13 +45,13 @@ const tiers = [
     annualTotal: "$77",
     savingsLabel: "20%",
     highlight: true,
-    cta: "Start Premium",
+    cta: "Upgrade to Premium →",
     href: "https://buy.stripe.com/3cIfZicg43qS1fi3713ZK0d",
     features: [
       "AI Coach",
       "Unlimited history",
       "Data export",
-      "All Pro features",
+      "Everything in Pro",
     ],
   },
 ];
