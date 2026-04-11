@@ -494,6 +494,7 @@ export default function Dashboard() {
         }}
         autoOpen={showWelcome}
         welcomeMessage={welcomeMessage}
+        onUpgradeWall={() => { setUpgradeWallType('ai_coach'); setShowUpgradeWall(true); }}
       />
 
       <StreakRepair

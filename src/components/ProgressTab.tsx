@@ -7,6 +7,8 @@ import { Flame, Loader2, Lock } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { subDays, startOfWeek, endOfWeek, isWithinInterval, format } from "date-fns";
 import { type PlanTier, getHistoryDays } from "@/lib/plans";
+import { UpgradeWall } from "@/components/UpgradeWall";
+import { MOMENTUM } from "@/constants/value-language";
 
 interface ActivityLog {
   id: string;
