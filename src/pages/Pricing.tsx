@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Star, Crown, Shield } from "lucide-react";
-import { toast } from "sonner";
+import { CheckCircle, Star, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { analytics } from "@/lib/analytics";
 import { SEO } from "@/components/SEO";
-import { PLANS, type PlanTier, type BillingInterval } from "@/lib/plans";
+import { MOMENTUM, RULES } from "@/constants/value-language";
+import { type PlanTier } from "@/lib/plans";
 import {
   Accordion,
   AccordionContent,
@@ -17,9 +17,7 @@ import {
 
 export default function Pricing() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<PlanTier>('free');
-  const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
 
   useEffect(() => {
     checkSubscription();
@@ -37,48 +35,33 @@ export default function Pricing() {
     }
   };
 
-  const getPrice = (plan: 'plus' | 'pro') => {
-    if (billingInterval === 'annual') {
-      const monthlyEquiv = (PLANS[plan].annualPrice / 12).toFixed(2);
-      return monthlyEquiv;
-    }
-    return PLANS[plan].price.toFixed(2);
-  };
-
   const freeFeatures = [
     "Track up to 3 habits",
     "Daily check-ins",
     "7-day streak tracking",
-    "Basic progress graphs",
+    "Weekly summary",
   ];
 
   const proFeatures = [
     "Everything in Free",
-    "Unlimited goals",
-    "30-day history",
-    "Streak Repair",
-    "Priority support",
-  ];
-
-  const premiumFeatures = [
-    "All Pro features",
-    "AI Coach",
+    "Unlimited habits",
+    "Accountability partner",
+    "AI coaching prompts",
+    "Trend analytics",
+    "Streak Repair (48hr window)",
     "Unlimited history",
-    "Data export",
+    "CSV data export",
+    "Priority support",
   ];
 
   const faqData = [
     {
       question: "Is Momentum really free?",
-      answer: "Yes. The Free plan includes up to 3 habits, daily check-ins, and 7-day streaks - forever free, no credit card required.",
+      answer: "Yes. The Free plan includes up to 3 habits, daily check-ins, and 7-day streaks — forever free, no credit card required.",
     },
     {
-      question: "What is Streak Repair?",
-      answer: "Life happens. Pro and Premium members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
-    },
-    {
-      question: "How does the AI Coach work?",
-      answer: "Pro members get personalized suggestions based on their check-in patterns, habit types, and consistency data. It learns what works for you and adjusts recommendations to your schedule.",
+      question: "What do I get with Pro?",
+      answer: "Unlimited habits, an accountability partner, AI coaching prompts, trend analytics, Streak Repair, unlimited history, data export, and priority support. Everything you need to build lasting habits.",
     },
     {
       question: "Can I cancel anytime?",
@@ -93,67 +76,37 @@ export default function Pricing() {
   return (
     <>
       <SEO
-        title="Pricing - Momentum | Free, Pro & Premium Plans"
-        description="Start free with 3 habits. Upgrade to Pro ($3.99/mo) for unlimited goals and Streak Repair, or Premium ($7.99/mo) for AI coaching and unlimited history."
+        title="Pricing - Momentum | Free & Pro Plans"
+        description="Start free with 3 habits. Upgrade to Pro ($4.99/mo) for unlimited habits, accountability partner, AI coaching, and trend analytics."
         keywords="habit tracker pricing, habit app cost, premium habit features, affordable habit tracker"
       />
       <div className="min-h-screen bg-background-cream py-16 md:py-24">
-        <div className="container mx-auto px-4 md:px-8 max-w-6xl">
+        <div className="container mx-auto px-4 md:px-8 max-w-5xl">
           <div className="text-center mb-12 md:mb-16">
             <p className="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
-              For busy professionals who need habits that stick
+              Simple pricing, no surprises
             </p>
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-gradient">
-              Pick the plan that fits your life
+              {MOMENTUM.tagline}
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Set up in under 5 minutes. Complete your first 7-day streak this week. Cancel anytime.
+              Start with 3 habits. Upgrade when you're ready for the rest.
             </p>
-
-            {/* Billing Toggle */}
-            <div className="inline-flex items-center gap-1 rounded-full bg-muted p-1">
-              <button
-                onClick={() => setBillingInterval('monthly')}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                  billingInterval === 'monthly'
-                    ? 'bg-primary text-primary-foreground shadow-md'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setBillingInterval('annual')}
-                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-2 ${
-                  billingInterval === 'annual'
-                    ? 'bg-primary text-primary-foreground shadow-md'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Annual
-                <span className="inline-flex items-center rounded-full bg-success/20 text-success px-2 py-0.5 text-xs font-bold">
-                  Save 20%+
-                </span>
-              </button>
-            </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Free Plan */}
             <Card className="border-none shadow-md card-lift">
               <CardHeader className="pb-6">
                 <CardTitle className="text-2xl font-display font-bold text-foreground">Free</CardTitle>
-                <CardDescription className="text-base">Try the basics, no strings attached</CardDescription>
+                <CardDescription className="text-base">{MOMENTUM.free.headline}</CardDescription>
                 <div className="mt-6">
                   <span className="text-5xl font-display font-bold text-foreground">$0</span>
                   <span className="text-lg text-muted-foreground">/month</span>
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="bg-muted/50 rounded-lg p-3">
-                  <p className="text-xs font-semibold text-foreground mb-1">This is for you if…</p>
-                  <p className="text-xs text-muted-foreground">You want to test whether daily check-ins work before committing.</p>
-                </div>
+                <p className="text-sm text-muted-foreground">{MOMENTUM.free.desc}</p>
                 <ul className="space-y-3">
                   {freeFeatures.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
@@ -168,7 +121,7 @@ export default function Pricing() {
                   size="lg"
                   onClick={() => navigate("/auth")}
                 >
-                  Start free
+                  {MOMENTUM.ctas.hero}
                 </Button>
               </CardContent>
             </Card>
@@ -176,31 +129,20 @@ export default function Pricing() {
             {/* Pro Plan */}
             <Card className="border-2 border-primary shadow-xl card-lift-heavy relative overflow-hidden" style={{ background: 'var(--gradient-card)' }}>
               <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-primary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-primary)' }}>
-                <Star className="h-3 w-3" /> Most Popular
+                <Star className="h-3 w-3" /> Recommended
               </div>
               <CardHeader className="pb-6 pt-8">
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
                   Pro <span className="badge-premium text-xs px-2 py-0.5">PRO</span>
                 </CardTitle>
-                <CardDescription className="text-base">Unlimited goals, 30-day history, Streak Repair, priority support</CardDescription>
+                <CardDescription className="text-base">{MOMENTUM.pro.headline}</CardDescription>
                 <div className="mt-6">
-                  <span className="text-5xl font-display font-bold text-primary">${getPrice('plus')}</span>
-                  <span className="text-lg text-muted-foreground">/mo</span>
-                  {billingInterval === 'annual' && (
-                    <div className="mt-1">
-                  <span className="text-sm text-muted-foreground line-through">${PLANS.plus.price.toFixed(2)}/mo</span>
-                      <span className="text-sm font-semibold text-success ml-2">
-                        Billed annually at ${PLANS.plus.annualPrice}/yr
-                      </span>
-                    </div>
-                  )}
+                  <span className="text-5xl font-display font-bold text-primary">${MOMENTUM.pro.price.toFixed(2)}</span>
+                  <span className="text-lg text-muted-foreground">/month</span>
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="bg-primary/10 rounded-lg p-3">
-                  <p className="text-xs font-semibold text-foreground mb-1">This is for you if…</p>
-                  <p className="text-xs text-muted-foreground">You're building 2-3 core habits, want light reminders, and need streak protection so one bad day doesn't erase your progress.</p>
-                </div>
+                <p className="text-sm text-muted-foreground">{MOMENTUM.pro.desc}</p>
                 <ul className="space-y-3">
                   {proFeatures.map((feature) => (
                     <li key={feature} className="flex items-start gap-3">
@@ -214,62 +156,15 @@ export default function Pricing() {
                   size="lg"
                   onClick={() => { analytics.startCheckout('pro'); window.open('https://buy.stripe.com/7sY5kE0xm5z08HK5f93ZK0c', '_blank'); }}
                 >
-                  Start 7-day free trial
+                  {MOMENTUM.ctas.upgrade}
                 </Button>
-                <p className="text-xs text-center text-muted-foreground">7-day free trial, cancel anytime</p>
-              </CardContent>
-            </Card>
-
-            {/* Pro Plan */}
-            <Card className="border-2 border-secondary shadow-xl card-lift-heavy relative overflow-hidden">
-              <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-secondary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-secondary)' }}>
-                <Crown className="h-3 w-3" /> Best Value
-              </div>
-              <CardHeader className="pb-6 pt-8">
-                <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
-                  Premium <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--gradient-secondary)', color: 'white' }}>PREMIUM</span>
-                </CardTitle>
-                <CardDescription className="text-base">AI Coach, unlimited history, data export, all Pro features</CardDescription>
-                <div className="mt-6">
-                  <span className="text-5xl font-display font-bold text-secondary">${getPrice('pro')}</span>
-                  <span className="text-lg text-muted-foreground">/mo</span>
-                  {billingInterval === 'annual' && (
-                    <div className="mt-1">
-                  <span className="text-sm text-muted-foreground line-through">${PLANS.pro.price.toFixed(2)}/mo</span>
-                      <span className="text-sm font-semibold text-success ml-2">
-                        Billed annually at ${PLANS.pro.annualPrice}/yr
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="bg-secondary/10 rounded-lg p-3">
-                  <p className="text-xs font-semibold text-foreground mb-1">This is for you if…</p>
-                  <p className="text-xs text-muted-foreground">You want multiple routines, deeper analytics, and an AI coach that adapts to your schedule, energy, and real life.</p>
-                </div>
-                <ul className="space-y-3">
-                  {premiumFeatures.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-secondary flex-shrink-0 mt-0.5" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Button
-                  className="w-full shadow-lg hover:shadow-xl transition-all font-semibold min-h-[44px] bg-secondary text-secondary-foreground hover:bg-secondary/90"
-                  size="lg"
-                  onClick={() => { analytics.startCheckout('premium'); window.open('https://buy.stripe.com/3cIfZicg43qS1fi3713ZK0d', '_blank'); }}
-                >
-                  Upgrade for Pro coaching
-                </Button>
-                <p className="text-xs text-center text-muted-foreground">7-day free trial, cancel anytime</p>
+                <p className="text-xs text-center text-muted-foreground">{RULES.cancel_note}</p>
               </CardContent>
             </Card>
           </div>
 
-          {/* Guarantee & First Week */}
-          <div className="mt-12 grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          {/* Guarantee */}
+          <div className="mt-12 max-w-2xl mx-auto">
             <Card className="border-primary/10 shadow-md">
               <CardContent className="pt-6">
                 <div className="flex items-center gap-2 mb-3">
@@ -277,19 +172,8 @@ export default function Pricing() {
                   <h3 className="font-semibold text-foreground">Our guarantee</h3>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Cancel anytime, no commitments. No ads, no data selling. You keep access through the end of your billing period - no questions asked.
+                  Cancel anytime, no commitments. No ads, no data selling. You keep access through the end of your billing period — no questions asked.
                 </p>
-              </CardContent>
-            </Card>
-            <Card className="border-primary/10 shadow-md">
-              <CardContent className="pt-6">
-                <h3 className="font-semibold text-foreground mb-3">What you'll accomplish in week 1</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1-3 realistic daily habits</li>
-                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Configure reminders that fit your schedule</li>
-                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Complete your first 7-day streak</li>
-                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> See your consistency visualized</li>
-                </ul>
               </CardContent>
             </Card>
           </div>
@@ -300,9 +184,9 @@ export default function Pricing() {
           </p>
 
           {/* Feature Comparison Table */}
-          <div className="mt-20 max-w-4xl mx-auto">
+          <div className="mt-20 max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-display font-bold text-center mb-8 text-foreground">
-              Compare All Features
+              Compare Plans
             </h2>
             <Card className="border-primary/10 shadow-xl overflow-hidden">
               <div className="overflow-x-auto">
@@ -312,36 +196,29 @@ export default function Pricing() {
                       <th className="text-left p-4 font-semibold text-foreground">Feature</th>
                       <th className="text-center p-4 font-semibold text-foreground">Free</th>
                       <th className="text-center p-4 font-semibold text-primary">Pro</th>
-                      <th className="text-center p-4 font-semibold text-secondary relative">
-                        <div className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-full">
-                          <span className="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-t-lg font-bold text-secondary-foreground" style={{ background: 'var(--gradient-secondary)' }}>
-                            <Crown className="h-3 w-3" /> Best Value
-                          </span>
-                        </div>
-                        Premium
-                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {[
-                      { feature: "Habits", free: "Up to 3", plus: "Unlimited", pro: "Unlimited" },
-                      { feature: "Daily check-ins", free: true, plus: true, pro: true },
-                      { feature: "Streak tracking", free: "7 days", plus: "30 days", pro: "Unlimited" },
-                      { feature: "Progress graphs", free: "Basic", plus: "Enhanced", pro: "Full" },
-                      { feature: "Streak Repair (48hr window)", free: false, plus: true, pro: true },
-                      { feature: "Weekly email summary", free: false, plus: true, pro: true },
-                      { feature: "AI Coach", free: false, plus: false, pro: true },
-                      { feature: "CSV data export", free: false, plus: false, pro: true },
-                      { feature: "Priority support", free: false, plus: true, pro: true },
+                      { feature: "Habits", free: "Up to 3", pro: "Unlimited" },
+                      { feature: "Daily check-ins", free: true, pro: true },
+                      { feature: "Streak tracking", free: "7 days", pro: "Unlimited" },
+                      { feature: "Weekly summary", free: true, pro: true },
+                      { feature: "Accountability partner", free: false, pro: true },
+                      { feature: "AI coaching prompts", free: false, pro: true },
+                      { feature: "Trend analytics", free: false, pro: true },
+                      { feature: "Streak Repair (48hr)", free: false, pro: true },
+                      { feature: "CSV data export", free: false, pro: true },
+                      { feature: "Priority support", free: false, pro: true },
                     ].map((row, i) => (
                       <tr key={i} className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors">
                         <td className="p-4 font-medium text-foreground">{row.feature}</td>
-                        {[row.free, row.plus, row.pro].map((val, j) => (
-                          <td key={j} className={`p-4 text-center ${j === 2 ? 'bg-secondary/5' : ''}`}>
+                        {[row.free, row.pro].map((val, j) => (
+                          <td key={j} className={`p-4 text-center ${j === 1 ? 'bg-primary/5' : ''}`}>
                             {val === true ? (
                               <CheckCircle className="h-5 w-5 text-success mx-auto" />
                             ) : val === false ? (
-                              <span className="text-muted-foreground/40">-</span>
+                              <span className="text-muted-foreground/40">—</span>
                             ) : (
                               <span className="text-muted-foreground">{val}</span>
                             )}

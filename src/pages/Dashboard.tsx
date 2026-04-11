@@ -26,6 +26,9 @@ import { type PlanTier, canAccessFeature, getGoalLimit } from "@/lib/plans";
 import { Badge } from "@/components/ui/badge";
 import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 import { analytics } from "@/lib/analytics";
+import { UpgradeWall } from "@/components/UpgradeWall";
+import { MOMENTUM } from "@/constants/value-language";
+import { Users, BarChart3 } from "lucide-react";
 
 interface Profile {
   id: string;
@@ -59,6 +62,8 @@ export default function Dashboard() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallFeature, setPaywallFeature] = useState<string>('goals');
   const [paywallPlan, setPaywallPlan] = useState<PlanTier>('plus');
+  const [showUpgradeWall, setShowUpgradeWall] = useState(false);
+  const [upgradeWallType, setUpgradeWallType] = useState<'habit_limit' | 'partner_lock' | 'analytics_lock'>('habit_limit');
   const navigate = useNavigate();
 
   const plan = (profile?.plan || 'free') as PlanTier;
@@ -209,9 +214,8 @@ export default function Dashboard() {
 
   const handleAddGoal = () => {
     if (!canAddGoal()) {
-      setPaywallFeature('goals');
-      setPaywallPlan('plus');
-      setShowPaywall(true);
+      setUpgradeWallType('habit_limit');
+      setShowUpgradeWall(true);
       return;
     }
     setShowAddGoal(true);
@@ -401,6 +405,62 @@ export default function Dashboard() {
             </Button>
           </>
         )}
+
+            {/* Accountability Partner Section */}
+            <div className="mt-8">
+              <h3 className="text-xl font-display font-semibold text-foreground mb-3 flex items-center gap-2">
+                <Users className="h-5 w-5" /> Accountability Partner
+                {plan === 'free' && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
+              </h3>
+              {plan === 'free' ? (
+                <div
+                  className="p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => { setUpgradeWallType('partner_lock'); setShowUpgradeWall(true); }}
+                >
+                  <p className="text-sm text-muted-foreground">Your partner sees your weekly completion. You see theirs. The social pressure is real.</p>
+                  <p className="text-xs text-primary font-semibold mt-2">Tap to unlock →</p>
+                </div>
+              ) : (
+                <div className="p-6 rounded-xl border border-border bg-card shadow-sm">
+                  <p className="text-sm text-muted-foreground">Invite a workout partner to keep each other accountable. Coming soon!</p>
+                </div>
+              )}
+            </div>
+
+            {/* Trend Analytics Section */}
+            <div className="mt-8">
+              <h3 className="text-xl font-display font-semibold text-foreground mb-3 flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" /> Trend Analytics
+                {plan === 'free' && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
+              </h3>
+              {plan === 'free' ? (
+                <div
+                  className="relative p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors overflow-hidden"
+                  onClick={() => { setUpgradeWallType('analytics_lock'); setShowUpgradeWall(true); }}
+                >
+                  <div className="blur-sm select-none pointer-events-none">
+                    <div className="flex gap-2 items-end h-24">
+                      {[3, 5, 4, 6, 2, 7, 5].map((v, i) => (
+                        <div key={i} className="flex-1 bg-primary/30 rounded-t" style={{ height: `${v * 14}%` }} />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <p className="text-sm font-semibold text-foreground bg-card/90 px-4 py-2 rounded-lg shadow">
+                      Trend analytics unlock on Pro — $4.99/month
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className="p-6 rounded-xl border border-border bg-card shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => navigate("/insights")}
+                >
+                  <p className="text-sm text-muted-foreground">View your weekly trends, day patterns, and AI insights.</p>
+                  <p className="text-xs text-primary font-semibold mt-2">Open Insights →</p>
+                </div>
+              )}
+            </div>
           </TabsContent>
 
           <TabsContent value="progress">
@@ -449,6 +509,17 @@ export default function Dashboard() {
         feature={paywallFeature}
         requiredPlan={paywallPlan}
       />
+
+      {showUpgradeWall && (
+        <UpgradeWall
+          headline={MOMENTUM.walls[upgradeWallType].headline}
+          body={MOMENTUM.walls[upgradeWallType].body}
+          cta={MOMENTUM.walls[upgradeWallType].cta}
+          accentColor="#0d3b5e"
+          onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
+          onDismiss={() => setShowUpgradeWall(false)}
+        />
+      )}
     </div>
   );
 }

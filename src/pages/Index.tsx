@@ -87,10 +87,10 @@ const Index = () => {
                   <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">MomentumFit</h2>
                 </div>
                 <h1 className="text-3xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
-                  Daily Fitness Habit Tracker — <span className="text-gradient">Build Streaks That Stick</span>
+                  Most people don't fail at habits. <span className="text-gradient">They fail at starting over.</span>
                 </h1>
                 <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  The daily habit app and streak tracker that helps you build healthy habits with progress charts and zero guilt. Free to start.
+                  Momentum is built for the 47 times you didn't show up — and the 48th time you did. Start with 3 habits. Free, no card required.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
                   <Button 
@@ -98,12 +98,9 @@ const Index = () => {
                     onClick={() => { analytics.startSignup(); navigate("/auth"); }} 
                     className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-base md:text-lg h-12 md:h-14 px-8 md:px-10 btn-gradient"
                   >
-                    Start Free
+                    Start With 3 Habits — No Card Needed
                   </Button>
                 </div>
-                <p className="text-xs md:text-sm text-muted-foreground">
-                  Free forever for one activity. Upgrade for unlimited.
-                </p>
                 <div className="flex items-center gap-2 justify-center lg:justify-start text-xs md:text-sm text-muted-foreground pt-1">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
