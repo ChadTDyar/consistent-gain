@@ -27,6 +27,7 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
   const [weekStreak, setWeekStreak] = useState(0);
   const [weekAverage, setWeekAverage] = useState(0);
   const [lastWeekAverage, setLastWeekAverage] = useState(0);
+  const [showHistoryWall, setShowHistoryWall] = useState(false);
 
   useEffect(() => {
     loadProgressData();
@@ -186,10 +187,28 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
           </CardTitle>
           <CardDescription className="text-base">
             Track how you feel after workouts
-            {plan === 'free' && <span className="text-primary ml-1 text-xs font-semibold">Upgrade for 30+ days</span>}
+            {plan === 'free' && (
+              <button
+                onClick={() => setShowHistoryWall(true)}
+                className="text-primary ml-1 text-xs font-semibold hover:underline"
+              >
+                Upgrade for 30+ days
+              </button>
+            )}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="relative">
+          {plan === 'free' && (
+            <div
+              className="absolute inset-0 z-10 cursor-pointer flex items-end justify-center pb-8"
+              onClick={() => setShowHistoryWall(true)}
+            >
+              <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent rounded-lg" />
+              <p className="relative text-sm font-semibold text-foreground bg-card/90 px-4 py-2 rounded-lg shadow border border-border">
+                Free plan shows 7 days · Tap to unlock more history
+              </p>
+            </div>
+          )}
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -221,6 +240,17 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
           </div>
         </CardContent>
       </Card>
+
+      {showHistoryWall && (
+        <UpgradeWall
+          headline={MOMENTUM.walls.history_limit.headline}
+          body={MOMENTUM.walls.history_limit.body}
+          cta={MOMENTUM.walls.history_limit.cta}
+          accentColor="#0d3b5e"
+          onUpgrade={() => { setShowHistoryWall(false); navigate("/pricing"); }}
+          onDismiss={() => setShowHistoryWall(false)}
+        />
+      )}
     </div>
   );
 }
