@@ -57,14 +57,15 @@ export default function Pricing() {
     "Unlimited goals",
     "30-day history",
     "Streak Repair",
+    "Weekly progress email",
     "Priority support",
   ];
 
   const premiumFeatures = [
-    "All Pro features",
+    "Everything in Pro",
     "AI Coach",
     "Unlimited history",
-    "Data export",
+    "CSV data export",
   ];
 
   const faqData = [
@@ -143,7 +144,7 @@ export default function Pricing() {
             <Card className="border-none shadow-md card-lift">
               <CardHeader className="pb-6">
                 <CardTitle className="text-2xl font-display font-bold text-foreground">Free</CardTitle>
-                <CardDescription className="text-base">Try the basics, no strings attached</CardDescription>
+                <CardDescription className="text-base">For people ready to start. Track up to 3 habits, check in daily, and build a 7-day streak. A real habit tracker, not a trial.</CardDescription>
                 <div className="mt-6">
                   <span className="text-5xl font-display font-bold text-foreground">$0</span>
                   <span className="text-lg text-muted-foreground">/month</span>
@@ -182,7 +183,7 @@ export default function Pricing() {
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
                   Pro <span className="badge-premium text-xs px-2 py-0.5">PRO</span>
                 </CardTitle>
-                <CardDescription className="text-base">Unlimited goals, 30-day history, Streak Repair, priority support</CardDescription>
+                <CardDescription className="text-base">For people who are serious about staying consistent. Unlimited habits, Streak Repair so a missed day does not derail you, 30 days of history, and a weekly progress email that keeps you honest.</CardDescription>
                 <div className="mt-6">
                   <span className="text-5xl font-display font-bold text-primary">${getPrice('plus')}</span>
                   <span className="text-lg text-muted-foreground">/mo</span>
@@ -214,9 +215,9 @@ export default function Pricing() {
                   size="lg"
                   onClick={() => { analytics.startCheckout('pro'); window.open('https://buy.stripe.com/7sY5kE0xm5z08HK5f93ZK0c', '_blank'); }}
                 >
-                  Start 7-day free trial
+                  Upgrade to Pro →
                 </Button>
-                <p className="text-xs text-center text-muted-foreground">7-day free trial, cancel anytime</p>
+                <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
               </CardContent>
             </Card>
 
@@ -229,7 +230,7 @@ export default function Pricing() {
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
                   Premium <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--gradient-secondary)', color: 'white' }}>PREMIUM</span>
                 </CardTitle>
-                <CardDescription className="text-base">AI Coach, unlimited history, data export, all Pro features</CardDescription>
+                <CardDescription className="text-base">For people who want the full picture and a coach to go with it. Everything in Pro plus AI Coach that adapts to your actual schedule, unlimited history, and CSV export when you want your data.</CardDescription>
                 <div className="mt-6">
                   <span className="text-5xl font-display font-bold text-secondary">${getPrice('pro')}</span>
                   <span className="text-lg text-muted-foreground">/mo</span>
@@ -261,9 +262,9 @@ export default function Pricing() {
                   size="lg"
                   onClick={() => { analytics.startCheckout('premium'); window.open('https://buy.stripe.com/3cIfZicg43qS1fi3713ZK0d', '_blank'); }}
                 >
-                  Upgrade for Pro coaching
+                  Upgrade to Premium →
                 </Button>
-                <p className="text-xs text-center text-muted-foreground">7-day free trial, cancel anytime</p>
+                <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
               </CardContent>
             </Card>
           </div>

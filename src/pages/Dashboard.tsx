@@ -63,7 +63,7 @@ export default function Dashboard() {
   const [paywallFeature, setPaywallFeature] = useState<string>('goals');
   const [paywallPlan, setPaywallPlan] = useState<PlanTier>('plus');
   const [showUpgradeWall, setShowUpgradeWall] = useState(false);
-  const [upgradeWallType, setUpgradeWallType] = useState<'habit_limit' | 'partner_lock' | 'analytics_lock'>('habit_limit');
+  const [upgradeWallType, setUpgradeWallType] = useState<'habit_limit' | 'partner_lock' | 'analytics_lock' | 'ai_coach' | 'history_limit'>('habit_limit');
   const navigate = useNavigate();
 
   const plan = (profile?.plan || 'free') as PlanTier;
@@ -494,6 +494,7 @@ export default function Dashboard() {
         }}
         autoOpen={showWelcome}
         welcomeMessage={welcomeMessage}
+        onUpgradeWall={() => { setUpgradeWallType('ai_coach'); setShowUpgradeWall(true); }}
       />
 
       <StreakRepair

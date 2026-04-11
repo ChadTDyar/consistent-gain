@@ -25,9 +25,10 @@ interface CoachChatProps {
   autoOpen?: boolean;
   welcomeMessage?: string;
   fullPage?: boolean;
+  onUpgradeWall?: () => void;
 }
 
-export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullPage = false }: CoachChatProps) {
+export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullPage = false, onUpgradeWall }: CoachChatProps) {
   const [isOpen, setIsOpen] = useState(autoOpen || fullPage);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -289,6 +290,11 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
       {/* Floating button */}
       <Button
         onClick={() => {
+          const plan = userContext?.plan || 'free';
+          if (plan !== 'pro' && plan !== 'premium' && !userContext?.isPremium) {
+            // Free and Pro users get the upgrade wall
+            if (onUpgradeWall) { onUpgradeWall(); return; }
+          }
           if (!isOpen) analytics.coachChatOpened();
           setIsOpen(!isOpen);
         }}
