@@ -1,5 +1,4 @@
 import { createPortal } from "react-dom";
-import { RULES } from "@/constants/value-language";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -23,7 +22,7 @@ export function UpgradeWall({
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.5)" }}
+      style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
       onClick={onDismiss}
     >
       <div
@@ -31,30 +30,30 @@ export function UpgradeWall({
         className="bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl"
         style={{ borderLeft: `4px solid ${accentColor}` }}
       >
-        <div className="flex justify-end p-3 pb-0">
+        <div className="p-[22px] pb-0 relative">
           <button
             onClick={onDismiss}
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="absolute top-[14px] right-[14px] text-muted-foreground hover:text-foreground transition-colors"
             aria-label="Close"
           >
             <X className="h-5 w-5" />
           </button>
+          <h3 className="font-semibold text-base text-foreground leading-tight pr-5">
+            {headline}
+          </h3>
         </div>
 
-        <div className="px-6 pb-6 space-y-4">
-          <h2 className="text-xl font-display font-bold text-foreground">
-            {headline}
-          </h2>
+        <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
           <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
-          <Button
+          <button
             onClick={onUpgrade}
-            className="w-full font-semibold btn-gradient"
-            size="lg"
+            className="block w-full py-3 rounded-lg font-bold text-sm text-white cursor-pointer border-none"
+            style={{ background: accentColor }}
           >
             {cta}
-          </Button>
-          <p className="text-xs text-center text-muted-foreground">
-            {RULES.cancel_note}
+          </button>
+          <p className="text-center text-xs text-muted-foreground">
+            Cancel anytime.
           </p>
         </div>
       </div>

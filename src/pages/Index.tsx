@@ -87,10 +87,10 @@ const Index = () => {
                   <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">MomentumFit</h2>
                 </div>
                 <h1 className="text-3xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
-                  Most people don't fail at habits. <span className="text-gradient">They fail at starting over.</span>
+                  Consistency is harder at 50. <span className="text-gradient">Not because you know less. Because you have more.</span>
                 </h1>
                 <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  Momentum is built for the 47 times you didn't show up — and the 48th time you did. Start with 3 habits. Free, no card required.
+                  Momentum is built for the season of life where staying consistent means working around a job, a family, and a body that recovers slower than it used to. Start with 3 habits. Free.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
                   <Button 
@@ -98,7 +98,7 @@ const Index = () => {
                     onClick={() => { analytics.startSignup(); navigate("/auth"); }} 
                     className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-base md:text-lg h-12 md:h-14 px-8 md:px-10 btn-gradient"
                   >
-                    Start With 3 Habits — No Card Needed
+                    Start Building Habits Free
                   </Button>
                 </div>
                 <div className="flex items-center gap-2 justify-center lg:justify-start text-xs md:text-sm text-muted-foreground pt-1">

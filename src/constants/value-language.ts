@@ -6,29 +6,45 @@ export const MOMENTUM = {
     habit_limit: 3,
   },
   pro: {
-    price: 4.99,
+    price: 3.99,
     headline: "For people who stuck with 3 and are ready for the rest.",
-    desc: "Unlimited habits. Accountability partner. AI coaching prompts. Trend analytics.",
+    desc: "Unlimited habits. Streak Repair. 30-day history. Weekly progress email.",
+  },
+  premium: {
+    price: 7.99,
+    headline: "For people who want the full picture and a coach to go with it.",
+    desc: "Everything in Pro plus AI Coach, unlimited history, CSV export.",
   },
   ctas: {
-    hero: "Start With 3 Habits — No Card Needed",
-    upgrade: "Unlock Pro — $4.99/month →",
+    hero: "Start Building Habits Free",
+    upgrade_pro: "Upgrade to Pro →",
+    upgrade_premium: "Upgrade to Premium →",
   },
   walls: {
     habit_limit: {
-      headline: "You've built 3 solid habits.",
-      body: "Adding a 4th is what Momentum Pro is for. Unlimited habits, accountability partner, and trend reports that show you what's actually working. $4.99/month. Cancel anytime.",
-      cta: "Unlock Pro — $4.99/month →",
+      headline: "Free plan includes 3 habits.",
+      body: "Pro gives you unlimited habits, Streak Repair so a missed day does not erase your progress, 30 days of history, and a weekly progress email.",
+      cta: "Upgrade to Pro →",
+    },
+    ai_coach: {
+      headline: "AI Coach is a Premium feature.",
+      body: "AI Coach gives you personalized habit guidance that adapts to your schedule, your energy, and real life — not a generic plan that assumes you have the same day every day.",
+      cta: "Upgrade to Premium →",
+    },
+    history_limit: {
+      headline: "Free plan shows 7 days of history.",
+      body: "Pro unlocks 30 days of history and a weekly progress email. Premium unlocks everything with unlimited history and CSV export.",
+      cta: "Upgrade to Pro →",
     },
     partner_lock: {
       headline: "Partner accountability is a Pro feature.",
-      body: "Your partner sees your weekly completion. You see theirs. The social pressure is real. The results are better. $4.99/month.",
-      cta: "Unlock Pro →",
+      body: "Your partner sees your weekly completion. You see theirs. The social pressure is real. The results are better.",
+      cta: "Upgrade to Pro →",
     },
     analytics_lock: {
       headline: "Trend analytics are a Pro feature.",
-      body: "See which days you succeed, which habits correlate, and where you actually lose momentum. $4.99/month.",
-      cta: "Unlock Pro →",
+      body: "See which days you succeed, which habits correlate, and where you actually lose momentum.",
+      cta: "Upgrade to Pro →",
     },
   },
 };
