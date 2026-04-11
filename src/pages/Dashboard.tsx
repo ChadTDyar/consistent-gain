@@ -26,6 +26,9 @@ import { type PlanTier, canAccessFeature, getGoalLimit } from "@/lib/plans";
 import { Badge } from "@/components/ui/badge";
 import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 import { analytics } from "@/lib/analytics";
+import { UpgradeWall } from "@/components/UpgradeWall";
+import { MOMENTUM } from "@/constants/value-language";
+import { Users, BarChart3 } from "lucide-react";
 
 interface Profile {
   id: string;
