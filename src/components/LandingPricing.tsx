@@ -145,13 +145,13 @@ export function LandingPricing() {
                   ))}
                 </ul>
                 <Button
-                  onClick={() => tier.href ? window.open(tier.href, '_blank') : navigate("/auth")}
+                  onClick={() => tier.plan ? window.open(getPaymentLink(tier.plan, interval), '_blank') : navigate("/auth")}
                   variant={tier.mostPopular ? "default" : "outline"}
                   className={tier.mostPopular ? "btn-gradient w-full" : "w-full"}
                 >
                   {tier.cta}
                 </Button>
-                {tier.href && (
+                {tier.plan && (
                   <p className="text-center mt-2 text-xs text-muted-foreground">
                     Cancel anytime.
                   </p>
