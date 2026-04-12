@@ -14,7 +14,7 @@ export const PLANS = {
   pro: {
     name: 'Premium',
     price: 7.99,
-    annualPrice: 77,
+    annualPrice: 72,
     price_id: 'price_1TLRRxL98dr6Pw0kdyFkEsEp',
     annual_price_id: 'price_1TLRT0L98dr6Pw0kBgfProeu',
     product_id: 'prod_U3w9PqaaJVSOto',
