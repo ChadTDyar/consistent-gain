@@ -100,7 +100,7 @@ export default function BuildFitnessHabitAfter40() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">What Makes Momentum Different</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              Most fitness apps track reps, sets, and calories. Momentum tracks the one thing that predicts long-term success: whether you showed up. Daily check-ins take 10 seconds. Streak tracking keeps you accountable. And when life gets in the way, Plus members can repair their streak within 48 hours.
+              Most fitness apps track reps, sets, and calories. Momentum tracks the one thing that predicts long-term success: whether you showed up. Daily check-ins take 10 seconds. Streak tracking keeps you accountable. And when life gets in the way, Pro members can repair their streak within 48 hours.
             </p>
 
             <div className="not-prose my-8">
@@ -111,8 +111,8 @@ export default function BuildFitnessHabitAfter40() {
                   <div className="space-y-3">
                     {[
                       "Free - 3 goals, 7-day streaks, daily check-ins",
-                      "Plus ($4.99/mo) - Unlimited goals, Streak Repair, 30-day history",
-                      "Pro ($9.99/mo) - AI Coach, unlimited history, data export",
+                      "Pro ($3.99/mo) - Unlimited goals, Streak Repair, 30-day history",
+                      "Premium ($7.99/mo) - AI Coach, unlimited history, data export",
                     ].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
