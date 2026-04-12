@@ -29,6 +29,8 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
   const [last7Days, setLast7Days] = useState<Array<{ date: string; completed: boolean }>>([]);
   const [alreadyLoggedToday, setAlreadyLoggedToday] = useState(false);
   const [loggingActivity, setLoggingActivity] = useState(false);
+  const [justCompleted, setJustCompleted] = useState(false);
+  const [completionMsg, setCompletionMsg] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -141,6 +143,13 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
         analytics.streakMilestone(streak + 1);
       }
       toast.success("Great job! 🎉 Streak continues!");
+      
+      // Show inline confirmation
+      setJustCompleted(true);
+      const newStreak = streak + 1;
+      setCompletionMsg(newStreak > 1 ? `That's ${newStreak} days in a row.` : "Done. Keep it going.");
+      setTimeout(() => { setJustCompleted(false); setCompletionMsg(""); }, 2000);
+      
       loadActivityData();
       onUpdate();
     }
@@ -215,7 +224,7 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
 
         <Button
           onClick={handleLogActivity}
-          className="w-full shadow-sm hover:shadow-md transition-all font-semibold"
+          className={`w-full shadow-sm hover:shadow-md transition-all font-semibold ${justCompleted ? 'habit-fill-complete' : ''}`}
           size="lg"
           disabled={alreadyLoggedToday || loggingActivity}
         >
@@ -233,6 +242,11 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
             "Log Today"
           )}
         </Button>
+        {justCompleted && completionMsg && (
+          <p className="text-center text-[0.78rem] font-medium animate-fade-in" style={{ color: '#166534' }}>
+            {completionMsg}
+          </p>
+        )}
       </CardContent>
     </Card>
   );
