@@ -14,7 +14,7 @@ const PRICES: Record<string, Record<string, string>> = {
   },
   pro: {
     monthly: "price_1TLRRxL98dr6Pw0kdyFkEsEp",  // Premium $7.99/mo
-    annual: "price_1TLRT0L98dr6Pw0kBgfProeu",   // Premium $77/yr
+    annual: "price_1TLRT0L98dr6Pw0kBgfProeu",   // Premium $72/yr
   },
 };
 
