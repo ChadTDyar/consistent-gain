@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Star } from "lucide-react";
+import { getPaymentLink } from "@/lib/plans";
 
 type BillingInterval = "monthly" | "annual";
 
@@ -16,7 +17,7 @@ const tiers = [
     highlight: false,
     mostPopular: false,
     cta: "Get Started Free",
-    href: null,
+    plan: null as null | 'plus' | 'pro',
     features: [
       "3 habits",
       "Daily check-ins",
@@ -32,7 +33,7 @@ const tiers = [
     highlight: true,
     mostPopular: true,
     cta: "Upgrade to Pro →",
-    href: "https://buy.stripe.com/7sY5kE0xm5z08HK5f93ZK0c",
+    plan: 'plus' as null | 'plus' | 'pro',
     features: [
       "Unlimited goals",
       "30-day history",
@@ -49,7 +50,7 @@ const tiers = [
     highlight: false,
     mostPopular: false,
     cta: "Upgrade to Premium →",
-    href: "https://buy.stripe.com/3cIfZicg43qS1fi3713ZK0d",
+    plan: 'pro' as null | 'plus' | 'pro',
     features: [
       "AI Coach",
       "Unlimited history",
@@ -144,13 +145,13 @@ export function LandingPricing() {
                   ))}
                 </ul>
                 <Button
-                  onClick={() => tier.href ? window.open(tier.href, '_blank') : navigate("/auth")}
+                  onClick={() => tier.plan ? window.open(getPaymentLink(tier.plan, interval), '_blank') : navigate("/auth")}
                   variant={tier.mostPopular ? "default" : "outline"}
                   className={tier.mostPopular ? "btn-gradient w-full" : "w-full"}
                 >
                   {tier.cta}
                 </Button>
-                {tier.href && (
+                {tier.plan && (
                   <p className="text-center mt-2 text-xs text-muted-foreground">
                     Cancel anytime.
                   </p>
