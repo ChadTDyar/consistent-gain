@@ -22,6 +22,7 @@ const NotificationExplainer = lazy(() => import("@/components/NotificationExplai
 const HowItWorks = lazy(() => import("@/components/HowItWorks").then(m => ({ default: m.HowItWorks })));
 const DifferentiationCallout = lazy(() => import("@/components/DifferentiationCallout").then(m => ({ default: m.DifferentiationCallout })));
 const LandingPricing = lazy(() => import("@/components/LandingPricing").then(m => ({ default: m.LandingPricing })));
+const StreakRepairDemo = lazy(() => import("@/components/StreakRepairDemo").then(m => ({ default: m.StreakRepairDemo })));
 
 const Index = () => {
   const navigate = useNavigate();
@@ -132,6 +133,16 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Founder Quote */}
+        <div className="py-10 md:py-14 bg-background-cream">
+          <div className="container mx-auto px-6 md:px-8 max-w-3xl text-center">
+            <p className="text-lg md:text-xl text-muted-foreground italic leading-relaxed">
+              "I've worked out since I was 15. The gap at 50 isn't knowledge. It's momentum."
+            </p>
+            <p className="text-sm text-muted-foreground mt-3 font-medium">— Chad Dyar</p>
+          </div>
+        </div>
+
         {/* Social Proof Strip */}
         <SocialProofStrip />
 
@@ -161,6 +172,9 @@ const Index = () => {
         <Suspense fallback={<div className="py-16" />}>
           {/* How It Works */}
           <HowItWorks />
+
+          {/* Streak Repair Demo */}
+          <StreakRepairDemo />
 
           {/* Differentiation Callout */}
           <DifferentiationCallout />
