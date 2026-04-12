@@ -142,9 +142,9 @@ export default function BestHabitTrackerApp() {
                   <p className="text-muted-foreground mb-6">Start free. Upgrade when you're ready.</p>
                   <div className="space-y-3">
                     {[
-                      "Free - 3 goals, 7-day streaks, daily check-ins",
-                      "Plus ($4.99/mo) - Unlimited goals, Streak Repair, 30-day history",
-                      "Pro ($9.99/mo) - AI Coach, unlimited history, data export",
+                      "Free - 3 habits, 7-day streaks, daily check-ins",
+                      "Pro ($3.99/mo) - Unlimited habits, Streak Repair, 30-day history",
+                      "Premium ($7.99/mo) - AI Coach, unlimited history, data export",
                     ].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />

@@ -29,8 +29,8 @@ const faqData: FAQItem[] = [
     answer: "Any habit you want to build! Reading, meditation, walking, stretching, journaling, hydration - if you can do it daily or regularly, you can track it. You define what matters to you."
   },
   {
-    question: "How does the AI Coach work on Pro?",
-    answer: "The AI Coach provides personalized suggestions based on your check-in patterns, habit types, and consistency data. It's like having a supportive accountability partner who adapts to your schedule and real life."
+    question: "How does the AI Coach work on Premium?",
+    answer: "The AI Coach is a Premium feature that provides personalized suggestions based on your check-in patterns, habit types, and consistency data. It's like having a supportive accountability partner who adapts to your schedule and real life."
   },
   {
     question: "Can I cancel my subscription anytime?",

@@ -35,7 +35,7 @@ const comparisons = [
   {
     feature: "AI coaching from your data",
     description: "Suggestions based on your streaks, wellness, and energy patterns.",
-    momentum: "Pro plan",
+    momentum: "Premium plan",
     others: "Paid only",
   },
   {
