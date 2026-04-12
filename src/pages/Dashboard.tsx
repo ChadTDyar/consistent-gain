@@ -450,7 +450,7 @@ export default function Dashboard() {
                   </div>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <p className="text-sm font-semibold text-foreground bg-card/90 px-4 py-2 rounded-lg shadow">
-                      Trend analytics unlock on Pro — $4.99/month
+                      Trend analytics unlock on Pro — $3.99/month
                     </p>
                   </div>
                 </div>
