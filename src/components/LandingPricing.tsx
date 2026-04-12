@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Star } from "lucide-react";
 
 type BillingInterval = "monthly" | "annual";
 
@@ -14,6 +14,7 @@ const tiers = [
     annualTotal: null,
     savingsLabel: null,
     highlight: false,
+    mostPopular: false,
     cta: "Get Started Free",
     href: null,
     features: [
@@ -28,7 +29,8 @@ const tiers = [
     annualMonthlyPrice: "$3.17",
     annualTotal: "$38",
     savingsLabel: "21%",
-    highlight: false,
+    highlight: true,
+    mostPopular: true,
     cta: "Upgrade to Pro →",
     href: "https://buy.stripe.com/7sY5kE0xm5z08HK5f93ZK0c",
     features: [
@@ -44,7 +46,8 @@ const tiers = [
     annualMonthlyPrice: "$6.42",
     annualTotal: "$77",
     savingsLabel: "20%",
-    highlight: true,
+    highlight: false,
+    mostPopular: false,
     cta: "Upgrade to Premium →",
     href: "https://buy.stripe.com/3cIfZicg43qS1fi3713ZK0d",
     features: [
@@ -104,14 +107,15 @@ export function LandingPricing() {
             <Card
               key={tier.name}
               className={`relative flex flex-col ${
-                tier.highlight
-                  ? "border-primary shadow-lg ring-2 ring-primary/20"
+                tier.mostPopular
+                  ? "border-2 shadow-lg ring-2 ring-primary/20"
                   : "border-border"
               }`}
+              style={tier.mostPopular ? { borderColor: '#0d3b5e' } : undefined}
             >
-              {tier.highlight && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
-                  Most Popular
+              {tier.mostPopular && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-3 py-1 rounded-full text-white flex items-center gap-1" style={{ background: '#0d3b5e' }}>
+                  <Star className="h-3 w-3" /> Most Popular
                 </div>
               )}
               <CardHeader className="pb-2">
@@ -141,8 +145,8 @@ export function LandingPricing() {
                 </ul>
                 <Button
                   onClick={() => tier.href ? window.open(tier.href, '_blank') : navigate("/auth")}
-                  variant={tier.highlight ? "default" : "outline"}
-                  className={tier.highlight ? "btn-gradient w-full" : "w-full"}
+                  variant={tier.mostPopular ? "default" : "outline"}
+                  className={tier.mostPopular ? "btn-gradient w-full" : "w-full"}
                 >
                   {tier.cta}
                 </Button>

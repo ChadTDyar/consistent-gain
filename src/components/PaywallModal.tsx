@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Crown, Zap } from "lucide-react";
 import { type PlanTier } from "@/lib/plans";
+import { PLANS } from "@/lib/plans";
 
 interface PaywallModalProps {
   open: boolean;
@@ -14,29 +15,30 @@ interface PaywallModalProps {
 export default function PaywallModal({ open, onOpenChange, feature, requiredPlan = 'plus' }: PaywallModalProps) {
   const navigate = useNavigate();
 
-  const planName = requiredPlan === 'pro' ? 'Pro' : 'Plus';
+  const planName = requiredPlan === 'pro' ? 'Premium' : 'Pro';
   const Icon = requiredPlan === 'pro' ? Crown : Zap;
+  const price = requiredPlan === 'pro' ? PLANS.pro.price : PLANS.plus.price;
 
   const messages: Record<string, { title: string; description: string }> = {
     goals: {
       title: "Goal Limit Reached",
-      description: "You've reached the free tier limit of 3 goals. Upgrade to Plus for unlimited goals.",
+      description: `You've reached the free tier limit of 3 goals. Upgrade to Pro for unlimited goals.`,
     },
     streak_repair: {
-      title: "Streak Repair is a Plus Feature",
-      description: "Upgrade to Plus to repair missed days without losing your progress.",
+      title: "Streak Repair is a Pro Feature",
+      description: "Upgrade to Pro to repair missed days without losing your progress.",
     },
     ai_coach: {
-      title: "AI Coach is a Pro Feature",
-      description: "Upgrade to Pro to get personalized fitness suggestions based on your patterns.",
+      title: "AI Coach is a Premium Feature",
+      description: `Upgrade to Premium ($${PLANS.pro.price}/month) to get personalized fitness suggestions based on your patterns.`,
     },
     history: {
-      title: "Extended History",
-      description: `Upgrade to ${planName} to see more progress history.`,
+      title: `Upgrade to ${planName}`,
+      description: `Upgrade to ${planName} ($${price}/month) to see more progress history.`,
     },
     default: {
       title: `Upgrade to ${planName}`,
-      description: `This feature requires the ${planName} plan.`,
+      description: `This feature requires the ${planName} plan ($${price}/month).`,
     },
   };
 
@@ -60,7 +62,7 @@ export default function PaywallModal({ open, onOpenChange, feature, requiredPlan
             Maybe Later
           </Button>
           <Button onClick={() => { onOpenChange(false); navigate("/pricing"); }} className="flex-1">
-            Upgrade
+            {feature === 'ai_coach' ? 'Upgrade to Premium →' : `Upgrade to ${planName} →`}
           </Button>
         </div>
       </DialogContent>

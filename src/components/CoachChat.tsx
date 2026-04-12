@@ -39,10 +39,11 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  const [messageCount, setMessageCount] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/coach-chat`;
+
+  const isPremiumUser = userContext?.plan === 'pro' || userContext?.isPremium;
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -55,25 +56,10 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUserId(user.id);
-        
-        // Load message count for today
-        if (!userContext?.isPremium) {
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
-          
-          const { count } = await supabase
-            .from("chat_messages")
-            .select("*", { count: "exact", head: true })
-            .eq("user_id", user.id)
-            .eq("role", "user")
-            .gte("created_at", today.toISOString());
-          
-          setMessageCount(count || 0);
-        }
       }
     };
     loadUserId();
-  }, [userContext?.isPremium]);
+  }, []);
 
   const streamChat = async (userMessage: string) => {
     const newMessages = [...messages, { role: "user" as const, content: userMessage }];
@@ -81,7 +67,6 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
     setIsLoading(true);
 
     try {
-      // Get the current session token
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast.error("Authentication required", {
@@ -140,7 +125,6 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
       let streamDone = false;
       let assistantContent = "";
 
-      // Add empty assistant message that we'll update
       setMessages(prev => [...prev, { role: "assistant", content: "" }]);
 
       while (!streamDone) {
@@ -184,18 +168,12 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
         }
       }
 
-      // Save assistant message
       if (userId && assistantContent) {
         await supabase.from("chat_messages").insert({
           user_id: userId,
           message: assistantContent,
           role: "assistant"
         });
-      }
-
-      // Update message count
-      if (!userContext?.isPremium) {
-        setMessageCount(prev => prev + 1);
       }
     } catch (error) {
       console.error("Chat error:", error);
@@ -208,7 +186,6 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
-    // Validate message
     const validationResult = chatMessageSchema.safeParse({
       message: input.trim()
     });
@@ -225,12 +202,10 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
     await streamChat(userMessage);
   };
 
-  const remainingMessages = !userContext?.isPremium ? Math.max(0, 10 - messageCount) : null;
-
   if (fullPage) {
+    // Full page Coach — only for Premium users (gate handled in Coach.tsx)
     return (
       <div className="flex flex-col h-full bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
-        {/* Header */}
         <div className="p-4 border-b bg-gradient-primary">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
@@ -240,16 +215,9 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
               <h3 className="font-bold text-white">Coach</h3>
               <p className="text-xs text-white/80">Your AI Habit Companion</p>
             </div>
-            {remainingMessages !== null && (
-              <div className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">
-                <Sparkles className="h-3 w-3 text-white" />
-                <span className="text-xs text-white font-semibold">{remainingMessages} left</span>
-              </div>
-            )}
           </div>
         </div>
 
-        {/* Messages */}
         <ScrollArea className="flex-1 p-4" ref={scrollRef}>
           <div className="space-y-4">
             {messages.map((msg, idx) => (
@@ -271,7 +239,6 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
           </div>
         </ScrollArea>
 
-        {/* Input */}
         <div className="p-4 border-t">
           <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
             <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Coach anything..." disabled={isLoading} className="flex-1" />
@@ -290,9 +257,7 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
       {/* Floating button */}
       <Button
         onClick={() => {
-          const plan = userContext?.plan || 'free';
-          if (plan !== 'pro' && plan !== 'premium' && !userContext?.isPremium) {
-            // Free and Pro users get the upgrade wall
+          if (!isPremiumUser) {
             if (onUpgradeWall) { onUpgradeWall(); return; }
           }
           if (!isOpen) analytics.coachChatOpened();
@@ -307,7 +272,6 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
       {/* Chat window */}
       {isOpen && (
         <div className="fixed bottom-36 right-6 w-[380px] h-[500px] bg-card rounded-2xl shadow-2xl border-2 border-primary/20 flex flex-col z-50 slide-up">
-          {/* Header */}
           <div className="p-4 border-b bg-gradient-primary rounded-t-2xl">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
@@ -317,16 +281,9 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
                 <h3 className="font-bold text-white">Coach</h3>
                 <p className="text-xs text-white/80">Your AI Habit Companion</p>
               </div>
-              {remainingMessages !== null && (
-                <div className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">
-                  <Sparkles className="h-3 w-3 text-white" />
-                  <span className="text-xs text-white font-semibold">{remainingMessages} left</span>
-                </div>
-              )}
             </div>
           </div>
 
-          {/* Messages */}
           <ScrollArea className="flex-1 p-4" ref={scrollRef}>
             <div className="space-y-4">
               {messages.map((msg, idx) => (
@@ -348,7 +305,6 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
             </div>
           </ScrollArea>
 
-          {/* Input */}
           <div className="p-4 border-t">
             <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
               <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Coach anything..." disabled={isLoading} className="flex-1" />
