@@ -7,6 +7,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { CookieConsent } from "@/components/CookieConsent";
 import { BottomTabBar } from "@/components/BottomTabBar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { AppLayout } from "@/components/AppLayout";
 import { useEffect, lazy, Suspense } from "react";
 import { notificationService } from "@/services/notifications.service";
 import { usePostHogIdentify } from "@/hooks/usePostHogIdentify";
@@ -78,6 +79,8 @@ const App = () => {
             v7_relativeSplatPath: true,
           }}
         >
+          <AppSidebar />
+          <AppLayout>
           <Suspense fallback={<PageFallback />}>
             <Routes>
               <Route path="/" element={<Index />} />
@@ -118,7 +121,7 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
-          <AppSidebar />
+          </AppLayout>
           <BottomTabBar />
         </BrowserRouter>
       </TooltipProvider>
