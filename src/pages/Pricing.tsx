@@ -78,7 +78,7 @@ export default function Pricing() {
       answer: "Life happens. Pro and Premium members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
     },
     {
-      title: "How does the AI Coach work?",
+      question: "How does the AI Coach work?",
       answer: "Premium members get personalized suggestions based on their check-in patterns, habit types, and consistency data. It learns what works for you and adjusts recommendations to your schedule.",
     },
     {
