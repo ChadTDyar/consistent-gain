@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { CookieConsent } from "@/components/CookieConsent";
 import { BottomTabBar } from "@/components/BottomTabBar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { useEffect, lazy, Suspense } from "react";
 import { notificationService } from "@/services/notifications.service";
 import { usePostHogIdentify } from "@/hooks/usePostHogIdentify";
@@ -117,6 +118,7 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
+          <AppSidebar />
           <BottomTabBar />
         </BrowserRouter>
       </TooltipProvider>

@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Calendar, Brain, Activity, MessageCircle, User, TrendingUp, CreditCard, Menu } from "lucide-react";
+import { Calendar, Activity, MessageCircle, TrendingUp, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const tabs = [
@@ -14,8 +14,8 @@ export function BottomTabBar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Only show on authenticated app pages
-  const showOnPaths = ["/dashboard", "/library", "/insights", "/track", "/coach", "/settings", "/goal", "/progress", "/account", "/pricing"];
+  // Only show on authenticated app pages, hide on desktop (md+)
+  const showOnPaths = ["/dashboard", "/library", "/insights", "/track", "/coach", "/settings", "/goal", "/progress", "/account", "/pricing", "/profile"];
   const shouldShow = showOnPaths.some(p => location.pathname.startsWith(p));
   if (!shouldShow) return null;
 

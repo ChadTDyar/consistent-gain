@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BodyMapPainReport } from "@/components/BodyMapPainReport";
-import { ProgressTab } from "@/components/ProgressTab";
+import { ProgressTab as ProgressTabTrack } from "@/components/ProgressTab";
 import { DailyContext } from "@/components/DailyContext";
 import { SEO } from "@/components/SEO";
+import { Button } from "@/components/ui/button";
+import { BarChart3 } from "lucide-react";
 
 export default function Track() {
   const navigate = useNavigate();
@@ -43,7 +45,7 @@ export default function Track() {
             </TabsContent>
 
             <TabsContent value="progress">
-              <ProgressTab />
+              <ProgressTabTrack />
             </TabsContent>
           </Tabs>
         </div>

@@ -362,10 +362,10 @@ export default function Settings() {
                       )}
                     </p>
                     <p className="text-base text-muted-foreground mt-1">
-                      {profile?.plan === 'pro' 
+                    {profile?.plan === 'pro' 
                         ? "You have access to all features including AI Coach"
                         : profile?.plan === 'plus'
-                        ? "You have access to unlimited goals & streak repair"
+                        ? "You have access to unlimited goals & Streak Repair"
                         : "Upgrade to unlock more features"}
                     </p>
                   </div>
