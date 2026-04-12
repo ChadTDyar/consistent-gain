@@ -44,7 +44,7 @@ const tiers = [
   {
     name: "Premium",
     monthlyPrice: "$7.99",
-    annualMonthlyPrice: "$6.42",
+    annualMonthlyPrice: "$6.00",
     annualTotal: "$72",
     savingsLabel: "20%",
     highlight: false,
