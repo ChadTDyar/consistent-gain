@@ -1,13 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Calendar, Brain, Activity, MessageCircle, User } from "lucide-react";
+import { Calendar, Brain, Activity, MessageCircle, User, TrendingUp, CreditCard, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const tabs = [
-  { path: "/dashboard", label: "Today", icon: Calendar },
-  { path: "/insights", label: "Insights", icon: Brain },
+  { path: "/dashboard", label: "Habits", icon: Calendar },
+  { path: "/insights", label: "Trends", icon: TrendingUp },
   { path: "/track", label: "Track", icon: Activity },
   { path: "/coach", label: "Coach", icon: MessageCircle },
-  { path: "/settings", label: "Profile", icon: User },
+  { path: "/settings", label: "Menu", icon: Menu },
 ];
 
 export function BottomTabBar() {
@@ -15,13 +15,13 @@ export function BottomTabBar() {
   const navigate = useNavigate();
 
   // Only show on authenticated app pages
-  const showOnPaths = ["/dashboard", "/library", "/insights", "/track", "/coach", "/settings", "/goal", "/progress", "/account"];
+  const showOnPaths = ["/dashboard", "/library", "/insights", "/track", "/coach", "/settings", "/goal", "/progress", "/account", "/pricing"];
   const shouldShow = showOnPaths.some(p => location.pathname.startsWith(p));
   if (!shouldShow) return null;
 
   return (
     <nav 
-      className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t border-border safe-area-bottom"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t border-border safe-area-bottom md:hidden"
       aria-label="Main navigation"
     >
       <div className="flex items-center justify-around max-w-lg mx-auto">
@@ -40,6 +40,7 @@ export function BottomTabBar() {
                   ? "text-primary" 
                   : "text-muted-foreground hover:text-foreground"
               )}
+              style={isActive ? { color: '#0d3b5e' } : undefined}
               aria-label={tab.label}
               aria-current={isActive ? "page" : undefined}
             >
