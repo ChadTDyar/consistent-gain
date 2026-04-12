@@ -175,13 +175,13 @@ export default function Pricing() {
             </Card>
 
             {/* Pro Plan */}
-            <Card className="border-2 shadow-xl card-lift-heavy relative overflow-hidden bg-card" style={{ borderColor: '#0d3b5e' }}>
-              <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
+            <Card className="border-2 shadow-xl card-lift-heavy relative bg-card" style={{ borderColor: '#0d3b5e' }}>
+              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
                 <span className="inline-flex items-center gap-1 px-4 py-1 rounded-full text-xs font-bold text-white" style={{ background: '#0d3b5e' }}>
                   <Star className="h-3 w-3" /> Most Popular
                 </span>
               </div>
-              <CardHeader className="pb-6 pt-8">
+              <CardHeader className="pb-6 pt-10">
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
                   Pro <span className="badge-premium text-xs px-2 py-0.5">PRO</span>
                 </CardTitle>
@@ -233,11 +233,11 @@ export default function Pricing() {
             </Card>
 
             {/* Pro Plan */}
-            <Card className="border-2 border-secondary shadow-xl card-lift-heavy relative overflow-hidden">
-              <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-secondary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-secondary)' }}>
+            <Card className="border-2 border-secondary shadow-xl card-lift-heavy relative">
+              <div className="absolute -top-3.5 right-4 z-10 px-3 py-1 rounded-full text-xs font-semibold text-secondary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-secondary)' }}>
                 <Crown className="h-3 w-3" /> Full Access
               </div>
-              <CardHeader className="pb-6 pt-8">
+              <CardHeader className="pb-6 pt-10">
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
                   Premium <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--gradient-secondary)', color: 'white' }}>PREMIUM</span>
                 </CardTitle>
