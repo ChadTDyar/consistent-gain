@@ -144,7 +144,7 @@ export default function Pricing() {
             <Card className="border-none shadow-md card-lift">
               <CardHeader className="pb-6">
                 <CardTitle className="text-2xl font-display font-bold text-foreground">Free</CardTitle>
-                <CardDescription className="text-base">For people ready to start. Track up to 3 habits, check in daily, and build a 7-day streak. A real habit tracker, not a trial.</CardDescription>
+                <CardDescription className="text-base">For people who want to start without the pressure of being consistent yet.</CardDescription>
                 <div className="mt-6">
                   <span className="text-5xl font-display font-bold text-foreground">$0</span>
                   <span className="text-lg text-muted-foreground">/month</span>
@@ -183,7 +183,7 @@ export default function Pricing() {
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
                   Pro <span className="badge-premium text-xs px-2 py-0.5">PRO</span>
                 </CardTitle>
-                <CardDescription className="text-base">For people who are serious about staying consistent. Unlimited habits, Streak Repair so a missed day does not derail you, 30 days of history, and a weekly progress email that keeps you honest.</CardDescription>
+                <CardDescription className="text-base">For people who are showing up — and want to stay that way even when life gets in the way.</CardDescription>
                 <div className="mt-6">
                   <span className="text-5xl font-display font-bold text-primary">${getPrice('plus')}</span>
                   <span className="text-lg text-muted-foreground">/mo</span>
@@ -210,6 +210,15 @@ export default function Pricing() {
                     </li>
                   ))}
                 </ul>
+
+                {/* Streak Repair product moment */}
+                <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-1">
+                  <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">What Streak Repair looks like</p>
+                  <p className="text-xs text-foreground leading-relaxed">
+                    "You missed Tuesday. Your streak is safe until Thursday. 48 hours to pick it back up."
+                  </p>
+                </div>
+
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
                   size="lg"
@@ -230,7 +239,7 @@ export default function Pricing() {
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
                   Premium <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--gradient-secondary)', color: 'white' }}>PREMIUM</span>
                 </CardTitle>
-                <CardDescription className="text-base">For people who want the full picture and a coach to go with it. Everything in Pro plus AI Coach that adapts to your actual schedule, unlimited history, and CSV export when you want your data.</CardDescription>
+                <CardDescription className="text-base">For people who want coaching that adapts to their actual schedule, not an ideal one.</CardDescription>
                 <div className="mt-6">
                   <span className="text-5xl font-display font-bold text-secondary">${getPrice('pro')}</span>
                   <span className="text-lg text-muted-foreground">/mo</span>
