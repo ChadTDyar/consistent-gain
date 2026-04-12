@@ -1,6 +1,5 @@
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface Props {
   headline: string;
@@ -9,6 +8,7 @@ interface Props {
   accentColor?: string;
   onUpgrade: () => void;
   onDismiss: () => void;
+  coachPreview?: boolean;
 }
 
 export function UpgradeWall({
@@ -18,6 +18,7 @@ export function UpgradeWall({
   accentColor = "#0d3b5e",
   onUpgrade,
   onDismiss,
+  coachPreview = false,
 }: Props) {
   return createPortal(
     <div
@@ -45,6 +46,19 @@ export function UpgradeWall({
 
         <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
           <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+
+          {coachPreview && (
+            <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-2">
+              <p className="text-xs text-foreground leading-relaxed">
+                <span className="font-semibold text-primary">Coach:</span>{" "}
+                "You've skipped your morning stretch three Mondays in a row. What's different about Mondays for you?"
+              </p>
+              <div className="text-xs text-muted-foreground leading-relaxed blur-sm select-none">
+                User response and coach follow-up...
+              </div>
+            </div>
+          )}
+
           <button
             onClick={onUpgrade}
             className="block w-full py-3 rounded-lg font-bold text-sm text-white cursor-pointer border-none"

@@ -22,13 +22,13 @@ export const MOMENTUM = {
   },
   walls: {
     habit_limit: {
-      headline: "Free plan includes 3 habits.",
-      body: "Pro gives you unlimited habits, Streak Repair so a missed day does not erase your progress, 30 days of history, and a weekly progress email.",
+      headline: "You've built your first 3 habits.",
+      body: "Pro gives you unlimited habits, Streak Repair so a missed day doesn't end your progress, 30 days of history, and a weekly email that shows you what's actually working.",
       cta: "Upgrade to Pro →",
     },
     ai_coach: {
-      headline: "AI Coach is a Premium feature.",
-      body: "AI Coach gives you personalized habit guidance that adapts to your schedule, your energy, and real life — not a generic plan that assumes you have the same day every day.",
+      headline: "AI Coach looks at your patterns and asks the right questions.",
+      body: "When you've missed three Mondays in a row, Coach notices. It asks: \"What happens on Mondays?\" — and adjusts your plan around your actual life, not a generic schedule.",
       cta: "Upgrade to Premium →",
     },
     history_limit: {
@@ -38,7 +38,7 @@ export const MOMENTUM = {
     },
     partner_lock: {
       headline: "Partner accountability is a Pro feature.",
-      body: "Your partner sees your weekly completion. You see theirs. The social pressure is real. The results are better.",
+      body: "Your partner sees your weekly completion rate. You see theirs. The social pressure is quiet, consistent, and real. Pro gives you one partner — enough to change the dynamic entirely.",
       cta: "Upgrade to Pro →",
     },
     analytics_lock: {

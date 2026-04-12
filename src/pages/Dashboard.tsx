@@ -29,6 +29,7 @@ import { analytics } from "@/lib/analytics";
 import { UpgradeWall } from "@/components/UpgradeWall";
 import { MOMENTUM } from "@/constants/value-language";
 import { Users, BarChart3 } from "lucide-react";
+import { OriginStoryCard } from "@/components/OriginStoryCard";
 
 interface Profile {
   id: string;
@@ -315,6 +316,8 @@ export default function Dashboard() {
           </p>
         </div>
 
+        {streak > 0 && <OriginStoryCard />}
+
         <OnboardingChecklist
           hasGoals={goals.length > 0}
           hasCheckin={streak > 0}
@@ -517,6 +520,7 @@ export default function Dashboard() {
           body={MOMENTUM.walls[upgradeWallType].body}
           cta={MOMENTUM.walls[upgradeWallType].cta}
           accentColor="#0d3b5e"
+          coachPreview={upgradeWallType === 'ai_coach'}
           onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
           onDismiss={() => setShowUpgradeWall(false)}
         />
