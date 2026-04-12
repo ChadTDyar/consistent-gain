@@ -60,17 +60,27 @@ export default function Terms() {
             
             <h3 className="text-xl font-semibold mb-2">Free Plan</h3>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground mb-4">
-              <li>Up to 3 active goals</li>
-              <li>Basic streak tracking</li>
-              <li>Activity logging</li>
+              <li>Up to 3 active habits</li>
+              <li>7-day streak tracking</li>
+              <li>Daily check-ins</li>
+              <li>Basic progress graphs</li>
             </ul>
 
-            <h3 className="text-xl font-semibold mb-2">Premium Plan ($9.99/month or $90/year)</h3>
+            <h3 className="text-xl font-semibold mb-2">Pro Plan ($3.99/month or $38/year)</h3>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground mb-4">
-              <li>Unlimited goals</li>
+              <li>Unlimited habits</li>
+              <li>Streak Repair (48-hour grace period)</li>
+              <li>30-day history</li>
+              <li>Weekly progress email</li>
+              <li>Accountability partner</li>
+            </ul>
+
+            <h3 className="text-xl font-semibold mb-2">Premium Plan ($7.99/month or $77/year)</h3>
+            <ul className="list-disc pl-6 space-y-2 text-muted-foreground mb-4">
+              <li>Everything in Pro</li>
               <li>AI Coach access</li>
-              <li>Priority support</li>
-              <li>Advanced analytics (coming soon)</li>
+              <li>Unlimited history</li>
+              <li>CSV data export</li>
             </ul>
 
             <p className="text-muted-foreground leading-relaxed">
