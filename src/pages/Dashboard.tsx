@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Plus, LogOut, Settings as SettingsIcon, TrendingUp, UserCircle, Lock } from "lucide-react";
+import { Loader2, Plus, LogOut, Settings as SettingsIcon, TrendingUp, UserCircle, Lock, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { ProgressTab } from "@/components/ProgressTab";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -363,31 +363,56 @@ export default function Dashboard() {
 
             {goals.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 px-4">
-            <div className="max-w-md text-center space-y-6">
+            <div className="max-w-md w-full text-center space-y-6">
               <div className="mx-auto h-24 w-24 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
-                <Plus className="h-12 w-12 text-white" />
+                <CheckCircle className="h-12 w-12 text-white" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-3xl font-display font-bold text-foreground">
-                  Ready to start your journey?
+                <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground">
+                  What's one thing you want to do more often?
                 </h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  Create your first fitness goal and start building momentum. Small consistent steps lead to lasting change.
-                </p>
               </div>
-              <Button 
-                onClick={handleAddGoal} 
-                size="lg" 
-                className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-lg h-14 px-10 btn-gradient"
-              >
-                <Plus className="mr-2 h-6 w-6" />
-                Create Your First Goal
-              </Button>
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  placeholder="Walk in the morning, stretch, lift 3x a week..."
+                  className="w-full h-12 px-4 rounded-lg border border-border bg-background text-base focus:outline-none focus:ring-2 focus:ring-primary"
+                  id="first-habit-input"
+                  onKeyDown={async (e) => {
+                    if (e.key === "Enter") {
+                      const val = (e.target as HTMLInputElement).value.trim();
+                      if (!val) return;
+                      const { data: { user } } = await supabase.auth.getUser();
+                      if (!user) return;
+                      await supabase.from("goals").insert({ user_id: user.id, title: val, target_days_per_week: 3 });
+                      toast.success("Let's build momentum.");
+                      loadGoals();
+                    }
+                  }}
+                />
+                <Button 
+                  onClick={async () => {
+                    const input = document.getElementById("first-habit-input") as HTMLInputElement;
+                    const val = input?.value.trim();
+                    if (!val) return;
+                    const { data: { user } } = await supabase.auth.getUser();
+                    if (!user) return;
+                    await supabase.from("goals").insert({ user_id: user.id, title: val, target_days_per_week: 3 });
+                    toast.success("Let's build momentum.");
+                    loadGoals();
+                  }}
+                  size="lg" 
+                  className="w-full h-12 text-base font-semibold text-white"
+                  style={{ background: '#0d3b5e' }}
+                >
+                  Start With This
+                </Button>
+              </div>
             </div>
           </div>
         ) : (
           <>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-4">
               {goals.map((goal) => (
                 <GoalCard 
                   key={goal.id} 
@@ -396,16 +421,43 @@ export default function Dashboard() {
                   onEdit={handleEditGoal}
                 />
               ))}
+
+              {/* Locked 4th habit slot for free users */}
+              {plan === 'free' && goals.length >= 3 && (
+                <div
+                  className="rounded-xl border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-[200px]"
+                  onClick={() => { setUpgradeWallType('habit_limit'); setShowUpgradeWall(true); }}
+                >
+                  <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                    <Plus className="h-5 w-5" />
+                    <span className="font-semibold text-sm">Add Habit</span>
+                    <span className="text-base">🔒</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">Pro</span>
+                </div>
+              )}
             </div>
-            <Button 
-              onClick={handleAddGoal} 
-              size="lg"
-              className="w-full md:w-auto shadow-sm hover:shadow-md"
-            >
-              <Plus className="mr-2 h-5 w-5" />
-              Add New Goal
-              {!canAddGoal() && <Lock className="ml-2 h-4 w-4" />}
-            </Button>
+
+            {/* Habit slot counter for free users */}
+            {plan === 'free' && goals.length >= 3 && (
+              <p className="text-[0.8rem] text-muted-foreground mb-4">
+                3 of 3 habit slots used —{" "}
+                <a href="/pricing" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }} className="text-primary hover:underline font-medium">
+                  Pro unlocks unlimited
+                </a>
+              </p>
+            )}
+
+            {plan !== 'free' || goals.length < 3 ? (
+              <Button 
+                onClick={handleAddGoal} 
+                size="lg"
+                className="w-full md:w-auto shadow-sm hover:shadow-md"
+              >
+                <Plus className="mr-2 h-5 w-5" />
+                Add New Goal
+              </Button>
+            ) : null}
           </>
         )}
 
@@ -521,6 +573,7 @@ export default function Dashboard() {
           cta={MOMENTUM.walls[upgradeWallType].cta}
           accentColor="#0d3b5e"
           coachPreview={upgradeWallType === 'ai_coach'}
+          streakRepairPreview={upgradeWallType === 'habit_limit'}
           onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
           onDismiss={() => setShowUpgradeWall(false)}
         />
