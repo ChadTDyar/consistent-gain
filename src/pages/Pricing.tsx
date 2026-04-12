@@ -175,9 +175,11 @@ export default function Pricing() {
             </Card>
 
             {/* Pro Plan */}
-            <Card className="border-2 border-primary shadow-xl card-lift-heavy relative overflow-hidden" style={{ background: 'var(--gradient-card)' }}>
-              <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-primary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-primary)' }}>
-                <Star className="h-3 w-3" /> Most Popular
+            <Card className="border-2 shadow-xl card-lift-heavy relative overflow-hidden bg-card" style={{ borderColor: '#0d3b5e' }}>
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10">
+                <span className="inline-flex items-center gap-1 px-4 py-1 rounded-full text-xs font-bold text-white" style={{ background: '#0d3b5e' }}>
+                  <Star className="h-3 w-3" /> Most Popular
+                </span>
               </div>
               <CardHeader className="pb-6 pt-8">
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">

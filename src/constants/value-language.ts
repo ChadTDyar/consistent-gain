@@ -38,12 +38,12 @@ export const MOMENTUM = {
     },
     partner_lock: {
       headline: "Partner accountability is a Pro feature.",
-      body: "Your partner sees your weekly completion rate. You see theirs. The social pressure is quiet, consistent, and real. Pro gives you one partner — enough to change the dynamic entirely.",
+      body: "Your partner sees your weekly completion rate. You see theirs. The social pressure is quiet, consistent, and real.",
       cta: "Upgrade to Pro →",
     },
     analytics_lock: {
       headline: "Trend analytics are a Pro feature.",
-      body: "See which days you succeed, which habits correlate, and where you actually lose momentum.",
+      body: "30 days of history, weekly patterns, and a progress email every Monday. See what's actually working.",
       cta: "Upgrade to Pro →",
     },
   },
