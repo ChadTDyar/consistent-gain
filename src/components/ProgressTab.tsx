@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Flame, Loader2, Lock } from "lucide-react";
+import { Flame, Loader2, Lock, BarChart3 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { subDays, startOfWeek, endOfWeek, isWithinInterval, format } from "date-fns";
 import { type PlanTier, getHistoryDays } from "@/lib/plans";
@@ -129,6 +129,25 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const hasData = chartData.some(d => d.rating !== null) || weekStreak > 0;
+
+  if (!hasData) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 px-4 text-center space-y-4">
+        <div className="h-20 w-20 rounded-full border-4 border-muted flex items-center justify-center">
+          <BarChart3 className="h-10 w-10 text-muted-foreground" />
+        </div>
+        <h3 className="text-xl font-display font-semibold text-foreground">No progress data yet.</h3>
+        <p className="text-sm text-muted-foreground max-w-sm">
+          Log your first habit check-in and your progress will appear here.
+        </p>
+        <Button onClick={() => navigate("/dashboard")} className="font-semibold" style={{ background: '#0d3b5e' }}>
+          Log Today's Check-In
+        </Button>
       </div>
     );
   }

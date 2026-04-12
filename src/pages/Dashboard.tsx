@@ -22,7 +22,8 @@ import { DailyContext } from "@/components/DailyContext";
 import { StreakRepair } from "@/components/StreakRepair";
 import PaywallModal from "@/components/PaywallModal";
 import momentumLogo from "@/assets/momentum-logo.png";
-import { type PlanTier, canAccessFeature, getGoalLimit } from "@/lib/plans";
+import { type PlanTier, canAccessFeature, getGoalLimit, PLANS } from "@/lib/plans";
+import { StreakRepairIntro } from "@/components/StreakRepairIntro";
 import { Badge } from "@/components/ui/badge";
 import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 import { analytics } from "@/lib/analytics";
@@ -257,7 +258,7 @@ export default function Dashboard() {
               variant={plan === 'free' ? 'outline' : 'secondary'} 
               className={`text-xs font-bold uppercase ${
                 plan === 'pro' ? 'bg-secondary text-secondary-foreground' : 
-                plan === 'plus' ? 'badge-premium' : ''
+                plan === 'plus' ? 'badge-premium' : '' 
               }`}
             >
               {plan === 'free' ? 'Free' : plan === 'plus' ? 'Pro' : 'Premium'}
@@ -317,6 +318,7 @@ export default function Dashboard() {
         </div>
 
         {streak > 0 && <OriginStoryCard />}
+        {streak > 0 && <StreakRepairIntro />}
 
         <OnboardingChecklist
           hasGoals={goals.length > 0}
@@ -501,8 +503,8 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <p className="text-sm font-semibold text-foreground bg-card/90 px-4 py-2 rounded-lg shadow">
-                      Trend analytics unlock on Pro — $3.99/month
+                  <p className="text-sm font-semibold text-foreground bg-card/90 px-4 py-2 rounded-lg shadow">
+                       Trend analytics unlock on Pro — ${PLANS.plus.price}/month
                     </p>
                   </div>
                 </div>

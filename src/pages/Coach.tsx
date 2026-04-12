@@ -2,15 +2,21 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { CoachChat } from "@/components/CoachChat";
+import { UpgradeWall } from "@/components/UpgradeWall";
+import { MOMENTUM } from "@/constants/value-language";
 import { calculateStreak, getUserActivityLogs, getDaysSinceLastActivity } from "@/lib/streakUtils";
 import { SEO } from "@/components/SEO";
+import { type PlanTier } from "@/lib/plans";
+import { Lock } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function Coach() {
   const navigate = useNavigate();
   const [streak, setStreak] = useState(0);
   const [goalsCount, setGoalsCount] = useState(0);
   const [daysSinceActivity, setDaysSinceActivity] = useState(0);
-  const [isPremium, setIsPremium] = useState(false);
+  const [plan, setPlan] = useState<PlanTier>("free");
+  const [showUpgradeWall, setShowUpgradeWall] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -19,28 +25,27 @@ export default function Coach() {
       
       const user = session.user;
       
-      // Load profile
       const { data: profile } = await supabase
         .from("profiles")
-        .select("is_premium")
+        .select("is_premium, plan")
         .eq("id", user.id)
         .single();
-      setIsPremium(profile?.is_premium ?? false);
+      setPlan((profile?.plan || 'free') as PlanTier);
 
-      // Load goals count
       const { count } = await supabase
         .from("goals")
         .select("id", { count: "exact", head: true })
         .eq("user_id", user.id);
       setGoalsCount(count ?? 0);
 
-      // Load streak
       const logs = await getUserActivityLogs();
       setStreak(calculateStreak(logs));
       setDaysSinceActivity(getDaysSinceLastActivity(logs));
     };
     init();
   }, [navigate]);
+
+  const isPremium = plan === 'pro';
 
   return (
     <>
@@ -52,19 +57,70 @@ export default function Coach() {
         </header>
 
         <div className="container mx-auto px-4 py-4 max-w-2xl h-[calc(100vh-180px)]">
-          <CoachChat
-            userContext={{
-              streak,
-              goalsCount,
-              lastActivity: daysSinceActivity === 0 ? "Active today" : 
-                           daysSinceActivity === 1 ? "Active yesterday" : 
-                           `${daysSinceActivity} days since last activity`,
-              isPremium,
-            }}
-            fullPage
-          />
+          {isPremium ? (
+            <CoachChat
+              userContext={{
+                streak,
+                goalsCount,
+                lastActivity: daysSinceActivity === 0 ? "Active today" : 
+                             daysSinceActivity === 1 ? "Active yesterday" : 
+                             `${daysSinceActivity} days since last activity`,
+                isPremium: true,
+                plan: 'pro',
+              }}
+              fullPage
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full space-y-6 px-4">
+              {/* Coach preview */}
+              <div className="max-w-md w-full space-y-4">
+                <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
+                  What AI Coach does
+                </p>
+                <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3">
+                  <p className="text-sm text-foreground leading-relaxed">
+                    <span className="font-semibold text-primary">Coach:</span>{" "}
+                    "You've skipped your morning stretch three Mondays in a row. What happens on Mondays?"
+                  </p>
+                  <div className="text-sm text-muted-foreground leading-relaxed blur-sm select-none">
+                    User response and coach follow-up...
+                  </div>
+                </div>
+
+                <div className="text-center space-y-3 pt-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <Lock className="h-5 w-5 text-muted-foreground" />
+                    <h3 className="font-semibold text-lg text-foreground">AI Coach is a Premium feature.</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    When you miss the same day three weeks running, Coach notices — and adjusts your plan around your actual life, not an ideal one.
+                  </p>
+                  <Button
+                    onClick={() => navigate("/pricing")}
+                    className="w-full font-bold text-sm text-white"
+                    style={{ background: '#0d3b5e' }}
+                  >
+                    🔒 Upgrade to Premium →
+                  </Button>
+                  <p className="text-xs text-muted-foreground">Cancel anytime.</p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
+
+      {showUpgradeWall && (
+        <UpgradeWall
+          headline={MOMENTUM.walls.ai_coach.headline}
+          body={MOMENTUM.walls.ai_coach.body}
+          cta={MOMENTUM.walls.ai_coach.cta}
+          accentColor="#0d3b5e"
+          coachPreview
+          onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
+          onDismiss={() => setShowUpgradeWall(false)}
+        />
+      )}
     </>
   );
 }

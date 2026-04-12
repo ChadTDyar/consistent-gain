@@ -85,7 +85,7 @@ export default function HowToStayConsistentWorkingOut() {
               {[
                 { step: "1", title: "Choose 1-3 small goals", body: "Not \"get ripped.\" Try \"move for 15 minutes\" or \"stretch after work.\" Momentum's free tier tracks up to 3 goals - enough to build a foundation." },
                 { step: "2", title: "Check in daily, no matter what", body: "Even if you didn't work out. Even on rest days. The habit is the check-in. It takes 10 seconds and it keeps the chain alive." },
-                { step: "3", title: "Never miss twice", body: "You will miss days. That's life. The rule is simple: never miss two in a row. Plus members can repair a missed day within 48 hours." },
+                { step: "3", title: "Never miss twice", body: "You will miss days. That's life. The rule is simple: never miss two in a row. Pro members can repair a missed day within 48 hours." },
               ].map(({ step, title, body }) => (
                 <li key={step} className="flex gap-4">
                   <span className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">{step}</span>

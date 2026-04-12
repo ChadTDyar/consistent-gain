@@ -79,7 +79,7 @@ export default function Pricing() {
     },
     {
       question: "How does the AI Coach work?",
-      answer: "Pro members get personalized suggestions based on their check-in patterns, habit types, and consistency data. It learns what works for you and adjusts recommendations to your schedule.",
+      answer: "Premium members get personalized suggestions based on their check-in patterns, habit types, and consistency data. It learns what works for you and adjusts recommendations to your schedule.",
     },
     {
       question: "Can I cancel anytime?",
@@ -235,7 +235,7 @@ export default function Pricing() {
             {/* Pro Plan */}
             <Card className="border-2 border-secondary shadow-xl card-lift-heavy relative overflow-hidden">
               <div className="absolute top-0 right-0 px-4 py-1 text-sm font-semibold text-secondary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-secondary)' }}>
-                <Crown className="h-3 w-3" /> Best Value
+                <Crown className="h-3 w-3" /> Full Access
               </div>
               <CardHeader className="pb-6 pt-8">
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
@@ -327,7 +327,7 @@ export default function Pricing() {
                       <th className="text-center p-4 font-semibold text-secondary relative">
                         <div className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-full">
                           <span className="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-t-lg font-bold text-secondary-foreground" style={{ background: 'var(--gradient-secondary)' }}>
-                            <Crown className="h-3 w-3" /> Best Value
+                            <Crown className="h-3 w-3" /> Full Access
                           </span>
                         </div>
                         Premium

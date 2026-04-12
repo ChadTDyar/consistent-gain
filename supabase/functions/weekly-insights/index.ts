@@ -117,7 +117,7 @@ serve(async (req) => {
     const { data: profile } = await supabase.from("profiles").select("plan").eq("id", user.id).single();
     const plan = profile?.plan || "free";
 
-    // Generate AI insights for Plus/Pro users
+    // Generate AI insights for Pro/Premium users
     let aiInsights = null;
     if (plan !== "free") {
       const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");

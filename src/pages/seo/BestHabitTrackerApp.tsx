@@ -117,7 +117,7 @@ export default function BestHabitTrackerApp() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">Why Momentum Is Different</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              Momentum doesn't try to be everything. It does three things exceptionally well: 10-second daily check-ins that remove friction, visual streak tracking that taps into loss aversion, and streak repair (Plus) so one bad day doesn't erase weeks of progress. Pro members get an AI coach that adapts to your patterns and nudges you when it matters.
+              Momentum doesn't try to be everything. It does three things exceptionally well: 10-second daily check-ins that remove friction, visual streak tracking that taps into loss aversion, and Streak Repair (Pro) so one bad day doesn't erase weeks of progress. Premium members get an AI coach that adapts to your patterns and nudges you when it matters.
             </p>
             <div className="grid sm:grid-cols-3 gap-4 my-8">
               {[

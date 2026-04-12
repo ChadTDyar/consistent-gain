@@ -314,6 +314,13 @@ const Index = () => {
               <div>
                 <p className="text-muted-foreground font-medium">Built by <a href="https://chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chad T. Dyar</a></p>
                 <p className="text-xs text-muted-foreground mt-1">&copy; 2026 MomentumFit. All rights reserved.</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Also by Chad:{" "}
+                  <a href="https://pawformance.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">tools for pets</a>,{" "}
+                  <a href="https://getpillpal.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">health</a>,{" "}
+                  <a href="https://palettepro.design" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">design</a>, and{" "}
+                  <a href="https://thehomegrown.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">gardening</a>
+                </p>
               </div>
               <nav className="flex flex-wrap gap-6 text-sm justify-center" aria-label="Footer navigation">
                 <a href="/features" className="text-muted-foreground hover:text-primary transition-colors font-medium">Features</a>
