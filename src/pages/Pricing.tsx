@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { analytics } from "@/lib/analytics";
 import { SEO } from "@/components/SEO";
-import { PLANS, type PlanTier, type BillingInterval } from "@/lib/plans";
+import { PLANS, type PlanTier, type BillingInterval, getPaymentLink } from "@/lib/plans";
 import {
   Accordion,
   AccordionContent,
@@ -224,7 +224,7 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
                   size="lg"
-                  onClick={() => { analytics.startCheckout('pro'); window.open('https://buy.stripe.com/7sY5kE0xm5z08HK5f93ZK0c', '_blank'); }}
+                  onClick={() => { analytics.startCheckout('pro'); window.open(getPaymentLink('plus', billingInterval), '_blank'); }}
                 >
                   Upgrade to Pro →
                 </Button>
@@ -271,7 +271,7 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold min-h-[44px] bg-secondary text-secondary-foreground hover:bg-secondary/90"
                   size="lg"
-                  onClick={() => { analytics.startCheckout('premium'); window.open('https://buy.stripe.com/3cIfZicg43qS1fi3713ZK0d', '_blank'); }}
+                  onClick={() => { analytics.startCheckout('premium'); window.open(getPaymentLink('pro', billingInterval), '_blank'); }}
                 >
                   Upgrade to Premium →
                 </Button>
