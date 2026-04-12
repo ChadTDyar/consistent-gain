@@ -17,7 +17,7 @@ const tiers = [
     highlight: false,
     mostPopular: false,
     cta: "Get Started Free",
-    href: null,
+    plan: null as null | 'plus' | 'pro',
     features: [
       "3 habits",
       "Daily check-ins",
@@ -33,7 +33,7 @@ const tiers = [
     highlight: true,
     mostPopular: true,
     cta: "Upgrade to Pro →",
-    href: "https://buy.stripe.com/7sY5kE0xm5z08HK5f93ZK0c",
+    plan: 'plus' as null | 'plus' | 'pro',
     features: [
       "Unlimited goals",
       "30-day history",
@@ -50,7 +50,7 @@ const tiers = [
     highlight: false,
     mostPopular: false,
     cta: "Upgrade to Premium →",
-    href: "https://buy.stripe.com/3cIfZicg43qS1fi3713ZK0d",
+    plan: 'pro' as null | 'plus' | 'pro',
     features: [
       "AI Coach",
       "Unlimited history",
