@@ -226,7 +226,7 @@ export default function Pricing() {
                   size="lg"
                   onClick={() => { analytics.startCheckout('pro'); window.open(getPaymentLink('plus', billingInterval), '_blank'); }}
                 >
-                  Upgrade to Pro →
+                  Go Unlimited — $3.99/mo
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
               </CardContent>
@@ -273,7 +273,7 @@ export default function Pricing() {
                   size="lg"
                   onClick={() => { analytics.startCheckout('premium'); window.open(getPaymentLink('pro', billingInterval), '_blank'); }}
                 >
-                  Upgrade to Premium →
+                  Add AI Coaching — $7.99/mo
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
               </CardContent>

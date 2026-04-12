@@ -32,7 +32,7 @@ const tiers = [
     savingsLabel: "21%",
     highlight: true,
     mostPopular: true,
-    cta: "Upgrade to Pro →",
+    cta: "Go Unlimited — $3.99/mo",
     plan: 'plus' as null | 'plus' | 'pro',
     features: [
       "Unlimited goals",
@@ -49,7 +49,7 @@ const tiers = [
     savingsLabel: "20%",
     highlight: false,
     mostPopular: false,
-    cta: "Upgrade to Premium →",
+    cta: "Add AI Coaching — $7.99/mo",
     plan: 'pro' as null | 'plus' | 'pro',
     features: [
       "AI Coach",
