@@ -11,6 +11,7 @@ import { Loader2 } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { analytics } from "@/lib/analytics";
 import { authSchema } from "@/lib/validations";
+import { initPurchases } from "@/lib/purchases";
 import posthog from "posthog-js";
 import { Separator } from "@/components/ui/separator";
 import { Capacitor } from "@capacitor/core";
@@ -52,6 +53,7 @@ export default function Auth() {
             is_new_user: !user.last_sign_in_at || user.last_sign_in_at === user.created_at,
             auth_provider: user.app_metadata?.provider || 'email',
           });
+          initPurchases(user.id);
         }
         navigate("/dashboard");
       }
