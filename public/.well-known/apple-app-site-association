@@ -3,12 +3,12 @@
     "apps": [],
     "details": [
       {
-        "appID": "TEAM_ID.com.chad.momentumfit",
+        "appID": "SJ4KCZZ55K.com.chad.momentumfit",
         "paths": ["*"]
       }
     ]
   },
   "webcredentials": {
-    "apps": ["TEAM_ID.com.chad.momentumfit"]
+    "apps": ["SJ4KCZZ55K.com.chad.momentumfit"]
   }
 }
