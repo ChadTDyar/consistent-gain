@@ -13,6 +13,8 @@ import { analytics } from "@/lib/analytics";
 import { authSchema } from "@/lib/validations";
 import posthog from "posthog-js";
 import { Separator } from "@/components/ui/separator";
+import { Capacitor } from "@capacitor/core";
+import { Browser } from "@capacitor/browser";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -203,10 +205,24 @@ export default function Auth() {
             onClick={async () => {
               setLoading(true);
               try {
-                const { error } = await lovable.auth.signInWithOAuth("google", {
-                  redirect_uri: window.location.origin,
-                });
-                if (error) throw error;
+                if (Capacitor.isNativePlatform()) {
+                  const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                      redirectTo: 'com.chad.momentumfit://auth-callback',
+                      skipBrowserRedirect: true,
+                    },
+                  });
+                  if (error) throw error;
+                  if (data.url) {
+                    await Browser.open({ url: data.url });
+                  }
+                } else {
+                  const { error } = await lovable.auth.signInWithOAuth("google", {
+                    redirect_uri: window.location.origin,
+                  });
+                  if (error) throw error;
+                }
               } catch (error: any) {
                 toast.error(error.message);
               } finally {
@@ -232,10 +248,24 @@ export default function Auth() {
             onClick={async () => {
               setLoading(true);
               try {
-                const { error } = await lovable.auth.signInWithOAuth("apple", {
-                  redirect_uri: window.location.origin,
-                });
-                if (error) throw error;
+                if (Capacitor.isNativePlatform()) {
+                  const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'apple',
+                    options: {
+                      redirectTo: 'com.chad.momentumfit://auth-callback',
+                      skipBrowserRedirect: true,
+                    },
+                  });
+                  if (error) throw error;
+                  if (data.url) {
+                    await Browser.open({ url: data.url });
+                  }
+                } else {
+                  const { error } = await lovable.auth.signInWithOAuth("apple", {
+                    redirect_uri: window.location.origin,
+                  });
+                  if (error) throw error;
+                }
               } catch (error: any) {
                 toast.error(error.message);
               } finally {
