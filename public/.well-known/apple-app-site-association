@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "SJ4KCZZ55K.com.chad.momentumfit",
+        "paths": ["*"]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["SJ4KCZZ55K.com.chad.momentumfit"]
+  }
+}
