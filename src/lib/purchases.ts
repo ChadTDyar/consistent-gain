@@ -1,73 +1,70 @@
-// RevenueCat purchase functions for iOS native in-app purchases
-// These are stubs that will be replaced with actual RevenueCat SDK calls
-// once @revenuecat/purchases-capacitor is installed and configured.
-
+import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
 import { Capacitor } from '@capacitor/core';
+import { supabase } from '@/integrations/supabase/client';
 
-let isInitialized = false;
+const ENTITLEMENT_ID = 'momentum_premium';
 
-export async function initializePurchases(): Promise<void> {
-  if (!Capacitor.isNativePlatform() || isInitialized) return;
-
-  try {
-    // RevenueCat SDK initialization will go here
-    // e.g. Purchases.configure({ apiKey: 'appl_...' });
-    isInitialized = true;
-    console.log('[Purchases] RevenueCat initialized');
-  } catch (error) {
-    console.error('[Purchases] Failed to initialize:', error);
-  }
+export async function initPurchases(userId: string) {
+  if (!Capacitor.isNativePlatform()) return;
+  const apiKey = import.meta.env.VITE_REVENUECAT_IOS_KEY;
+  await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
+  await Purchases.configure({ apiKey });
+  await Purchases.logIn({ appUserID: userId });
 }
 
-export async function purchaseMonthly(): Promise<{ success: boolean }> {
-  if (!Capacitor.isNativePlatform()) {
-    throw new Error('Native purchases are only available on mobile');
-  }
-
-  try {
-    // TODO: Replace with actual RevenueCat purchase call
-    // const { customerInfo } = await Purchases.purchaseProduct('momentum_premium_monthly');
-    console.log('[Purchases] Monthly purchase initiated');
-    // Placeholder — will be replaced with RevenueCat SDK call
-    return { success: true };
-  } catch (error: any) {
-    if (error?.userCancelled) {
-      return { success: false };
-    }
-    throw error;
-  }
+export async function getOfferings() {
+  if (!Capacitor.isNativePlatform()) return null;
+  const { offerings } = await Purchases.getOfferings();
+  return offerings.current;
 }
 
-export async function purchaseAnnual(): Promise<{ success: boolean }> {
-  if (!Capacitor.isNativePlatform()) {
-    throw new Error('Native purchases are only available on mobile');
-  }
-
-  try {
-    // TODO: Replace with actual RevenueCat purchase call
-    // const { customerInfo } = await Purchases.purchaseProduct('momentum_premium_annual');
-    console.log('[Purchases] Annual purchase initiated');
-    return { success: true };
-  } catch (error: any) {
-    if (error?.userCancelled) {
-      return { success: false };
-    }
-    throw error;
-  }
+export async function purchaseMonthly() {
+  return purchaseByInterval('monthly');
 }
 
-export async function restorePurchases(): Promise<{ success: boolean; hasActiveSubscription: boolean }> {
-  if (!Capacitor.isNativePlatform()) {
-    throw new Error('Restore purchases is only available on mobile');
-  }
+export async function purchaseAnnual() {
+  return purchaseByInterval('annual');
+}
 
-  try {
-    // TODO: Replace with actual RevenueCat restore call
-    // const { customerInfo } = await Purchases.restorePurchases();
-    // const hasActive = customerInfo.activeSubscriptions.length > 0;
-    console.log('[Purchases] Restore purchases initiated');
-    return { success: true, hasActiveSubscription: false };
-  } catch (error) {
-    throw error;
+async function purchaseByInterval(interval: 'monthly' | 'annual') {
+  const offerings = await Purchases.getOfferings();
+  const pkg = offerings.current?.availablePackages.find(p =>
+    p.product.identifier.includes(interval)
+  );
+  if (!pkg) throw new Error(`Package not found: ${interval}`);
+  const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
+  const isActive = customerInfo.entitlements.active[ENTITLEMENT_ID]?.isActive;
+  if (isActive) await syncTier('premium');
+  return isActive;
+}
+
+export async function checkEntitlement(): Promise<boolean> {
+  if (!Capacitor.isNativePlatform()) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return false;
+    const { data } = await supabase
+      .from('user_conversion_state')
+      .select('tier')
+      .eq('user_id', user.id)
+      .single();
+    return data?.tier === 'premium';
   }
+  const { customerInfo } = await Purchases.getCustomerInfo();
+  return !!customerInfo.entitlements.active[ENTITLEMENT_ID]?.isActive;
+}
+
+export async function restorePurchases() {
+  const { customerInfo } = await Purchases.restorePurchases();
+  const isActive = customerInfo.entitlements.active[ENTITLEMENT_ID]?.isActive;
+  if (isActive) await syncTier('premium');
+  return isActive;
+}
+
+async function syncTier(tier: string) {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+  await supabase
+    .from('user_conversion_state')
+    .upsert({ user_id: user.id, tier, updated_at: new Date().toISOString() },
+             { onConflict: 'user_id' });
 }

@@ -11,8 +11,11 @@ import { Loader2 } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { analytics } from "@/lib/analytics";
 import { authSchema } from "@/lib/validations";
+import { initPurchases } from "@/lib/purchases";
 import posthog from "posthog-js";
 import { Separator } from "@/components/ui/separator";
+import { Capacitor } from "@capacitor/core";
+import { Browser } from "@capacitor/browser";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -50,6 +53,7 @@ export default function Auth() {
             is_new_user: !user.last_sign_in_at || user.last_sign_in_at === user.created_at,
             auth_provider: user.app_metadata?.provider || 'email',
           });
+          initPurchases(user.id);
         }
         navigate("/dashboard");
       }
@@ -203,10 +207,24 @@ export default function Auth() {
             onClick={async () => {
               setLoading(true);
               try {
-                const { error } = await lovable.auth.signInWithOAuth("google", {
-                  redirect_uri: window.location.origin,
-                });
-                if (error) throw error;
+                if (Capacitor.isNativePlatform()) {
+                  const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                      redirectTo: 'com.chad.momentumfit://auth-callback',
+                      skipBrowserRedirect: true,
+                    },
+                  });
+                  if (error) throw error;
+                  if (data.url) {
+                    await Browser.open({ url: data.url });
+                  }
+                } else {
+                  const { error } = await lovable.auth.signInWithOAuth("google", {
+                    redirect_uri: window.location.origin,
+                  });
+                  if (error) throw error;
+                }
               } catch (error: any) {
                 toast.error(error.message);
               } finally {
@@ -232,10 +250,24 @@ export default function Auth() {
             onClick={async () => {
               setLoading(true);
               try {
-                const { error } = await lovable.auth.signInWithOAuth("apple", {
-                  redirect_uri: window.location.origin,
-                });
-                if (error) throw error;
+                if (Capacitor.isNativePlatform()) {
+                  const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'apple',
+                    options: {
+                      redirectTo: 'com.chad.momentumfit://auth-callback',
+                      skipBrowserRedirect: true,
+                    },
+                  });
+                  if (error) throw error;
+                  if (data.url) {
+                    await Browser.open({ url: data.url });
+                  }
+                } else {
+                  const { error } = await lovable.auth.signInWithOAuth("apple", {
+                    redirect_uri: window.location.origin,
+                  });
+                  if (error) throw error;
+                }
               } catch (error: any) {
                 toast.error(error.message);
               } finally {
