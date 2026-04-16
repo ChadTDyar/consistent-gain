@@ -12,6 +12,7 @@ interface PaywallModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   feature?: string;
+  requiredPlan?: string;
 }
 
 type PlanChoice = 'monthly' | 'annual';
