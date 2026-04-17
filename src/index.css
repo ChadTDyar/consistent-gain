@@ -152,6 +152,21 @@
   body {
     @apply text-foreground font-body antialiased;
     background: hsl(0 0% 98%);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overflow-x: hidden;
+  }
+
+  html {
+    overflow-x: hidden;
+  }
+
+  /* Mobile: prevent iOS zoom on focused inputs (16px minimum) */
+  @media (max-width: 767px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
   }
   
   @media (prefers-color-scheme: dark) {
