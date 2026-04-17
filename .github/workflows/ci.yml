@@ -31,5 +31,8 @@ jobs:
         run: npx tsc --noEmit
         continue-on-error: true
 
+      - name: Lint Info.plist purpose strings
+        run: node scripts/lint-info-plist.cjs
+
       - name: Build
         run: npm run build

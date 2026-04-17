@@ -71,3 +71,42 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## iOS release
+
+### Prerequisites
+- Xcode 15+ on macOS
+- Apple Developer account with access to this app in App Store Connect
+- CocoaPods installed (`sudo gem install cocoapods`)
+
+### Release workflow
+```bash
+# 1. Pull latest main
+git pull
+
+# 2. Build the web bundle and sync into the iOS project
+npm run build
+npx cap sync ios
+
+# 3. Open the workspace (never the .xcodeproj)
+open ios/App/App.xcworkspace
+
+# 4. In Xcode:
+#    - Select "App" target → General → bump Build number
+#    - Product → Archive
+#    - Distribute App → App Store Connect → Upload
+```
+
+### Info.plist purpose strings
+This repo runs a CI lint (`.github/workflows/ci.yml` → `info-plist-lint`) that
+fails the build if any Capacitor plugin that touches a privacy-sensitive API
+is installed without the matching purpose string in `ios/App/App/Info.plist`.
+
+Rule map lives in `scripts/lint-info-plist.cjs`. When adding a new Capacitor
+plugin that needs a purpose string (camera, geolocation, microphone,
+contacts, motion, speech, etc.), update both the Info.plist and the rule map
+in the same PR.
+
+This guard exists because App Store Connect rejects uploads with
+**ITMS-90683** when a referenced API lacks its purpose string — even if the
+current UI never triggers the code path.
