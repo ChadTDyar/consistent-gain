@@ -144,6 +144,8 @@ export default function Auth() {
                   onChange={(e) => setName(e.target.value)}
                   required={!isLogin}
                   aria-required={!isLogin}
+                  autoComplete="name"
+                  autoCapitalize="words"
                 />
               </div>
             )}
@@ -152,6 +154,10 @@ export default function Auth() {
               <Input
                 id="email"
                 type="email"
+                inputMode="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

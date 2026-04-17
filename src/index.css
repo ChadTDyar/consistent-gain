@@ -152,6 +152,21 @@
   body {
     @apply text-foreground font-body antialiased;
     background: hsl(0 0% 98%);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overflow-x: hidden;
+  }
+
+  html {
+    overflow-x: hidden;
+  }
+
+  /* Mobile: prevent iOS zoom on focused inputs (16px minimum) */
+  @media (max-width: 767px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
   }
   
   @media (prefers-color-scheme: dark) {
@@ -385,6 +400,24 @@
 
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-area-x {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Mobile press feedback (no hover on touch) */
+@media (hover: none) {
+  .tap-highlight:active {
+    opacity: 0.7;
+    transform: scale(0.98);
+    transition: opacity 0.1s ease, transform 0.1s ease;
+  }
 }
 
 @keyframes habit-fill {
