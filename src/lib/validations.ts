@@ -64,11 +64,7 @@ export const authSchema = z.object({
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
-    .max(72, "Password must be less than 72 characters")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
-    ),
+    .max(72, "Password must be less than 72 characters"),
   name: z
     .string()
     .trim()

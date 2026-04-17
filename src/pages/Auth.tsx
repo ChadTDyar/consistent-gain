@@ -176,7 +176,7 @@ export default function Auth() {
               />
               {!isLogin && (
                 <p id="password-requirements" className="text-xs text-muted-foreground">
-                  Must be at least 8 characters with uppercase, lowercase, and a number
+                  Must be at least 8 characters
                 </p>
               )}
             </div>
