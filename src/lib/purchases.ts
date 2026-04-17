@@ -14,7 +14,7 @@ export async function initPurchases(userId: string) {
 
 export async function getOfferings() {
   if (!Capacitor.isNativePlatform()) return null;
-  const { offerings } = await Purchases.getOfferings();
+  const offerings = await Purchases.getOfferings();
   return offerings.current;
 }
 
@@ -33,8 +33,8 @@ async function purchaseByInterval(interval: 'monthly' | 'annual') {
   );
   if (!pkg) throw new Error(`Package not found: ${interval}`);
   const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
-  const isActive = customerInfo.entitlements.active[ENTITLEMENT_ID]?.isActive;
-  if (isActive) await syncTier('premium');
+  const isActive = !!customerInfo.entitlements.active[ENTITLEMENT_ID]?.isActive;
+  if (isActive) await syncPremium(true);
   return isActive;
 }
 
@@ -43,28 +43,31 @@ export async function checkEntitlement(): Promise<boolean> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
     const { data } = await supabase
-      .from('user_conversion_state')
-      .select('tier')
-      .eq('user_id', user.id)
+      .from('profiles')
+      .select('is_premium')
+      .eq('id', user.id)
       .single();
-    return data?.tier === 'premium';
+    return !!data?.is_premium;
   }
   const { customerInfo } = await Purchases.getCustomerInfo();
   return !!customerInfo.entitlements.active[ENTITLEMENT_ID]?.isActive;
 }
 
 export async function restorePurchases() {
+  if (!Capacitor.isNativePlatform()) return false;
   const { customerInfo } = await Purchases.restorePurchases();
-  const isActive = customerInfo.entitlements.active[ENTITLEMENT_ID]?.isActive;
-  if (isActive) await syncTier('premium');
+  const isActive = !!customerInfo.entitlements.active[ENTITLEMENT_ID]?.isActive;
+  if (isActive) await syncPremium(true);
   return isActive;
 }
 
-async function syncTier(tier: string) {
+async function syncPremium(isPremium: boolean) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return;
+  // Note: subscription state is normally written server-side via webhooks.
+  // This client-side sync is a best-effort hint; RLS may restrict it.
   await supabase
-    .from('user_conversion_state')
-    .upsert({ user_id: user.id, tier, updated_at: new Date().toISOString() },
-             { onConflict: 'user_id' });
+    .from('profiles')
+    .update({ is_premium: isPremium })
+    .eq('id', user.id);
 }
