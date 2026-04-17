@@ -32,11 +32,11 @@ export default function PaywallModal({ open, onOpenChange, feature }: PaywallMod
     setLoading(true);
     try {
       if (isNative) {
-        const result = selected === 'monthly'
+        const isActive = selected === 'monthly'
           ? await purchaseMonthly()
           : await purchaseAnnual();
 
-        if (result.success) {
+        if (isActive) {
           setSuccess(true);
           setTimeout(() => {
             onOpenChange(false);
@@ -66,8 +66,8 @@ export default function PaywallModal({ open, onOpenChange, feature }: PaywallMod
 
     setLoading(true);
     try {
-      const result = await restorePurchases();
-      if (result.hasActiveSubscription) {
+      const isActive = await restorePurchases();
+      if (isActive) {
         toast.success("Subscription restored!");
         setSuccess(true);
         setTimeout(() => {
