@@ -152,6 +152,7 @@
   body {
     @apply text-foreground font-body antialiased;
     background: hsl(0 0% 98%);
+    padding-top: env(safe-area-inset-top, 0px);
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
