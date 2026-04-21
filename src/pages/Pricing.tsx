@@ -20,6 +20,33 @@ export default function Pricing() {
   const [loading, setLoading] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<PlanTier>('free');
   const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  const handleCheckout = async (plan: 'plus' | 'pro') => {
+    const planLabel = `${plan}-${billingInterval}`;
+    setCheckoutLoading(planLabel);
+    setCheckoutError(null);
+    analytics.startCheckout(plan === 'plus' ? 'pro' : 'premium');
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/auth');
+        return;
+      }
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { plan, interval: billingInterval },
+      });
+      if (error) throw error;
+      if (!data?.url) throw new Error('No checkout URL returned');
+      window.location.href = data.url;
+    } catch (err) {
+      setCheckoutError('Checkout failed. Please try again.');
+      console.error('Checkout error:', err);
+    } finally {
+      setCheckoutLoading(null);
+    }
+  };
 
   useEffect(() => {
     checkSubscription();
