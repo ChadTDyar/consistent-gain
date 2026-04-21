@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Star, Crown, Shield } from "lucide-react";
+import { CheckCircle, Star, Crown, Shield, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
@@ -20,6 +20,33 @@ export default function Pricing() {
   const [loading, setLoading] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<PlanTier>('free');
   const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  const handleCheckout = async (plan: 'plus' | 'pro') => {
+    const planLabel = `${plan}-${billingInterval}`;
+    setCheckoutLoading(planLabel);
+    setCheckoutError(null);
+    analytics.startCheckout(plan === 'plus' ? 'pro' : 'premium');
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/auth');
+        return;
+      }
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { plan, interval: billingInterval },
+      });
+      if (error) throw error;
+      if (!data?.url) throw new Error('No checkout URL returned');
+      window.location.href = data.url;
+    } catch (err) {
+      setCheckoutError('Checkout failed. Please try again.');
+      console.error('Checkout error:', err);
+    } finally {
+      setCheckoutLoading(null);
+    }
+  };
 
   useEffect(() => {
     checkSubscription();
@@ -224,9 +251,14 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
                   size="lg"
-                  onClick={() => { analytics.startCheckout('pro'); window.open(getPaymentLink('plus', billingInterval), '_blank'); }}
+                  disabled={!!checkoutLoading}
+                  onClick={() => handleCheckout('plus')}
                 >
-                  Go Pro — $3.99/mo
+                  {checkoutLoading === `plus-${billingInterval}` ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Redirecting…</>
+                  ) : (
+                    'Go Pro — $3.99/mo'
+                  )}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
               </CardContent>
@@ -271,14 +303,22 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold min-h-[44px] bg-secondary text-secondary-foreground hover:bg-secondary/90"
                   size="lg"
-                  onClick={() => { analytics.startCheckout('premium'); window.open(getPaymentLink('pro', billingInterval), '_blank'); }}
+                  disabled={!!checkoutLoading}
+                  onClick={() => handleCheckout('pro')}
                 >
-                  Go Premium — $7.99/mo
+                  {checkoutLoading === `pro-${billingInterval}` ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Redirecting…</>
+                  ) : (
+                    'Go Premium — $7.99/mo'
+                  )}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
               </CardContent>
             </Card>
           </div>
+          {checkoutError && (
+            <p className="text-center text-sm text-destructive mt-6">{checkoutError}</p>
+          )}
 
           {/* Guarantee & First Week */}
           <div className="mt-12 grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
