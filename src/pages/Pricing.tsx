@@ -303,14 +303,22 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold min-h-[44px] bg-secondary text-secondary-foreground hover:bg-secondary/90"
                   size="lg"
-                  onClick={() => { analytics.startCheckout('premium'); window.open(getPaymentLink('pro', billingInterval), '_blank'); }}
+                  disabled={!!checkoutLoading}
+                  onClick={() => handleCheckout('pro')}
                 >
-                  Go Premium — $7.99/mo
+                  {checkoutLoading === `pro-${billingInterval}` ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Redirecting…</>
+                  ) : (
+                    'Go Premium — $7.99/mo'
+                  )}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
               </CardContent>
             </Card>
           </div>
+          {checkoutError && (
+            <p className="text-center text-sm text-destructive mt-6">{checkoutError}</p>
+          )}
 
           {/* Guarantee & First Week */}
           <div className="mt-12 grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
