@@ -16,6 +16,10 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { DoctorReport } from "@/components/DoctorReport";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { IntegrationHooks } from "@/components/IntegrationHooks";
+import { localNotificationsService } from "@/services/localNotifications.service";
+import { healthKitService } from "@/services/healthkit.service";
+import { isIOSNative } from "@/lib/platform";
+import { Heart } from "lucide-react";
 
 interface Profile {
   id: string;
@@ -31,6 +35,9 @@ export default function Settings() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [name, setName] = useState("");
   const [remindersEnabled, setRemindersEnabled] = useState(true);
+  const [reminderTime, setReminderTime] = useState("09:00");
+  const [healthKitConnected, setHealthKitConnected] = useState(false);
+  const [healthLoading, setHealthLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
@@ -113,6 +120,17 @@ export default function Settings() {
     setSaving(false);
   };
 
+  const applyReminderSchedule = async (enabled: boolean, time: string) => {
+    if (!isIOSNative()) return;
+    if (enabled) {
+      const [h, m] = time.split(":").map(Number);
+      const ok = await localNotificationsService.scheduleDailyReminder(h, m);
+      if (!ok) toast.error("Couldn't schedule reminder. Check notification permissions.");
+    } else {
+      await localNotificationsService.cancelDailyReminder();
+    }
+  };
+
   const handleToggleReminders = async (checked: boolean) => {
     if (!profile) return;
 
@@ -127,8 +145,29 @@ export default function Settings() {
       toast.error("Failed to update reminders");
       console.error(error);
       setRemindersEnabled(!checked);
+      return;
+    }
+    await applyReminderSchedule(checked, reminderTime);
+    toast.success(checked ? "Reminders enabled" : "Reminders disabled");
+  };
+
+  const handleReminderTimeChange = async (value: string) => {
+    setReminderTime(value);
+    if (remindersEnabled) {
+      await applyReminderSchedule(true, value);
+      toast.success(`Reminder set for ${value}`);
+    }
+  };
+
+  const handleConnectHealthKit = async () => {
+    setHealthLoading(true);
+    const ok = await healthKitService.requestAuthorization();
+    setHealthLoading(false);
+    if (ok) {
+      setHealthKitConnected(true);
+      toast.success("Apple Health connected. Workouts will sync automatically.");
     } else {
-      toast.success(checked ? "Reminders enabled" : "Reminders disabled");
+      toast.error("Couldn't connect to Apple Health.");
     }
   };
 
