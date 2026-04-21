@@ -171,11 +171,16 @@ export function LandingPricing() {
                   ))}
                 </ul>
                 <Button
-                  onClick={() => tier.plan ? window.open(getPaymentLink(tier.plan, interval), '_blank') : navigate("/auth")}
+                  onClick={() => tier.plan ? handleCheckout(tier.plan) : navigate("/auth")}
+                  disabled={!!checkoutLoading}
                   variant={tier.mostPopular ? "default" : "outline"}
                   className={tier.mostPopular ? "btn-gradient w-full" : "w-full"}
                 >
-                  {tier.cta}
+                  {tier.plan && checkoutLoading === `${tier.plan}-${interval}` ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Redirecting…</>
+                  ) : (
+                    tier.cta
+                  )}
                 </Button>
                 {tier.plan && (
                   <p className="text-center mt-2 text-xs text-muted-foreground">
@@ -186,6 +191,9 @@ export function LandingPricing() {
             </Card>
           ))}
         </div>
+        {checkoutError && (
+          <p className="text-center text-sm text-destructive mt-6">{checkoutError}</p>
+        )}
       </div>
     </section>
   );
