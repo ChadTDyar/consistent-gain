@@ -6,6 +6,7 @@ import { CheckCircle, Flame, Loader2, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { analytics } from "@/lib/analytics";
+import { healthKitService } from "@/services/healthkit.service";
 
 interface Goal {
   id: string;
@@ -143,13 +144,16 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
         analytics.streakMilestone(streak + 1);
       }
       toast.success("Great job! 🎉 Streak continues!");
-      
+
+      // Best-effort write to Apple Health (no-op on web/Android). Default 15min session.
+      healthKitService.saveWorkout(15, new Date(), goal.title).catch(() => {});
+
       // Show inline confirmation
       setJustCompleted(true);
       const newStreak = streak + 1;
       setCompletionMsg(newStreak > 1 ? `That's ${newStreak} days in a row.` : "Done. Keep it going.");
       setTimeout(() => { setJustCompleted(false); setCompletionMsg(""); }, 2000);
-      
+
       loadActivityData();
       onUpdate();
     }
