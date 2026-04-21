@@ -63,6 +63,32 @@ const tiers = [
 export function LandingPricing() {
   const navigate = useNavigate();
   const [interval, setInterval] = useState<BillingInterval>("monthly");
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  const handleCheckout = async (plan: 'plus' | 'pro') => {
+    const planLabel = `${plan}-${interval}`;
+    setCheckoutLoading(planLabel);
+    setCheckoutError(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/auth');
+        return;
+      }
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { plan, interval },
+      });
+      if (error) throw error;
+      if (!data?.url) throw new Error('No checkout URL returned');
+      window.location.href = data.url;
+    } catch (err) {
+      setCheckoutError('Checkout failed. Please try again.');
+      console.error('Checkout error:', err);
+    } finally {
+      setCheckoutLoading(null);
+    }
+  };
 
   return (
     <section id="pricing" className="py-20 md:py-28 bg-background-cream">
