@@ -370,7 +370,7 @@ export default function Settings() {
               <CardTitle className="text-2xl font-display font-semibold">Daily Reminders</CardTitle>
               <CardDescription className="text-base">Get notified to log your daily activity</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
                 <Label htmlFor="reminders" className="flex-1 text-base cursor-pointer">
                   Enable daily reminder notifications
@@ -381,8 +381,54 @@ export default function Settings() {
                   onCheckedChange={handleToggleReminders}
                 />
               </div>
+              {isIOSNative() && remindersEnabled && (
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <Label htmlFor="reminder-time" className="flex-1 text-base">
+                    Reminder time
+                  </Label>
+                  <Input
+                    id="reminder-time"
+                    type="time"
+                    value={reminderTime}
+                    onChange={(e) => handleReminderTimeChange(e.target.value)}
+                    className="w-32 h-11"
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
+
+          {/* Apple Health (iOS native only) */}
+          {isIOSNative() && (
+            <Card className="border-none shadow-md">
+              <CardHeader>
+                <CardTitle className="text-2xl font-display font-semibold flex items-center gap-2">
+                  <Heart className="h-6 w-6 text-primary" />
+                  Apple Health
+                </CardTitle>
+                <CardDescription className="text-base">
+                  Save completed workouts to the Health app automatically.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  onClick={handleConnectHealthKit}
+                  disabled={healthLoading || healthKitConnected}
+                  size="lg"
+                  variant={healthKitConnected ? "outline" : "default"}
+                  className="w-full font-semibold"
+                >
+                  {healthLoading ? (
+                    <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Connecting...</>
+                  ) : healthKitConnected ? (
+                    "Connected to Apple Health"
+                  ) : (
+                    "Connect Apple Health"
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Subscription Section */}
           <Card className="border-none shadow-md">
