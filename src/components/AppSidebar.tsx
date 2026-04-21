@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { type PlanTier } from "@/lib/plans";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { isIOSNative } from "@/lib/platform";
 
 export function AppSidebar() {
   const location = useLocation();
@@ -26,8 +27,10 @@ export function AppSidebar() {
   const shouldShow = showOnPaths.some(p => location.pathname.startsWith(p));
   if (!shouldShow) return null;
 
-  const isPremium = plan === 'pro';
-  const isPro = plan === 'plus' || plan === 'pro';
+  // On iOS native builds: hide all paid plan badges and treat everything as unlocked
+  const ios = isIOSNative();
+  const isPremium = ios || plan === 'pro';
+  const isPro = ios || plan === 'plus' || plan === 'pro';
 
   const items = [
     { path: "/dashboard", label: "Today", icon: Calendar, locked: false },
@@ -69,7 +72,7 @@ export function AppSidebar() {
         })}
       </div>
 
-      {plan !== 'pro' && (
+      {!ios && plan !== 'pro' && (
         <Button
           onClick={() => navigate("/pricing")}
           className="w-full mt-4 font-semibold"
