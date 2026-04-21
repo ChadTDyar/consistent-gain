@@ -6,6 +6,7 @@ import { CheckCircle, Star } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { handleCheckout } from "@/lib/checkout";
+import { isIOSNative } from "@/lib/platform";
 
 import type { BillingInterval } from "@/lib/plans";
 
@@ -76,6 +77,9 @@ export function LandingPricing() {
       if (user?.email) setUserEmail(user.email);
     });
   }, []);
+
+  // Apple IAP compliance: hide the entire pricing section on iOS native builds
+  if (isIOSNative()) return null;
 
   const onCheckout = async (tier: typeof tiers[number]) => {
     if (!tier.plan || !tier.priceIds) return;

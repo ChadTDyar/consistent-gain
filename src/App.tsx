@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { CookieConsent } from "@/components/CookieConsent";
 import { BottomTabBar } from "@/components/BottomTabBar";
@@ -11,6 +11,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { useEffect, lazy, Suspense } from "react";
 import { notificationService } from "@/services/notifications.service";
 import { usePostHogIdentify } from "@/hooks/usePostHogIdentify";
+import { isIOSNative } from "@/lib/platform";
 
 // Eagerly load the landing page for fast FCP/LCP
 import Index from "./pages/Index";
@@ -88,7 +89,7 @@ const App = () => {
               <Route path="/auth" element={<Auth />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/goal/:id" element={<GoalDetail />} />
-              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/pricing" element={isIOSNative() ? <Navigate to="/dashboard" replace /> : <Pricing />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/account" element={<Account />} />
               <Route path="/privacy" element={<Privacy />} />

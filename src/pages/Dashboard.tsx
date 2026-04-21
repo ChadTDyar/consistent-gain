@@ -23,6 +23,7 @@ import { StreakRepair } from "@/components/StreakRepair";
 import PaywallModal from "@/components/PaywallModal";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { type PlanTier, canAccessFeature, getGoalLimit, PLANS } from "@/lib/plans";
+import { isIOSNative } from "@/lib/platform";
 import { StreakRepairIntro } from "@/components/StreakRepairIntro";
 import { Badge } from "@/components/ui/badge";
 import { OnboardingChecklist } from "@/components/OnboardingChecklist";
@@ -265,7 +266,7 @@ export default function Dashboard() {
             </Badge>
           </div>
           <div className="flex gap-2">
-            {plan === 'free' && (
+            {plan === 'free' && !isIOSNative() && (
               <Button 
                 onClick={() => navigate("/pricing")} 
                 className="hidden sm:flex shadow-md hover:shadow-lg transition-all btn-gradient"
@@ -440,8 +441,8 @@ export default function Dashboard() {
               )}
             </div>
 
-            {/* Habit slot counter for free users */}
-            {plan === 'free' && goals.length >= 3 && (
+            {/* Habit slot counter for free users (web only — iOS has unlimited) */}
+            {plan === 'free' && !isIOSNative() && goals.length >= 3 && (
               <p className="text-[0.8rem] text-muted-foreground mb-4">
                 3 of 3 habit slots used —{" "}
                 <a href="/pricing" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }} className="text-primary hover:underline font-medium">
@@ -450,7 +451,7 @@ export default function Dashboard() {
               </p>
             )}
 
-            {plan !== 'free' || goals.length < 3 ? (
+            {plan !== 'free' || isIOSNative() || goals.length < 3 ? (
               <Button 
                 onClick={handleAddGoal} 
                 size="lg"
@@ -467,9 +468,9 @@ export default function Dashboard() {
             <div className="mt-8">
               <h3 className="text-xl font-display font-semibold text-foreground mb-3 flex items-center gap-2">
                 <Users className="h-5 w-5" /> Accountability Partner
-                {plan === 'free' && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
+                {plan === 'free' && !isIOSNative() && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
               </h3>
-              {plan === 'free' ? (
+              {plan === 'free' && !isIOSNative() ? (
                 <div
                   className="p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors"
                   onClick={() => { setUpgradeWallType('partner_lock'); setShowUpgradeWall(true); }}
@@ -488,9 +489,9 @@ export default function Dashboard() {
             <div className="mt-8">
               <h3 className="text-xl font-display font-semibold text-foreground mb-3 flex items-center gap-2">
                 <BarChart3 className="h-5 w-5" /> Trend Analytics
-                {plan === 'free' && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
+                {plan === 'free' && !isIOSNative() && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
               </h3>
-              {plan === 'free' ? (
+              {plan === 'free' && !isIOSNative() ? (
                 <div
                   className="relative p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors overflow-hidden"
                   onClick={() => { setUpgradeWallType('analytics_lock'); setShowUpgradeWall(true); }}

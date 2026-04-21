@@ -1,4 +1,6 @@
 // Stripe plan configuration
+import { isIOSNative } from './platform';
+
 export const PLANS = {
   free: { name: 'Free', price: 0, annualPrice: 0, price_id: null, annual_price_id: null, product_id: null, payment_link: null, annual_payment_link: null },
   plus: {
@@ -40,16 +42,21 @@ export function getPlanFromProductId(productId: string | null): PlanTier {
   return 'plus';
 }
 
+// iOS Apple IAP compliance: on native iOS builds, all paid features are unlocked
+// since we don't show any subscription/upgrade UI in the iOS app.
 export function canAccessFeature(plan: PlanTier, requiredPlan: PlanTier): boolean {
+  if (isIOSNative()) return true;
   const tierOrder: PlanTier[] = ['free', 'plus', 'pro'];
   return tierOrder.indexOf(plan) >= tierOrder.indexOf(requiredPlan);
 }
 
 export function getGoalLimit(plan: PlanTier): number | null {
+  if (isIOSNative()) return null;
   return plan === 'free' ? 3 : null;
 }
 
 export function getHistoryDays(plan: PlanTier): number | null {
+  if (isIOSNative()) return null;
   if (plan === 'free') return 7;
   if (plan === 'plus') return 30;
   return null;

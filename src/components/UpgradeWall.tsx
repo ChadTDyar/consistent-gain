@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { isIOSNative } from "@/lib/platform";
 
 interface Props {
   headline: string;
@@ -22,6 +23,9 @@ export function UpgradeWall({
   coachPreview = false,
   streakRepairPreview = false,
 }: Props) {
+  // Apple IAP compliance: never show paid upgrade walls on iOS native builds
+  if (isIOSNative()) return null;
+
   const isProCta = cta.toLowerCase().includes("pro");
 
   return createPortal(
