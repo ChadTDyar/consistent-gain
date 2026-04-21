@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Star, Loader2 } from "lucide-react";
+import { CheckCircle, Star } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { handleCheckout } from "@/lib/checkout";
 
 import type { BillingInterval } from "@/lib/plans";
 
@@ -18,6 +20,7 @@ const tiers = [
     mostPopular: false,
     cta: "Get Started Free",
     plan: null as null | 'plus' | 'pro',
+    priceIds: null as null | { monthly: string; annual: string },
     features: [
       "3 habits",
       "Daily check-ins",
@@ -34,6 +37,7 @@ const tiers = [
     mostPopular: true,
     cta: "Go Pro — $3.99/mo",
     plan: 'plus' as null | 'plus' | 'pro',
+    priceIds: { monthly: 'price_1TLROuL98dr6Pw0kEFuhgPnA', annual: 'price_1TLRPCL98dr6Pw0kvyaljYet' },
     features: [
       "Unlimited goals",
       "30-day history",
@@ -51,6 +55,7 @@ const tiers = [
     mostPopular: false,
     cta: "Go Premium — $7.99/mo",
     plan: 'pro' as null | 'plus' | 'pro',
+    priceIds: { monthly: 'price_1TLRRxL98dr6Pw0kdyFkEsEp', annual: 'price_1TLRT0L98dr6Pw0kBgfProeu' },
     features: [
       "AI Coach",
       "Unlimited history",
@@ -63,30 +68,27 @@ const tiers = [
 export function LandingPricing() {
   const navigate = useNavigate();
   const [interval, setInterval] = useState<BillingInterval>("monthly");
-  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
-  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | undefined>();
 
-  const handleCheckout = async (plan: 'plus' | 'pro') => {
-    const planLabel = `${plan}-${interval}`;
-    setCheckoutLoading(planLabel);
-    setCheckoutError(null);
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user?.email) setUserEmail(user.email);
+    });
+  }, []);
+
+  const onCheckout = async (tier: typeof tiers[number]) => {
+    if (!tier.plan || !tier.priceIds) return;
+    const priceId = tier.priceIds[interval];
+    const label = `${tier.plan}-${interval}`;
+    setLoading(label);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/auth');
-        return;
-      }
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { plan, interval },
-      });
-      if (error) throw error;
-      if (!data?.url) throw new Error('No checkout URL returned');
-      window.location.href = data.url;
-    } catch (err) {
-      setCheckoutError('Checkout failed. Please try again.');
-      console.error('Checkout error:', err);
+      await handleCheckout(priceId, 'momentum', userEmail);
+    } catch (error) {
+      console.error('[LandingPricing] Checkout error:', error);
+      toast.error('Checkout failed. Please try again.');
     } finally {
-      setCheckoutLoading(null);
+      setLoading(null);
     }
   };
 
@@ -171,16 +173,12 @@ export function LandingPricing() {
                   ))}
                 </ul>
                 <Button
-                  onClick={() => tier.plan ? handleCheckout(tier.plan) : navigate("/auth")}
-                  disabled={!!checkoutLoading}
+                  onClick={() => tier.plan ? onCheckout(tier) : navigate("/auth")}
                   variant={tier.mostPopular ? "default" : "outline"}
                   className={tier.mostPopular ? "btn-gradient w-full" : "w-full"}
+                  disabled={tier.plan ? loading === `${tier.plan}-${interval}` : false}
                 >
-                  {tier.plan && checkoutLoading === `${tier.plan}-${interval}` ? (
-                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Redirecting…</>
-                  ) : (
-                    tier.cta
-                  )}
+                  {tier.plan && loading === `${tier.plan}-${interval}` ? 'Redirecting…' : tier.cta}
                 </Button>
                 {tier.plan && (
                   <p className="text-center mt-2 text-xs text-muted-foreground">
@@ -191,9 +189,6 @@ export function LandingPricing() {
             </Card>
           ))}
         </div>
-        {checkoutError && (
-          <p className="text-center text-sm text-destructive mt-6">{checkoutError}</p>
-        )}
       </div>
     </section>
   );

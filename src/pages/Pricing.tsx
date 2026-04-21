@@ -7,7 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { analytics } from "@/lib/analytics";
 import { SEO } from "@/components/SEO";
-import { PLANS, type PlanTier, type BillingInterval, getPaymentLink } from "@/lib/plans";
+import { PLANS, type PlanTier, type BillingInterval } from "@/lib/plans";
+import { handleCheckout } from "@/lib/checkout";
 import {
   Accordion,
   AccordionContent,
@@ -20,33 +21,7 @@ export default function Pricing() {
   const [loading, setLoading] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<PlanTier>('free');
   const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
-  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
-  const [checkoutError, setCheckoutError] = useState<string | null>(null);
-
-  const handleCheckout = async (plan: 'plus' | 'pro') => {
-    const planLabel = `${plan}-${billingInterval}`;
-    setCheckoutLoading(planLabel);
-    setCheckoutError(null);
-    analytics.startCheckout(plan === 'plus' ? 'pro' : 'premium');
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/auth');
-        return;
-      }
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { plan, interval: billingInterval },
-      });
-      if (error) throw error;
-      if (!data?.url) throw new Error('No checkout URL returned');
-      window.location.href = data.url;
-    } catch (err) {
-      setCheckoutError('Checkout failed. Please try again.');
-      console.error('Checkout error:', err);
-    } finally {
-      setCheckoutLoading(null);
-    }
-  };
+  const [userEmail, setUserEmail] = useState<string | undefined>();
 
   useEffect(() => {
     checkSubscription();
@@ -55,12 +30,32 @@ export default function Pricing() {
   const checkSubscription = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
+      setUserEmail(user.email);
       const { data: profile } = await supabase
         .from('profiles')
         .select('plan')
         .eq('id', user.id)
         .single();
       if (profile?.plan) setCurrentPlan(profile.plan as PlanTier);
+    }
+  };
+
+  const onCheckout = async (plan: 'plus' | 'pro') => {
+    const priceIds = {
+      plus: { monthly: 'price_1TLROuL98dr6Pw0kEFuhgPnA', annual: 'price_1TLRPCL98dr6Pw0kvyaljYet' },
+      pro:  { monthly: 'price_1TLRRxL98dr6Pw0kdyFkEsEp', annual: 'price_1TLRT0L98dr6Pw0kBgfProeu' },
+    };
+    const priceId = priceIds[plan][billingInterval];
+    const label = `${plan}-${billingInterval}`;
+    setLoading(label);
+    try {
+      analytics.startCheckout(plan === 'plus' ? 'pro' : 'premium');
+      await handleCheckout(priceId, 'momentum', userEmail);
+    } catch (error) {
+      console.error('[Pricing] Checkout error:', error);
+      toast.error('Checkout failed. Please try again.');
+    } finally {
+      setLoading(null);
     }
   };
 
@@ -251,14 +246,10 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
                   size="lg"
-                  disabled={!!checkoutLoading}
-                  onClick={() => handleCheckout('plus')}
+                  disabled={loading === `plus-${billingInterval}`}
+                  onClick={() => onCheckout('plus')}
                 >
-                  {checkoutLoading === `plus-${billingInterval}` ? (
-                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Redirecting…</>
-                  ) : (
-                    'Go Pro — $3.99/mo'
-                  )}
+                  {loading === `plus-${billingInterval}` ? 'Redirecting…' : 'Go Pro — $3.99/mo'}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
               </CardContent>
@@ -303,23 +294,15 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold min-h-[44px] bg-secondary text-secondary-foreground hover:bg-secondary/90"
                   size="lg"
-                  disabled={!!checkoutLoading}
-                  onClick={() => handleCheckout('pro')}
+                  disabled={loading === `pro-${billingInterval}`}
+                  onClick={() => onCheckout('pro')}
                 >
-                  {checkoutLoading === `pro-${billingInterval}` ? (
-                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Redirecting…</>
-                  ) : (
-                    'Go Premium — $7.99/mo'
-                  )}
+                  {loading === `pro-${billingInterval}` ? 'Redirecting…' : 'Go Premium — $7.99/mo'}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
               </CardContent>
             </Card>
           </div>
-          {checkoutError && (
-            <p className="text-center text-sm text-destructive mt-6">{checkoutError}</p>
-          )}
-
           {/* Guarantee & First Week */}
           <div className="mt-12 grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             <Card className="border-primary/10 shadow-md">

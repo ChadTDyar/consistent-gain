@@ -5,8 +5,10 @@ import { Crown, Loader2, CheckCircle } from "lucide-react";
 import { useState } from "react";
 import { Capacitor } from "@capacitor/core";
 import { toast } from "sonner";
-import { PLANS, type BillingInterval, getPaymentLink } from "@/lib/plans";
+import { supabase } from "@/integrations/supabase/client";
+import { PLANS, type BillingInterval } from "@/lib/plans";
 import { purchaseMonthly, purchaseAnnual, restorePurchases } from "@/lib/purchases";
+import { handleCheckout } from "@/lib/checkout";
 
 interface PaywallModalProps {
   open: boolean;
@@ -44,11 +46,13 @@ export default function PaywallModal({ open, onOpenChange, feature }: PaywallMod
           }, 1500);
         }
       } else {
-        // Web: redirect to Stripe
-        const interval: BillingInterval = selected === 'annual' ? 'annual' : 'monthly';
-        const url = getPaymentLink('pro', interval);
-        window.open(url, '_blank');
-        onOpenChange(false);
+        // Web: redirect to Stripe Checkout
+        const priceIds = {
+          monthly: 'price_1TLRRxL98dr6Pw0kdyFkEsEp',
+          annual: 'price_1TLRT0L98dr6Pw0kBgfProeu',
+        };
+        const { data: { user } } = await supabase.auth.getUser();
+        await handleCheckout(priceIds[selected], 'momentum', user?.email ?? undefined);
       }
     } catch (error) {
       console.error('[Paywall] Purchase error:', error);
