@@ -251,9 +251,14 @@ export default function Pricing() {
                 <Button
                   className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
                   size="lg"
-                  onClick={() => { analytics.startCheckout('pro'); window.open(getPaymentLink('plus', billingInterval), '_blank'); }}
+                  disabled={!!checkoutLoading}
+                  onClick={() => handleCheckout('plus')}
                 >
-                  Go Pro — $3.99/mo
+                  {checkoutLoading === `plus-${billingInterval}` ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Redirecting…</>
+                  ) : (
+                    'Go Pro — $3.99/mo'
+                  )}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
               </CardContent>
