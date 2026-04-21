@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Star, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-type BillingInterval = "monthly" | "annual";
+import type { BillingInterval } from "@/lib/plans";
 
 const tiers = [
   {
