@@ -49,6 +49,12 @@
 	</array>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app may use your location to personalize your experience.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Momentum reads your workout history so it can show your training context inside the app.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Momentum saves the workouts you complete to Apple Health so all your activity lives in one place.</string>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>Momentum sends a daily reminder so you never miss your workout window.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
