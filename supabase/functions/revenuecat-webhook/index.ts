@@ -36,6 +36,21 @@ serve(async (req) => {
   }
 
   try {
+    // Verify webhook authenticity via shared Authorization header
+    const expectedAuth = Deno.env.get("REVENUECAT_WEBHOOK_AUTH_HEADER");
+    if (expectedAuth) {
+      const incomingAuth = req.headers.get("authorization") ?? req.headers.get("Authorization");
+      if (incomingAuth !== expectedAuth) {
+        logStep("Unauthorized webhook attempt");
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          headers: { "Content-Type": "application/json" },
+          status: 401,
+        });
+      }
+    } else {
+      logStep("WARNING: REVENUECAT_WEBHOOK_AUTH_HEADER not configured, skipping auth check");
+    }
+
     const body = await req.text();
     if (!body) {
       return new Response(JSON.stringify({ error: "Empty request body" }), {

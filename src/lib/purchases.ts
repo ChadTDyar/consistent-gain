@@ -4,9 +4,12 @@ import { supabase } from '@/integrations/supabase/client';
 
 const ENTITLEMENT_ID = 'momentum_premium';
 
+// RevenueCat iOS public/publishable SDK key. Safe to embed in client bundle.
+const REVENUECAT_IOS_PUBLIC_KEY = 'appl_IqFsjDfSkoyXBczCICRhizbqbcE';
+
 export async function initPurchases(userId: string) {
   if (!Capacitor.isNativePlatform()) return;
-  const apiKey = import.meta.env.VITE_REVENUECAT_IOS_KEY;
+  const apiKey = import.meta.env.VITE_REVENUECAT_IOS_KEY || REVENUECAT_IOS_PUBLIC_KEY;
   await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
   await Purchases.configure({ apiKey });
   await Purchases.logIn({ appUserID: userId });
