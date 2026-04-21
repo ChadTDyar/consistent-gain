@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { calculateStreak, getUserActivityLogs } from "@/lib/streakUtils";
+import { isIOSNative } from "@/lib/platform";
 
 interface ProfileData {
   id: string;

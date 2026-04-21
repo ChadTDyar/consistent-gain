@@ -72,14 +72,14 @@ export function LandingPricing() {
   const [loading, setLoading] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | undefined>();
 
-  // Apple IAP compliance: hide the entire pricing section on iOS native builds
-  if (isIOSNative()) return null;
-
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user?.email) setUserEmail(user.email);
     });
   }, []);
+
+  // Apple IAP compliance: hide the entire pricing section on iOS native builds
+  if (isIOSNative()) return null;
 
   const onCheckout = async (tier: typeof tiers[number]) => {
     if (!tier.plan || !tier.priceIds) return;
