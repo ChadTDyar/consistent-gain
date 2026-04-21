@@ -6,6 +6,7 @@ import { CheckCircle, Star } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { handleCheckout } from "@/lib/checkout";
+import { isIOSNative } from "@/lib/platform";
 
 import type { BillingInterval } from "@/lib/plans";
 
@@ -70,6 +71,9 @@ export function LandingPricing() {
   const [interval, setInterval] = useState<BillingInterval>("monthly");
   const [loading, setLoading] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | undefined>();
+
+  // Apple IAP compliance: hide the entire pricing section on iOS native builds
+  if (isIOSNative()) return null;
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
