@@ -11,7 +11,6 @@ node_modules
 dist
 dist-ssr
 *.local
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +21,17 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Xcode build artifacts
+*.xcarchive/
+MomentumExport/
+ExportOptions.plist
+ios/ExportOptions.plist
+ios/App/Pods/
+ios/App/build/
+ios/DerivedData/
+# Supabase CLI temp
+supabase/.temp/
+# Android build artifacts (if Android is added)
+android/build/
+android/app/build/
+android/.gradle/
