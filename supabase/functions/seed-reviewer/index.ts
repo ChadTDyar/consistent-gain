@@ -95,7 +95,7 @@ Deno.serve(async (req) => {
           goal_id: goal.id,
           completed_at: dateStr,
           duration_minutes: goal.title === "10-minute walk" ? 10 : 15,
-          intensity_level: "moderate",
+          intensity_level: "medium",
           session_type: "regular",
         });
       }
