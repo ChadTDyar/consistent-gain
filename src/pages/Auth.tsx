@@ -59,20 +59,65 @@ export default function Auth() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Handle OAuth deep link callbacks on native iOS/Android
+    let appUrlListener: { remove: () => void } | undefined;
+    if (Capacitor.isNativePlatform()) {
+      import('@capacitor/app').then(({ App }) => {
+        App.addListener('appUrlOpen', async ({ url }) => {
+          // Match the auth-callback deep link
+          if (!url.includes('auth-callback')) return;
+
+          // Extract tokens from URL fragment (#access_token=...&refresh_token=...)
+          const hashPart = url.split('#')[1];
+          if (!hashPart) return;
+
+          const params = new URLSearchParams(hashPart);
+          const accessToken = params.get('access_token');
+          const refreshToken = params.get('refresh_token');
+
+          if (accessToken && refreshToken) {
+            await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+          }
+
+          // Close the in-app browser
+          try {
+            await Browser.close();
+          } catch {
+            // Browser may already be closed
+          }
+        }).then((listener) => {
+          appUrlListener = listener;
+        });
+      });
+    }
+
+    return () => {
+      subscription.unsubscribe();
+      appUrlListener?.remove();
+    };
   }, [navigate]);
 
-  const handleAuth = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+
+    // Read values directly from form DOM to handle iOS AutoFill
+    // which may not trigger React onChange on controlled inputs
+    const form = e.currentTarget;
+    const formEmail = (form.elements.namedItem('email') as HTMLInputElement)?.value || email;
+    const formPassword = (form.elements.namedItem('password') as HTMLInputElement)?.value || password;
+    const formName = (form.elements.namedItem('name') as HTMLInputElement)?.value || name;
 
     try {
       // Validate input for signup
       if (!isLogin) {
         const validationResult = authSchema.safeParse({
-          email,
-          password,
-          name,
+          email: formEmail,
+          password: formPassword,
+          name: formName,
         });
 
         if (!validationResult.success) {
@@ -85,8 +130,8 @@ export default function Auth() {
 
       if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+          email: formEmail,
+          password: formPassword,
         });
 
         if (error) throw error;
@@ -94,10 +139,10 @@ export default function Auth() {
         toast.success("Welcome back!");
       } else {
         const { error } = await supabase.auth.signUp({
-          email,
-          password,
+          email: formEmail,
+          password: formPassword,
           options: {
-            data: { name },
+            data: { name: formName },
             emailRedirectTo: `${window.location.origin}/dashboard`,
           },
         });
