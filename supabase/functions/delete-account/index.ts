@@ -47,6 +47,54 @@ Deno.serve(async (req) => {
     const userId = user.id;
     console.log('Deleting account for user:', userId);
 
+    // 0a. Cancel Stripe subscription (non-blocking)
+    try {
+      const stripeKey = Deno.env.get('STRIPE_SECRET_KEY');
+      if (stripeKey) {
+        const { data: stripeRow } = await supabase
+          .from('stripe_customers')
+          .select('stripe_subscription_id, stripe_customer_id')
+          .eq('user_id', userId)
+          .maybeSingle();
+
+        if (stripeRow?.stripe_subscription_id) {
+          const cancelRes = await fetch(
+            `https://api.stripe.com/v1/subscriptions/${stripeRow.stripe_subscription_id}`,
+            {
+              method: 'DELETE',
+              headers: { Authorization: `Bearer ${stripeKey}` },
+            }
+          );
+          console.log('Stripe subscription cancel status:', cancelRes.status);
+        } else {
+          console.log('No Stripe subscription found for user:', userId);
+        }
+      } else {
+        console.log('STRIPE_SECRET_KEY not configured, skipping Stripe cancel');
+      }
+    } catch (stripeErr) {
+      console.error('Non-blocking Stripe cancel error:', stripeErr);
+    }
+
+    // 0b. Delete RevenueCat subscriber (non-blocking)
+    try {
+      const rcKey = Deno.env.get('REVENUECAT_API_KEY');
+      if (rcKey) {
+        const rcRes = await fetch(
+          `https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(userId)}`,
+          {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${rcKey}` },
+          }
+        );
+        console.log('RevenueCat subscriber delete status:', rcRes.status);
+      } else {
+        console.log('REVENUECAT_API_KEY not configured, skipping RevenueCat delete');
+      }
+    } catch (rcErr) {
+      console.error('Non-blocking RevenueCat delete error:', rcErr);
+    }
+
     // Delete all user-related data in order (respecting foreign keys)
     // 1. Delete chat messages
     const { error: chatError } = await supabase
@@ -106,6 +154,15 @@ Deno.serve(async (req) => {
       console.error('Error deleting profile:', profileError);
     } else {
       console.log('Deleted profile for user:', userId);
+    }
+
+    // 5b. Delete stripe_customers row (avoid orphan after auth delete)
+    const { error: stripeRowError } = await supabase
+      .from('stripe_customers')
+      .delete()
+      .eq('user_id', userId);
+    if (stripeRowError) {
+      console.error('Error deleting stripe_customers row:', stripeRowError);
     }
 
     // 6. Finally, delete the auth user (this must be done last)
