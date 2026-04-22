@@ -36,7 +36,13 @@ export default function Pricing() {
         .select('plan')
         .eq('id', user.id)
         .single();
-      if (profile?.plan) setCurrentPlan(profile.plan as PlanTier);
+      if (profile?.plan) {
+        setCurrentPlan(profile.plan as PlanTier);
+        if (profile.plan !== 'free') {
+          navigate('/dashboard', { replace: true });
+          return;
+        }
+      }
     }
   };
 
