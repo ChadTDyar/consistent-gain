@@ -156,6 +156,15 @@ Deno.serve(async (req) => {
       console.log('Deleted profile for user:', userId);
     }
 
+    // 5b. Delete stripe_customers row (avoid orphan after auth delete)
+    const { error: stripeRowError } = await supabase
+      .from('stripe_customers')
+      .delete()
+      .eq('user_id', userId);
+    if (stripeRowError) {
+      console.error('Error deleting stripe_customers row:', stripeRowError);
+    }
+
     // 6. Finally, delete the auth user (this must be done last)
     const { error: deleteUserError } = await supabase.auth.admin.deleteUser(userId);
 
