@@ -4,7 +4,7 @@
     "details": [
       {
         "appID": "SJ4KCZZ55K.com.chad.momentumfit",
-        "paths": ["*"]
+        "paths": ["/auth/callback", "/auth/callback/*"]
       }
     ]
   },

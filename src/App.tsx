@@ -39,6 +39,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Profile = lazy(() => import("./pages/Profile"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const HabitStreaksScience = lazy(() => import("./pages/HabitStreaksScience"));
 const FitnessHabitGuide = lazy(() => import("./pages/FitnessHabitGuide"));
 const FitnessTrackerVsHabitTracker = lazy(() => import("./pages/FitnessTrackerVsHabitTracker"));
@@ -87,6 +88,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/goal/:id" element={<GoalDetail />} />
               <Route path="/pricing" element={isIOSNative() ? <Navigate to="/dashboard" replace /> : <Pricing />} />

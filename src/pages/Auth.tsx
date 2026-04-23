@@ -59,13 +59,13 @@ export default function Auth() {
       }
     });
 
-    // Handle OAuth deep link callbacks on native iOS/Android
+    // Handle OAuth universal-link callbacks on native iOS/Android
     let appUrlListener: { remove: () => void } | undefined;
     if (Capacitor.isNativePlatform()) {
       import('@capacitor/app').then(({ App }) => {
         App.addListener('appUrlOpen', async ({ url }) => {
-          // Match the auth-callback deep link
-          if (!url.includes('auth-callback')) return;
+          // Match the universal-link auth callback
+          if (!url.includes('/auth/callback')) return;
 
           // Extract tokens from URL fragment (#access_token=...&refresh_token=...)
           const hashPart = url.split('#')[1];
@@ -262,7 +262,7 @@ export default function Auth() {
                   const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                      redirectTo: 'com.chad.momentumfit://auth-callback',
+                      redirectTo: 'https://momentumfit.app/auth/callback',
                       skipBrowserRedirect: true,
                     },
                   });
@@ -305,7 +305,7 @@ export default function Auth() {
                   const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: 'apple',
                     options: {
-                      redirectTo: 'com.chad.momentumfit://auth-callback',
+                      redirectTo: 'https://momentumfit.app/auth/callback',
                       skipBrowserRedirect: true,
                     },
                   });
