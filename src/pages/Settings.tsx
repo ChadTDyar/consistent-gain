@@ -241,19 +241,14 @@ export default function Settings() {
     }
   };
 
+  // Multi-step delete confirmation (3 steps inside a single React-controlled AlertDialog).
+  // Replaces window.confirm() which is unreliable in iOS WKWebView via Capacitor.
+  const [deleteStep, setDeleteStep] = useState<0 | 1 | 2 | 3>(0);
+
   const handleDeleteAccount = async () => {
-    if (!confirm("Are you absolutely sure? This action cannot be undone and will permanently delete all your data.")) {
-      return;
-    }
-
-    if (!confirm("This is your final warning. All your goals, progress, and data will be permanently deleted. Continue?")) {
-      return;
-    }
-
     try {
-      setSaving(true);
+      setDeleting(true);
 
-      // Call the secure edge function to delete account
       const { error } = await supabase.functions.invoke('delete-account', {
         method: 'POST'
       });
@@ -262,13 +257,19 @@ export default function Settings() {
         throw error;
       }
 
+      // Sign out client-side so the session cookie/local storage is cleared
+      // before navigation. Otherwise the auth listener may bounce the user
+      // back to /dashboard with a stale session.
+      try { await supabase.auth.signOut(); } catch { /* ignore */ }
+
       toast.success("Account deleted successfully");
+      setDeleteStep(0);
       navigate('/auth');
     } catch (error) {
       console.error('Error deleting account:', error);
       toast.error("Failed to delete account. Please try again or contact support.");
     } finally {
-      setSaving(false);
+      setDeleting(false);
     }
   };
 
