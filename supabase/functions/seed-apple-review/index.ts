@@ -115,9 +115,10 @@ serve(async (req) => {
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e);
-    return new Response(JSON.stringify({ error: msg }), {
+  } catch (e: any) {
+    const msg = e?.message ?? (typeof e === "string" ? e : JSON.stringify(e));
+    console.error("seed-apple-review error:", msg, e);
+    return new Response(JSON.stringify({ error: msg, raw: e }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
