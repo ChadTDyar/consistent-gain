@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.seed-reviewer]
 verify_jwt = false
+
+[functions.seed-reviewer-premium]
+verify_jwt = false
