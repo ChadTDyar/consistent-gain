@@ -543,6 +543,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_set_premium: {
+        Args: {
+          _is_premium: boolean
+          _plan: string
+          _subscription_status: string
+          _user_id: string
+        }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
