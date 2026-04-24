@@ -97,7 +97,7 @@ serve(async (req) => {
         completed_at: d.toISOString().slice(0, 10),
         session_type: "regular",
         duration_minutes: 12,
-        intensity_level: "moderate",
+        intensity_level: "medium",
         rpe_rating: 6,
         notes: i === 0 ? "Apple review demo seed" : null,
       });
