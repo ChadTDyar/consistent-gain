@@ -241,19 +241,14 @@ export default function Settings() {
     }
   };
 
+  // Multi-step delete confirmation (3 steps inside a single React-controlled AlertDialog).
+  // Replaces window.confirm() which is unreliable in iOS WKWebView via Capacitor.
+  const [deleteStep, setDeleteStep] = useState<0 | 1 | 2 | 3>(0);
+
   const handleDeleteAccount = async () => {
-    if (!confirm("Are you absolutely sure? This action cannot be undone and will permanently delete all your data.")) {
-      return;
-    }
-
-    if (!confirm("This is your final warning. All your goals, progress, and data will be permanently deleted. Continue?")) {
-      return;
-    }
-
     try {
-      setSaving(true);
+      setDeleting(true);
 
-      // Call the secure edge function to delete account
       const { error } = await supabase.functions.invoke('delete-account', {
         method: 'POST'
       });
@@ -262,13 +257,19 @@ export default function Settings() {
         throw error;
       }
 
+      // Sign out client-side so the session cookie/local storage is cleared
+      // before navigation. Otherwise the auth listener may bounce the user
+      // back to /dashboard with a stale session.
+      try { await supabase.auth.signOut(); } catch { /* ignore */ }
+
       toast.success("Account deleted successfully");
+      setDeleteStep(0);
       navigate('/auth');
     } catch (error) {
       console.error('Error deleting account:', error);
       toast.error("Failed to delete account. Please try again or contact support.");
     } finally {
-      setSaving(false);
+      setDeleting(false);
     }
   };
 
@@ -504,44 +505,104 @@ export default function Settings() {
               <CardDescription className="text-base">Permanent account actions</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button 
-                    variant="destructive"
-                    size="lg"
-                    className="w-full font-semibold"
-                  >
-                    <Trash2 className="mr-2 h-5 w-5" />
-                    Delete Account
-                  </Button>
-                </AlertDialogTrigger>
+              <Button
+                variant="destructive"
+                size="lg"
+                className="w-full font-semibold"
+                onClick={() => setDeleteStep(1)}
+              >
+                <Trash2 className="mr-2 h-5 w-5" />
+                Delete Account
+              </Button>
+
+              <AlertDialog
+                open={deleteStep > 0}
+                onOpenChange={(open) => {
+                  if (!open && !deleting) setDeleteStep(0);
+                }}
+              >
                 <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="flex items-center gap-2">
-                      <AlertTriangle className="h-5 w-5 text-destructive" />
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription className="text-base">
-                      This action cannot be undone. This will permanently delete your account and remove all your data from our servers, including goals, activity logs, and chat history.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction 
-                      onClick={handleDeleteAccount}
-                      disabled={deleting}
-                      className="bg-destructive hover:bg-destructive/90"
-                    >
-                      {deleting ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Deleting...
-                        </>
-                      ) : (
-                        "Delete Account"
-                      )}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
+                  {deleteStep === 1 && (
+                    <>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="flex items-center gap-2">
+                          <AlertTriangle className="h-5 w-5 text-destructive" />
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-base">
+                          This action cannot be undone. This will permanently delete your account and remove all your data from our servers, including goals, activity logs, and chat history.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => setDeleteStep(0)}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={(e) => { e.preventDefault(); setDeleteStep(2); }}
+                          className="bg-destructive hover:bg-destructive/90"
+                        >
+                          Continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </>
+                  )}
+
+                  {deleteStep === 2 && (
+                    <>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="flex items-center gap-2">
+                          <AlertTriangle className="h-5 w-5 text-destructive" />
+                          This is your final warning
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-base">
+                          All your goals, progress, and data will be permanently deleted. Continue?
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => setDeleteStep(0)}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={(e) => { e.preventDefault(); setDeleteStep(3); }}
+                          className="bg-destructive hover:bg-destructive/90"
+                        >
+                          I understand, continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </>
+                  )}
+
+                  {deleteStep === 3 && (
+                    <>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="flex items-center gap-2">
+                          <AlertTriangle className="h-5 w-5 text-destructive" />
+                          Confirm permanent deletion
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-base">
+                          Tap <strong>Delete my account</strong> below to permanently delete your account. You will be signed out immediately.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel
+                          onClick={() => setDeleteStep(0)}
+                          disabled={deleting}
+                        >
+                          Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={(e) => { e.preventDefault(); handleDeleteAccount(); }}
+                          disabled={deleting}
+                          className="bg-destructive hover:bg-destructive/90"
+                        >
+                          {deleting ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Deleting...
+                            </>
+                          ) : (
+                            "Delete my account"
+                          )}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </>
+                  )}
                 </AlertDialogContent>
               </AlertDialog>
             </CardContent>
