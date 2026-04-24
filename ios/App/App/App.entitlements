@@ -12,5 +12,9 @@
 	<array/>
 	<key>aps-environment</key>
 	<string>production</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:momentumfit.app</string>
+	</array>
 </dict>
 </plist>
