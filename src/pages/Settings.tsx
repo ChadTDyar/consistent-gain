@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, LogOut, Download, Trash2, AlertTriangle, ShieldCheck } from "lucide-react";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { DataExport } from "@/components/DataExport";
 import { WorkoutBuddies } from "@/components/WorkoutBuddies";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -521,7 +521,7 @@ export default function Settings() {
                   if (!open && !deleting) setDeleteStep(0);
                 }}
               >
-                <AlertDialogContent>
+                <AlertDialogContent key={deleteStep}>
                   {deleteStep === 1 && (
                     <>
                       <AlertDialogHeader>
@@ -534,13 +534,15 @@ export default function Settings() {
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel onClick={() => setDeleteStep(0)}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={(e) => { e.preventDefault(); setDeleteStep(2); }}
-                          className="bg-destructive hover:bg-destructive/90"
+                        <Button variant="outline" onClick={() => setDeleteStep(0)}>
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={() => setDeleteStep(2)}
                         >
                           Continue
-                        </AlertDialogAction>
+                        </Button>
                       </AlertDialogFooter>
                     </>
                   )}
@@ -557,13 +559,15 @@ export default function Settings() {
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel onClick={() => setDeleteStep(0)}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={(e) => { e.preventDefault(); setDeleteStep(3); }}
-                          className="bg-destructive hover:bg-destructive/90"
+                        <Button variant="outline" onClick={() => setDeleteStep(0)}>
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={() => setDeleteStep(3)}
                         >
                           I understand, continue
-                        </AlertDialogAction>
+                        </Button>
                       </AlertDialogFooter>
                     </>
                   )}
@@ -580,16 +584,17 @@ export default function Settings() {
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel
+                        <Button
+                          variant="outline"
                           onClick={() => setDeleteStep(0)}
                           disabled={deleting}
                         >
                           Cancel
-                        </AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={(e) => { e.preventDefault(); handleDeleteAccount(); }}
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={handleDeleteAccount}
                           disabled={deleting}
-                          className="bg-destructive hover:bg-destructive/90"
                         >
                           {deleting ? (
                             <>
@@ -599,7 +604,7 @@ export default function Settings() {
                           ) : (
                             "Delete my account"
                           )}
-                        </AlertDialogAction>
+                        </Button>
                       </AlertDialogFooter>
                     </>
                   )}
