@@ -9,6 +9,7 @@ import { SEO } from "@/components/SEO";
 import { type PlanTier } from "@/lib/plans";
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { isIOSNative } from "@/lib/platform";
 
 export default function Coach() {
   const navigate = useNavigate();
@@ -95,14 +96,18 @@ export default function Coach() {
                   <p className="text-sm text-muted-foreground">
                     When you miss the same day three weeks running, Coach notices — and adjusts your plan around your actual life, not an ideal one.
                   </p>
-                  <Button
-                    onClick={() => navigate("/pricing")}
-                    className="w-full font-bold text-sm text-white"
-                    style={{ background: '#0d3b5e' }}
-                  >
-                    🔒 Upgrade to Premium →
-                  </Button>
-                  <p className="text-xs text-muted-foreground">Cancel anytime.</p>
+                  {!isIOSNative() && (
+                    <>
+                      <Button
+                        onClick={() => navigate("/pricing")}
+                        className="w-full font-bold text-sm text-white"
+                        style={{ background: '#0d3b5e' }}
+                      >
+                        🔒 Upgrade to Premium →
+                      </Button>
+                      <p className="text-xs text-muted-foreground">Cancel anytime.</p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

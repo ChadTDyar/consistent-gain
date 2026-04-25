@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Download, Loader2, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { type PlanTier, canAccessFeature } from "@/lib/plans";
+import { isIOSNative } from "@/lib/platform";
 
 interface DataExportProps {
   plan?: PlanTier;
@@ -94,16 +95,20 @@ export function DataExport({ plan = 'free' }: DataExportProps) {
           </>
         ) : (
           <>
-            <Button
-              onClick={() => window.location.href = '/pricing'}
-              variant="secondary"
-              className="w-full"
-            >
-              <Lock className="mr-2 h-4 w-4" />
-              Upgrade to Pro to Export
-            </Button>
+            {!isIOSNative() && (
+              <Button
+                onClick={() => window.location.href = '/pricing'}
+                variant="secondary"
+                className="w-full"
+              >
+                <Lock className="mr-2 h-4 w-4" />
+                Upgrade to Pro to Export
+              </Button>
+            )}
             <p className="text-xs text-muted-foreground mt-2">
-              CSV and JSON data export is available on the Pro plan.
+              {isIOSNative()
+                ? "CSV and JSON data export is available on the Pro plan."
+                : "CSV and JSON data export is available on the Pro plan."}
             </p>
           </>
         )}
