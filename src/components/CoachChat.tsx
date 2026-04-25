@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { analytics } from "@/lib/analytics";
 import { chatMessageSchema } from "@/lib/validations";
+import { isIOSNative } from "@/lib/platform";
 
 type Message = {
   role: "user" | "assistant";
@@ -96,11 +97,17 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
         const data = await resp.json();
         if (data.limitReached) {
           toast.error("Daily message limit reached!", {
-            description: "Upgrade to Premium for unlimited messages.",
-            action: {
-              label: "Upgrade",
-              onClick: () => navigate("/pricing"),
-            },
+            description: isIOSNative()
+              ? "You've reached today's message limit. Try again tomorrow."
+              : "Upgrade to Premium for unlimited messages.",
+            ...(isIOSNative()
+              ? {}
+              : {
+                  action: {
+                    label: "Upgrade",
+                    onClick: () => navigate("/pricing"),
+                  },
+                }),
           });
         } else {
           toast.error("Rate limit reached. Please try again in a moment.");

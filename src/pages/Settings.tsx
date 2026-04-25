@@ -473,7 +473,7 @@ export default function Settings() {
                       "Manage Subscription"
                     )}
                   </Button>
-                ) : (
+                ) : !isIOSNative() ? (
                   <Button 
                     onClick={() => navigate("/pricing")}
                     size="lg"
@@ -481,7 +481,7 @@ export default function Settings() {
                   >
                     Upgrade
                   </Button>
-                )}
+                ) : null}
               </div>
             </CardContent>
           </Card>
