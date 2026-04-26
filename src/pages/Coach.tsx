@@ -139,7 +139,42 @@ export default function Coach() {
                   <p className="text-sm text-muted-foreground">
                     When you miss the same day three weeks running, Coach notices — and adjusts your plan around your actual life, not an ideal one.
                   </p>
-                  {!isIOSNative() && (
+                  {isIOSNative() ? (
+                    <>
+                      <Button
+                        onClick={() => handleIAP('annual')}
+                        disabled={iapLoading !== null}
+                        className="w-full font-bold text-sm text-white min-h-[48px]"
+                        style={{ background: '#0d3b5e' }}
+                      >
+                        {iapLoading === 'annual' ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          `Unlock Premium — $${PLANS.pro.annualPrice}/yr`
+                        )}
+                      </Button>
+                      <Button
+                        onClick={() => handleIAP('monthly')}
+                        disabled={iapLoading !== null}
+                        variant="outline"
+                        className="w-full text-sm min-h-[44px]"
+                      >
+                        {iapLoading === 'monthly' ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          `Or $${PLANS.pro.price.toFixed(2)}/mo`
+                        )}
+                      </Button>
+                      <button
+                        onClick={handleRestore}
+                        disabled={iapLoading !== null}
+                        className="text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground transition-colors"
+                      >
+                        {iapLoading === 'restore' ? 'Restoring…' : 'Restore Purchases'}
+                      </button>
+                      <p className="text-xs text-muted-foreground">Cancel anytime in Settings.</p>
+                    </>
+                  ) : (
                     <>
                       <Button
                         onClick={() => navigate("/pricing")}
