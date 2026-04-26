@@ -21,6 +21,46 @@ export default function Coach() {
   const [daysSinceActivity, setDaysSinceActivity] = useState(0);
   const [plan, setPlan] = useState<PlanTier>("free");
   const [showUpgradeWall, setShowUpgradeWall] = useState(false);
+  const [iapLoading, setIapLoading] = useState<null | 'monthly' | 'annual' | 'restore'>(null);
+
+  const handleIAP = async (interval: 'monthly' | 'annual') => {
+    setIapLoading(interval);
+    try {
+      const fn = interval === 'annual' ? purchaseAnnual : purchaseMonthly;
+      const isActive = await fn();
+      if (isActive) {
+        toast.success("Welcome to Premium!");
+        setPlan('pro');
+      }
+    } catch (err: any) {
+      const msg = String(err?.message ?? err ?? '');
+      // RevenueCat user-cancelled error code is 1; surface only real errors.
+      if (!/cancel|userCancelled|1\b/i.test(msg)) {
+        console.error('[Coach IAP] purchase error:', err);
+        toast.error("Purchase failed. Please try again.");
+      }
+    } finally {
+      setIapLoading(null);
+    }
+  };
+
+  const handleRestore = async () => {
+    setIapLoading('restore');
+    try {
+      const isActive = await restorePurchases();
+      if (isActive) {
+        toast.success("Subscription restored!");
+        setPlan('pro');
+      } else {
+        toast.info("No active subscription found.");
+      }
+    } catch (err) {
+      console.error('[Coach IAP] restore error:', err);
+      toast.error("Could not restore purchases.");
+    } finally {
+      setIapLoading(null);
+    }
+  };
 
   useEffect(() => {
     const init = async () => {
