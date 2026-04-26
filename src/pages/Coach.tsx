@@ -7,9 +7,12 @@ import { MOMENTUM } from "@/constants/value-language";
 import { calculateStreak, getUserActivityLogs, getDaysSinceLastActivity } from "@/lib/streakUtils";
 import { SEO } from "@/components/SEO";
 import { type PlanTier } from "@/lib/plans";
-import { Lock } from "lucide-react";
+import { Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isIOSNative } from "@/lib/platform";
+import { purchaseAnnual, purchaseMonthly, restorePurchases } from "@/lib/purchases";
+import { toast } from "sonner";
+import { PLANS } from "@/lib/plans";
 
 export default function Coach() {
   const navigate = useNavigate();
