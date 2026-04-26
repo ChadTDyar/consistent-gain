@@ -144,6 +144,83 @@ Deno.serve(async (req) => {
       console.log('Deleted goals for user:', userId);
     }
 
+    // 4a. Delete daily_context
+    const { error: dailyContextError } = await supabase
+      .from('daily_context')
+      .delete()
+      .eq('user_id', userId);
+    if (dailyContextError) {
+      console.error('Error deleting daily_context:', dailyContextError);
+    } else {
+      console.log('Deleted daily_context for user:', userId);
+    }
+
+    // 4b. Delete pain_reports
+    const { error: painReportsError } = await supabase
+      .from('pain_reports')
+      .delete()
+      .eq('user_id', userId);
+    if (painReportsError) {
+      console.error('Error deleting pain_reports:', painReportsError);
+    } else {
+      console.log('Deleted pain_reports for user:', userId);
+    }
+
+    // 4c. Delete streak_repairs
+    const { error: streakRepairsError } = await supabase
+      .from('streak_repairs')
+      .delete()
+      .eq('user_id', userId);
+    if (streakRepairsError) {
+      console.error('Error deleting streak_repairs:', streakRepairsError);
+    } else {
+      console.log('Deleted streak_repairs for user:', userId);
+    }
+
+    // 4d. Delete cost_tracking (costs)
+    const { error: costTrackingError } = await supabase
+      .from('cost_tracking')
+      .delete()
+      .eq('user_id', userId);
+    if (costTrackingError) {
+      console.error('Error deleting cost_tracking:', costTrackingError);
+    } else {
+      console.log('Deleted cost_tracking for user:', userId);
+    }
+
+    // 4e. Delete testimonials
+    const { error: testimonialsError } = await supabase
+      .from('testimonials')
+      .delete()
+      .eq('user_id', userId);
+    if (testimonialsError) {
+      console.error('Error deleting testimonials:', testimonialsError);
+    } else {
+      console.log('Deleted testimonials for user:', userId);
+    }
+
+    // 4f. Delete user_roles
+    const { error: userRolesError } = await supabase
+      .from('user_roles')
+      .delete()
+      .eq('user_id', userId);
+    if (userRolesError) {
+      console.error('Error deleting user_roles:', userRolesError);
+    } else {
+      console.log('Deleted user_roles for user:', userId);
+    }
+
+    // 4g. Delete workout_buddies (both sides of relationship)
+    const { error: workoutBuddiesError } = await supabase
+      .from('workout_buddies')
+      .delete()
+      .or(`user_id.eq.${userId},buddy_id.eq.${userId}`);
+    if (workoutBuddiesError) {
+      console.error('Error deleting workout_buddies:', workoutBuddiesError);
+    } else {
+      console.log('Deleted workout_buddies for user:', userId);
+    }
+
     // 5. Delete profile
     const { error: profileError } = await supabase
       .from('profiles')
