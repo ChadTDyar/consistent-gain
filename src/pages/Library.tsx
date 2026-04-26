@@ -128,9 +128,9 @@ export default function Library() {
                       <p className="text-xs text-muted-foreground mt-1">{ex.description}</p>
                     </div>
                     <div className="flex flex-col items-end gap-1">
-                      <Badge variant="outline" className="text-[10px] capitalize">{ex.category}</Badge>
+                      <Badge variant="outline" className="text-xs capitalize">{ex.category}</Badge>
                       {ex.jointSafe && (
-                        <Badge className="text-[10px] bg-success/10 text-success border-success/20">Joint-Safe</Badge>
+                        <Badge className="text-xs bg-success/10 text-success border-success/30">Joint-Safe</Badge>
                       )}
                     </div>
                   </div>
