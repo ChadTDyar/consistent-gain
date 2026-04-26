@@ -62,8 +62,8 @@ export function AppSidebar() {
               <Icon className="h-5 w-5 flex-shrink-0" />
               <span className="flex-1 text-left">{item.label}</span>
               {item.locked && (
-                <Badge variant="outline" className="text-[0.6rem] px-1.5 py-0 flex items-center gap-0.5">
-                  <Lock className="h-2.5 w-2.5" />
+                <Badge variant="outline" className="text-xs px-1.5 py-0 flex items-center gap-1">
+                  <Lock className="h-3 w-3" />
                   {item.lockLabel}
                 </Badge>
               )}
