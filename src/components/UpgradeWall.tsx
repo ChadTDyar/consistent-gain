@@ -367,6 +367,30 @@ export function UpgradeWall({
           </p>
         </div>
       </div>
+
+      {/*
+        Polite live region — screen-reader-only.
+        - aria-live="polite" so it doesn't interrupt the dialog announcement.
+        - aria-atomic="true" so the full message is read on each update,
+          not just the diff.
+        - role="status" gives belt-and-suspenders coverage for AT that don't
+          map aria-live polite onto a generic node.
+        - Lives inside the dialog so the focus-trap + scroll lock don't have
+          to consider an extra portal.
+        - Populated 100ms after mount (see effect above) so the AT registers
+          this as a *live update* rather than initial DOM, which would race
+          with the dialog announcement and double-speak the headline.
+        - sr-only utility hides it from sighted users.
+      */}
+      <div
+        id={announcementId}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {liveAnnouncement}
+      </div>
     </div>,
     document.body
   );
