@@ -227,17 +227,24 @@ export function UpgradeWall({
   // - Both side actions degrade gracefully if the Capacitor plugins are not
   //   available (web preview running through the iOS code path during dev).
   if (ios) {
+    // Wrap the iOS branch in a runtime guard so a future regression that
+    // makes the fallback render null is observable in production. Without
+    // this, iOS users would silently get nothing and we'd only find out
+    // from support tickets. The guard is render-time-cheap (one ref check
+    // in an effect) and ships a single `upgrade_wall_null_return` event.
     return (
-      <UpgradeWallIOSFallback
-        headline={headline}
-        body={body}
-        accentColor={accentColor}
-        onDismiss={onDismiss}
-        coachPreview={coachPreview}
-        streakRepairPreview={streakRepairPreview}
-        gate={gate}
-        tier={tier}
-      />
+      <IOSBranchGuard gate={gate} tier={tier}>
+        <UpgradeWallIOSFallback
+          headline={headline}
+          body={body}
+          accentColor={accentColor}
+          onDismiss={onDismiss}
+          coachPreview={coachPreview}
+          streakRepairPreview={streakRepairPreview}
+          gate={gate}
+          tier={tier}
+        />
+      </IOSBranchGuard>
     );
   }
 
