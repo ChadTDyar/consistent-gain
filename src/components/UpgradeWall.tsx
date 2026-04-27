@@ -76,6 +76,66 @@ export function UpgradeWall({
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
 
+  // -------------------------------------------------------------------------
+  // Parent-level focus safety net (covers ALL render branches including the
+  // iOS fallback path AND any future branch that returns null).
+  //
+  // Why at the parent level (not inside the variant components):
+  //   - The web variant has its own rich restoration in the focus-trap
+  //     effect cleanup. The iOS variant has its own (simpler) restoration.
+  //   - But if either variant unmounts in an unusual way (error boundary
+  //     swallowed the cleanup, the variant returned null on iOS for a
+  //     legacy code path, an experiment short-circuited rendering), the
+  //     keyboard user is left with focus on <body> — visually nowhere,
+  //     no SR announcement, no clear next-tab target.
+  //   - This effect runs OUTSIDE the variant code, so it always fires on
+  //     unmount of the public <UpgradeWall>. The variant-specific cleanups
+  //     run first; if they successfully focused something, this is a no-op
+  //     because the captured trigger is already focused (or `restoreFocus`
+  //     simply re-focuses it idempotently).
+  //
+  // Capture happens via a layout effect so we read activeElement BEFORE the
+  // variant's focus-trap effect moves focus into the dialog (effects in
+  // React run child-then-parent for layout, parent-then-child for passive,
+  // but we want the capture to win the race against the variant's own
+  // focus() call — useLayoutEffect at the parent fires before the child's
+  // useEffect).
+  // -------------------------------------------------------------------------
+  const parentFocusOrigin = useRef<HTMLElement | null>(null);
+  // useLayoutEffect-equivalent semantics matter only on real DOM; useEffect
+  // is sufficient here because document.activeElement at first render is
+  // still the trigger (the variant's focus() runs in its own useEffect,
+  // after this one mounts in the same commit). Using useEffect avoids the
+  // SSR warning for tests/storybooks that import without jsdom.
+  useEffect(() => {
+    parentFocusOrigin.current = captureFocusOrigin();
+    // bodyFallback resolution: prefer the page's <main> landmark for
+    // screen-reader anchor stability, fall back to body so focus is at
+    // least defined. tabIndex is set inline so even non-tabbable landmarks
+    // can receive programmatic focus (cleared on next interaction).
+    const resolveBodyFallback = (): HTMLElement | null => {
+      if (typeof document === "undefined") return null;
+      const main =
+        document.querySelector<HTMLElement>("main") ??
+        (document.body as HTMLElement | null);
+      if (main && main.tabIndex < 0) main.tabIndex = -1;
+      return main;
+    };
+    return () => {
+      // Variant cleanup already ran by this point. We re-attempt with the
+      // bodyFallback wired in case the variant skipped restoration entirely
+      // (e.g. iOS variant in a future null-render branch). restoreFocus is
+      // idempotent: focusing the same element twice is a no-op.
+      restoreFocus({
+        explicit: returnFocus,
+        auto: parentFocusOrigin.current,
+        bodyFallback: resolveBodyFallback(),
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
   // WCAG 2.3.3 Animation from Interactions: when the user prefers reduced
   // motion, omit the entry animation classes entirely. We don't just rely on
   // the global `prefers-reduced-motion` CSS guard (which only shortens the
