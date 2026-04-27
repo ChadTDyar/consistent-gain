@@ -143,6 +143,23 @@ export const analytics = {
     variant: 'web' | 'ios_fallback' | 'entitled_manage',
   ) => {
     if (typeof window !== 'undefined' && typeof window.gtag !== 'undefined') {
+      // Set GA4 user properties so funnel reports can be segmented by audience.
+      // `gate_interest` = which gated feature the user has shown intent for
+      //                   (coach, streak_repair, habit_limit, etc.)
+      // `tier_affiliation` = which tier the wall is selling them on
+      //                      (pro | premium | unknown)
+      // GA4 user properties persist for the session and attach to every
+      // subsequent event for that user, so downstream events
+      // (begin_checkout, purchase, etc.) inherit the segmentation. We do NOT
+      // set user properties for the 'entitled_manage' variant because those
+      // users are already paying — segmenting them by `gate_interest` would
+      // pollute upsell-audience reports.
+      if (variant !== 'entitled_manage') {
+        window.gtag('set', 'user_properties', {
+          gate_interest: gate,
+          tier_affiliation: tier,
+        });
+      }
       window.gtag('event', 'upgrade_wall_shown', {
         event_category: 'conversion',
         event_label: `${gate}:${tier}:${variant}`,
