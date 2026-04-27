@@ -1,8 +1,14 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+// Maps RevenueCat entitlement IDs → canonical plan-tier strings.
+// IMPORTANT: For Momentum the canonical Premium tier is "pro" (not "premium")
+// per src/lib/plans.ts → normalizePlan(). Writing "premium" here would
+// re-introduce the legacy value the app's normalization layer was added to
+// defend against. Other apps in the portfolio (HomeGrown, etc.) are tier-
+// scoped to their own writes below and do not affect Momentum's profiles.plan.
 const ENTITLEMENT_TIER_MAP: Record<string, string> = {
-  momentum_premium: "premium",
+  momentum_premium: "pro",
   pawformance_pro: "pro",
   palettepro_business: "business",
   homegrown_premium: "premium",
