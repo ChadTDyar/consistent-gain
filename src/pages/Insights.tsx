@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { SEO } from "@/components/SEO";
-import PaywallModal from "@/components/PaywallModal";
+import { UpgradeWall } from "@/components/UpgradeWall";
+import { MOMENTUM } from "@/constants/value-language";
 import {
   Brain, Flame, TrendingUp, Calendar, Target, Moon, Zap,
   Loader2, Lock, ArrowLeft, BarChart3, AlertTriangle, Sparkles,
@@ -15,7 +16,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   AreaChart, Area,
 } from "recharts";
-import { type PlanTier, normalizePlan } from "@/lib/plans";
+import { type PlanTier, normalizePlan, canAccessFeature } from "@/lib/plans";
 
 interface WeeklyStats {
   totalWorkouts: number;
@@ -59,7 +60,7 @@ export default function Insights() {
         .eq("id", session.user.id)
         .single();
       const userPlan = normalizePlan(profile?.plan);
-      if (userPlan === "free") {
+      if (!canAccessFeature(userPlan, 'plus')) {
         navigate("/pricing");
         return;
       }
@@ -104,7 +105,18 @@ export default function Insights() {
   return (
     <>
       <SEO title="Insights - Momentum" description="AI-powered weekly intelligence report on your fitness habits." />
-      <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} feature="ai_coach" requiredPlan="pro" />
+      {showPaywall && (
+        <UpgradeWall
+          headline={MOMENTUM.walls.ai_coach.headline}
+          body={MOMENTUM.walls.ai_coach.body}
+          cta={MOMENTUM.walls.ai_coach.cta}
+          accentColor="#0d3b5e"
+          gate="analytics_lock"
+          tier="premium"
+          onUpgrade={() => { setShowPaywall(false); navigate("/pricing"); }}
+          onDismiss={() => setShowPaywall(false)}
+        />
+      )}
 
       <div className="min-h-screen bg-background-cream pb-24">
         <header className="sticky top-0 z-10 bg-card/95 backdrop-blur-md border-b border-border px-4 py-4">
@@ -275,7 +287,7 @@ export default function Insights() {
               requirement (requiredPlan="pro"), and Pricing page promise
               ("AI Coach: Premium only") aligned. */}
           {(() => {
-            const aiUnlocked = plan === "pro";
+            const aiUnlocked = canAccessFeature(plan, 'pro');
             return (
               <Card className={`border-none shadow-lg ${aiUnlocked ? "bg-gradient-to-br from-primary/5 to-accent/5" : "relative overflow-hidden"}`}>
                 <CardHeader>
