@@ -697,7 +697,7 @@ function UpgradeWallIOSFallback({
         </div>
       </div>
     </div>,
-    document.body
+    portalTarget
   );
 }
 
