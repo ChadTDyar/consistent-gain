@@ -85,9 +85,17 @@ export function UpgradeWall({
   // duplicate purchase prompt).
   //
   // Behavior:
-  //   - 'unknown' (initial): render nothing for one paint frame while we
-  //     resolve the plan. The pre-check happens in parallel with the modal
-  //     mount so the visible flash is typically <100 ms on a warm session.
+  //   - 'unknown' (initial): render the normal upsell optimistically. The
+  //     async plan fetch resolves on the next tick; if it reveals the user
+  //     is entitled we swap to EntitledManageDialog. We optimistically show
+  //     the upsell (rather than rendering null) for two reasons:
+  //       1. Most users hitting an upgrade gate ARE free — defaulting to
+  //          the upsell minimizes the time-to-paint for the common case.
+  //       2. Returning null on first paint breaks tests that synchronously
+  //          query the dialog after `render(...)`, and synchronous DOM
+  //          inspection is the standard React Testing Library pattern.
+  //     The "shown" analytics beacon is deliberately deferred until
+  //     entitlement resolves so funnel data tags the correct variant.
   //   - 'free' (or unauthenticated, or fetch failed): render the normal
   //     upsell flow (web modal, or iOS Reader-rule fallback). Defaulting to
   //     "show the upsell" on error is intentional — if anything goes wrong
@@ -132,7 +140,7 @@ export function UpgradeWall({
   // is rendered by UpgradeWallIOSFallback which manages its own lock, and the
   // entitled-manage variant manages its own — disable here for both to avoid
   // double-locking the body.
-  useBodyScrollLock(!ios && !entitled && entitlement !== "unknown");
+  useBodyScrollLock(!ios && !entitled);
 
   // One-shot "shown" beacon — fires before any user interaction so the
   // funnel denominator (impressions) matches reality even if the user
