@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { X, ExternalLink, Settings as SettingsIcon } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
 import { Capacitor } from "@capacitor/core";
@@ -242,6 +242,44 @@ export function UpgradeWall({
     pointerDownOnBackdrop.current = false;
   };
 
+  // Per-instance unique IDs.
+  // Why: when two UpgradeWalls stack (rare but possible — e.g. a deferred
+  // gate fires while another wall is mid-animation) or React StrictMode
+  // double-mounts, hard-coded IDs collide and screen readers resolve
+  // aria-labelledby/aria-describedby to the WRONG element. useId() guarantees
+  // uniqueness within and across renders.
+  const reactId = useId();
+  const titleId = `${reactId}-title`;
+  const bodyId = `${reactId}-body`;
+  const previewId = `${reactId}-preview`;
+  const announcementId = `${reactId}-announcement`;
+  const hasPreview = coachPreview || streakRepairPreview;
+
+  // The dialog's accessible description includes the body paragraph plus the
+  // preview block when present. Screen readers concatenate the referenced
+  // nodes' text in document order, so SR users hear: headline → body → preview
+  // copy ("What AI Coach does" / "What Streak Repair looks like" + example).
+  // Without this, the most persuasive content is silently skipped on open.
+  const describedBy = hasPreview ? `${bodyId} ${previewId}` : bodyId;
+
+  // Polite live-region announcement.
+  // Belt-and-suspenders for AT combinations that don't reliably announce a
+  // newly-mounted role="dialog" (some Android TalkBack + Chrome flows). We
+  // populate the live region one tick AFTER mount so the AT registers it as a
+  // live update rather than initial DOM (which would race with the dialog
+  // announcement and double-speak the headline).
+  const [liveAnnouncement, setLiveAnnouncement] = useState("");
+  useEffect(() => {
+    if (ios) return;
+    const t = window.setTimeout(() => {
+      setLiveAnnouncement(`Upgrade dialog opened: ${headline}. ${body}`);
+    }, 100);
+    return () => window.clearTimeout(t);
+    // headline/body are intentionally in the dep list: if a parent swaps the
+    // wall content while the modal stays mounted (e.g. flipping
+    // upgradeWallType), we want the new content re-announced.
+  }, [ios, headline, body]);
+
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -250,8 +288,8 @@ export function UpgradeWall({
       onPointerUp={handleBackdropPointerUp}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="upgrade-wall-title"
-      aria-describedby="upgrade-wall-body"
+      aria-labelledby={titleId}
+      aria-describedby={describedBy}
     >
       <div
         ref={panelRef}
@@ -268,16 +306,16 @@ export function UpgradeWall({
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
-          <h3 id="upgrade-wall-title" className="font-semibold text-base text-foreground leading-tight pr-12">
+          <h3 id={titleId} className="font-semibold text-base text-foreground leading-tight pr-12">
             {headline}
           </h3>
         </div>
 
         <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
-          <p id="upgrade-wall-body" className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+          <p id={bodyId} className="text-sm text-muted-foreground leading-relaxed">{body}</p>
 
           {streakRepairPreview && (
-            <div className="space-y-1.5">
+            <div id={previewId} className="space-y-1.5">
               <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
                 This is what Streak Repair looks like
               </p>
@@ -290,7 +328,10 @@ export function UpgradeWall({
           )}
 
           {coachPreview && (
-            <div className="space-y-1.5">
+            // Defensive: only the first rendered preview owns previewId so a
+            // hypothetical caller that sets BOTH preview flags doesn't produce
+            // duplicate IDs (which break aria-describedby resolution).
+            <div id={streakRepairPreview ? undefined : previewId} className="space-y-1.5">
               <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
                 What AI Coach does
               </p>
@@ -325,6 +366,30 @@ export function UpgradeWall({
             Cancel anytime.
           </p>
         </div>
+      </div>
+
+      {/*
+        Polite live region — screen-reader-only.
+        - aria-live="polite" so it doesn't interrupt the dialog announcement.
+        - aria-atomic="true" so the full message is read on each update,
+          not just the diff.
+        - role="status" gives belt-and-suspenders coverage for AT that don't
+          map aria-live polite onto a generic node.
+        - Lives inside the dialog so the focus-trap + scroll lock don't have
+          to consider an extra portal.
+        - Populated 100ms after mount (see effect above) so the AT registers
+          this as a *live update* rather than initial DOM, which would race
+          with the dialog announcement and double-speak the headline.
+        - sr-only utility hides it from sighted users.
+      */}
+      <div
+        id={announcementId}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {liveAnnouncement}
       </div>
     </div>,
     document.body
@@ -374,6 +439,24 @@ function UpgradeWallIOSFallback({
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const pointerDownOnBackdrop = useRef(false);
+
+  // Per-instance unique IDs (see web variant for rationale).
+  const reactId = useId();
+  const titleId = `${reactId}-title`;
+  const bodyId = `${reactId}-body`;
+  const previewId = `${reactId}-preview`;
+  const announcementId = `${reactId}-announcement`;
+  const hasPreview = coachPreview || streakRepairPreview;
+  const describedBy = hasPreview ? `${bodyId} ${previewId}` : bodyId;
+
+  // Polite live-region announcement (see web variant for rationale).
+  const [liveAnnouncement, setLiveAnnouncement] = useState("");
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      setLiveAnnouncement(`Upgrade dialog opened: ${headline}. ${body}`);
+    }, 100);
+    return () => window.clearTimeout(t);
+  }, [headline, body]);
 
   // Lock background scroll on iOS too. Even though the native WKWebView
   // doesn't show a scrollbar, rubber-band scrolling can still disrupt the
@@ -499,8 +582,8 @@ function UpgradeWallIOSFallback({
       onPointerUp={handleBackdropPointerUp}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="upgrade-wall-ios-title"
-      aria-describedby="upgrade-wall-ios-desc"
+      aria-labelledby={titleId}
+      aria-describedby={describedBy}
     >
       <div
         ref={panelRef}
@@ -518,7 +601,7 @@ function UpgradeWallIOSFallback({
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
           <h3
-            id="upgrade-wall-ios-title"
+            id={titleId}
             className="font-semibold text-base text-foreground leading-tight pr-12"
           >
             {headline}
@@ -527,14 +610,14 @@ function UpgradeWallIOSFallback({
 
         <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
           <p
-            id="upgrade-wall-ios-desc"
+            id={bodyId}
             className="text-sm text-muted-foreground leading-relaxed"
           >
             {body}
           </p>
 
           {streakRepairPreview && (
-            <div className="space-y-1.5">
+            <div id={previewId} className="space-y-1.5">
               <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
                 What Streak Repair does
               </p>
@@ -547,7 +630,8 @@ function UpgradeWallIOSFallback({
           )}
 
           {coachPreview && (
-            <div className="space-y-1.5">
+            // Defensive: only the first preview owns previewId (see web variant).
+            <div id={streakRepairPreview ? undefined : previewId} className="space-y-1.5">
               <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
                 What AI Coach does
               </p>
@@ -589,6 +673,17 @@ function UpgradeWallIOSFallback({
             Already a member? Sign in on the web to access this on iOS.
           </p>
         </div>
+      </div>
+
+      {/* Polite live region (see web variant for full rationale). */}
+      <div
+        id={announcementId}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {liveAnnouncement}
       </div>
     </div>,
     document.body
