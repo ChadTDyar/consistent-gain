@@ -230,3 +230,230 @@ export function UpgradeWall({
     document.body
   );
 }
+
+// ---------------------------------------------------------------------------
+// iOS native fallback
+// ---------------------------------------------------------------------------
+// Apple App Review-safe modal shown when the standard upgrade wall would have
+// returned null on iOS native builds. Strict rules enforced here:
+//   1. NO mention of price.
+//   2. NO purchase CTA. The only actions are dismiss, open iOS Settings, and
+//      the single App-Store Reader Rule "Manage on web" link.
+//   3. The "Manage on web" link goes to /account on the marketing site, which
+//      is a subscription management surface, NOT a checkout. Apple permits a
+//      single account-management link out per Reader Rule 3.1.3(a).
+//   4. Capacitor plugin calls are best-effort: if the plugin is unavailable
+//      (e.g. running in the web preview through this code path during a test)
+//      the buttons silently no-op rather than crashing.
+//
+// The component reuses the same focus-trap, Escape-to-close, and outside-click
+// patterns as the main modal so iOS keyboard / external-keyboard users get the
+// same accessibility guarantees.
+interface IOSFallbackProps {
+  headline: string;
+  body: string;
+  accentColor: string;
+  onDismiss: () => void;
+  coachPreview: boolean;
+  streakRepairPreview: boolean;
+}
+
+function UpgradeWallIOSFallback({
+  headline,
+  body,
+  accentColor,
+  onDismiss,
+  coachPreview,
+  streakRepairPreview,
+}: IOSFallbackProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+  const pointerDownOnBackdrop = useRef(false);
+  const onDismissRef = useRef(onDismiss);
+  useEffect(() => {
+    onDismissRef.current = onDismiss;
+  }, [onDismiss]);
+
+  // Focus trap + Escape-to-close, identical contract to the web modal.
+  useEffect(() => {
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    closeBtnRef.current?.focus();
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onDismissRef.current();
+        return;
+      }
+      if (e.key === "Tab" && panelRef.current) {
+        const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      previouslyFocused.current?.focus?.();
+    };
+  }, []);
+
+  const handleBackdropPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    pointerDownOnBackdrop.current = e.target === e.currentTarget;
+  };
+  const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
+      onDismiss();
+    }
+    pointerDownOnBackdrop.current = false;
+  };
+
+  // Open iOS Settings → app's subscription management page. We use the
+  // app-settings: URL scheme via Capacitor App.openUrl. On older iOS or if
+  // the plugin is unregistered we silently no-op so we never crash.
+  const openIOSSettings = async () => {
+    try {
+      const { App } = await import("@capacitor/app");
+      // Apple deep-link: opens Settings → [App Name]. From there the user can
+      // tap their Apple ID → Subscriptions to cancel/manage. We avoid the
+      // direct itms-apps://apps.apple.com/account/subscriptions URL because
+      // it's been intermittently blocked by App Review.
+      await App.openUrl({ url: "app-settings:" });
+    } catch {
+      /* plugin unavailable — best effort */
+    }
+  };
+
+  // App-Store Reader Rule 3.1.3(a) compliant link: opens the marketing site's
+  // /account page in an in-app SFSafariViewController. /account must NOT show
+  // a purchase form to a logged-out user; it must show subscription
+  // management. (Pricing pages are a separate URL and are NOT linked here.)
+  const openManageOnWeb = async () => {
+    const url = "https://momentumfit.app/account";
+    try {
+      if (Capacitor.isPluginAvailable("Browser")) {
+        const { Browser } = await import("@capacitor/browser");
+        await Browser.open({ url, presentationStyle: "popover" });
+        return;
+      }
+    } catch {
+      /* fall through to window.open */
+    }
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+      onPointerDown={handleBackdropPointerDown}
+      onPointerUp={handleBackdropPointerUp}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="upgrade-wall-ios-title"
+      aria-describedby="upgrade-wall-ios-desc"
+    >
+      <div
+        ref={panelRef}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl"
+        style={{ borderLeft: `4px solid ${accentColor}` }}
+      >
+        <div className="p-[22px] pb-0 relative">
+          <button
+            ref={closeBtnRef}
+            onClick={onDismiss}
+            className="absolute top-[10px] right-[10px] text-muted-foreground hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+            aria-label="Close dialog"
+          >
+            <X className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <h3
+            id="upgrade-wall-ios-title"
+            className="font-semibold text-base text-foreground leading-tight pr-12"
+          >
+            {headline}
+          </h3>
+        </div>
+
+        <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
+          <p
+            id="upgrade-wall-ios-desc"
+            className="text-sm text-muted-foreground leading-relaxed"
+          >
+            {body}
+          </p>
+
+          {streakRepairPreview && (
+            <div className="space-y-1.5">
+              <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
+                What Streak Repair does
+              </p>
+              <div className="rounded-lg border border-border bg-muted/30 p-3">
+                <p className="text-xs text-foreground leading-relaxed">
+                  "You missed Tuesday. Your streak is safe until Thursday. 48 hours to pick it back up."
+                </p>
+              </div>
+            </div>
+          )}
+
+          {coachPreview && (
+            <div className="space-y-1.5">
+              <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
+                What AI Coach does
+              </p>
+              <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-2">
+                <p className="text-xs text-foreground leading-relaxed">
+                  <span className="font-semibold text-primary">Coach:</span>{" "}
+                  "You've skipped your morning stretch three Mondays in a row. What happens on Mondays?"
+                </p>
+                <p className="text-xs text-foreground leading-relaxed">
+                  <span className="font-semibold text-muted-foreground">You:</span>{" "}
+                  "Meetings start at 8 — I'm rushing."
+                </p>
+                <p className="text-xs text-foreground leading-relaxed">
+                  <span className="font-semibold text-primary">Coach:</span>{" "}
+                  "Move it to Sunday night, 5 minutes before bed. Want me to set that up?"
+                </p>
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-2 pt-1">
+            <button
+              onClick={openManageOnWeb}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white cursor-pointer border-none"
+              style={{ background: accentColor }}
+            >
+              <ExternalLink className="h-4 w-4" aria-hidden="true" />
+              Manage on web
+            </button>
+            <button
+              onClick={openIOSSettings}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-medium text-sm text-foreground bg-muted hover:bg-muted/80 transition-colors cursor-pointer border-none"
+            >
+              <SettingsIcon className="h-4 w-4" aria-hidden="true" />
+              Manage subscription in Settings
+            </button>
+          </div>
+          <p className="text-center text-xs text-muted-foreground">
+            Already a member? Sign in on the web to access this on iOS.
+          </p>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
