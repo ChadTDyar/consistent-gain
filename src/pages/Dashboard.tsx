@@ -496,23 +496,25 @@ export default function Dashboard() {
                 {plan === 'free' && !isIOSNative() && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
               </h3>
               {plan === 'free' && !isIOSNative() ? (
-                <div
-                  className="relative p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors overflow-hidden"
+                <button
+                  type="button"
+                  className="w-full text-left relative p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   onClick={() => { setUpgradeWallType('analytics_lock'); setShowUpgradeWall(true); }}
+                  aria-label={`Trend Analytics — Pro plan required at $${PLANS.plus.price} per month, opens upgrade dialog`}
                 >
-                  <div className="blur-sm select-none pointer-events-none">
+                  <div className="blur-sm select-none pointer-events-none" aria-hidden="true">
                     <div className="flex gap-2 items-end h-24">
                       {[3, 5, 4, 6, 2, 7, 5].map((v, i) => (
                         <div key={i} className="flex-1 bg-primary/30 rounded-t" style={{ height: `${v * 14}%` }} />
                       ))}
                     </div>
                   </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
                   <p className="text-sm font-semibold text-foreground bg-card/90 px-4 py-2 rounded-lg shadow">
                        Trend analytics unlock on Pro — ${PLANS.plus.price}/month
                     </p>
                   </div>
-                </div>
+                </button>
               ) : (
                 <div
                   className="p-6 rounded-xl border border-border bg-card shadow-sm cursor-pointer hover:shadow-md transition-shadow"
