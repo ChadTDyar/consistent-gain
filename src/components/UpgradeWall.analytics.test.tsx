@@ -210,18 +210,18 @@ describe("UpgradeWall iOS — funnel analytics", () => {
     render(<UpgradeWallIos {...baseProps} />);
     fireEvent.click(screen.getByRole("button", { name: /close dialog/i }));
     expect(dismissedIos).toHaveBeenCalledTimes(1);
-    expect(dismissedIos).toHaveBeenCalledWith("coach", "premium");
+    expect(dismissedIos).toHaveBeenCalledWith("coach", "premium", "close_button");
   });
 
-  it("fires upgrade_wall_cta_clicked when 'Manage on web' is tapped (Reader-rule conversion intent)", async () => {
+  it("fires upgrade_wall_cta_clicked with method='manage_on_web' when 'Manage on web' is tapped", async () => {
     render(<UpgradeWallIos {...baseProps} />);
     fireEvent.click(screen.getByRole("button", { name: /manage on web/i }));
     await waitFor(() => expect(ctaIos).toHaveBeenCalledTimes(1));
-    expect(ctaIos).toHaveBeenCalledWith("coach", "premium");
+    expect(ctaIos).toHaveBeenCalledWith("coach", "premium", "manage_on_web");
     expect(dismissedIos).not.toHaveBeenCalled();
   });
 
-  it("'Manage subscription in Settings' counts as a dismissal, NOT a CTA click", () => {
+  it("'Manage subscription in Settings' fires dismissed with method='ios_settings'", () => {
     // Stub location.href so the iOS scheme does not throw.
     const original = Object.getOwnPropertyDescriptor(window, "location");
     Object.defineProperty(window, "location", {
@@ -239,12 +239,13 @@ describe("UpgradeWall iOS — funnel analytics", () => {
       fireEvent.click(
         screen.getByRole("button", { name: /manage subscription in settings/i })
       );
-      // Settings deep-link does NOT itself dismiss the modal in the component
-      // (no onDismiss call). It's a side-action for existing subscribers.
-      // Therefore neither analytics event fires from this button alone — we
-      // only count dismiss on close/escape/outside or CTA on Manage-on-web.
+      // Settings deep-link is a maintenance flow for existing subscribers, not
+      // a new conversion intent — tracked as a distinctly-tagged dismissal so
+      // dashboards can split this cohort from real backdrop/escape/close
+      // closures without inflating the "lost" funnel bucket.
       expect(ctaIos).not.toHaveBeenCalled();
-      expect(dismissedIos).not.toHaveBeenCalled();
+      expect(dismissedIos).toHaveBeenCalledTimes(1);
+      expect(dismissedIos).toHaveBeenCalledWith("coach", "premium", "ios_settings");
     } finally {
       if (original) Object.defineProperty(window, "location", original);
     }
