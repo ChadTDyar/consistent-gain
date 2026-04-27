@@ -4,6 +4,7 @@ import { X, ExternalLink, Settings as SettingsIcon } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
 import { Capacitor } from "@capacitor/core";
 import { analytics } from "@/lib/analytics";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 
 // Funnel-tracking taxonomy. Keep these in sync with GA4 / dashboards.
 // `gate` identifies the feature that triggered the wall.
@@ -55,6 +56,11 @@ export function UpgradeWall({
   // panel (e.g. selecting text) and releases on the backdrop.
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
+
+  // Lock background scroll while the web variant is mounted. The iOS variant
+  // is rendered by UpgradeWallIOSFallback which manages its own lock — we
+  // disable here on iOS to avoid double-locking the body.
+  useBodyScrollLock(!ios);
 
   // Funnel-event guards. We MUST fire dismissed XOR cta_clicked exactly once
   // per modal lifetime, never both, never zero.
@@ -326,6 +332,11 @@ function UpgradeWallIOSFallback({
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const pointerDownOnBackdrop = useRef(false);
+
+  // Lock background scroll on iOS too. Even though the native WKWebView
+  // doesn't show a scrollbar, rubber-band scrolling can still disrupt the
+  // focus trap and pull the modal partially out of view.
+  useBodyScrollLock(true);
   const onDismissRef = useRef(onDismiss);
   useEffect(() => {
     onDismissRef.current = onDismiss;
