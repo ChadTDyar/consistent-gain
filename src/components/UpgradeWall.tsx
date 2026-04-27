@@ -85,15 +85,36 @@ export function UpgradeWall({
   // App-Review-safe iOS fallback so we can confirm how often the fallback
   // is actually used in production. Empty deps + ref guard = exactly once
   // per mount, even under React StrictMode double-invocation.
+  //
+  // We also stamp `mountTimeRef` here (monotonic via performance.now when
+  // available, Date.now fallback). The dwell-time companion event
+  // `upgrade_wall_timing` measures from this stamp to the terminal action
+  // (dismiss or CTA click) so we can identify drop-off windows.
   const shownTrackedRef = useRef(false);
+  const mountTimeRef = useRef<number>(0);
   useEffect(() => {
     if (shownTrackedRef.current) return;
     shownTrackedRef.current = true;
+    mountTimeRef.current =
+      typeof performance !== "undefined" && typeof performance.now === "function"
+        ? performance.now()
+        : Date.now();
     analytics.upgradeWallShown(gate, tier, ios ? "ios_fallback" : "web");
     // gate/tier/ios are stable for a given mount — re-running on prop
     // changes would double-count and corrupt the funnel.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Returns ms elapsed since the modal was shown. Returns null if the shown
+  // beacon never fired (defensive — should never happen in production).
+  const elapsedMs = (): number | null => {
+    if (!mountTimeRef.current) return null;
+    const now =
+      typeof performance !== "undefined" && typeof performance.now === "function"
+        ? performance.now()
+        : Date.now();
+    return now - mountTimeRef.current;
+  };
 
   // Funnel-event guards. We MUST fire dismissed XOR cta_clicked exactly once
   // per modal lifetime, never both, never zero.
@@ -108,11 +129,15 @@ export function UpgradeWall({
     if (ctaClickedRef.current || dismissTrackedRef.current) return;
     dismissTrackedRef.current = true;
     analytics.upgradeWallDismissed(gate, tier);
+    const ms = elapsedMs();
+    if (ms !== null) analytics.upgradeWallTiming(gate, tier, "dismissed", ms);
   };
   const trackCta = () => {
     if (ctaClickedRef.current) return;
     ctaClickedRef.current = true;
     analytics.upgradeWallCtaClicked(gate, tier);
+    const ms = elapsedMs();
+    if (ms !== null) analytics.upgradeWallTiming(gate, tier, "cta_clicked", ms);
   };
 
   // Keep onDismiss ref stable so the trap effect can run mount-only and so
