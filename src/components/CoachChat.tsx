@@ -44,7 +44,7 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
   const navigate = useNavigate();
   const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/coach-chat`;
 
-  const isPremiumUser = userContext?.plan === 'pro' || userContext?.isPremium;
+  const isPremiumUser = userContext?.plan === 'pro' || userContext?.plan === 'premium' || userContext?.isPremium;
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -272,8 +272,10 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
         }}
         className="fixed bottom-20 right-6 h-14 w-14 rounded-full shadow-xl btn-gradient z-50"
         size="icon"
+        aria-label={isOpen ? "Close AI Coach chat" : "Open AI Coach chat"}
+        aria-expanded={isOpen}
       >
-        {isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+        {isOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <MessageCircle className="h-6 w-6" aria-hidden="true" />}
       </Button>
 
       {/* Chat window */}

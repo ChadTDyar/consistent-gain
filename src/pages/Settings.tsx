@@ -244,8 +244,14 @@ export default function Settings() {
   // Multi-step delete confirmation (3 steps inside a single React-controlled AlertDialog).
   // Replaces window.confirm() which is unreliable in iOS WKWebView via Capacitor.
   const [deleteStep, setDeleteStep] = useState<0 | 1 | 2 | 3>(0);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
 
   const handleDeleteAccount = async () => {
+    // Final safety: require the literal string "DELETE" before proceeding.
+    if (deleteConfirmText.trim().toUpperCase() !== "DELETE") {
+      toast.error('Type DELETE to confirm.');
+      return;
+    }
     try {
       setDeleting(true);
 
@@ -264,6 +270,7 @@ export default function Settings() {
 
       toast.success("Account deleted successfully");
       setDeleteStep(0);
+      setDeleteConfirmText("");
       navigate('/auth');
     } catch (error) {
       console.error('Error deleting account:', error);
@@ -438,57 +445,68 @@ export default function Settings() {
               <CardDescription className="text-base">Manage your membership</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border-l-4 border-l-primary">
-                  <div>
-                    <p className="font-display font-semibold text-lg text-foreground flex items-center gap-2">
-                      {(profile?.plan || 'free').charAt(0).toUpperCase() + (profile?.plan || 'free').slice(1)} Plan
-                      {profile?.plan && profile.plan !== 'free' && (
-                        <Badge className="text-xs uppercase">{profile.plan}</Badge>
-                      )}
-                    </p>
-                    <p className="text-base text-muted-foreground mt-1">
-                    {profile?.plan === 'pro' 
-                        ? "You have access to all features including AI Coach"
-                        : profile?.plan === 'plus'
-                        ? "You have access to unlimited goals & Streak Repair"
-                        : "Upgrade to unlock more features"}
-                    </p>
+              {(() => {
+                const rawPlan = (profile?.plan || 'free').toLowerCase();
+                const planTier: 'free' | 'plus' | 'pro' =
+                  rawPlan === 'pro' || rawPlan === 'premium' ? 'pro' :
+                  rawPlan === 'plus' ? 'plus' : 'free';
+                const planLabel =
+                  planTier === 'pro' ? 'Premium' :
+                  planTier === 'plus' ? 'Pro' : 'Free';
+                const planBlurb =
+                  planTier === 'pro' ? "You're on our top plan — full access including AI Coach, unlimited history, and CSV export." :
+                  planTier === 'plus' ? "You have unlimited goals & Streak Repair." :
+                  "Upgrade to unlock more features.";
+                return (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border-l-4 border-l-primary">
+                      <div>
+                        <p className="font-display font-semibold text-lg text-foreground flex items-center gap-2">
+                          {planLabel} Plan
+                          {planTier !== 'free' && (
+                            <Badge className="text-xs uppercase">{planLabel}</Badge>
+                          )}
+                        </p>
+                        <p className="text-base text-muted-foreground mt-1">
+                          {planBlurb}
+                        </p>
+                      </div>
+                    </div>
+                    {profile?.is_premium || planTier !== 'free' ? (
+                      <Button
+                        onClick={handleManageSubscription}
+                        size="lg"
+                        variant="outline"
+                        disabled={portalLoading}
+                        className="w-full border-2 font-semibold"
+                      >
+                        {portalLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            Loading...
+                          </>
+                        ) : (
+                          "Manage Subscription"
+                        )}
+                      </Button>
+                    ) : !isIOSNative() ? (
+                      <Button
+                        onClick={() => navigate("/pricing")}
+                        size="lg"
+                        className="w-full shadow-sm hover:shadow-md font-semibold"
+                      >
+                        Upgrade
+                      </Button>
+                    ) : null}
                   </div>
-                </div>
-                {profile?.is_premium ? (
-                  <Button 
-                    onClick={handleManageSubscription}
-                    size="lg"
-                    variant="outline"
-                    disabled={portalLoading}
-                    className="w-full border-2 font-semibold"
-                  >
-                    {portalLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Loading...
-                      </>
-                    ) : (
-                      "Manage Subscription"
-                    )}
-                  </Button>
-                ) : !isIOSNative() ? (
-                  <Button 
-                    onClick={() => navigate("/pricing")}
-                    size="lg"
-                    className="w-full shadow-sm hover:shadow-md font-semibold"
-                  >
-                    Upgrade
-                  </Button>
-                ) : null}
-              </div>
+                );
+              })()}
             </CardContent>
           </Card>
 
           {/* Data Management */}
           <div className="grid gap-6 md:grid-cols-2">
-            <DataExport plan={(profile?.plan || 'free') as any} />
+            <DataExport plan={(profile?.plan === 'premium' ? 'pro' : (profile?.plan || 'free')) as any} />
             <DoctorReport />
           </div>
 
@@ -529,8 +547,22 @@ export default function Settings() {
                           <AlertTriangle className="h-5 w-5 text-destructive" />
                           Are you absolutely sure?
                         </AlertDialogTitle>
-                        <AlertDialogDescription className="text-base">
-                          This action cannot be undone. This will permanently delete your account and remove all your data from our servers, including goals, activity logs, and chat history.
+                        <AlertDialogDescription className="text-base space-y-3">
+                          <span className="block">
+                            This action cannot be undone. This will permanently delete your account and remove all your data from our servers, including goals, activity logs, pain reports, and chat history.
+                          </span>
+                          {profile?.is_premium && (
+                            <span className="block rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm">
+                              <strong className="text-destructive">Heads up:</strong> Your Premium subscription will be cancelled. Any remaining time on your current billing period will not be refunded.
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => { setDeleteStep(0); handleExportData(); }}
+                            className="block w-full text-left text-sm text-primary underline underline-offset-2 hover:text-primary/80"
+                          >
+                            ⬇ Export your data first (recommended)
+                          </button>
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -555,7 +587,7 @@ export default function Settings() {
                           This is your final warning
                         </AlertDialogTitle>
                         <AlertDialogDescription className="text-base">
-                          All your goals, progress, and data will be permanently deleted. Continue?
+                          All your goals, progress, and data will be permanently deleted{profile?.is_premium ? ' and your Premium subscription cancelled' : ''}. Continue?
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -577,16 +609,34 @@ export default function Settings() {
                       <AlertDialogHeader>
                         <AlertDialogTitle className="flex items-center gap-2">
                           <AlertTriangle className="h-5 w-5 text-destructive" />
-                          Confirm permanent deletion
+                          Type DELETE to confirm
                         </AlertDialogTitle>
                         <AlertDialogDescription className="text-base">
-                          Tap <strong>Delete my account</strong> below to permanently delete your account. You will be signed out immediately.
+                          To prevent accidental deletion, please type <strong>DELETE</strong> (all caps) below. Then tap <strong>Delete my account</strong>. You will be signed out immediately.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
+                      <div className="py-2">
+                        <Label htmlFor="delete-confirm" className="sr-only">Type DELETE to confirm</Label>
+                        <Input
+                          id="delete-confirm"
+                          value={deleteConfirmText}
+                          onChange={(e) => setDeleteConfirmText(e.target.value)}
+                          placeholder="Type DELETE here"
+                          autoComplete="off"
+                          autoCapitalize="characters"
+                          spellCheck={false}
+                          className="text-base h-11"
+                          disabled={deleting}
+                          aria-describedby="delete-confirm-help"
+                        />
+                        <p id="delete-confirm-help" className="text-xs text-muted-foreground mt-2">
+                          The button enables once you type DELETE exactly.
+                        </p>
+                      </div>
                       <AlertDialogFooter>
                         <Button
                           variant="outline"
-                          onClick={() => setDeleteStep(0)}
+                          onClick={() => { setDeleteStep(0); setDeleteConfirmText(""); }}
                           disabled={deleting}
                         >
                           Cancel
@@ -594,7 +644,8 @@ export default function Settings() {
                         <Button
                           variant="destructive"
                           onClick={handleDeleteAccount}
-                          disabled={deleting}
+                          disabled={deleting || deleteConfirmText.trim().toUpperCase() !== "DELETE"}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
                           {deleting ? (
                             <>

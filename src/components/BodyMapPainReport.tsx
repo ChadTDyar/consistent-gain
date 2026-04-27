@@ -99,7 +99,9 @@ export function BodyMapPainReport({ onComplete }: { onComplete: () => void }) {
             <line x1="45" y1="60" x2="45" y2="95" stroke="hsl(var(--border))" strokeWidth="5" strokeLinecap="round" />
             <line x1="55" y1="60" x2="55" y2="95" stroke="hsl(var(--border))" strokeWidth="5" strokeLinecap="round" />
 
-            {/* Interactive pain points */}
+            {/* Interactive pain points (a11y: each circle is keyboard-accessible button-role with label).
+                A larger transparent overlay provides a 44x44 effective touch target while keeping
+                the visible dot small. */}
             {BODY_AREAS.map((area) => (
               <g key={area.id}>
                 <circle
@@ -109,18 +111,37 @@ export function BodyMapPainReport({ onComplete }: { onComplete: () => void }) {
                   fill={getAreaColor(area.id)}
                   stroke="hsl(var(--foreground))"
                   strokeWidth="0.5"
-                  style={{ cursor: "pointer", transition: "all 0.2s" }}
+                  pointerEvents="none"
+                />
+                {/* Larger invisible hit area — ~12% of svg = ~48px on a 400px-tall map */}
+                <circle
+                  cx={area.x}
+                  cy={area.y}
+                  r="6"
+                  fill="transparent"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${area.label} — tap to mark discomfort`}
+                  aria-pressed={selectedArea === area.id}
+                  style={{ cursor: "pointer" }}
                   onClick={() => setSelectedArea(area.id)}
-                  className="hover:opacity-80"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setSelectedArea(area.id);
+                    }
+                  }}
+                  className="hover:opacity-80 focus:outline-none focus-visible:[stroke:hsl(var(--ring))] focus-visible:[stroke-width:1]"
                 />
                 {selectedArea === area.id && (
                   <text
                     x={area.x}
-                    y={area.y - 6}
+                    y={area.y - 8}
                     textAnchor="middle"
                     fontSize="3"
                     fill="hsl(var(--foreground))"
                     fontWeight="bold"
+                    aria-hidden="true"
                   >
                     {area.label}
                   </text>

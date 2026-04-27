@@ -3,7 +3,7 @@ import { Calendar, TrendingUp, Activity, MessageCircle, User, Lock, CreditCard }
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { type PlanTier } from "@/lib/plans";
+import { type PlanTier, normalizePlan } from "@/lib/plans";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { isIOSNative } from "@/lib/platform";
@@ -18,7 +18,7 @@ export function AppSidebar() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       const { data } = await supabase.from("profiles").select("plan").eq("id", user.id).single();
-      if (data?.plan) setPlan(data.plan as PlanTier);
+      setPlan(normalizePlan(data?.plan));
     };
     loadPlan();
   }, []);

@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { analytics } from "@/lib/analytics";
 import { SEO } from "@/components/SEO";
-import { PLANS, type PlanTier, type BillingInterval } from "@/lib/plans";
+import { PLANS, type PlanTier, type BillingInterval, normalizePlan } from "@/lib/plans";
 import { handleCheckout } from "@/lib/checkout";
 import {
   Accordion,
@@ -36,13 +36,10 @@ export default function Pricing() {
         .select('plan')
         .eq('id', user.id)
         .single();
-      if (profile?.plan) {
-        setCurrentPlan(profile.plan as PlanTier);
-        if (profile.plan !== 'free') {
-          navigate('/dashboard', { replace: true });
-          return;
-        }
-      }
+      // Show pricing page even for paid users so they can compare plans
+      // and reach Manage Subscription. Do NOT auto-redirect — that breaks
+      // the "Upgrade" CTA navigation funnel from premium-gated screens.
+      setCurrentPlan(normalizePlan(profile?.plan));
     }
   };
 
@@ -128,6 +125,17 @@ export default function Pricing() {
       />
       <div className="min-h-screen bg-background-cream py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
+          {currentPlan !== 'free' && (
+            <div className="mb-8 mx-auto max-w-2xl rounded-lg border-2 border-primary/30 bg-primary/5 p-4 text-center">
+              <p className="text-sm font-semibold text-foreground">
+                You're currently on the <span className="uppercase">{currentPlan === 'pro' ? 'Premium' : 'Pro'}</span> plan.
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Manage billing or cancel anytime from{" "}
+                <button onClick={() => navigate("/settings")} className="text-primary underline underline-offset-2 font-medium">Settings → Subscription</button>.
+              </p>
+            </div>
+          )}
           <div className="text-center mb-12 md:mb-16">
             <p className="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
               For busy professionals who need habits that stick

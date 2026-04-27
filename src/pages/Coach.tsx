@@ -6,7 +6,7 @@ import { UpgradeWall } from "@/components/UpgradeWall";
 import { MOMENTUM } from "@/constants/value-language";
 import { calculateStreak, getUserActivityLogs, getDaysSinceLastActivity } from "@/lib/streakUtils";
 import { SEO } from "@/components/SEO";
-import { PLANS, type PlanTier } from "@/lib/plans";
+import { PLANS, type PlanTier, normalizePlan } from "@/lib/plans";
 import { Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isIOSNative } from "@/lib/platform";
@@ -73,7 +73,7 @@ export default function Coach() {
         .select("is_premium, plan")
         .eq("id", user.id)
         .single();
-      setPlan((profile?.plan || 'free') as PlanTier);
+      setPlan(normalizePlan(profile?.plan));
 
       const { count } = await supabase
         .from("goals")

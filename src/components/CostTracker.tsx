@@ -119,8 +119,9 @@ export function CostTracker() {
             size="icon"
             onClick={() => setShowForm(!showForm)}
             className="min-w-[44px] min-h-[44px]"
+            aria-label={showForm ? "Close add expense form" : "Add expense to Habit Budget"}
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
       </CardHeader>

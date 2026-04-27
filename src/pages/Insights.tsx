@@ -15,7 +15,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   AreaChart, Area,
 } from "recharts";
-import { type PlanTier } from "@/lib/plans";
+import { type PlanTier, normalizePlan } from "@/lib/plans";
 
 interface WeeklyStats {
   totalWorkouts: number;
@@ -54,7 +54,7 @@ export default function Insights() {
       if (fnError) throw fnError;
       setStats(data.stats);
       setAiInsights(data.aiInsights);
-      setPlan(data.plan as PlanTier);
+      setPlan(normalizePlan(data?.plan));
     } catch (e: any) {
       console.error("Insights error:", e);
       setError("Failed to load insights");
