@@ -144,7 +144,7 @@ export default function Pricing() {
               Pick the plan that fits your life
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Set up in under 5 minutes. Complete your first 7-day streak this week. Cancel anytime.
+              Set up in under 5 minutes. Start building your streak today. Cancel anytime.
             </p>
 
             {/* Billing Toggle */}

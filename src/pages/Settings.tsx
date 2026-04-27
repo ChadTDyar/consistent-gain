@@ -165,7 +165,7 @@ export default function Settings() {
     setHealthLoading(false);
     if (ok) {
       setHealthKitConnected(true);
-      toast.success("Apple Health connected. Workouts will sync automatically.");
+      toast.success("Apple Health connected. New workouts will sync when available.");
     } else {
       toast.error("Couldn't connect to Apple Health.");
     }
