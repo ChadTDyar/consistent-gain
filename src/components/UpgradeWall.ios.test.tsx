@@ -171,4 +171,37 @@ describe("UpgradeWall — iOS native fallback", () => {
     render(<UpgradeWall {...baseProps} streakRepairPreview />);
     expect(screen.getByText(/what streak repair does/i)).toBeInTheDocument();
   });
+
+  describe("Apple IAP-compliant purchase-path notice", () => {
+    it("renders an information notice explaining the iOS purchase path", () => {
+      render(<UpgradeWall {...baseProps} />);
+      // Use the accessible name (role=note + aria-label) — independent of copy
+      // wording so future tweaks don't break the test.
+      const notice = screen.getByRole("note", { name: /subscription information/i });
+      expect(notice).toBeInTheDocument();
+      // Confirms the user is told IAP is on its way + comes from the App Store.
+      expect(notice.textContent).toMatch(/in-app purchases/i);
+      expect(notice.textContent).toMatch(/app store/i);
+      expect(notice.textContent).toMatch(/future update/i);
+    });
+
+    it("the notice never advertises a price or in-app checkout", () => {
+      render(<UpgradeWall {...baseProps} />);
+      const notice = screen.getByRole("note", { name: /subscription information/i });
+      const text = notice.textContent ?? "";
+      // Guideline 3.1.1: no price.
+      expect(text).not.toMatch(/\$\d/);
+      expect(text).not.toMatch(/\/mo\b|per month/i);
+      // No words that would imply a non-IAP in-app purchase path.
+      expect(text).not.toMatch(/buy now|checkout|subscribe now|upgrade now/i);
+    });
+
+    it("the notice does NOT mention a previous-version sign-in workaround", () => {
+      // The old "Already a member? Sign in on the web" footnote was removed
+      // when this notice took over — make sure it doesn't sneak back.
+      render(<UpgradeWall {...baseProps} />);
+      const dialog = screen.getByRole("dialog");
+      expect(dialog.textContent ?? "").not.toMatch(/already a member/i);
+    });
+  });
 });
