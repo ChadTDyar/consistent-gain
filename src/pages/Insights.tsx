@@ -49,7 +49,21 @@ export default function Insights() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { navigate("/auth"); return; }
 
+    // Gate the entire Insights page on Pro (plus) or Premium (pro).
+    // Free users are redirected to /pricing — analytics are a paid feature
+    // per the Pricing page promise ("30-day history" / "Weekly progress email").
     try {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("plan")
+        .eq("id", session.user.id)
+        .single();
+      const userPlan = normalizePlan(profile?.plan);
+      if (userPlan === "free") {
+        navigate("/pricing");
+        return;
+      }
+
       const { data, error: fnError } = await supabase.functions.invoke("weekly-insights");
       if (fnError) throw fnError;
       setStats(data.stats);
@@ -90,7 +104,7 @@ export default function Insights() {
   return (
     <>
       <SEO title="Insights - Momentum" description="AI-powered weekly intelligence report on your fitness habits." />
-      <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} feature="ai_coach" requiredPlan="pro" />
+      <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} feature="ai_coach" requiredPlan="plus" />
 
       <div className="min-h-screen bg-background-cream pb-24">
         <header className="sticky top-0 z-10 bg-card/95 backdrop-blur-md border-b border-border px-4 py-4">
