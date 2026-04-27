@@ -148,18 +148,36 @@ describe("UpgradeWall — iOS native fallback", () => {
     expect(document.activeElement).toBe(closeBtn);
   });
 
-  it("dialog exposes its accessible name and description", () => {
+  it("dialog exposes its accessible name and description via per-instance ids", () => {
     render(<UpgradeWall {...baseProps} />);
     const dialog = screen.getByRole("dialog");
     expect(dialog).toHaveAttribute("aria-modal", "true");
-    expect(dialog).toHaveAttribute("aria-labelledby", "upgrade-wall-ios-title");
-    expect(dialog).toHaveAttribute("aria-describedby", "upgrade-wall-ios-desc");
-    expect(document.getElementById("upgrade-wall-ios-title")).toHaveTextContent(
-      baseProps.headline
-    );
-    expect(document.getElementById("upgrade-wall-ios-desc")).toHaveTextContent(
-      baseProps.body
-    );
+    const labelId = dialog.getAttribute("aria-labelledby")!;
+    const descIds = dialog.getAttribute("aria-describedby")!.split(/\s+/);
+    expect(labelId).toBeTruthy();
+    expect(document.getElementById(labelId)).toHaveTextContent(baseProps.headline);
+    const concatenated = descIds
+      .map((id) => document.getElementById(id)?.textContent ?? "")
+      .join(" ");
+    expect(concatenated).toContain(baseProps.body);
+  });
+
+  it("aria-describedby includes the preview block when shown (iOS)", () => {
+    render(<UpgradeWall {...baseProps} streakRepairPreview />);
+    const dialog = screen.getByRole("dialog");
+    const descIds = dialog.getAttribute("aria-describedby")!.split(/\s+/);
+    expect(descIds.length).toBeGreaterThanOrEqual(2);
+    const concatenated = descIds
+      .map((id) => document.getElementById(id)?.textContent ?? "")
+      .join(" ");
+    expect(concatenated).toMatch(/streak repair/i);
+  });
+
+  it("renders a polite live region for the iOS fallback", () => {
+    render(<UpgradeWall {...baseProps} />);
+    const liveRegion = screen.getByRole("status");
+    expect(liveRegion).toHaveAttribute("aria-live", "polite");
+    expect(liveRegion).toHaveAttribute("aria-atomic", "true");
   });
 
   it("renders the coach preview block when coachPreview is true", () => {
