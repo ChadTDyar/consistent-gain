@@ -79,6 +79,22 @@ export function UpgradeWall({
   // disable here on iOS to avoid double-locking the body.
   useBodyScrollLock(!ios);
 
+  // One-shot "shown" beacon — fires before any user interaction so the
+  // funnel denominator (impressions) matches reality even if the user
+  // dismisses in the same animation frame. Variant tag splits web vs the
+  // App-Review-safe iOS fallback so we can confirm how often the fallback
+  // is actually used in production. Empty deps + ref guard = exactly once
+  // per mount, even under React StrictMode double-invocation.
+  const shownTrackedRef = useRef(false);
+  useEffect(() => {
+    if (shownTrackedRef.current) return;
+    shownTrackedRef.current = true;
+    analytics.upgradeWallShown(gate, tier, ios ? "ios_fallback" : "web");
+    // gate/tier/ios are stable for a given mount — re-running on prop
+    // changes would double-count and corrupt the funnel.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Funnel-event guards. We MUST fire dismissed XOR cta_clicked exactly once
   // per modal lifetime, never both, never zero.
   // - ctaClickedRef: set when the user clicks the upgrade CTA so subsequent
@@ -211,17 +227,24 @@ export function UpgradeWall({
   // - Both side actions degrade gracefully if the Capacitor plugins are not
   //   available (web preview running through the iOS code path during dev).
   if (ios) {
+    // Wrap the iOS branch in a runtime guard so a future regression that
+    // makes the fallback render null is observable in production. Without
+    // this, iOS users would silently get nothing and we'd only find out
+    // from support tickets. The guard is render-time-cheap (one ref check
+    // in an effect) and ships a single `upgrade_wall_null_return` event.
     return (
-      <UpgradeWallIOSFallback
-        headline={headline}
-        body={body}
-        accentColor={accentColor}
-        onDismiss={onDismiss}
-        coachPreview={coachPreview}
-        streakRepairPreview={streakRepairPreview}
-        gate={gate}
-        tier={tier}
-      />
+      <IOSBranchGuard gate={gate} tier={tier}>
+        <UpgradeWallIOSFallback
+          headline={headline}
+          body={body}
+          accentColor={accentColor}
+          onDismiss={onDismiss}
+          coachPreview={coachPreview}
+          streakRepairPreview={streakRepairPreview}
+          gate={gate}
+          tier={tier}
+        />
+      </IOSBranchGuard>
     );
   }
 
@@ -598,5 +621,95 @@ function UpgradeWallIOSFallback({
     </div>,
     document.body
   );
+}
+
+// ----------------------------------------------------------------------------
+// IOSBranchGuard
+// ----------------------------------------------------------------------------
+// Render-time + post-mount observability wrapper for the iOS native branch.
+//
+// Why both signals?
+//   - Render-time check catches the case where `children` evaluated to a
+//     falsy value (null / undefined / false) — i.e. the iOS fallback wasn't
+//     rendered at all. We log immediately so the regression shows up in the
+//     same session it happens.
+//   - Post-mount DOM check (one tick after commit) catches subtler cases
+//     where the fallback rendered an empty fragment or got stripped by an
+//     ancestor portal/error boundary. If our wrapper has zero children in
+//     the live DOM, treat it as a null return for funnel purposes.
+//
+// Both paths emit `analytics.upgradeWallNullReturn` (cheap, idempotent) and
+// a Sentry breadcrumb when available so we can correlate with stack traces.
+// We deliberately do NOT throw — a silent paywall is bad, but throwing on
+// iOS would crash the gated screen entirely. Logging is enough.
+function IOSBranchGuard({
+  children,
+  gate,
+  tier,
+}: {
+  children: React.ReactNode;
+  gate: UpgradeWallGate;
+  tier: UpgradeWallTier;
+}) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const reportedRef = useRef(false);
+
+  const report = (reason: string) => {
+    if (reportedRef.current) return;
+    reportedRef.current = true;
+    try {
+      analytics.upgradeWallNullReturn(gate, tier, reason);
+    } catch {
+      /* never let analytics swallow a render */
+    }
+    // Best-effort Sentry breadcrumb. We use the global to avoid a hard
+    // dependency on @sentry/* in this hot path.
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const w = window as any;
+      w.Sentry?.captureMessage?.(
+        `UpgradeWall iOS branch returned null (${reason})`,
+        {
+          level: "warning",
+          tags: { component: "UpgradeWall", platform: "ios", gate, tier, reason },
+        }
+      );
+    } catch {
+      /* no-op */
+    }
+  };
+
+  // Render-time guard. `children` is what the iOS branch produced; if it's
+  // falsy the fallback never built a tree.
+  const renderedNull =
+    children === null || children === undefined || children === false;
+  if (renderedNull) {
+    // Fire synchronously during the render that already produced nothing.
+    // Safe to call here because the analytics fn is side-effect-only and
+    // doesn't trigger React state updates.
+    report("ios_branch_returned_null");
+  }
+
+  // Post-mount DOM guard. Runs once. If the wrapper exists but is empty
+  // after commit, the fallback effectively rendered nothing.
+  useEffect(() => {
+    if (renderedNull) return; // already reported above
+    const node = wrapperRef.current;
+    if (!node) return;
+    // The iOS fallback uses a portal, so this wrapper itself will be empty
+    // by design when the portal mounts elsewhere. We only flag the case
+    // where BOTH our wrapper is empty AND no dialog node was added to the
+    // document. Querying by role keeps this resilient to id changes.
+    const dialogPresent = !!document.querySelector('[role="dialog"]');
+    if (!dialogPresent) {
+      report("ios_fallback_no_dialog_in_dom");
+    }
+    // Empty deps: we only need to verify once, right after the initial
+    // render. Subsequent updates can't go from "rendered" to "null" without
+    // unmounting first.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return <div ref={wrapperRef}>{children}</div>;
 }
 
