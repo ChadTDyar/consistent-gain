@@ -57,10 +57,10 @@ export const Testimonials = () => {
       <div className="container mx-auto px-6 md:px-8 max-w-7xl">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
-            Real People, Real Results
+            What members are saying
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Hear from members building sustainable habits
+            Real stories from people building habits. Individual experiences vary.
           </p>
         </div>
 
