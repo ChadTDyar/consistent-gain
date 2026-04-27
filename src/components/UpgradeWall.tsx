@@ -79,6 +79,22 @@ export function UpgradeWall({
   // disable here on iOS to avoid double-locking the body.
   useBodyScrollLock(!ios);
 
+  // One-shot "shown" beacon — fires before any user interaction so the
+  // funnel denominator (impressions) matches reality even if the user
+  // dismisses in the same animation frame. Variant tag splits web vs the
+  // App-Review-safe iOS fallback so we can confirm how often the fallback
+  // is actually used in production. Empty deps + ref guard = exactly once
+  // per mount, even under React StrictMode double-invocation.
+  const shownTrackedRef = useRef(false);
+  useEffect(() => {
+    if (shownTrackedRef.current) return;
+    shownTrackedRef.current = true;
+    analytics.upgradeWallShown(gate, tier, ios ? "ios_fallback" : "web");
+    // gate/tier/ios are stable for a given mount — re-running on prop
+    // changes would double-count and corrupt the funnel.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Funnel-event guards. We MUST fire dismissed XOR cta_clicked exactly once
   // per modal lifetime, never both, never zero.
   // - ctaClickedRef: set when the user clicks the upgrade CTA so subsequent
