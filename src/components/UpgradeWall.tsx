@@ -279,12 +279,8 @@ export function UpgradeWall({
         }
       }
     };
-  }, [ios, entitled, entitlement]);
+  }, [ios, entitled]);
 
-  // Entitlement is still resolving — render nothing for one paint frame
-  // rather than flashing the upsell to a paying user. The fetch is keyed
-  // on the warm Supabase session so this is typically <100 ms.
-  if (entitlement === "unknown") return null;
 
   // Already-entitled pre-check.
   // ---------------------------
