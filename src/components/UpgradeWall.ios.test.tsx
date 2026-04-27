@@ -190,3 +190,102 @@ describe("UpgradeWall — iOS native fallback", () => {
     expect(screen.getByText(/what streak repair does/i)).toBeInTheDocument();
   });
 });
+
+describe("UpgradeWall iOS — focus restoration safety", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    cleanup();
+  });
+
+  it("restores focus to the trigger element when the iOS fallback unmounts", async () => {
+    // Set up a real trigger button so we have a meaningful element to
+    // restore to. Without restoration, focus drops to <body> and SR users
+    // are stranded.
+    const trigger = document.createElement("button");
+    trigger.textContent = "Open paywall";
+    document.body.appendChild(trigger);
+    trigger.focus();
+    expect(document.activeElement).toBe(trigger);
+
+    const { unmount } = render(<UpgradeWall {...baseProps} />);
+    // After mount the iOS Close (X) takes focus per WCAG-safe initial focus.
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /close dialog/i })).toHaveFocus()
+    );
+    unmount();
+    // Restoration must put focus back on the captured trigger.
+    expect(document.activeElement).toBe(trigger);
+    document.body.removeChild(trigger);
+  });
+
+  it("falls back to the <main> landmark when the trigger is no longer in the DOM", async () => {
+    // Simulates the "trigger card unmounts while the modal is open"
+    // scenario (e.g. a locked card that disappears after upgrade or a
+    // route change that swaps the page content). Without a fallback,
+    // focus would land on <body> and the SR user gets silence.
+    const main = document.createElement("main");
+    document.body.appendChild(main);
+    const trigger = document.createElement("button");
+    main.appendChild(trigger);
+    trigger.focus();
+
+    const { unmount } = render(<UpgradeWall {...baseProps} />);
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /close dialog/i })).toHaveFocus()
+    );
+    // Yank the trigger BEFORE unmounting the modal.
+    main.removeChild(trigger);
+    unmount();
+    // <main> should now hold focus (with tabIndex=-1 set by the helper so
+    // it's programmatically focusable).
+    expect(document.activeElement).toBe(main);
+    expect(main.tabIndex).toBe(-1);
+    document.body.removeChild(main);
+  });
+
+  it("honours an explicit returnFocus ref override on iOS", async () => {
+    // Caller-supplied override wins over the auto-captured trigger. This
+    // matters when the trigger unmounts (handled above) AND when the
+    // caller wants focus to land somewhere intentional (e.g. a "Try
+    // again" button revealed after dismissal).
+    const trigger = document.createElement("button");
+    trigger.textContent = "Trigger";
+    document.body.appendChild(trigger);
+    trigger.focus();
+
+    const override = document.createElement("button");
+    override.textContent = "Override";
+    document.body.appendChild(override);
+
+    const ref = { current: override };
+    const { unmount } = render(<UpgradeWall {...baseProps} returnFocus={ref} />);
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /close dialog/i })).toHaveFocus()
+    );
+    unmount();
+    expect(document.activeElement).toBe(override);
+    document.body.removeChild(trigger);
+    document.body.removeChild(override);
+  });
+
+  it("opts out of restoration when returnFocus={null} is passed", async () => {
+    // `null` is the deliberate opt-out signal. We accept that focus may
+    // land on <body> in this case — the caller has explicitly told us
+    // they don't want restoration (rare; only for very deliberate flows
+    // like a redirect-on-dismiss).
+    const trigger = document.createElement("button");
+    document.body.appendChild(trigger);
+    trigger.focus();
+
+    const { unmount } = render(<UpgradeWall {...baseProps} returnFocus={null} />);
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /close dialog/i })).toHaveFocus()
+    );
+    unmount();
+    // The variant cleanup respects null and skips restoration. The parent
+    // safety net ALSO sees null and respects it. Body is the expected
+    // landing spot.
+    expect(document.activeElement).toBe(document.body);
+    document.body.removeChild(trigger);
+  });
+});
