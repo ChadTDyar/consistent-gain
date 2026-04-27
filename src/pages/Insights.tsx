@@ -104,7 +104,7 @@ export default function Insights() {
   return (
     <>
       <SEO title="Insights - Momentum" description="AI-powered weekly intelligence report on your fitness habits." />
-      <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} feature="ai_coach" requiredPlan="plus" />
+      <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} feature="ai_coach" requiredPlan="pro" />
 
       <div className="min-h-screen bg-background-cream pb-24">
         <header className="sticky top-0 z-10 bg-card/95 backdrop-blur-md border-b border-border px-4 py-4">
@@ -268,42 +268,51 @@ export default function Insights() {
             </Card>
           )}
 
-          {/* AI Insights */}
-          <Card className={`border-none shadow-lg ${plan === "free" ? "relative overflow-hidden" : "bg-gradient-to-br from-primary/5 to-accent/5"}`}>
-            <CardHeader>
-              <CardTitle className="text-xl font-display font-semibold flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
-                AI Pattern Analysis
-                {plan === "free" && <Lock className="h-4 w-4 text-muted-foreground" />}
-                {plan === "pro" && <Badge className="text-xs">Premium - Deep Analysis</Badge>}
-                {plan === "plus" && <Badge variant="secondary" className="text-xs">Pro</Badge>}
-              </CardTitle>
-              <CardDescription>
-                {plan === "free"
-                  ? "AI Coach is a Premium feature."
-                  : "Personalized analysis based on your 30-day data"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {plan === "free" ? (
-                <div className="text-center py-6">
-                  <div className="blur-sm select-none pointer-events-none mb-4 text-sm text-muted-foreground leading-relaxed">
-                    <p>**Your Consistency Pattern** You've been showing up 4 out of 7 days this week...</p>
-                    <p className="mt-2">**Recommendation** Try anchoring your workout to your morning coffee ritual...</p>
-                  </div>
-                  <Button onClick={() => setShowPaywall(true)} className="font-semibold">
-                    <Lock className="mr-2 h-4 w-4" /> Unlock AI Insights
-                  </Button>
-                </div>
-              ) : aiInsights ? (
-                <div className="prose prose-sm max-w-none text-foreground leading-relaxed whitespace-pre-wrap">
-                  {aiInsights}
-                </div>
-              ) : (
-                <p className="text-muted-foreground text-sm">No insights available yet. Keep logging workouts!</p>
-              )}
-            </CardContent>
-          </Card>
+          {/* AI Insights — Premium-only feature.
+              Free users never reach this page (gated above), so the locked
+              state is what Pro (plus) users see; Premium (pro) users see
+              the generated analysis. This keeps the lock label, paywall
+              requirement (requiredPlan="pro"), and Pricing page promise
+              ("AI Coach: Premium only") aligned. */}
+          {(() => {
+            const aiUnlocked = plan === "pro";
+            return (
+              <Card className={`border-none shadow-lg ${aiUnlocked ? "bg-gradient-to-br from-primary/5 to-accent/5" : "relative overflow-hidden"}`}>
+                <CardHeader>
+                  <CardTitle className="text-xl font-display font-semibold flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-primary" aria-hidden="true" />
+                    AI Pattern Analysis
+                    {!aiUnlocked && <Lock className="h-4 w-4 text-muted-foreground" aria-hidden="true" />}
+                    {aiUnlocked && <Badge className="text-xs">Premium</Badge>}
+                  </CardTitle>
+                  <CardDescription>
+                    {aiUnlocked
+                      ? "Personalized analysis based on your 30-day data"
+                      : "AI Pattern Analysis is included with the Premium plan."}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {!aiUnlocked ? (
+                    <div className="text-center py-6">
+                      <div className="blur-sm select-none pointer-events-none mb-4 text-sm text-muted-foreground leading-relaxed" aria-hidden="true">
+                        <p>**Your Consistency Pattern** You've been showing up 4 out of 7 days this week...</p>
+                        <p className="mt-2">**Recommendation** Try anchoring your workout to your morning coffee ritual...</p>
+                      </div>
+                      <Button onClick={() => setShowPaywall(true)} className="font-semibold">
+                        <Lock className="mr-2 h-4 w-4" aria-hidden="true" /> Upgrade to Premium
+                      </Button>
+                    </div>
+                  ) : aiInsights ? (
+                    <div className="prose prose-sm max-w-none text-foreground leading-relaxed whitespace-pre-wrap">
+                      {aiInsights}
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground text-sm">No insights available yet. Keep logging workouts!</p>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })()}
         </div>
       </div>
     </>

@@ -122,15 +122,15 @@ serve(async (req) => {
       ? "pro"
       : rawPlan === "plus" ? "plus" : "free";
 
-    // Generate AI insights for Pro/Premium users
+    // Generate AI insights for Premium (pro) users only.
+    // Pricing page promises "AI Coach" exclusively to the Premium tier;
+    // do not silently extend it to Pro (plus) here, or the lock badge,
+    // paywall requirement, and pricing promise will drift apart.
     let aiInsights = null;
-    if (plan !== "free") {
+    if (plan === "pro") {
       const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
       if (LOVABLE_API_KEY) {
-        const depth = plan === "pro" ? "deep" : "standard";
-        const systemPrompt = depth === "deep"
-          ? `You are a fitness pattern analyst. Analyze the user's 30-day data and provide: 1) A 2-sentence summary of their consistency pattern, 2) Their strongest habit signal, 3) Their biggest risk factor for dropping off, 4) One specific, actionable recommendation for next week, 5) A motivational insight connecting their data to long-term habit formation science. Be specific with numbers. Use encouraging but honest tone. Keep total response under 200 words. Format with clear headers using **.`
-          : `You are a fitness pattern analyst. Analyze the user's 30-day data and provide: 1) A 2-sentence summary of their consistency, 2) One specific recommendation for next week. Keep it under 80 words. Be encouraging but honest. Format with ** headers.`;
+        const systemPrompt = `You are a fitness pattern analyst. Analyze the user's 30-day data and provide: 1) A 2-sentence summary of their consistency pattern, 2) Their strongest habit signal, 3) Their biggest risk factor for dropping off, 4) One specific, actionable recommendation for next week, 5) A motivational insight connecting their data to long-term habit formation science. Be specific with numbers. Use encouraging but honest tone. Keep total response under 200 words. Format with clear headers using **.`;
 
         const userPrompt = `User data (last 30 days):
 - Total workouts: ${stats.totalWorkouts}
