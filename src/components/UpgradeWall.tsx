@@ -57,6 +57,11 @@ export function UpgradeWall({
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
 
+  // Lock background scroll while the web variant is mounted. The iOS variant
+  // is rendered by UpgradeWallIOSFallback which manages its own lock — we
+  // disable here on iOS to avoid double-locking the body.
+  useBodyScrollLock(!ios);
+
   // Funnel-event guards. We MUST fire dismissed XOR cta_clicked exactly once
   // per modal lifetime, never both, never zero.
   // - ctaClickedRef: set when the user clicks the upgrade CTA so subsequent
