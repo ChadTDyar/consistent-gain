@@ -178,13 +178,22 @@ export const analytics = {
   // `reason` is a short machine tag: 'ios_branch_returned_null',
   // 'fallback_threw', 'platform_unknown', etc.
   upgradeWallNullReturn: (gate: string, tier: string, reason: string) => {
-    if (typeof window.gtag === 'undefined') return;
-    window.gtag('event', 'upgrade_wall_null_return', {
-      event_category: 'reliability',
-      event_label: `${gate}:${tier}:${reason}`,
+    if (typeof window !== 'undefined' && typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'upgrade_wall_null_return', {
+        event_category: 'reliability',
+        event_label: `${gate}:${tier}:${reason}`,
+        gate,
+        tier,
+        reason,
+      });
+    }
+    // DB mirror so the admin reliability panel can compute null-return
+    // rates without depending on GA4. Reason is stored in metadata so the
+    // shared analytics_events shape stays unchanged.
+    void recordEvent('upgrade_wall_null_return', {
       gate,
       tier,
-      reason,
+      metadata: { reason },
     });
   },
 
