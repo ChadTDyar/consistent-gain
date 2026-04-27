@@ -58,9 +58,11 @@ serve(async (req) => {
       theme_preference: "system",
     });
 
+    // NOTE: The app's PlanTier enum is 'free' | 'plus' | 'pro' where 'pro' === highest "Premium" tier.
+    // Always write 'pro' here so client-side gates (canAccessFeature, isPremium) recognize the entitlement.
     const { error: rpcErr } = await admin.rpc("admin_set_premium", {
       _user_id: userId,
-      _plan: "premium",
+      _plan: "pro",
       _is_premium: true,
       _subscription_status: "active",
     });
@@ -69,7 +71,7 @@ serve(async (req) => {
     if (rpcErr) {
       await admin
         .from("profiles")
-        .update({ plan: "premium", is_premium: true, subscription_status: "active" })
+        .update({ plan: "pro", is_premium: true, subscription_status: "active" })
         .eq("id", userId);
     }
 
