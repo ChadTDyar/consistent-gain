@@ -3,6 +3,21 @@ import { useEffect, useRef } from "react";
 import { X, ExternalLink, Settings as SettingsIcon } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
 import { Capacitor } from "@capacitor/core";
+import { analytics } from "@/lib/analytics";
+
+// Funnel-tracking taxonomy. Keep these in sync with GA4 / dashboards.
+// `gate` identifies the feature that triggered the wall.
+// `tier` is what the wall is selling (or 'unknown' when callers haven't
+// declared a tier — e.g. legacy call sites).
+export type UpgradeWallGate =
+  | "coach"
+  | "streak_repair"
+  | "habit_limit"
+  | "partner_lock"
+  | "analytics_lock"
+  | "history_limit"
+  | "unknown";
+export type UpgradeWallTier = "pro" | "premium" | "unknown";
 
 interface Props {
   headline: string;
@@ -13,6 +28,10 @@ interface Props {
   onDismiss: () => void;
   coachPreview?: boolean;
   streakRepairPreview?: boolean;
+  /** Which gated feature triggered this wall. Drives funnel analytics. */
+  gate?: UpgradeWallGate;
+  /** Which tier this wall is selling. Drives funnel analytics. */
+  tier?: UpgradeWallTier;
 }
 
 export function UpgradeWall({
