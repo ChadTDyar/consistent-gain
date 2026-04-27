@@ -273,6 +273,28 @@ export function UpgradeWall({
     };
   }, [ios, entitled, entitlement]);
 
+  // Entitlement is still resolving — render nothing for one paint frame
+  // rather than flashing the upsell to a paying user. The fetch is keyed
+  // on the warm Supabase session so this is typically <100 ms.
+  if (entitlement === "unknown") return null;
+
+  // Already-entitled pre-check.
+  // ---------------------------
+  // The signed-in user is already on a paid plan, so do NOT show the upsell.
+  // Show the Reader-rule "manage your subscription" dialog instead. This
+  // path is shared between web and iOS — paying customers should never see
+  // a price or upgrade CTA regardless of platform.
+  if (entitled) {
+    return (
+      <EntitledManageDialog
+        headline={headline}
+        accentColor={accentColor}
+        plan={entitlement as PlanTier}
+        onDismiss={onDismiss}
+      />
+    );
+  }
+
   // Apple App Review compliance for iOS native builds:
   // - The standard web upgrade wall (with its purchase CTA + price) cannot be
   //   shown on iOS — Guideline 3.1.1 prohibits steering users to non-IAP
