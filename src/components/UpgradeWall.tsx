@@ -568,6 +568,14 @@ function UpgradeWallIOSFallback({
             </div>
           )}
 
+          {/* Apple App Review-safe purchase-path notice. No price, no checkout link; web action goes to /account. Sets honest expectations that IAP is not yet available on iOS. "future update" makes no timing promise. */}
+          <div role="note" aria-label="Subscription information" className="rounded-lg border border-border bg-muted/30 p-3 flex items-start gap-2.5">
+            <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
+            <p className="text-xs text-foreground leading-relaxed">
+              In-app purchases on iOS will be available in a future update through the App Store. Until then, you can manage an existing subscription on the web or in your iOS Settings.
+            </p>
+          </div>
+
           <div className="space-y-2 pt-1">
             <button
               onClick={openManageOnWeb}
