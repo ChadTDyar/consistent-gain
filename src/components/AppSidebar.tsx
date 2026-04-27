@@ -59,11 +59,11 @@ export function AppSidebar() {
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
-              <Icon className="h-5 w-5 flex-shrink-0" />
+              <Icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
               <span className="flex-1 text-left">{item.label}</span>
               {item.locked && (
-                <Badge variant="outline" className="text-xs px-1.5 py-0 flex items-center gap-1">
-                  <Lock className="h-3 w-3" />
+                <Badge variant="outline" className="text-xs px-1.5 py-0 flex items-center gap-1" aria-label={`${item.lockLabel} plan required`}>
+                  <Lock className="h-3 w-3" aria-hidden="true" />
                   {item.lockLabel}
                 </Badge>
               )}
