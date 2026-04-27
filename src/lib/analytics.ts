@@ -24,7 +24,7 @@ async function recordEvent(
       gate: fields.gate ?? undefined,
       tier: fields.tier ?? undefined,
       variant: fields.variant ?? undefined,
-      metadata: (fields.metadata ?? {}) as Record<string, unknown>,
+      metadata: (fields.metadata ?? {}) as never,
     };
     await supabase.from("analytics_events").insert([row]);
   } catch {
