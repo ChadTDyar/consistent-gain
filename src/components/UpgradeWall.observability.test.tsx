@@ -104,6 +104,16 @@ describe("UpgradeWall — render observability", () => {
         getPlatform: () => "web",
       },
     }));
+    vi.doMock("@/integrations/supabase/client", () => ({
+      supabase: {
+        auth: {
+          getSession: vi.fn(() =>
+            Promise.resolve({ data: { session: null }, error: null })
+          ),
+        },
+        from: vi.fn(),
+      },
+    }));
     const { UpgradeWall } = await import("./UpgradeWall");
     const props = {
       headline: "h",
@@ -115,8 +125,10 @@ describe("UpgradeWall — render observability", () => {
       tier: "premium" as const,
     };
     const { rerender } = render(<UpgradeWall {...props} />);
+    await flushPromises();
     rerender(<UpgradeWall {...props} body="b2" />);
     rerender(<UpgradeWall {...props} body="b3" />);
+    await flushPromises();
     const shown = gtag.mock.calls.filter(
       (c) => c[0] === "event" && c[1] === "upgrade_wall_shown"
     );
