@@ -93,6 +93,17 @@ export const Testimonials = () => {
             </Card>
           ))}
         </div>
+
+        {/* FTC §255.2 disclosure — required when displaying user testimonials
+            with star ratings, to prevent implied outcome claims. */}
+        <p
+          className="mt-10 text-center text-sm text-muted-foreground max-w-2xl mx-auto"
+          role="note"
+        >
+          Results not typical. Testimonials reflect individual experiences and
+          are not a guarantee of outcomes. Consistency, effort, and personal
+          circumstances vary.
+        </p>
       </div>
     </section>
   );
