@@ -13,8 +13,10 @@ const dismissedSpy = vi.fn();
 const ctaSpy = vi.fn();
 vi.mock("@/lib/analytics", () => ({
   analytics: {
-    upgradeWallDismissed: (gate: string, tier: string) => dismissedSpy(gate, tier),
-    upgradeWallCtaClicked: (gate: string, tier: string) => ctaSpy(gate, tier),
+    upgradeWallDismissed: (gate: string, tier: string, method?: string) =>
+      dismissedSpy(gate, tier, method),
+    upgradeWallCtaClicked: (gate: string, tier: string, method?: string) =>
+      ctaSpy(gate, tier, method),
   },
 }));
 
