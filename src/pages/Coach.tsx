@@ -125,9 +125,14 @@ export default function Coach() {
                     <span className="font-semibold text-primary">Coach:</span>{" "}
                     "You've skipped your morning stretch three Mondays in a row. What happens on Mondays?"
                   </p>
-                  <div className="text-sm text-muted-foreground leading-relaxed blur-sm select-none">
-                    User response and coach follow-up...
-                  </div>
+                  <p className="text-sm text-foreground leading-relaxed">
+                    <span className="font-semibold text-muted-foreground">You:</span>{" "}
+                    "Monday meetings start at 8. I'm rushing."
+                  </p>
+                  <p className="text-sm text-foreground leading-relaxed">
+                    <span className="font-semibold text-primary">Coach:</span>{" "}
+                    "Then let's move it to Sunday night — 5 minutes before bed. Want me to set that up?"
+                  </p>
                 </div>
 
                 <div className="text-center space-y-3 pt-2">

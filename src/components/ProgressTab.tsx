@@ -6,6 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Flame, Loader2, Lock, BarChart3 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { subDays, startOfWeek, endOfWeek, isWithinInterval, format } from "date-fns";
+
+// Parse a YYYY-MM-DD date string as a LOCAL date (avoids UTC shift bugs).
+function parseLocalDate(value: string): Date {
+  // Strip time portion if present (we store DATE, not TIMESTAMP)
+  const datePart = value.length > 10 ? value.slice(0, 10) : value;
+  const [y, m, d] = datePart.split("-").map(Number);
+  return new Date(y, (m ?? 1) - 1, d ?? 1);
+}
 import { type PlanTier, getHistoryDays } from "@/lib/plans";
 import { UpgradeWall } from "@/components/UpgradeWall";
 import { MOMENTUM } from "@/constants/value-language";
@@ -59,7 +67,7 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
     const last30Days = Array.from({ length: 30 }, (_, i) => {
       const date = subDays(new Date(), 29 - i);
       const logsForDay = data?.filter(log => {
-        const logDate = new Date(log.completed_at);
+        const logDate = parseLocalDate(log.completed_at);
         return logDate.toDateString() === date.toDateString();
       }) || [];
       
@@ -79,18 +87,18 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
     
     setChartData(last30Days);
 
-    // Calculate this week's streak
+    // Calculate this week's streak (week starts Monday for consistency)
     const today = new Date();
-    const weekStart = startOfWeek(today);
-    const weekEnd = endOfWeek(today);
+    const weekStart = startOfWeek(today, { weekStartsOn: 1 });
+    const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
     
     const thisWeekLogs = data?.filter(log => {
-      const logDate = new Date(log.completed_at);
+      const logDate = parseLocalDate(log.completed_at);
       return isWithinInterval(logDate, { start: weekStart, end: weekEnd });
     }) || [];
 
     const uniqueDays = new Set(
-      thisWeekLogs.map(log => new Date(log.completed_at).toDateString())
+      thisWeekLogs.map(log => parseLocalDate(log.completed_at).toDateString())
     );
     setWeekStreak(uniqueDays.size);
 
@@ -109,7 +117,7 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
     const lastWeekEnd = subDays(weekEnd, 7);
     
     const lastWeekLogs = data?.filter(log => {
-      const logDate = new Date(log.completed_at);
+      const logDate = parseLocalDate(log.completed_at);
       return isWithinInterval(logDate, { start: lastWeekStart, end: lastWeekEnd });
     }) || [];
 

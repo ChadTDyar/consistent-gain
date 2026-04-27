@@ -23,6 +23,7 @@ export default function Auth() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string; name?: string }>({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -103,6 +104,7 @@ export default function Auth() {
   const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setFieldErrors({});
 
     // Read values directly from form DOM to handle iOS AutoFill
     // which may not trigger React onChange on controlled inputs
@@ -121,8 +123,22 @@ export default function Auth() {
         });
 
         if (!validationResult.success) {
-          const firstError = validationResult.error.errors[0];
-          toast.error(firstError.message);
+          const errors: { email?: string; password?: string; name?: string } = {};
+          validationResult.error.errors.forEach((err) => {
+            const field = err.path[0] as 'email' | 'password' | 'name';
+            if (field && !errors[field]) errors[field] = err.message;
+          });
+          setFieldErrors(errors);
+          setLoading(false);
+          return;
+        }
+      } else {
+        // Lightweight inline checks for login
+        const errors: { email?: string; password?: string } = {};
+        if (!formEmail.trim()) errors.email = "Email is required";
+        if (!formPassword) errors.password = "Password is required";
+        if (Object.keys(errors).length) {
+          setFieldErrors(errors);
           setLoading(false);
           return;
         }
@@ -186,12 +202,19 @@ export default function Auth() {
                   type="text"
                   placeholder="Your name"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => { setName(e.target.value); if (fieldErrors.name) setFieldErrors(p => ({ ...p, name: undefined })); }}
                   required={!isLogin}
                   aria-required={!isLogin}
+                  aria-invalid={!!fieldErrors.name}
+                  aria-describedby={fieldErrors.name ? "name-error" : undefined}
                   autoComplete="name"
                   autoCapitalize="words"
                 />
+                {fieldErrors.name && (
+                  <p id="name-error" role="alert" className="text-xs text-destructive font-medium">
+                    {fieldErrors.name}
+                  </p>
+                )}
               </div>
             )}
             <div className="space-y-2">
@@ -205,11 +228,18 @@ export default function Auth() {
                 spellCheck={false}
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); if (fieldErrors.email) setFieldErrors(p => ({ ...p, email: undefined })); }}
                 required
                 aria-required="true"
+                aria-invalid={!!fieldErrors.email}
+                aria-describedby={fieldErrors.email ? "email-error" : undefined}
                 autoComplete="email"
               />
+              {fieldErrors.email && (
+                <p id="email-error" role="alert" className="text-xs text-destructive font-medium">
+                  {fieldErrors.email}
+                </p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
@@ -218,14 +248,19 @@ export default function Auth() {
                 type="password"
                 placeholder="••••••••"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => { setPassword(e.target.value); if (fieldErrors.password) setFieldErrors(p => ({ ...p, password: undefined })); }}
                 required
                 minLength={8}
                 aria-required="true"
-                aria-describedby={!isLogin ? "password-requirements" : undefined}
+                aria-invalid={!!fieldErrors.password}
+                aria-describedby={fieldErrors.password ? "password-error" : (!isLogin ? "password-requirements" : undefined)}
                 autoComplete={isLogin ? "current-password" : "new-password"}
               />
-              {!isLogin && (
+              {fieldErrors.password ? (
+                <p id="password-error" role="alert" className="text-xs text-destructive font-medium">
+                  {fieldErrors.password}
+                </p>
+              ) : !isLogin && (
                 <p id="password-requirements" className="text-xs text-muted-foreground">
                   Must be at least 8 characters
                 </p>
