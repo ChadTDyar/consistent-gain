@@ -84,6 +84,66 @@ function ctaRate(t: CellTotals): string {
   return `${Math.round((t.ctaClicked / denom) * 100)}%`;
 }
 
+// Numeric CTA rate for CSV (blank when no events, otherwise 0-1 with 4 decimals)
+function ctaRateNumeric(t: CellTotals): string {
+  const denom = t.dismissed + t.ctaClicked;
+  if (denom === 0) return "";
+  return (t.ctaClicked / denom).toFixed(4);
+}
+
+// RFC 4180-ish escape: wrap in quotes if needed, double inner quotes
+function csvEscape(value: string | number): string {
+  const s = String(value);
+  if (/[",\r\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
+}
+
+export function buildFunnelCsv(data: Pivot): string {
+  const header = ["scope", "gate", "tier", "dismissed", "cta_clicked", "total", "cta_rate"];
+  const rows: (string | number)[][] = [header];
+
+  // Per-cell rows
+  for (const gate of data.gates) {
+    for (const tier of data.tiers) {
+      const c = data.cells.get(cellKey(gate, tier)) ?? empty();
+      const total = c.dismissed + c.ctaClicked;
+      if (total === 0) continue; // skip empty cells to keep export tidy
+      rows.push(["cell", gate, tier, c.dismissed, c.ctaClicked, total, ctaRateNumeric(c)]);
+    }
+  }
+
+  // Row totals (per gate, all tiers)
+  for (const gate of data.gates) {
+    const t = data.rowTotals.get(gate) ?? empty();
+    rows.push(["gate_total", gate, "*", t.dismissed, t.ctaClicked, t.dismissed + t.ctaClicked, ctaRateNumeric(t)]);
+  }
+
+  // Column totals (per tier, all gates)
+  for (const tier of data.tiers) {
+    const t = data.colTotals.get(tier) ?? empty();
+    rows.push(["tier_total", "*", tier, t.dismissed, t.ctaClicked, t.dismissed + t.ctaClicked, ctaRateNumeric(t)]);
+  }
+
+  // Grand total
+  const g = data.grandTotal;
+  rows.push(["grand_total", "*", "*", g.dismissed, g.ctaClicked, g.dismissed + g.ctaClicked, ctaRateNumeric(g)]);
+
+  return rows.map((r) => r.map(csvEscape).join(",")).join("\r\n") + "\r\n";
+}
+
+function downloadCsv(filename: string, csv: string) {
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  // Defer revoke so Safari finishes the download
+  setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
 export function AdminUpgradeWallFunnel() {
   const [rows, setRows] = useState<EventRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
