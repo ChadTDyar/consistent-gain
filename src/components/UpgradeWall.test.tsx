@@ -257,4 +257,37 @@ describe("UpgradeWall accessibility", () => {
       document.body.removeChild(trigger);
     });
   });
+
+  describe("body scroll lock", () => {
+    beforeEach(() => {
+      // Reset body styles between tests so leaked state from a prior test
+      // doesn't make the assertions misleading.
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.style.paddingRight = "";
+    });
+
+    it("locks body scroll while open and restores on unmount", () => {
+      expect(document.body.style.overflow).toBe("");
+      const { unmount } = render(<UpgradeWall {...baseProps} />);
+      expect(document.body.style.overflow).toBe("hidden");
+      expect(document.body.style.position).toBe("fixed");
+      unmount();
+      expect(document.body.style.overflow).toBe("");
+      expect(document.body.style.position).toBe("");
+    });
+
+    it("restores prior body styles, not just defaults", () => {
+      // Some apps set body.overflow themselves (e.g. for a global scroll
+      // container). The lock must save and restore that, not blindly clear it.
+      document.body.style.overflow = "auto";
+      const { unmount } = render(<UpgradeWall {...baseProps} />);
+      expect(document.body.style.overflow).toBe("hidden");
+      unmount();
+      expect(document.body.style.overflow).toBe("auto");
+    });
+  });
 });
+
