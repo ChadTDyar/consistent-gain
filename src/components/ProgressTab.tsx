@@ -38,100 +38,108 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
   const [showHistoryWall, setShowHistoryWall] = useState(false);
 
   useEffect(() => {
-    loadProgressData();
-  }, []);
+    const controller = new AbortController();
+    loadProgressData(controller.signal);
+    return () => controller.abort();
+  }, [plan]);
 
-  const loadProgressData = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
+  const loadProgressData = async (signal?: AbortSignal) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user;
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
 
-    const historyDays = getHistoryDays(plan) ?? 365;
-    const daysAgo = subDays(new Date(), historyDays);
-    const { data, error } = await supabase
-      .from("activity_logs")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("is_deleted", false)
-      .gte("completed_at", daysAgo.toISOString())
-      .order("completed_at", { ascending: true });
+      const historyDays = getHistoryDays(plan) ?? 365;
+      const daysAgo = subDays(new Date(), historyDays);
+      const query = supabase
+        .from("activity_logs")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("is_deleted", false)
+        .gte("completed_at", daysAgo.toISOString())
+        .order("completed_at", { ascending: true });
+      const { data, error } = await (signal ? query.abortSignal(signal) : query);
 
-    if (error) {
-      console.error("Error loading progress data:", error);
-      setLoading(false);
-      return;
-    }
+      if (error) {
+        console.error("Error loading progress data:", error);
+        return;
+      }
 
-    // Process chart data
-    const last30Days = Array.from({ length: 30 }, (_, i) => {
-      const date = subDays(new Date(), 29 - i);
-      const logsForDay = data?.filter(log => {
+      // Process chart data
+      const last30Days = Array.from({ length: 30 }, (_, i) => {
+        const date = subDays(new Date(), 29 - i);
+        const logsForDay = data?.filter(log => {
+          const logDate = parseLocalDate(log.completed_at);
+          return logDate.toDateString() === date.toDateString();
+        }) || [];
+
+        const ratingsForDay = logsForDay
+          .map(log => log.rpe_rating)
+          .filter((rating): rating is number => rating !== null);
+
+        const avgRating = ratingsForDay.length > 0
+          ? ratingsForDay.reduce((sum, r) => sum + r, 0) / ratingsForDay.length
+          : null;
+
+        return {
+          date: format(date, "MMM d"),
+          rating: avgRating,
+        };
+      });
+
+      setChartData(last30Days);
+
+      // Calculate this week's streak (week starts Monday for consistency)
+      const today = new Date();
+      const weekStart = startOfWeek(today, { weekStartsOn: 1 });
+      const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
+
+      const thisWeekLogs = data?.filter(log => {
         const logDate = parseLocalDate(log.completed_at);
-        return logDate.toDateString() === date.toDateString();
+        return isWithinInterval(logDate, { start: weekStart, end: weekEnd });
       }) || [];
-      
-      const ratingsForDay = logsForDay
+
+      const uniqueDays = new Set(
+        thisWeekLogs.map(log => parseLocalDate(log.completed_at).toDateString())
+      );
+      setWeekStreak(uniqueDays.size);
+
+      // Calculate this week's average
+      const thisWeekRatings = thisWeekLogs
         .map(log => log.rpe_rating)
         .filter((rating): rating is number => rating !== null);
-      
-      const avgRating = ratingsForDay.length > 0
-        ? ratingsForDay.reduce((sum, r) => sum + r, 0) / ratingsForDay.length
-        : null;
 
-      return {
-        date: format(date, "MMM d"),
-        rating: avgRating,
-      };
-    });
-    
-    setChartData(last30Days);
+      const thisWeekAvg = thisWeekRatings.length > 0
+        ? thisWeekRatings.reduce((sum, r) => sum + r, 0) / thisWeekRatings.length
+        : 0;
+      setWeekAverage(thisWeekAvg);
 
-    // Calculate this week's streak (week starts Monday for consistency)
-    const today = new Date();
-    const weekStart = startOfWeek(today, { weekStartsOn: 1 });
-    const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-    
-    const thisWeekLogs = data?.filter(log => {
-      const logDate = parseLocalDate(log.completed_at);
-      return isWithinInterval(logDate, { start: weekStart, end: weekEnd });
-    }) || [];
+      // Calculate last week's average
+      const lastWeekStart = subDays(weekStart, 7);
+      const lastWeekEnd = subDays(weekEnd, 7);
 
-    const uniqueDays = new Set(
-      thisWeekLogs.map(log => parseLocalDate(log.completed_at).toDateString())
-    );
-    setWeekStreak(uniqueDays.size);
+      const lastWeekLogs = data?.filter(log => {
+        const logDate = parseLocalDate(log.completed_at);
+        return isWithinInterval(logDate, { start: lastWeekStart, end: lastWeekEnd });
+      }) || [];
 
-    // Calculate this week's average
-    const thisWeekRatings = thisWeekLogs
-      .map(log => log.rpe_rating)
-      .filter((rating): rating is number => rating !== null);
-    
-    const thisWeekAvg = thisWeekRatings.length > 0
-      ? thisWeekRatings.reduce((sum, r) => sum + r, 0) / thisWeekRatings.length
-      : 0;
-    setWeekAverage(thisWeekAvg);
+      const lastWeekRatings = lastWeekLogs
+        .map(log => log.rpe_rating)
+        .filter((rating): rating is number => rating !== null);
 
-    // Calculate last week's average
-    const lastWeekStart = subDays(weekStart, 7);
-    const lastWeekEnd = subDays(weekEnd, 7);
-    
-    const lastWeekLogs = data?.filter(log => {
-      const logDate = parseLocalDate(log.completed_at);
-      return isWithinInterval(logDate, { start: lastWeekStart, end: lastWeekEnd });
-    }) || [];
-
-    const lastWeekRatings = lastWeekLogs
-      .map(log => log.rpe_rating)
-      .filter((rating): rating is number => rating !== null);
-    
-    const lastWeekAvg = lastWeekRatings.length > 0
-      ? lastWeekRatings.reduce((sum, r) => sum + r, 0) / lastWeekRatings.length
-      : 0;
-    setLastWeekAverage(lastWeekAvg);
-
-    setLoading(false);
+      const lastWeekAvg = lastWeekRatings.length > 0
+        ? lastWeekRatings.reduce((sum, r) => sum + r, 0) / lastWeekRatings.length
+        : 0;
+      setLastWeekAverage(lastWeekAvg);
+    } catch (err: any) {
+      if (err?.name === 'AbortError') return;
+      console.error("Error loading progress data:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
