@@ -137,7 +137,8 @@ export function UpgradeWall({
       onPointerUp={handleBackdropPointerUp}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="upgrade-wall-title"
+      aria-labelledby={titleId}
+      aria-describedby={descId}
     >
       <div
         ref={panelRef}
@@ -154,13 +155,13 @@ export function UpgradeWall({
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
-          <h3 id="upgrade-wall-title" className="font-semibold text-base text-foreground leading-tight pr-12">
+          <h3 id={titleId} className="font-semibold text-base text-foreground leading-tight pr-12">
             {headline}
           </h3>
         </div>
 
         <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
-          <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+          <p id={descId} className="text-sm text-muted-foreground leading-relaxed">{body}</p>
 
           {streakRepairPreview && (
             <div className="space-y-1.5">
