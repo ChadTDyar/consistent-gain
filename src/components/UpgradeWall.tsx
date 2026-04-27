@@ -24,19 +24,18 @@ export function UpgradeWall({
   coachPreview = false,
   streakRepairPreview = false,
 }: Props) {
-  // Apple IAP compliance: never show paid upgrade walls on iOS native builds
-  if (isIOSNative()) return null;
-
   const isProCta = cta.toLowerCase().includes("pro");
   const panelRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+  const ios = isIOSNative();
 
   // WCAG 2.4.3 / 2.1.2: Escape-to-dismiss + focus trap.
   // On open: remember the focused element, move focus inside the modal.
   // On Tab/Shift+Tab: cycle focus between the close button and the upgrade CTA.
   // On close: restore focus to the originally focused element.
   useEffect(() => {
+    if (ios) return;
     previouslyFocused.current = document.activeElement as HTMLElement | null;
     closeBtnRef.current?.focus();
 
@@ -67,7 +66,10 @@ export function UpgradeWall({
       document.removeEventListener("keydown", handleKey);
       previouslyFocused.current?.focus?.();
     };
-  }, [onDismiss]);
+  }, [onDismiss, ios]);
+
+  // Apple IAP compliance: never show paid upgrade walls on iOS native builds
+  if (ios) return null;
 
   return createPortal(
     <div
