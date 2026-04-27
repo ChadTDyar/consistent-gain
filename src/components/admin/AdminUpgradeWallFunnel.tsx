@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, MousePointerClick, X, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { TrendingUp, MousePointerClick, X, AlertCircle, Download } from "lucide-react";
 
 /**
  * AdminUpgradeWallFunnel
@@ -81,6 +82,66 @@ function ctaRate(t: CellTotals): string {
   const denom = t.dismissed + t.ctaClicked;
   if (denom === 0) return "—";
   return `${Math.round((t.ctaClicked / denom) * 100)}%`;
+}
+
+// Numeric CTA rate for CSV (blank when no events, otherwise 0-1 with 4 decimals)
+function ctaRateNumeric(t: CellTotals): string {
+  const denom = t.dismissed + t.ctaClicked;
+  if (denom === 0) return "";
+  return (t.ctaClicked / denom).toFixed(4);
+}
+
+// RFC 4180-ish escape: wrap in quotes if needed, double inner quotes
+function csvEscape(value: string | number): string {
+  const s = String(value);
+  if (/[",\r\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
+}
+
+export function buildFunnelCsv(data: Pivot): string {
+  const header = ["scope", "gate", "tier", "dismissed", "cta_clicked", "total", "cta_rate"];
+  const rows: (string | number)[][] = [header];
+
+  // Per-cell rows
+  for (const gate of data.gates) {
+    for (const tier of data.tiers) {
+      const c = data.cells.get(cellKey(gate, tier)) ?? empty();
+      const total = c.dismissed + c.ctaClicked;
+      if (total === 0) continue; // skip empty cells to keep export tidy
+      rows.push(["cell", gate, tier, c.dismissed, c.ctaClicked, total, ctaRateNumeric(c)]);
+    }
+  }
+
+  // Row totals (per gate, all tiers)
+  for (const gate of data.gates) {
+    const t = data.rowTotals.get(gate) ?? empty();
+    rows.push(["gate_total", gate, "*", t.dismissed, t.ctaClicked, t.dismissed + t.ctaClicked, ctaRateNumeric(t)]);
+  }
+
+  // Column totals (per tier, all gates)
+  for (const tier of data.tiers) {
+    const t = data.colTotals.get(tier) ?? empty();
+    rows.push(["tier_total", "*", tier, t.dismissed, t.ctaClicked, t.dismissed + t.ctaClicked, ctaRateNumeric(t)]);
+  }
+
+  // Grand total
+  const g = data.grandTotal;
+  rows.push(["grand_total", "*", "*", g.dismissed, g.ctaClicked, g.dismissed + g.ctaClicked, ctaRateNumeric(g)]);
+
+  return rows.map((r) => r.map(csvEscape).join(",")).join("\r\n") + "\r\n";
+}
+
+function downloadCsv(filename: string, csv: string) {
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  // Defer revoke so Safari finishes the download
+  setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
 export function AdminUpgradeWallFunnel() {
@@ -191,18 +252,36 @@ export function AdminUpgradeWallFunnel() {
       {/* Pivot matrix */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">UpgradeWall funnel — gate × tier (last 30 days)</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Each cell shows{" "}
-            <Badge variant="outline" className="font-normal">
-              dismissed
-            </Badge>{" "}
-            /{" "}
-            <Badge variant="outline" className="font-normal">
-              CTA clicked
-            </Badge>{" "}
-            with the CTA conversion rate.
-          </p>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+            <div className="space-y-1">
+              <CardTitle className="text-base">UpgradeWall funnel — gate × tier (last 30 days)</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Each cell shows{" "}
+                <Badge variant="outline" className="font-normal">
+                  dismissed
+                </Badge>{" "}
+                /{" "}
+                <Badge variant="outline" className="font-normal">
+                  CTA clicked
+                </Badge>{" "}
+                with the CTA conversion rate.
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-2 self-start"
+              disabled={data!.gates.length === 0}
+              onClick={() => {
+                const stamp = new Date().toISOString().slice(0, 10);
+                downloadCsv(`upgrade-wall-funnel-${stamp}.csv`, buildFunnelCsv(data!));
+              }}
+            >
+              <Download className="h-4 w-4" />
+              Export CSV
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {data!.gates.length === 0 ? (
