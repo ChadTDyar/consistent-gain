@@ -93,7 +93,7 @@ export function UpgradeWall({
             className="absolute top-[10px] right-[10px] text-muted-foreground hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
             aria-label="Close upgrade dialog"
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
           <h3 id="upgrade-wall-title" className="font-semibold text-base text-foreground leading-tight pr-12">
             {headline}
