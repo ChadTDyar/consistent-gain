@@ -1,10 +1,11 @@
 import { createPortal } from "react-dom";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { X, ExternalLink, Settings as SettingsIcon, Info } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
 import { Capacitor } from "@capacitor/core";
 import { analytics } from "@/lib/analytics";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { UpgradeWallBoundary } from "@/components/UpgradeWallBoundary";
 
 // Funnel-tracking taxonomy. Keep these in sync with GA4 / dashboards.
 // `gate` identifies the feature that triggered the wall.
@@ -259,16 +260,28 @@ export function UpgradeWall({
     // in an effect) and ships a single `upgrade_wall_null_return` event.
     return (
       <IOSBranchGuard gate={gate} tier={tier}>
-        <UpgradeWallIOSFallback
-          headline={headline}
-          body={body}
-          accentColor={accentColor}
-          onDismiss={onDismiss}
-          coachPreview={coachPreview}
-          streakRepairPreview={streakRepairPreview}
+        <UpgradeWallBoundary
           gate={gate}
           tier={tier}
-        />
+          fallback={({ retry }) => (
+            <IOSFallbackErrorState
+              accentColor={accentColor}
+              onDismiss={onDismiss}
+              onRetry={retry}
+            />
+          )}
+        >
+          <UpgradeWallIOSFallback
+            headline={headline}
+            body={body}
+            accentColor={accentColor}
+            onDismiss={onDismiss}
+            coachPreview={coachPreview}
+            streakRepairPreview={streakRepairPreview}
+            gate={gate}
+            tier={tier}
+          />
+        </UpgradeWallBoundary>
       </IOSBranchGuard>
     );
   }
@@ -560,6 +573,25 @@ function UpgradeWallIOSFallback({
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
+  // Portal target sanity check. document.body is virtually always present,
+  // but during pre-hydration race conditions or in certain test harnesses
+  // it can be null/detached. Without this check React would throw with a
+  // cryptic "Target container is not a DOM element" — we'd rather fire a
+  // dedicated `ios_portal_target_missing` reason and bail to null so the
+  // boundary above can render a graceful fallback.
+  const portalTarget =
+    typeof document !== "undefined" && document.body && document.body.isConnected
+      ? document.body
+      : null;
+  if (!portalTarget) {
+    try {
+      analytics.upgradeWallNullReturn(gate, tier, "ios_portal_target_missing");
+    } catch {
+      /* no-op */
+    }
+    return null;
+  }
+
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -665,7 +697,7 @@ function UpgradeWallIOSFallback({
         </div>
       </div>
     </div>,
-    document.body
+    portalTarget
   );
 }
 
@@ -738,8 +770,25 @@ function IOSBranchGuard({
 
   // Post-mount DOM guard. Runs once. If the wrapper exists but is empty
   // after commit, the fallback effectively rendered nothing.
+  //
+  // Also performs a Capacitor cross-check: our isIOSNative() is a multi-
+  // signal heuristic (Capacitor probe → standalone PWA → WKWebView UA).
+  // If we got here via heuristic but the canonical `Capacitor.isNativePlatform()`
+  // disagrees, that's a detection-chain divergence worth alerting on so we
+  // can tune the heuristics. PWA-installed iOS users will trip this every
+  // mount — see mem://features/upgrade-wall-observability for the dashboard
+  // filter to slice noisy variants.
+  //
+  // Cleanup also fires `ios_unmounted_before_paint` when the component is
+  // torn down before the post-mount check ran (rapid open/close race). The
+  // `paintCheckedRef` flag lets cleanup tell the two cases apart.
+  const paintCheckedRef = useRef(false);
   useEffect(() => {
-    if (renderedNull) return; // already reported above
+    if (renderedNull) {
+      // Already reported above; mark as "checked" so cleanup doesn't double-fire.
+      paintCheckedRef.current = true;
+      return;
+    }
     const node = wrapperRef.current;
     if (!node) return;
     // The iOS fallback uses a portal, so this wrapper itself will be empty
@@ -750,12 +799,94 @@ function IOSBranchGuard({
     if (!dialogPresent) {
       report("ios_fallback_no_dialog_in_dom");
     }
+
+    // Capacitor cross-check. Done in an effect (not at render) because the
+    // native bridge can take a tick to attach on cold start.
+    try {
+      const canonical = Capacitor.isNativePlatform();
+      if (!canonical) {
+        report("ios_capacitor_unavailable");
+      }
+    } catch {
+      /* Capacitor probe threw — already covered by ios_platform_detect_failed */
+    }
+
+    paintCheckedRef.current = true;
     // Empty deps: we only need to verify once, right after the initial
     // render. Subsequent updates can't go from "rendered" to "null" without
     // unmounting first.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Unmount-before-paint guard. If the component is torn down before the
+  // post-mount effect ever ran (rapid open/close, route change mid-mount),
+  // we fire a distinct reason so this race is visible in the funnel.
+  useEffect(() => {
+    return () => {
+      if (!paintCheckedRef.current) {
+        report("ios_unmounted_before_paint");
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return <div ref={wrapperRef}>{children}</div>;
+}
+
+// ----------------------------------------------------------------------------
+// IOSFallbackErrorState
+// ----------------------------------------------------------------------------
+// Minimal, App-Review-safe surface shown when the iOS fallback subtree throws
+// during render. We render a tiny dialog (no price, no purchase CTA) with a
+// Close button and a Try-again button. The retry path is what fires the
+// `ios_render_error_recovered` reason from UpgradeWallBoundary.
+function IOSFallbackErrorState({
+  accentColor,
+  onDismiss,
+  onRetry,
+}: {
+  accentColor: string;
+  onDismiss: () => void;
+  onRetry: () => void;
+}) {
+  // Use a static portal target — by this point we already know document.body
+  // exists (the boundary only mounts inside an active render tree).
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.5)" }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Something went wrong"
+    >
+      <div
+        className="bg-card rounded-xl max-w-[360px] w-full p-6 shadow-2xl"
+        style={{ borderLeft: `4px solid ${accentColor}` }}
+      >
+        <h2 className="text-lg font-semibold text-foreground mb-2">
+          We couldn't load that just now
+        </h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Tap Try again, or close and reopen the feature.
+        </p>
+        <div className="flex gap-2 justify-end">
+          <button
+            onClick={onDismiss}
+            className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground min-w-[44px] min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+          >
+            Close
+          </button>
+          <button
+            onClick={onRetry}
+            className="px-4 py-2 text-sm font-semibold text-white rounded min-w-[44px] min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            style={{ background: accentColor }}
+          >
+            Try again
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
 }
 
