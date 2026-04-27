@@ -440,6 +440,24 @@ function UpgradeWallIOSFallback({
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const pointerDownOnBackdrop = useRef(false);
 
+  // Per-instance unique IDs (see web variant for rationale).
+  const reactId = useId();
+  const titleId = `${reactId}-title`;
+  const bodyId = `${reactId}-body`;
+  const previewId = `${reactId}-preview`;
+  const announcementId = `${reactId}-announcement`;
+  const hasPreview = coachPreview || streakRepairPreview;
+  const describedBy = hasPreview ? `${bodyId} ${previewId}` : bodyId;
+
+  // Polite live-region announcement (see web variant for rationale).
+  const [liveAnnouncement, setLiveAnnouncement] = useState("");
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      setLiveAnnouncement(`Upgrade dialog opened: ${headline}. ${body}`);
+    }, 100);
+    return () => window.clearTimeout(t);
+  }, [headline, body]);
+
   // Lock background scroll on iOS too. Even though the native WKWebView
   // doesn't show a scrollbar, rubber-band scrolling can still disrupt the
   // focus trap and pull the modal partially out of view.
