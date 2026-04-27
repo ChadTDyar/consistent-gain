@@ -473,13 +473,15 @@ export default function Dashboard() {
                 {plan === 'free' && !isIOSNative() && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
               </h3>
               {plan === 'free' && !isIOSNative() ? (
-                <div
-                  className="p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors"
+                <button
+                  type="button"
+                  className="w-full text-left p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   onClick={() => { setUpgradeWallType('partner_lock'); setShowUpgradeWall(true); }}
+                  aria-label="Accountability Partner — Pro plan required, opens upgrade dialog"
                 >
                   <p className="text-sm text-muted-foreground">Your partner sees your weekly completion. You see theirs. The social pressure is real.</p>
-                  <p className="text-xs text-primary font-semibold mt-2">Tap to unlock →</p>
-                </div>
+                  <p className="text-xs text-primary font-semibold mt-2" aria-hidden="true">Tap to unlock →</p>
+                </button>
               ) : (
                 <div className="p-6 rounded-xl border border-border bg-card shadow-sm">
                   <p className="text-sm text-muted-foreground">Invite a workout partner to keep each other accountable. Coming soon!</p>
