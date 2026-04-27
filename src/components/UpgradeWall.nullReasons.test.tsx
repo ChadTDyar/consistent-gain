@@ -125,19 +125,24 @@ describe("UpgradeWall — extended null-return reasons", () => {
   // returns false and emits the reason via lazy-loaded analytics.
   // We verify the FUNCTION'S RETURN VALUE here; the lazy analytics import
   // path is a side effect tested separately by the platform-helper unit.
+  // ios_platform_detect_failed: when the canonical Capacitor probe throws,
+  // isIOSNative must NOT propagate the error and must return false.
+  // We verify by direct unit on the helper, mocking Capacitor at the
+  // module-graph entry. (vi.doMock + vi.resetModules pattern matches the
+  // surrounding tests.)
   it("isIOSNative returns false (and does not throw) when Capacitor probe throws", async () => {
     vi.resetModules();
     vi.doMock("@capacitor/core", () => ({
       Capacitor: {
-        isNativePlatform: () => {
+        isNativePlatform: vi.fn(() => {
           throw new Error("bridge not ready");
-        },
-        getPlatform: () => "ios",
-        isPluginAvailable: () => false,
+        }),
+        getPlatform: vi.fn(() => "ios"),
+        isPluginAvailable: vi.fn(() => false),
       },
     }));
-    const { isIOSNative } = await import("@/lib/platform");
-    expect(() => isIOSNative()).not.toThrow();
-    expect(isIOSNative()).toBe(false);
+    const platform = await import("@/lib/platform");
+    expect(() => platform.isIOSNative()).not.toThrow();
+    expect(platform.isIOSNative()).toBe(false);
   });
 });
