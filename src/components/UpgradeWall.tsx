@@ -593,9 +593,6 @@ function UpgradeWallIOSFallback({
               Manage subscription in Settings
             </button>
           </div>
-          <p className="text-center text-xs text-muted-foreground">
-            Already a member? Sign in on the web to access this on iOS.
-          </p>
         </div>
       </div>
     </div>,
