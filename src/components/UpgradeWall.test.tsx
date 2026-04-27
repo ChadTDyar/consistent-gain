@@ -153,4 +153,108 @@ describe("UpgradeWall accessibility", () => {
       document.body.removeChild(trigger);
     });
   });
+
+  describe("focus restoration to the trigger button", () => {
+    // Helper: simulate a real "trigger button opens modal" lifecycle.
+    const renderWithTrigger = (label = "Open upgrade") => {
+      const trigger = document.createElement("button");
+      trigger.textContent = label;
+      document.body.appendChild(trigger);
+      trigger.focus();
+      expect(document.activeElement).toBe(trigger);
+      return trigger;
+    };
+
+    it("restores focus to the trigger after dismissal via Escape", () => {
+      const trigger = renderWithTrigger();
+      const onDismiss = vi.fn();
+      const { rerender } = render(
+        <UpgradeWall {...baseProps} onDismiss={onDismiss} />
+      );
+      expect(document.activeElement).not.toBe(trigger);
+
+      fireEvent.keyDown(document, { key: "Escape" });
+      rerender(<div />);
+
+      expect(document.activeElement).toBe(trigger);
+      document.body.removeChild(trigger);
+    });
+
+    it("restores focus to the trigger after clicking the Close button", () => {
+      const trigger = renderWithTrigger();
+      const onDismiss = vi.fn();
+      const { rerender } = render(
+        <UpgradeWall {...baseProps} onDismiss={onDismiss} />
+      );
+
+      fireEvent.click(screen.getByRole("button", { name: /close upgrade dialog/i }));
+      rerender(<div />);
+
+      expect(document.activeElement).toBe(trigger);
+      document.body.removeChild(trigger);
+    });
+
+    it("restores focus to the trigger after outside-click dismissal", () => {
+      const trigger = renderWithTrigger();
+      const onDismiss = vi.fn();
+      const { rerender } = render(
+        <UpgradeWall {...baseProps} onDismiss={onDismiss} />
+      );
+      const backdrop = screen.getByRole("dialog");
+
+      fireEvent.pointerDown(backdrop, { target: backdrop });
+      fireEvent.pointerUp(backdrop, { target: backdrop });
+      rerender(<div />);
+
+      expect(document.activeElement).toBe(trigger);
+      document.body.removeChild(trigger);
+    });
+
+    it("restores focus to the trigger after the user clicks the Upgrade CTA", () => {
+      const trigger = renderWithTrigger();
+      const onUpgrade = vi.fn();
+      const { rerender } = render(
+        <UpgradeWall {...baseProps} onUpgrade={onUpgrade} />
+      );
+
+      fireEvent.click(screen.getByRole("button", { name: /upgrade to pro/i }));
+      // Parent typically unmounts the modal once the upgrade flow starts.
+      rerender(<div />);
+
+      expect(onUpgrade).toHaveBeenCalledTimes(1);
+      expect(document.activeElement).toBe(trigger);
+      document.body.removeChild(trigger);
+    });
+
+    it("does NOT attempt to focus a trigger that was removed from the DOM while the modal was open", () => {
+      const trigger = renderWithTrigger();
+      const { rerender } = render(<UpgradeWall {...baseProps} />);
+
+      // Parent removes the trigger button before the modal closes.
+      document.body.removeChild(trigger);
+
+      // Should not throw and should not leave focus on the now-detached node.
+      expect(() => rerender(<div />)).not.toThrow();
+      expect(document.activeElement).not.toBe(trigger);
+    });
+
+    it("survives onDismiss prop identity changes without re-capturing focus", () => {
+      // Regression guard: the trap effect must run mount-only so a parent that
+      // recreates onDismiss on every render doesn't cause previouslyFocused to
+      // be re-captured to the close button (which would break trigger restoration).
+      const trigger = renderWithTrigger();
+      const { rerender } = render(
+        <UpgradeWall {...baseProps} onDismiss={() => {}} />
+      );
+
+      // Force several rerenders with brand-new onDismiss identities.
+      rerender(<UpgradeWall {...baseProps} onDismiss={() => {}} />);
+      rerender(<UpgradeWall {...baseProps} onDismiss={() => {}} />);
+
+      // Unmount and verify focus still goes back to the original trigger.
+      rerender(<div />);
+      expect(document.activeElement).toBe(trigger);
+      document.body.removeChild(trigger);
+    });
+  });
 });
