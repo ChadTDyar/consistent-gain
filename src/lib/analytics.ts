@@ -76,26 +76,40 @@ export const analytics = {
   // `gate` identifies which feature triggered the wall (coach, streak_repair,
   // habit_limit, partner_lock, analytics_lock, history_limit).
   // `tier` is the tier the wall is selling (pro | premium | unknown).
+  // `method` records HOW the user closed/converted the wall so paywall UX
+  // can be tuned per channel (e.g. an Escape-heavy gate may need clearer
+  // copy; an outside-click-heavy gate may need a more committed surface).
   // Together they let you build per-gate conversion funnels:
-  //   shown? -> dismissed? -> cta_clicked? -> begin_checkout? -> purchase?
-  // We pass the GA4 `event_label` as "<gate>:<tier>" so legacy GA reports
-  // remain readable, and also push a structured payload via gtag's third arg.
-  upgradeWallDismissed: (gate: string, tier: string) => {
+  //   shown? -> dismissed{method}? -> cta_clicked{method}? -> begin_checkout? -> purchase?
+  // We pass the GA4 `event_label` as "<gate>:<tier>:<method>" so legacy GA
+  // reports remain readable, and also push a structured payload via gtag's
+  // third arg.
+  upgradeWallDismissed: (
+    gate: string,
+    tier: string,
+    method: UpgradeWallDismissMethod = 'unknown'
+  ) => {
     if (typeof window.gtag === 'undefined') return;
     window.gtag('event', 'upgrade_wall_dismissed', {
       event_category: 'conversion',
-      event_label: `${gate}:${tier}`,
+      event_label: `${gate}:${tier}:${method}`,
       gate,
       tier,
+      method,
     });
   },
-  upgradeWallCtaClicked: (gate: string, tier: string) => {
+  upgradeWallCtaClicked: (
+    gate: string,
+    tier: string,
+    method: UpgradeWallCtaMethod = 'cta_button'
+  ) => {
     if (typeof window.gtag === 'undefined') return;
     window.gtag('event', 'upgrade_wall_cta_clicked', {
       event_category: 'conversion',
-      event_label: `${gate}:${tier}`,
+      event_label: `${gate}:${tier}:${method}`,
       gate,
       tier,
+      method,
     });
   },
 
