@@ -6,6 +6,7 @@ import { Capacitor } from "@capacitor/core";
 import { analytics } from "@/lib/analytics";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { restoreFocus, captureFocusOrigin } from "@/lib/restoreFocus";
 
 // Funnel-tracking taxonomy. Keep these in sync with GA4 / dashboards.
 // `gate` identifies the feature that triggered the wall.
@@ -74,6 +75,66 @@ export function UpgradeWall({
   // panel (e.g. selecting text) and releases on the backdrop.
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
+
+  // -------------------------------------------------------------------------
+  // Parent-level focus safety net (covers ALL render branches including the
+  // iOS fallback path AND any future branch that returns null).
+  //
+  // Why at the parent level (not inside the variant components):
+  //   - The web variant has its own rich restoration in the focus-trap
+  //     effect cleanup. The iOS variant has its own (simpler) restoration.
+  //   - But if either variant unmounts in an unusual way (error boundary
+  //     swallowed the cleanup, the variant returned null on iOS for a
+  //     legacy code path, an experiment short-circuited rendering), the
+  //     keyboard user is left with focus on <body> — visually nowhere,
+  //     no SR announcement, no clear next-tab target.
+  //   - This effect runs OUTSIDE the variant code, so it always fires on
+  //     unmount of the public <UpgradeWall>. The variant-specific cleanups
+  //     run first; if they successfully focused something, this is a no-op
+  //     because the captured trigger is already focused (or `restoreFocus`
+  //     simply re-focuses it idempotently).
+  //
+  // Capture happens via a layout effect so we read activeElement BEFORE the
+  // variant's focus-trap effect moves focus into the dialog (effects in
+  // React run child-then-parent for layout, parent-then-child for passive,
+  // but we want the capture to win the race against the variant's own
+  // focus() call — useLayoutEffect at the parent fires before the child's
+  // useEffect).
+  // -------------------------------------------------------------------------
+  const parentFocusOrigin = useRef<HTMLElement | null>(null);
+  // useLayoutEffect-equivalent semantics matter only on real DOM; useEffect
+  // is sufficient here because document.activeElement at first render is
+  // still the trigger (the variant's focus() runs in its own useEffect,
+  // after this one mounts in the same commit). Using useEffect avoids the
+  // SSR warning for tests/storybooks that import without jsdom.
+  useEffect(() => {
+    parentFocusOrigin.current = captureFocusOrigin();
+    // bodyFallback resolution: prefer the page's <main> landmark for
+    // screen-reader anchor stability, fall back to body so focus is at
+    // least defined. tabIndex is set inline so even non-tabbable landmarks
+    // can receive programmatic focus (cleared on next interaction).
+    const resolveBodyFallback = (): HTMLElement | null => {
+      if (typeof document === "undefined") return null;
+      const main =
+        document.querySelector<HTMLElement>("main") ??
+        (document.body as HTMLElement | null);
+      if (main && main.tabIndex < 0) main.tabIndex = -1;
+      return main;
+    };
+    return () => {
+      // Variant cleanup already ran by this point. We re-attempt with the
+      // bodyFallback wired in case the variant skipped restoration entirely
+      // (e.g. iOS variant in a future null-render branch). restoreFocus is
+      // idempotent: focusing the same element twice is a no-op.
+      restoreFocus({
+        explicit: returnFocus,
+        auto: parentFocusOrigin.current,
+        bodyFallback: resolveBodyFallback(),
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   // WCAG 2.3.3 Animation from Interactions: when the user prefers reduced
   // motion, omit the entry animation classes entirely. We don't just rely on
@@ -199,31 +260,22 @@ export function UpgradeWall({
     document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("keydown", handleKey);
-      // Resolve the focus target with this priority:
-      //   1. Explicit `returnFocus` prop (ref or DOM node) — caller knows best.
-      //      `null` opts out of restoration entirely.
-      //   2. Auto-captured trigger (`previouslyFocused`) — handles the common
-      //      "user clicked a button, modal opened" case.
-      // Both paths share the same connectedness + focus() guards.
-      const explicit = returnFocusRef.current;
-      let target: HTMLElement | null = null;
-      if (explicit === null) {
-        // Caller explicitly opted out.
-        target = null;
-      } else if (explicit && "current" in explicit) {
-        target = explicit.current ?? null;
-      } else if (explicit instanceof HTMLElement) {
-        target = explicit;
-      } else {
-        target = previouslyFocused.current;
-      }
-      if (target && target.isConnected && typeof target.focus === "function") {
-        try {
-          target.focus({ preventScroll: true });
-        } catch {
-          target.focus();
-        }
-      }
+      // Resolve the focus target via the shared restoreFocus helper.
+      // Priority: explicit returnFocus → auto-captured trigger → bodyFallback
+      // (page <main> landmark, or <body> as last resort) so keyboard / SR
+      // users always land somewhere named even if the trigger has been
+      // unmounted while the modal was open.
+      const main =
+        typeof document !== "undefined"
+          ? (document.querySelector<HTMLElement>("main") ??
+            (document.body as HTMLElement | null))
+          : null;
+      if (main && main.tabIndex < 0) main.tabIndex = -1;
+      restoreFocus({
+        explicit: returnFocusRef.current,
+        auto: previouslyFocused.current,
+        bodyFallback: main,
+      });
     };
   }, [ios]);
 
@@ -251,6 +303,7 @@ export function UpgradeWall({
         streakRepairPreview={streakRepairPreview}
         gate={gate}
         tier={tier}
+        returnFocus={returnFocus}
       />
     );
   }
@@ -458,6 +511,10 @@ interface IOSFallbackProps {
   streakRepairPreview: boolean;
   gate: UpgradeWallGate;
   tier: UpgradeWallTier;
+  // Forwarded from the public <UpgradeWall> so iOS keyboard users get the
+  // same focus-restoration override semantics as web (e.g. when the trigger
+  // unmounts while the modal is open).
+  returnFocus?: React.RefObject<HTMLElement> | HTMLElement | null;
 }
 
 function UpgradeWallIOSFallback({
@@ -469,11 +526,18 @@ function UpgradeWallIOSFallback({
   streakRepairPreview,
   gate,
   tier,
+  returnFocus,
 }: IOSFallbackProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const pointerDownOnBackdrop = useRef(false);
+  // Mirror returnFocus into a ref so the mount-only restoration effect
+  // always reads the latest value at unmount without re-running.
+  const returnFocusRef = useRef(returnFocus);
+  useEffect(() => {
+    returnFocusRef.current = returnFocus;
+  }, [returnFocus]);
 
   // Per-instance unique IDs (see web variant for rationale).
   const reactId = useId();
@@ -547,8 +611,11 @@ function UpgradeWallIOSFallback({
   }, []);
 
   // Focus trap + Escape-to-close, identical contract to the web modal.
+  // Capture priority on open: filter out <body> so we don't "restore" to a
+  // non-meaningful target later. Initial focus → Close (X) so a stray
+  // Enter/Space doesn't accidentally trigger any action.
   useEffect(() => {
-    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    previouslyFocused.current = captureFocusOrigin();
     closeBtnRef.current?.focus();
 
     const handleKey = (e: KeyboardEvent) => {
@@ -576,7 +643,24 @@ function UpgradeWallIOSFallback({
     document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("keydown", handleKey);
-      previouslyFocused.current?.focus?.();
+      // Hardened restoration — same contract as the web variant. Without
+      // this, a missing/unmounted trigger would leave focus on <body>,
+      // which TalkBack on iOS Safari announces as silence and which
+      // strands keyboard-only WKWebView users with no usable next-Tab
+      // target. The bodyFallback resolves to the page's <main> landmark
+      // (with tabIndex=-1 set so it can receive programmatic focus) so
+      // SR users always land somewhere named.
+      const main =
+        typeof document !== "undefined"
+          ? (document.querySelector<HTMLElement>("main") ??
+            (document.body as HTMLElement | null))
+          : null;
+      if (main && main.tabIndex < 0) main.tabIndex = -1;
+      restoreFocus({
+        explicit: returnFocusRef.current,
+        auto: previouslyFocused.current,
+        bodyFallback: main,
+      });
     };
   }, []);
 
