@@ -111,7 +111,7 @@ export default function Insights() {
           body={MOMENTUM.walls.ai_coach.body}
           cta={MOMENTUM.walls.ai_coach.cta}
           accentColor="#0d3b5e"
-          gate="ai_coach"
+          gate="analytics_lock"
           tier="premium"
           onUpgrade={() => { setShowPaywall(false); navigate("/pricing"); }}
           onDismiss={() => setShowPaywall(false)}
