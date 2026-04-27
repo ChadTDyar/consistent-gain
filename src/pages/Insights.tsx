@@ -104,7 +104,7 @@ export default function Insights() {
   return (
     <>
       <SEO title="Insights - Momentum" description="AI-powered weekly intelligence report on your fitness habits." />
-      <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} feature="ai_coach" requiredPlan="plus" />
+      <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} feature="ai_coach" requiredPlan="pro" />
 
       <div className="min-h-screen bg-background-cream pb-24">
         <header className="sticky top-0 z-10 bg-card/95 backdrop-blur-md border-b border-border px-4 py-4">
