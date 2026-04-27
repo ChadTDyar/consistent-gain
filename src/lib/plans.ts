@@ -28,6 +28,18 @@ export const PLANS = {
 export type PlanTier = 'free' | 'plus' | 'pro';
 export type BillingInterval = 'monthly' | 'annual';
 
+/**
+ * Normalize any plan string from the database/webhooks to a known PlanTier.
+ * Defensive against legacy values like 'premium' that may exist on older accounts.
+ */
+export function normalizePlan(plan: string | null | undefined): PlanTier {
+  if (!plan) return 'free';
+  const p = plan.toLowerCase();
+  if (p === 'pro' || p === 'premium') return 'pro';
+  if (p === 'plus') return 'plus';
+  return 'free';
+}
+
 export function getPaymentLink(plan: 'plus' | 'pro', interval: BillingInterval): string {
   return interval === 'annual' ? PLANS[plan].annual_payment_link : PLANS[plan].payment_link;
 }
