@@ -18,14 +18,15 @@ async function recordEvent(
   try {
     if (typeof window === "undefined") return;
     const { data: { user } } = await supabase.auth.getUser();
-    await supabase.from("analytics_events").insert({
-      user_id: user?.id ?? null,
+    const row = {
+      user_id: user?.id ?? undefined,
       event_name,
-      gate: fields.gate ?? null,
-      tier: fields.tier ?? null,
-      variant: fields.variant ?? null,
-      metadata: fields.metadata ?? {},
-    });
+      gate: fields.gate ?? undefined,
+      tier: fields.tier ?? undefined,
+      variant: fields.variant ?? undefined,
+      metadata: (fields.metadata ?? {}) as Record<string, unknown>,
+    };
+    await supabase.from("analytics_events").insert(row);
   } catch {
     // Swallow — analytics is best-effort.
   }
