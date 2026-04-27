@@ -30,6 +30,19 @@ describe("UpgradeWall accessibility", () => {
     expect(dialog).toBeInTheDocument();
     expect(dialog).toHaveAttribute("aria-modal", "true");
     expect(dialog).toHaveAttribute("aria-labelledby", "upgrade-wall-title");
+    expect(dialog).toHaveAttribute("aria-describedby", "upgrade-wall-body");
+  });
+
+  it("aria-labelledby and aria-describedby point to elements with the headline and body copy", () => {
+    // Screen readers announce the dialog as <name> + <description>. If either
+    // referenced id is missing or points to the wrong element, the announcement
+    // collapses to "dialog" with no context — useless for blind users.
+    render(<UpgradeWall {...baseProps} />);
+    const dialog = screen.getByRole("dialog");
+    const labelId = dialog.getAttribute("aria-labelledby")!;
+    const descId = dialog.getAttribute("aria-describedby")!;
+    expect(document.getElementById(labelId)).toHaveTextContent(baseProps.headline);
+    expect(document.getElementById(descId)).toHaveTextContent(baseProps.body);
   });
 
   it("places initial focus on the Close button (safe default, not the upgrade CTA)", () => {

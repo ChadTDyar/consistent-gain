@@ -210,6 +210,7 @@ export function UpgradeWall({
       role="dialog"
       aria-modal="true"
       aria-labelledby="upgrade-wall-title"
+      aria-describedby="upgrade-wall-body"
     >
       <div
         ref={panelRef}
@@ -232,7 +233,7 @@ export function UpgradeWall({
         </div>
 
         <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
-          <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+          <p id="upgrade-wall-body" className="text-sm text-muted-foreground leading-relaxed">{body}</p>
 
           {streakRepairPreview && (
             <div className="space-y-1.5">
