@@ -17,6 +17,7 @@ vi.mock("@/lib/analytics", () => ({
     upgradeWallCtaClicked: (gate: string, tier: string) => ctaSpy(gate, tier),
     upgradeWallShown: vi.fn(),
     upgradeWallNullReturn: vi.fn(),
+    upgradeWallTiming: vi.fn(),
   },
 }));
 
@@ -155,6 +156,7 @@ describe("UpgradeWall iOS — funnel analytics", () => {
         upgradeWallCtaClicked: (g: string, t: string) => ctaIos(g, t),
         upgradeWallShown: vi.fn(),
         upgradeWallNullReturn: vi.fn(),
+        upgradeWallTiming: vi.fn(),
       },
     }));
     vi.doMock("@capacitor/core", () => ({
