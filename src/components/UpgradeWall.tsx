@@ -903,3 +903,110 @@ function IOSFallbackErrorState({
   );
 }
 
+// ----------------------------------------------------------------------------
+// UpgradeWallIOSInlineNotice
+// ----------------------------------------------------------------------------
+// Last-resort, non-portal inline notice rendered when document.body is
+// unavailable (pre-hydration race, jsdom test harness, detached body, etc).
+//
+// Why inline (no createPortal)?
+//   - createPortal requires a valid Element target. If portalTarget is null
+//     we can't portal anywhere — so we render in-tree where the parent
+//     mounted us. This guarantees iOS users ALWAYS see something.
+//
+// App Review compliance is identical to the regular iOS fallback:
+//   - No price.
+//   - No purchase CTA.
+//   - "Manage on web" goes to /account (subscription management, not
+//     checkout) per Reader Rule 3.1.3(a).
+//
+// Visually we still use a fixed full-screen overlay so the user perceives
+// it as a modal even though it's not portaled. It does not focus-trap or
+// scroll-lock — those are best-effort niceties that require a healthy DOM,
+// and the whole point of this branch is that the DOM is unhealthy.
+function UpgradeWallIOSInlineNotice({
+  headline,
+  body,
+  accentColor,
+  onDismiss,
+  onManageOnWeb,
+  onOpenSettings,
+}: {
+  headline: string;
+  body: string;
+  accentColor: string;
+  onDismiss: () => void;
+  onManageOnWeb: () => void;
+  onOpenSettings: () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.5)" }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="upgrade-wall-ios-inline-title"
+      aria-describedby="upgrade-wall-ios-inline-desc"
+    >
+      <div
+        className="bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl"
+        style={{ borderLeft: `4px solid ${accentColor}` }}
+      >
+        <div className="p-[22px] pb-0 relative">
+          <button
+            onClick={onDismiss}
+            className="absolute top-[10px] right-[10px] text-muted-foreground hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+            aria-label="Close dialog"
+          >
+            <X className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <h3
+            id="upgrade-wall-ios-inline-title"
+            className="font-semibold text-base text-foreground leading-tight pr-12"
+          >
+            {headline}
+          </h3>
+        </div>
+
+        <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
+          <p
+            id="upgrade-wall-ios-inline-desc"
+            className="text-sm text-muted-foreground leading-relaxed"
+          >
+            {body}
+          </p>
+
+          <div
+            role="note"
+            aria-label="Subscription information"
+            className="rounded-lg border border-border bg-muted/30 p-3 flex items-start gap-2.5"
+          >
+            <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
+            <p className="text-xs text-foreground leading-relaxed">
+              In-app purchases on iOS will be available in a future update through the App Store. Until then, you can manage an existing subscription on the web or in your iOS Settings.
+            </p>
+          </div>
+
+          <div className="space-y-2 pt-1">
+            <button
+              onClick={onManageOnWeb}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white cursor-pointer border-none"
+              style={{ background: accentColor }}
+            >
+              <ExternalLink className="h-4 w-4" aria-hidden="true" />
+              Manage on web
+            </button>
+            <button
+              onClick={onOpenSettings}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-medium text-sm text-foreground bg-muted hover:bg-muted/80 transition-colors cursor-pointer border-none"
+            >
+              <SettingsIcon className="h-4 w-4" aria-hidden="true" />
+              Manage subscription in Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
