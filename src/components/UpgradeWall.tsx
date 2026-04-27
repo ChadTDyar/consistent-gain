@@ -582,8 +582,8 @@ function UpgradeWallIOSFallback({
       onPointerUp={handleBackdropPointerUp}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="upgrade-wall-ios-title"
-      aria-describedby="upgrade-wall-ios-desc"
+      aria-labelledby={titleId}
+      aria-describedby={describedBy}
     >
       <div
         ref={panelRef}
@@ -601,7 +601,7 @@ function UpgradeWallIOSFallback({
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
           <h3
-            id="upgrade-wall-ios-title"
+            id={titleId}
             className="font-semibold text-base text-foreground leading-tight pr-12"
           >
             {headline}
@@ -610,7 +610,7 @@ function UpgradeWallIOSFallback({
 
         <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
           <p
-            id="upgrade-wall-ios-desc"
+            id={bodyId}
             className="text-sm text-muted-foreground leading-relaxed"
           >
             {body}
