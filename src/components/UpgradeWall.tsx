@@ -862,9 +862,16 @@ function IOSFallbackErrorState({
   onDismiss: () => void;
   onRetry: () => void;
 }) {
-  // Use a static portal target — by this point we already know document.body
-  // exists (the boundary only mounts inside an active render tree).
-  return createPortal(
+  // Defensive portal-target lookup. The boundary normally fires after a
+  // successful initial mount, so document.body is virtually always present
+  // here. But the same pre-hydration race that triggers the inline notice
+  // could in theory unmount body between renders, so fall back to inline
+  // rendering rather than crashing the gated screen.
+  const portalTarget =
+    typeof document !== "undefined" && document.body && document.body.isConnected
+      ? document.body
+      : null;
+  const tree = (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.5)" }}
@@ -898,9 +905,9 @@ function IOSFallbackErrorState({
           </button>
         </div>
       </div>
-    </div>,
-    document.body,
+    </div>
   );
+  return portalTarget ? createPortal(tree, portalTarget) : tree;
 }
 
 // ----------------------------------------------------------------------------
