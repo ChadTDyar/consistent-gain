@@ -536,8 +536,22 @@ export default function Settings() {
                           <AlertTriangle className="h-5 w-5 text-destructive" />
                           Are you absolutely sure?
                         </AlertDialogTitle>
-                        <AlertDialogDescription className="text-base">
-                          This action cannot be undone. This will permanently delete your account and remove all your data from our servers, including goals, activity logs, and chat history.
+                        <AlertDialogDescription className="text-base space-y-3">
+                          <span className="block">
+                            This action cannot be undone. This will permanently delete your account and remove all your data from our servers, including goals, activity logs, pain reports, and chat history.
+                          </span>
+                          {profile?.is_premium && (
+                            <span className="block rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm">
+                              <strong className="text-destructive">Heads up:</strong> Your Premium subscription will be cancelled. Any remaining time on your current billing period will not be refunded.
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => { setDeleteStep(0); handleExportData(); }}
+                            className="block w-full text-left text-sm text-primary underline underline-offset-2 hover:text-primary/80"
+                          >
+                            ⬇ Export your data first (recommended)
+                          </button>
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -562,7 +576,7 @@ export default function Settings() {
                           This is your final warning
                         </AlertDialogTitle>
                         <AlertDialogDescription className="text-base">
-                          All your goals, progress, and data will be permanently deleted. Continue?
+                          All your goals, progress, and data will be permanently deleted{profile?.is_premium ? ' and your Premium subscription cancelled' : ''}. Continue?
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -584,16 +598,34 @@ export default function Settings() {
                       <AlertDialogHeader>
                         <AlertDialogTitle className="flex items-center gap-2">
                           <AlertTriangle className="h-5 w-5 text-destructive" />
-                          Confirm permanent deletion
+                          Type DELETE to confirm
                         </AlertDialogTitle>
                         <AlertDialogDescription className="text-base">
-                          Tap <strong>Delete my account</strong> below to permanently delete your account. You will be signed out immediately.
+                          To prevent accidental deletion, please type <strong>DELETE</strong> (all caps) below. Then tap <strong>Delete my account</strong>. You will be signed out immediately.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
+                      <div className="py-2">
+                        <Label htmlFor="delete-confirm" className="sr-only">Type DELETE to confirm</Label>
+                        <Input
+                          id="delete-confirm"
+                          value={deleteConfirmText}
+                          onChange={(e) => setDeleteConfirmText(e.target.value)}
+                          placeholder="Type DELETE here"
+                          autoComplete="off"
+                          autoCapitalize="characters"
+                          spellCheck={false}
+                          className="text-base h-11"
+                          disabled={deleting}
+                          aria-describedby="delete-confirm-help"
+                        />
+                        <p id="delete-confirm-help" className="text-xs text-muted-foreground mt-2">
+                          The button enables once you type DELETE exactly.
+                        </p>
+                      </div>
                       <AlertDialogFooter>
                         <Button
                           variant="outline"
-                          onClick={() => setDeleteStep(0)}
+                          onClick={() => { setDeleteStep(0); setDeleteConfirmText(""); }}
                           disabled={deleting}
                         >
                           Cancel
@@ -601,7 +633,8 @@ export default function Settings() {
                         <Button
                           variant="destructive"
                           onClick={handleDeleteAccount}
-                          disabled={deleting}
+                          disabled={deleting || deleteConfirmText.trim().toUpperCase() !== "DELETE"}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
                           {deleting ? (
                             <>
