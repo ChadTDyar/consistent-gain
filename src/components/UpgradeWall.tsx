@@ -271,7 +271,7 @@ export function UpgradeWall({
         }
       }
     };
-  }, [ios]);
+  }, [ios, entitled, entitlement]);
 
   // Apple App Review compliance for iOS native builds:
   // - The standard web upgrade wall (with its purchase CTA + price) cannot be
