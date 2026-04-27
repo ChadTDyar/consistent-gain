@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import { X } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
 
@@ -33,6 +33,13 @@ export function UpgradeWall({
   // panel (e.g. selecting text) and releases on the backdrop.
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
+  // Unique IDs prevent collisions if two UpgradeWalls ever mount simultaneously
+  // (e.g. during a route transition). Screen readers rely on these IDs to wire
+  // the dialog to its accessible name (aria-labelledby) and description
+  // (aria-describedby).
+  const reactId = useId();
+  const titleId = `upgrade-wall-title-${reactId}`;
+  const descId = `upgrade-wall-desc-${reactId}`;
 
   // Keep onDismiss ref stable so the trap effect can run mount-only.
   // If we depended on onDismiss in the effect deps, parents passing a new
@@ -130,7 +137,8 @@ export function UpgradeWall({
       onPointerUp={handleBackdropPointerUp}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="upgrade-wall-title"
+      aria-labelledby={titleId}
+      aria-describedby={descId}
     >
       <div
         ref={panelRef}
@@ -147,13 +155,13 @@ export function UpgradeWall({
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
-          <h3 id="upgrade-wall-title" className="font-semibold text-base text-foreground leading-tight pr-12">
+          <h3 id={titleId} className="font-semibold text-base text-foreground leading-tight pr-12">
             {headline}
           </h3>
         </div>
 
         <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
-          <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+          <p id={descId} className="text-sm text-muted-foreground leading-relaxed">{body}</p>
 
           {streakRepairPreview && (
             <div className="space-y-1.5">
