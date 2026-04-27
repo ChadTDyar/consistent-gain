@@ -252,18 +252,36 @@ export function AdminUpgradeWallFunnel() {
       {/* Pivot matrix */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">UpgradeWall funnel — gate × tier (last 30 days)</CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Each cell shows{" "}
-            <Badge variant="outline" className="font-normal">
-              dismissed
-            </Badge>{" "}
-            /{" "}
-            <Badge variant="outline" className="font-normal">
-              CTA clicked
-            </Badge>{" "}
-            with the CTA conversion rate.
-          </p>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+            <div className="space-y-1">
+              <CardTitle className="text-base">UpgradeWall funnel — gate × tier (last 30 days)</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Each cell shows{" "}
+                <Badge variant="outline" className="font-normal">
+                  dismissed
+                </Badge>{" "}
+                /{" "}
+                <Badge variant="outline" className="font-normal">
+                  CTA clicked
+                </Badge>{" "}
+                with the CTA conversion rate.
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-2 self-start"
+              disabled={data!.gates.length === 0}
+              onClick={() => {
+                const stamp = new Date().toISOString().slice(0, 10);
+                downloadCsv(`upgrade-wall-funnel-${stamp}.csv`, buildFunnelCsv(data!));
+              }}
+            >
+              <Download className="h-4 w-4" />
+              Export CSV
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {data!.gates.length === 0 ? (
