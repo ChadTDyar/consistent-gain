@@ -76,26 +76,81 @@ export function UpgradeWall({
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
 
+  // Entitlement pre-check.
+  // ----------------------
+  // If the signed-in user is already on a paid plan (Pro / Premium / any
+  // legacy alias normalized via plans.ts), this modal MUST NOT try to sell
+  // them anything — that's both an awful UX and a real App-Review risk on
+  // iOS (offering an upgrade to a customer who already pays looks like a
+  // duplicate purchase prompt).
+  //
+  // Behavior:
+  //   - 'unknown' (initial): render nothing for one paint frame while we
+  //     resolve the plan. The pre-check happens in parallel with the modal
+  //     mount so the visible flash is typically <100 ms on a warm session.
+  //   - 'free' (or unauthenticated, or fetch failed): render the normal
+  //     upsell flow (web modal, or iOS Reader-rule fallback). Defaulting to
+  //     "show the upsell" on error is intentional — if anything goes wrong
+  //     fetching the plan we'd rather over-show the wall than wrongly hide
+  //     it from a free user who actually needs to upgrade.
+  //   - paid plan: render the EntitledManageDialog — Reader-rule-style
+  //     "manage your subscription" content with NO upsell, NO price, NO
+  //     IAP-coming-soon language. Works the same on web and iOS native.
+  const [entitlement, setEntitlement] = useState<"unknown" | "free" | PlanTier>("unknown");
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          if (!cancelled) setEntitlement("free");
+          return;
+        }
+        const { data: profile, error } = await supabase
+          .from("profiles")
+          .select("plan")
+          .eq("id", session.user.id)
+          .maybeSingle();
+        if (cancelled) return;
+        if (error) {
+          // Don't strand a real free user behind a manage-only dialog if
+          // the lookup failed. Fall through to the normal upsell.
+          setEntitlement("free");
+          return;
+        }
+        setEntitlement(normalizePlan(profile?.plan));
+      } catch {
+        if (!cancelled) setEntitlement("free");
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const entitled = entitlement === "plus" || entitlement === "pro";
+
   // Lock background scroll while the web variant is mounted. The iOS variant
-  // is rendered by UpgradeWallIOSFallback which manages its own lock — we
-  // disable here on iOS to avoid double-locking the body.
-  useBodyScrollLock(!ios);
+  // is rendered by UpgradeWallIOSFallback which manages its own lock, and the
+  // entitled-manage variant manages its own — disable here for both to avoid
+  // double-locking the body.
+  useBodyScrollLock(!ios && !entitled && entitlement !== "unknown");
 
   // One-shot "shown" beacon — fires before any user interaction so the
   // funnel denominator (impressions) matches reality even if the user
-  // dismisses in the same animation frame. Variant tag splits web vs the
-  // App-Review-safe iOS fallback so we can confirm how often the fallback
-  // is actually used in production. Empty deps + ref guard = exactly once
-  // per mount, even under React StrictMode double-invocation.
+  // dismisses in the same animation frame. Variant tag splits:
+  //   - 'web'             — standard upsell on web/Android
+  //   - 'ios_fallback'    — App-Review-safe inform-only iOS modal
+  //   - 'entitled_manage' — paying user got Reader-rule manage dialog
+  // We wait for entitlement to resolve so the variant is accurate. Ref
+  // guard prevents double-fire under React StrictMode.
   const shownTrackedRef = useRef(false);
   useEffect(() => {
+    if (entitlement === "unknown") return;
     if (shownTrackedRef.current) return;
     shownTrackedRef.current = true;
-    analytics.upgradeWallShown(gate, tier, ios ? "ios_fallback" : "web");
-    // gate/tier/ios are stable for a given mount — re-running on prop
-    // changes would double-count and corrupt the funnel.
+    const variant = entitled ? "entitled_manage" : ios ? "ios_fallback" : "web";
+    analytics.upgradeWallShown(gate, tier, variant);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [entitlement]);
 
   // Funnel-event guards. We MUST fire dismissed XOR cta_clicked exactly once
   // per modal lifetime, never both, never zero.
