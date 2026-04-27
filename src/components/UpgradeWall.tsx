@@ -241,31 +241,22 @@ export function UpgradeWall({
     document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("keydown", handleKey);
-      // Resolve the focus target with this priority:
-      //   1. Explicit `returnFocus` prop (ref or DOM node) — caller knows best.
-      //      `null` opts out of restoration entirely.
-      //   2. Auto-captured trigger (`previouslyFocused`) — handles the common
-      //      "user clicked a button, modal opened" case.
-      // Both paths share the same connectedness + focus() guards.
-      const explicit = returnFocusRef.current;
-      let target: HTMLElement | null = null;
-      if (explicit === null) {
-        // Caller explicitly opted out.
-        target = null;
-      } else if (explicit && "current" in explicit) {
-        target = explicit.current ?? null;
-      } else if (explicit instanceof HTMLElement) {
-        target = explicit;
-      } else {
-        target = previouslyFocused.current;
-      }
-      if (target && target.isConnected && typeof target.focus === "function") {
-        try {
-          target.focus({ preventScroll: true });
-        } catch {
-          target.focus();
-        }
-      }
+      // Resolve the focus target via the shared restoreFocus helper.
+      // Priority: explicit returnFocus → auto-captured trigger → bodyFallback
+      // (page <main> landmark, or <body> as last resort) so keyboard / SR
+      // users always land somewhere named even if the trigger has been
+      // unmounted while the modal was open.
+      const main =
+        typeof document !== "undefined"
+          ? (document.querySelector<HTMLElement>("main") ??
+            (document.body as HTMLElement | null))
+          : null;
+      if (main && main.tabIndex < 0) main.tabIndex = -1;
+      restoreFocus({
+        explicit: returnFocusRef.current,
+        auto: previouslyFocused.current,
+        bodyFallback: main,
+      });
     };
   }, [ios]);
 
