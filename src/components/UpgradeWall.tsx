@@ -33,6 +33,22 @@ interface Props {
   gate?: UpgradeWallGate;
   /** Which tier this wall is selling. Drives funnel analytics. */
   tier?: UpgradeWallTier;
+  /**
+   * Explicit element that should receive focus after the modal closes.
+   * When provided, this overrides the auto-captured `document.activeElement`.
+   *
+   * Use this when:
+   * - The trigger is unmounted while the modal is open (e.g. a "locked" card
+   *   that disappears after upgrade) — pass a stable nearby element so SR/
+   *   keyboard users still land somewhere meaningful.
+   * - The modal opened programmatically without a click (no real trigger).
+   * - You want focus to land on a different button than the one clicked
+   *   (e.g. a "Try again" CTA after dismissal).
+   *
+   * Pass either a React ref or a DOM node. Pass `null` to opt out of focus
+   * restoration entirely (rare; only for very deliberate flows).
+   */
+  returnFocus?: React.RefObject<HTMLElement> | HTMLElement | null;
 }
 
 export function UpgradeWall({
@@ -46,6 +62,7 @@ export function UpgradeWall({
   streakRepairPreview = false,
   gate = "unknown",
   tier = "unknown",
+  returnFocus,
 }: Props) {
   const isProCta = cta.toLowerCase().includes("pro");
   const panelRef = useRef<HTMLDivElement>(null);
@@ -89,6 +106,13 @@ export function UpgradeWall({
   useEffect(() => {
     onDismissRef.current = onDismiss;
   }, [onDismiss]);
+  // Mirror returnFocus into a ref so the mount-only restoration effect always
+  // reads the latest value at unmount, without re-running and re-capturing
+  // previouslyFocused on every parent render.
+  const returnFocusRef = useRef(returnFocus);
+  useEffect(() => {
+    returnFocusRef.current = returnFocus;
+  }, [returnFocus]);
   // Stable ref to the wrapped dismiss-with-analytics function so the
   // mount-only key-handler effect can call it without re-binding.
   const dismissAndTrackRef = useRef(() => {});
@@ -145,7 +169,24 @@ export function UpgradeWall({
     document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("keydown", handleKey);
-      const target = previouslyFocused.current;
+      // Resolve the focus target with this priority:
+      //   1. Explicit `returnFocus` prop (ref or DOM node) — caller knows best.
+      //      `null` opts out of restoration entirely.
+      //   2. Auto-captured trigger (`previouslyFocused`) — handles the common
+      //      "user clicked a button, modal opened" case.
+      // Both paths share the same connectedness + focus() guards.
+      const explicit = returnFocusRef.current;
+      let target: HTMLElement | null = null;
+      if (explicit === null) {
+        // Caller explicitly opted out.
+        target = null;
+      } else if (explicit && "current" in explicit) {
+        target = explicit.current ?? null;
+      } else if (explicit instanceof HTMLElement) {
+        target = explicit;
+      } else {
+        target = previouslyFocused.current;
+      }
       if (target && target.isConnected && typeof target.focus === "function") {
         try {
           target.focus({ preventScroll: true });

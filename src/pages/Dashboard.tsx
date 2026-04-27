@@ -421,19 +421,25 @@ export default function Dashboard() {
                 />
               ))}
 
-              {/* Locked 4th habit slot for free users */}
+              {/* Locked 4th habit slot for free users.
+                  MUST be a real <button>: keyboard users need to Tab into it
+                  and trigger via Enter/Space, and screen readers must announce
+                  it as actionable so blind users hit the same upgrade flow as
+                  sighted ones. After the modal dismisses, focus restores here. */}
               {plan === 'free' && goals.length >= 3 && (
-                <div
-                  className="rounded-xl border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-[200px]"
+                <button
+                  type="button"
+                  className="w-full rounded-xl border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-[200px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   onClick={() => { setUpgradeWallType('habit_limit'); setShowUpgradeWall(true); }}
+                  aria-label="Add habit — Pro plan required, opens upgrade dialog"
                 >
                   <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                    <Plus className="h-5 w-5" />
+                    <Plus className="h-5 w-5" aria-hidden="true" />
                     <span className="font-semibold text-sm">Add Habit</span>
-                    <span className="text-base">🔒</span>
+                    <span className="text-base" aria-hidden="true">🔒</span>
                   </div>
                   <span className="text-xs text-muted-foreground">Pro</span>
-                </div>
+                </button>
               )}
             </div>
 
@@ -467,13 +473,15 @@ export default function Dashboard() {
                 {plan === 'free' && !isIOSNative() && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
               </h3>
               {plan === 'free' && !isIOSNative() ? (
-                <div
-                  className="p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors"
+                <button
+                  type="button"
+                  className="w-full text-left p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   onClick={() => { setUpgradeWallType('partner_lock'); setShowUpgradeWall(true); }}
+                  aria-label="Accountability Partner — Pro plan required, opens upgrade dialog"
                 >
                   <p className="text-sm text-muted-foreground">Your partner sees your weekly completion. You see theirs. The social pressure is real.</p>
-                  <p className="text-xs text-primary font-semibold mt-2">Tap to unlock →</p>
-                </div>
+                  <p className="text-xs text-primary font-semibold mt-2" aria-hidden="true">Tap to unlock →</p>
+                </button>
               ) : (
                 <div className="p-6 rounded-xl border border-border bg-card shadow-sm">
                   <p className="text-sm text-muted-foreground">Invite a workout partner to keep each other accountable. Coming soon!</p>
@@ -488,23 +496,25 @@ export default function Dashboard() {
                 {plan === 'free' && !isIOSNative() && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
               </h3>
               {plan === 'free' && !isIOSNative() ? (
-                <div
-                  className="relative p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors overflow-hidden"
+                <button
+                  type="button"
+                  className="w-full text-left relative p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   onClick={() => { setUpgradeWallType('analytics_lock'); setShowUpgradeWall(true); }}
+                  aria-label={`Trend Analytics — Pro plan required at $${PLANS.plus.price} per month, opens upgrade dialog`}
                 >
-                  <div className="blur-sm select-none pointer-events-none">
+                  <div className="blur-sm select-none pointer-events-none" aria-hidden="true">
                     <div className="flex gap-2 items-end h-24">
                       {[3, 5, 4, 6, 2, 7, 5].map((v, i) => (
                         <div key={i} className="flex-1 bg-primary/30 rounded-t" style={{ height: `${v * 14}%` }} />
                       ))}
                     </div>
                   </div>
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
                   <p className="text-sm font-semibold text-foreground bg-card/90 px-4 py-2 rounded-lg shadow">
                        Trend analytics unlock on Pro — ${PLANS.plus.price}/month
                     </p>
                   </div>
-                </div>
+                </button>
               ) : (
                 <div
                   className="p-6 rounded-xl border border-border bg-card shadow-sm cursor-pointer hover:shadow-md transition-shadow"
