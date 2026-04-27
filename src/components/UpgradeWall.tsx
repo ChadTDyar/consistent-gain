@@ -1,7 +1,8 @@
 import { createPortal } from "react-dom";
-import { useEffect, useId, useRef } from "react";
-import { X } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { X, ExternalLink, Settings as SettingsIcon } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
+import { Capacitor } from "@capacitor/core";
 
 interface Props {
   headline: string;
@@ -28,21 +29,11 @@ export function UpgradeWall({
   const panelRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
-  // Pointer-capture state for outside-click dismissal.
-  // Tracks the pointerId of the press that started on the backdrop so the
-  // matching pointerup is guaranteed to fire on the backdrop too — even if
-  // the user's finger/pen drifts onto the panel before lift. Without
-  // pointer capture, touch and pen drags route the up event by hit-test,
-  // which is inconsistent across devices.
-  const capturedPointerId = useRef<number | null>(null);
+  // Tracks whether the pointer press that started this click began on the
+  // backdrop. Prevents accidental dismissal when a user mousedowns inside the
+  // panel (e.g. selecting text) and releases on the backdrop.
+  const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
-  // Unique IDs prevent collisions if two UpgradeWalls ever mount simultaneously
-  // (e.g. during a route transition). Screen readers rely on these IDs to wire
-  // the dialog to its accessible name (aria-labelledby) and description
-  // (aria-describedby).
-  const reactId = useId();
-  const titleId = `upgrade-wall-title-${reactId}`;
-  const descId = `upgrade-wall-desc-${reactId}`;
 
   // Keep onDismiss ref stable so the trap effect can run mount-only.
   // If we depended on onDismiss in the effect deps, parents passing a new
@@ -112,68 +103,47 @@ export function UpgradeWall({
     };
   }, [ios]);
 
-  // Apple IAP compliance: never show paid upgrade walls on iOS native builds
-  if (ios) return null;
+  // Apple App Review compliance for iOS native builds:
+  // - The standard web upgrade wall (with its purchase CTA + price) cannot be
+  //   shown on iOS — Guideline 3.1.1 prohibits steering users to non-IAP
+  //   purchase flows from inside the app.
+  // - Returning null here used to mean iOS users tapping a gated feature got
+  //   silence, which is a worse experience than the web and gave them no path
+  //   forward.
+  // - Instead we render an inform-only fallback: explains what the feature is,
+  //   never mentions price or web purchase, and offers two App-Review-safe
+  //   actions: (a) open iOS Settings to manage an existing subscription, and
+  //   (b) the App-Store Reader Rule single Account link to manage on the web.
+  // - Both side actions degrade gracefully if the Capacitor plugins are not
+  //   available (web preview running through the iOS code path during dev).
+  if (ios) {
+    return (
+      <UpgradeWallIOSFallback
+        headline={headline}
+        body={body}
+        accentColor={accentColor}
+        onDismiss={onDismiss}
+        coachPreview={coachPreview}
+        streakRepairPreview={streakRepairPreview}
+      />
+    );
+  }
 
-  // Outside-click dismissal with pointer capture (WCAG- and touch/pen-safe):
-  // - On pointerdown DIRECTLY on the backdrop (not bubbling from the panel),
-  //   we call setPointerCapture(pointerId). This guarantees that the matching
-  //   pointerup, pointercancel, and any intermediate pointer events fire on
-  //   the backdrop element regardless of where the pointer travels — even if
-  //   the user's finger or stylus drifts onto the panel before lifting.
-  // - On pointerdown that bubbles from the panel (target !== currentTarget),
-  //   we do NOT capture and we record nothing. A subsequent pointerup that
-  //   happens to land on the backdrop must NOT dismiss (drag-out from panel
-  //   such as text selection).
-  // - On pointerup we dismiss only if (a) we captured this exact pointerId,
-  //   AND (b) the up event's hit-test target is still the backdrop. The
-  //   hit-test guard distinguishes a legitimate tap on the backdrop from a
-  //   captured pointer that drifted onto the panel before lift.
-  // - pointercancel (gesture preempted, e.g. browser scroll, OS interrupt)
-  //   clears state without dismissing.
+  // Outside-click dismissal (WCAG-safe):
+  // - Only dismiss when BOTH pointerdown and pointerup occurred on the backdrop.
+  //   This avoids accidental close when a user starts a text selection inside
+  //   the panel and drags out, matching Radix/React-Aria dialog behavior.
   // - Keyboard users are unaffected (they use Escape, handled above).
+  // - Focus trap is preserved: dismiss simply unmounts the modal; the cleanup
+  //   in the focus-trap effect restores focus to the previously focused element.
   const handleBackdropPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.target !== e.currentTarget) return;
-    // Only handle the primary pointer to avoid multi-touch races.
-    if (!e.isPrimary) return;
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-      capturedPointerId.current = e.pointerId;
-    } catch {
-      // setPointerCapture can throw if the pointer is already released
-      // (e.g. very fast taps in some test environments). Fall back to the
-      // simple matching-pointerId check without true capture.
-      capturedPointerId.current = e.pointerId;
-    }
+    pointerDownOnBackdrop.current = e.target === e.currentTarget;
   };
   const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (capturedPointerId.current !== e.pointerId) return;
-    const wasCaptured = capturedPointerId.current;
-    capturedPointerId.current = null;
-    const ct = e.currentTarget;
-    try {
-      ct.releasePointerCapture(wasCaptured);
-    } catch {
-      /* element may already have released capture */
-    }
-    // Hit-test guard: dismiss only when the lift truly happened over the
-    // backdrop. elementFromPoint returns the backdrop itself on a clean tap,
-    // and the panel (or one of its descendants) when the pointer drifted in.
-    const hit = document.elementFromPoint(e.clientX, e.clientY);
-    const liftedOnBackdrop = hit === ct || !panelRef.current?.contains(hit);
-    if (liftedOnBackdrop) {
+    if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
       onDismiss();
     }
-  };
-  const handleBackdropPointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (capturedPointerId.current === e.pointerId) {
-      capturedPointerId.current = null;
-      try {
-        e.currentTarget.releasePointerCapture(e.pointerId);
-      } catch {
-        /* noop */
-      }
-    }
+    pointerDownOnBackdrop.current = false;
   };
 
   return createPortal(
@@ -182,11 +152,9 @@ export function UpgradeWall({
       style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
       onPointerDown={handleBackdropPointerDown}
       onPointerUp={handleBackdropPointerUp}
-      onPointerCancel={handleBackdropPointerCancel}
       role="dialog"
       aria-modal="true"
-      aria-labelledby={titleId}
-      aria-describedby={descId}
+      aria-labelledby="upgrade-wall-title"
     >
       <div
         ref={panelRef}
@@ -203,13 +171,13 @@ export function UpgradeWall({
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
-          <h3 id={titleId} className="font-semibold text-base text-foreground leading-tight pr-12">
+          <h3 id="upgrade-wall-title" className="font-semibold text-base text-foreground leading-tight pr-12">
             {headline}
           </h3>
         </div>
 
         <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
-          <p id={descId} className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
 
           {streakRepairPreview && (
             <div className="space-y-1.5">
@@ -262,3 +230,231 @@ export function UpgradeWall({
     document.body
   );
 }
+
+// ---------------------------------------------------------------------------
+// iOS native fallback
+// ---------------------------------------------------------------------------
+// Apple App Review-safe modal shown when the standard upgrade wall would have
+// returned null on iOS native builds. Strict rules enforced here:
+//   1. NO mention of price.
+//   2. NO purchase CTA. The only actions are dismiss, open iOS Settings, and
+//      the single App-Store Reader Rule "Manage on web" link.
+//   3. The "Manage on web" link goes to /account on the marketing site, which
+//      is a subscription management surface, NOT a checkout. Apple permits a
+//      single account-management link out per Reader Rule 3.1.3(a).
+//   4. Capacitor plugin calls are best-effort: if the plugin is unavailable
+//      (e.g. running in the web preview through this code path during a test)
+//      the buttons silently no-op rather than crashing.
+//
+// The component reuses the same focus-trap, Escape-to-close, and outside-click
+// patterns as the main modal so iOS keyboard / external-keyboard users get the
+// same accessibility guarantees.
+interface IOSFallbackProps {
+  headline: string;
+  body: string;
+  accentColor: string;
+  onDismiss: () => void;
+  coachPreview: boolean;
+  streakRepairPreview: boolean;
+}
+
+function UpgradeWallIOSFallback({
+  headline,
+  body,
+  accentColor,
+  onDismiss,
+  coachPreview,
+  streakRepairPreview,
+}: IOSFallbackProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+  const pointerDownOnBackdrop = useRef(false);
+  const onDismissRef = useRef(onDismiss);
+  useEffect(() => {
+    onDismissRef.current = onDismiss;
+  }, [onDismiss]);
+
+  // Focus trap + Escape-to-close, identical contract to the web modal.
+  useEffect(() => {
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    closeBtnRef.current?.focus();
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onDismissRef.current();
+        return;
+      }
+      if (e.key === "Tab" && panelRef.current) {
+        const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      previouslyFocused.current?.focus?.();
+    };
+  }, []);
+
+  const handleBackdropPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    pointerDownOnBackdrop.current = e.target === e.currentTarget;
+  };
+  const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
+      onDismiss();
+    }
+    pointerDownOnBackdrop.current = false;
+  };
+
+  // Open iOS Settings → app's subscription management page. We use the
+  // app-settings: URL scheme via Capacitor App.openUrl. On older iOS or if
+  // the plugin is unregistered we silently no-op so we never crash.
+  // Open iOS Settings → app's subscription management page.
+  // The @capacitor/app plugin does NOT expose openUrl in v7, and we don't
+  // want to introduce a new native plugin just for this. The WKWebView
+  // honors custom URL schemes via window.location, which iOS resolves to
+  // the Settings app for the "app-settings:" scheme. On non-iOS or when the
+  // scheme is blocked, this is a harmless no-op (the page won't navigate).
+  const openIOSSettings = () => {
+    try {
+      window.location.href = "app-settings:";
+    } catch {
+      /* best effort */
+    }
+  };
+
+  // App-Store Reader Rule 3.1.3(a) compliant link: opens the marketing site's
+  // /account page in an in-app SFSafariViewController. /account must NOT show
+  // a purchase form to a logged-out user; it must show subscription
+  // management. (Pricing pages are a separate URL and are NOT linked here.)
+  const openManageOnWeb = async () => {
+    const url = "https://momentumfit.app/account";
+    try {
+      if (Capacitor.isPluginAvailable("Browser")) {
+        const { Browser } = await import("@capacitor/browser");
+        await Browser.open({ url, presentationStyle: "popover" });
+        return;
+      }
+    } catch {
+      /* fall through to window.open */
+    }
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+      onPointerDown={handleBackdropPointerDown}
+      onPointerUp={handleBackdropPointerUp}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="upgrade-wall-ios-title"
+      aria-describedby="upgrade-wall-ios-desc"
+    >
+      <div
+        ref={panelRef}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl"
+        style={{ borderLeft: `4px solid ${accentColor}` }}
+      >
+        <div className="p-[22px] pb-0 relative">
+          <button
+            ref={closeBtnRef}
+            onClick={onDismiss}
+            className="absolute top-[10px] right-[10px] text-muted-foreground hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+            aria-label="Close dialog"
+          >
+            <X className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <h3
+            id="upgrade-wall-ios-title"
+            className="font-semibold text-base text-foreground leading-tight pr-12"
+          >
+            {headline}
+          </h3>
+        </div>
+
+        <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
+          <p
+            id="upgrade-wall-ios-desc"
+            className="text-sm text-muted-foreground leading-relaxed"
+          >
+            {body}
+          </p>
+
+          {streakRepairPreview && (
+            <div className="space-y-1.5">
+              <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
+                What Streak Repair does
+              </p>
+              <div className="rounded-lg border border-border bg-muted/30 p-3">
+                <p className="text-xs text-foreground leading-relaxed">
+                  "You missed Tuesday. Your streak is safe until Thursday. 48 hours to pick it back up."
+                </p>
+              </div>
+            </div>
+          )}
+
+          {coachPreview && (
+            <div className="space-y-1.5">
+              <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
+                What AI Coach does
+              </p>
+              <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-2">
+                <p className="text-xs text-foreground leading-relaxed">
+                  <span className="font-semibold text-primary">Coach:</span>{" "}
+                  "You've skipped your morning stretch three Mondays in a row. What happens on Mondays?"
+                </p>
+                <p className="text-xs text-foreground leading-relaxed">
+                  <span className="font-semibold text-muted-foreground">You:</span>{" "}
+                  "Meetings start at 8 — I'm rushing."
+                </p>
+                <p className="text-xs text-foreground leading-relaxed">
+                  <span className="font-semibold text-primary">Coach:</span>{" "}
+                  "Move it to Sunday night, 5 minutes before bed. Want me to set that up?"
+                </p>
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-2 pt-1">
+            <button
+              onClick={openManageOnWeb}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white cursor-pointer border-none"
+              style={{ background: accentColor }}
+            >
+              <ExternalLink className="h-4 w-4" aria-hidden="true" />
+              Manage on web
+            </button>
+            <button
+              onClick={openIOSSettings}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-medium text-sm text-foreground bg-muted hover:bg-muted/80 transition-colors cursor-pointer border-none"
+            >
+              <SettingsIcon className="h-4 w-4" aria-hidden="true" />
+              Manage subscription in Settings
+            </button>
+          </div>
+          <p className="text-center text-xs text-muted-foreground">
+            Already a member? Sign in on the web to access this on iOS.
+          </p>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
