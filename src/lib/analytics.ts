@@ -72,6 +72,33 @@ export const analytics = {
   checkoutStarted: () => trackEvent('begin_checkout', 'conversion'),
   purchaseCompleted: (value: number) => trackEvent('purchase', 'conversion', 'premium', value),
 
+  // Upgrade wall funnel — gate funnel measurement.
+  // `gate` identifies which feature triggered the wall (coach, streak_repair,
+  // habit_limit, partner_lock, analytics_lock, history_limit).
+  // `tier` is the tier the wall is selling (pro | premium | unknown).
+  // Together they let you build per-gate conversion funnels:
+  //   shown? -> dismissed? -> cta_clicked? -> begin_checkout? -> purchase?
+  // We pass the GA4 `event_label` as "<gate>:<tier>" so legacy GA reports
+  // remain readable, and also push a structured payload via gtag's third arg.
+  upgradeWallDismissed: (gate: string, tier: string) => {
+    if (typeof window.gtag === 'undefined') return;
+    window.gtag('event', 'upgrade_wall_dismissed', {
+      event_category: 'conversion',
+      event_label: `${gate}:${tier}`,
+      gate,
+      tier,
+    });
+  },
+  upgradeWallCtaClicked: (gate: string, tier: string) => {
+    if (typeof window.gtag === 'undefined') return;
+    window.gtag('event', 'upgrade_wall_cta_clicked', {
+      event_category: 'conversion',
+      event_label: `${gate}:${tier}`,
+      gate,
+      tier,
+    });
+  },
+
   // Engagement events
   streakMilestone: (days: number) => trackEvent('streak_milestone', 'engagement', `${days}_days`, days),
   coachChatOpened: () => trackEvent('coach_chat_opened', 'engagement'),
