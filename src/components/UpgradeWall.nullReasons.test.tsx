@@ -95,21 +95,25 @@ describe("UpgradeWall — extended null-return reasons", () => {
 
     const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    const { getByText } = render(
-      <UpgradeWallBoundary
-        gate="coach"
-        tier="premium"
-        fallback={({ retry }) => (
-          <button onClick={retry} data-testid="retry">
-            Try again
-          </button>
-        )}
-      >
-        <Throwing />
-      </UpgradeWallBoundary>,
-    );
+    let result: ReturnType<typeof render>;
+    await act(async () => {
+      result = render(
+        <UpgradeWallBoundary
+          gate="coach"
+          tier="premium"
+          fallback={({ retry }) => (
+            <button onClick={retry} data-testid="retry">
+              Try again
+            </button>
+          )}
+        >
+          <Throwing />
+        </UpgradeWallBoundary>,
+      );
+    });
 
     expect(reasons()).toContain("ios_fallback_threw");
+    const { getByText } = result!;
 
     const retryBtn = getByText("Try again");
     act(() => {
