@@ -1,7 +1,8 @@
 import { createPortal } from "react-dom";
 import { useEffect, useRef } from "react";
-import { X } from "lucide-react";
+import { X, ExternalLink, Settings as SettingsIcon } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
+import { Capacitor } from "@capacitor/core";
 
 interface Props {
   headline: string;
