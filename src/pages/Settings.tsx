@@ -244,8 +244,14 @@ export default function Settings() {
   // Multi-step delete confirmation (3 steps inside a single React-controlled AlertDialog).
   // Replaces window.confirm() which is unreliable in iOS WKWebView via Capacitor.
   const [deleteStep, setDeleteStep] = useState<0 | 1 | 2 | 3>(0);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
 
   const handleDeleteAccount = async () => {
+    // Final safety: require the literal string "DELETE" before proceeding.
+    if (deleteConfirmText.trim().toUpperCase() !== "DELETE") {
+      toast.error('Type DELETE to confirm.');
+      return;
+    }
     try {
       setDeleting(true);
 
@@ -264,6 +270,7 @@ export default function Settings() {
 
       toast.success("Account deleted successfully");
       setDeleteStep(0);
+      setDeleteConfirmText("");
       navigate('/auth');
     } catch (error) {
       console.error('Error deleting account:', error);
