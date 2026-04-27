@@ -29,6 +29,7 @@ import { Badge } from "@/components/ui/badge";
 import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 import { analytics } from "@/lib/analytics";
 import { UpgradeWall } from "@/components/UpgradeWall";
+import { UpgradeWallBoundary } from "@/components/UpgradeWallBoundary";
 import { MOMENTUM } from "@/constants/value-language";
 import { Users, BarChart3 } from "lucide-react";
 import { OriginStoryCard } from "@/components/OriginStoryCard";
@@ -566,13 +567,7 @@ export default function Dashboard() {
       />
 
       {showUpgradeWall && (
-        <UpgradeWall
-          headline={MOMENTUM.walls[upgradeWallType].headline}
-          body={MOMENTUM.walls[upgradeWallType].body}
-          cta={MOMENTUM.walls[upgradeWallType].cta}
-          accentColor="#0d3b5e"
-          coachPreview={upgradeWallType === 'ai_coach'}
-          streakRepairPreview={upgradeWallType === 'habit_limit'}
+        <UpgradeWallBoundary
           gate={
             upgradeWallType === 'ai_coach'
               ? 'coach'
@@ -585,9 +580,31 @@ export default function Dashboard() {
                     : 'history_limit'
           }
           tier={upgradeWallType === 'ai_coach' ? 'premium' : 'pro'}
-          onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
           onDismiss={() => setShowUpgradeWall(false)}
-        />
+        >
+          <UpgradeWall
+            headline={MOMENTUM.walls[upgradeWallType].headline}
+            body={MOMENTUM.walls[upgradeWallType].body}
+            cta={MOMENTUM.walls[upgradeWallType].cta}
+            accentColor="#0d3b5e"
+            coachPreview={upgradeWallType === 'ai_coach'}
+            streakRepairPreview={upgradeWallType === 'habit_limit'}
+            gate={
+              upgradeWallType === 'ai_coach'
+                ? 'coach'
+                : upgradeWallType === 'habit_limit'
+                  ? 'habit_limit'
+                  : upgradeWallType === 'partner_lock'
+                    ? 'partner_lock'
+                    : upgradeWallType === 'analytics_lock'
+                      ? 'analytics_lock'
+                      : 'history_limit'
+            }
+            tier={upgradeWallType === 'ai_coach' ? 'premium' : 'pro'}
+            onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
+            onDismiss={() => setShowUpgradeWall(false)}
+          />
+        </UpgradeWallBoundary>
       )}
     </div>
   );

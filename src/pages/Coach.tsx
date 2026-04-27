@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { CoachChat } from "@/components/CoachChat";
 import { UpgradeWall } from "@/components/UpgradeWall";
+import { UpgradeWallBoundary } from "@/components/UpgradeWallBoundary";
 import { MOMENTUM } from "@/constants/value-language";
 import { calculateStreak, getUserActivityLogs, getDaysSinceLastActivity } from "@/lib/streakUtils";
 import { SEO } from "@/components/SEO";
@@ -198,17 +199,23 @@ export default function Coach() {
       </div>
 
       {showUpgradeWall && (
-        <UpgradeWall
-          headline={MOMENTUM.walls.ai_coach.headline}
-          body={MOMENTUM.walls.ai_coach.body}
-          cta={MOMENTUM.walls.ai_coach.cta}
-          accentColor="#0d3b5e"
-          coachPreview
+        <UpgradeWallBoundary
           gate="coach"
           tier="premium"
-          onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
           onDismiss={() => setShowUpgradeWall(false)}
-        />
+        >
+          <UpgradeWall
+            headline={MOMENTUM.walls.ai_coach.headline}
+            body={MOMENTUM.walls.ai_coach.body}
+            cta={MOMENTUM.walls.ai_coach.cta}
+            accentColor="#0d3b5e"
+            coachPreview
+            gate="coach"
+            tier="premium"
+            onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
+            onDismiss={() => setShowUpgradeWall(false)}
+          />
+        </UpgradeWallBoundary>
       )}
     </>
   );

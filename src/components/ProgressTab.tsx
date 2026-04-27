@@ -16,6 +16,7 @@ function parseLocalDate(value: string): Date {
 }
 import { type PlanTier, getHistoryDays } from "@/lib/plans";
 import { UpgradeWall } from "@/components/UpgradeWall";
+import { UpgradeWallBoundary } from "@/components/UpgradeWallBoundary";
 import { MOMENTUM } from "@/constants/value-language";
 
 interface ActivityLog {
@@ -269,16 +270,22 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
       </Card>
 
       {showHistoryWall && (
-        <UpgradeWall
-          headline={MOMENTUM.walls.history_limit.headline}
-          body={MOMENTUM.walls.history_limit.body}
-          cta={MOMENTUM.walls.history_limit.cta}
-          accentColor="#0d3b5e"
+        <UpgradeWallBoundary
           gate="history_limit"
           tier="pro"
-          onUpgrade={() => { setShowHistoryWall(false); navigate("/pricing"); }}
           onDismiss={() => setShowHistoryWall(false)}
-        />
+        >
+          <UpgradeWall
+            headline={MOMENTUM.walls.history_limit.headline}
+            body={MOMENTUM.walls.history_limit.body}
+            cta={MOMENTUM.walls.history_limit.cta}
+            accentColor="#0d3b5e"
+            gate="history_limit"
+            tier="pro"
+            onUpgrade={() => { setShowHistoryWall(false); navigate("/pricing"); }}
+            onDismiss={() => setShowHistoryWall(false)}
+          />
+        </UpgradeWallBoundary>
       )}
     </div>
   );
