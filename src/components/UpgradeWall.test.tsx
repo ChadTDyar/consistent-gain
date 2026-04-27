@@ -32,10 +32,13 @@ describe("UpgradeWall accessibility", () => {
     expect(dialog).toHaveAttribute("aria-labelledby", "upgrade-wall-title");
   });
 
-  it("moves focus to the close button on mount", () => {
+  it("places initial focus on the Close button (safe default, not the upgrade CTA)", () => {
     render(<UpgradeWall {...baseProps} />);
     const closeBtn = screen.getByRole("button", { name: /close upgrade dialog/i });
+    const upgradeBtn = screen.getByRole("button", { name: /upgrade to pro/i });
+    // Safety policy: prevent accidental Enter-to-purchase on passive opens.
     expect(document.activeElement).toBe(closeBtn);
+    expect(document.activeElement).not.toBe(upgradeBtn);
   });
 
   it("calls onDismiss when Escape is pressed", () => {

@@ -31,7 +31,12 @@ export function UpgradeWall({
   const ios = isIOSNative();
 
   // WCAG 2.4.3 / 2.1.2: Escape-to-dismiss + focus trap.
-  // On open: remember the focused element, move focus inside the modal.
+  // Initial focus policy: the Close (X) button — NOT the Upgrade CTA.
+  // Rationale: this modal can open passively when a user taps a gated feature.
+  // Focusing the CTA would mean the next Enter/Space keystroke triggers a
+  // paywall/checkout the user did not ask for. Focusing Close is the
+  // accessibility-safe default and keeps the upgrade action one Tab away.
+  // On open: remember the focused element, move focus to the Close button.
   // On Tab/Shift+Tab: cycle focus between the close button and the upgrade CTA.
   // On close: restore focus to the originally focused element.
   useEffect(() => {
