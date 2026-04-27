@@ -58,17 +58,18 @@ describe("UpgradeWall iOS inline fallback (no portal target)", () => {
       { container },
     );
 
+    const scoped = within(container);
     // Inline notice must be visible — never null.
-    expect(screen.getByRole("dialog")).toBeTruthy();
-    expect(screen.getByText("Unlock AI Coach")).toBeTruthy();
+    expect(scoped.getByRole("dialog")).toBeTruthy();
+    expect(scoped.getByText("Unlock AI Coach")).toBeTruthy();
     // App-Review-safe coming-soon copy is present.
     expect(
-      screen.getByText(/In-app purchases on iOS will be available/i),
+      scoped.getByText(/In-app purchases on iOS will be available/i),
     ).toBeTruthy();
     // Reader-rule action present.
-    expect(screen.getByRole("button", { name: /Manage on web/i })).toBeTruthy();
+    expect(scoped.getByRole("button", { name: /Manage on web/i })).toBeTruthy();
     // No price or purchase CTA labels.
-    expect(screen.queryByText(/\$/)).toBeNull();
+    expect(scoped.queryByText(/\$/)).toBeNull();
 
     // Analytics records the portal-target-missing reason.
     const { analytics } = await import("@/lib/analytics");
