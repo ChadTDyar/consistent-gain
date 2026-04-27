@@ -464,6 +464,8 @@ function UpgradeWallIOSFallback({
   const announcementId = `${reactId}-announcement`;
   const hasPreview = coachPreview || streakRepairPreview;
   const describedBy = hasPreview ? `${bodyId} ${previewId}` : bodyId;
+  // See web variant for rationale; same WCAG 2.3.3 policy applies on iOS.
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   // Polite live-region announcement (see web variant for rationale).
   const [liveAnnouncement, setLiveAnnouncement] = useState("");
