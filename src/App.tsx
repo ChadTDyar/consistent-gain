@@ -39,6 +39,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Profile = lazy(() => import("./pages/Profile"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 const HabitStreaksScience = lazy(() => import("./pages/HabitStreaksScience"));
 const FitnessHabitGuide = lazy(() => import("./pages/FitnessHabitGuide"));
@@ -110,6 +111,7 @@ const App = () => {
               <Route path="/admin" element={<Admin />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/insights" element={<Insights />} />
               <Route path="/resources/habit-streaks-science" element={<HabitStreaksScience />} />
               <Route path="/resources/fitness-habit-guide" element={<FitnessHabitGuide />} />
