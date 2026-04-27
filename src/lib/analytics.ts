@@ -99,7 +99,40 @@ export const analytics = {
     });
   },
 
-  // Engagement events
+  // Fired exactly once per UpgradeWall mount, before any user interaction.
+  // `variant` lets us split the funnel by render path:
+  //   - 'web'           — standard upgrade modal (web + Android Capacitor)
+  //   - 'ios_fallback'  — App-Review-safe inform-only modal on iOS native
+  // Together with `upgradeWallNullReturn` below, the ratio
+  //   shown(ios_fallback) / (shown(ios_fallback) + null_return(*))
+  // tells us how reliably iOS users see *something* when a gate fires.
+  upgradeWallShown: (gate: string, tier: string, variant: 'web' | 'ios_fallback') => {
+    if (typeof window.gtag === 'undefined') return;
+    window.gtag('event', 'upgrade_wall_shown', {
+      event_category: 'conversion',
+      event_label: `${gate}:${tier}:${variant}`,
+      gate,
+      tier,
+      variant,
+    });
+  },
+
+  // Regression alarm. UpgradeWall on iOS native MUST never render null —
+  // doing so would silently strand a user who tapped a gated feature. This
+  // event fires from a runtime guard so we get a number to alert on (not
+  // just a stack trace) if a future refactor breaks the contract.
+  // `reason` is a short machine tag: 'ios_branch_returned_null',
+  // 'fallback_threw', 'platform_unknown', etc.
+  upgradeWallNullReturn: (gate: string, tier: string, reason: string) => {
+    if (typeof window.gtag === 'undefined') return;
+    window.gtag('event', 'upgrade_wall_null_return', {
+      event_category: 'reliability',
+      event_label: `${gate}:${tier}:${reason}`,
+      gate,
+      tier,
+      reason,
+    });
+  },
   streakMilestone: (days: number) => trackEvent('streak_milestone', 'engagement', `${days}_days`, days),
   coachChatOpened: () => trackEvent('coach_chat_opened', 'engagement'),
   coachMessageSent: () => trackEvent('coach_message_sent', 'engagement'),
