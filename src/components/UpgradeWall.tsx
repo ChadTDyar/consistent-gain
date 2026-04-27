@@ -83,10 +83,14 @@ export function UpgradeWall({
   useEffect(() => {
     onDismissRef.current = onDismiss;
   }, [onDismiss]);
-  const dismissAndTrack = () => {
+  // Stable ref to the wrapped dismiss-with-analytics function so the
+  // mount-only key-handler effect can call it without re-binding.
+  const dismissAndTrackRef = useRef(() => {});
+  dismissAndTrackRef.current = () => {
     trackDismiss();
     onDismissRef.current();
   };
+  const dismissAndTrack = () => dismissAndTrackRef.current();
 
   // WCAG 2.4.3 / 2.1.2: Escape-to-dismiss + focus trap + focus restoration.
   // Initial focus policy: the Close (X) button — NOT the Upgrade CTA.
