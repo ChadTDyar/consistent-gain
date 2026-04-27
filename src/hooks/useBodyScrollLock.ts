@@ -68,8 +68,13 @@ function releaseLock() {
 
   // Restore the user's scroll position. window.scrollTo is synchronous and
   // doesn't trigger smooth-scroll, so the user lands exactly where they were
-  // even on long pages.
-  window.scrollTo(0, savedScrollY);
+  // even on long pages. Wrapped in try/catch because some test environments
+  // (jsdom) don't implement scrollTo and would log noisy warnings.
+  try {
+    window.scrollTo(0, savedScrollY);
+  } catch {
+    /* no-op */
+  }
 }
 
 /**
