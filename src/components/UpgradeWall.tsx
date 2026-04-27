@@ -43,6 +43,8 @@ export function UpgradeWall({
   onDismiss,
   coachPreview = false,
   streakRepairPreview = false,
+  gate = "unknown",
+  tier = "unknown",
 }: Props) {
   const isProCta = cta.toLowerCase().includes("pro");
   const panelRef = useRef<HTMLDivElement>(null);
@@ -54,15 +56,37 @@ export function UpgradeWall({
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
 
-  // Keep onDismiss ref stable so the trap effect can run mount-only.
-  // If we depended on onDismiss in the effect deps, parents passing a new
-  // function identity each render would tear down the trap and re-capture
-  // previouslyFocused.current to the close button (since focus moved into
-  // the modal), breaking trigger restoration.
+  // Funnel-event guards. We MUST fire dismissed XOR cta_clicked exactly once
+  // per modal lifetime, never both, never zero.
+  // - ctaClickedRef: set when the user clicks the upgrade CTA so subsequent
+  //   onDismiss calls (which the parent typically issues to unmount the modal)
+  //   do NOT also count as a dismissal.
+  // - dismissTrackedRef: dedupe against rapid Escape + outside-click races.
+  const ctaClickedRef = useRef(false);
+  const dismissTrackedRef = useRef(false);
+
+  const trackDismiss = () => {
+    if (ctaClickedRef.current || dismissTrackedRef.current) return;
+    dismissTrackedRef.current = true;
+    analytics.upgradeWallDismissed(gate, tier);
+  };
+  const trackCta = () => {
+    if (ctaClickedRef.current) return;
+    ctaClickedRef.current = true;
+    analytics.upgradeWallCtaClicked(gate, tier);
+  };
+
+  // Keep onDismiss ref stable so the trap effect can run mount-only and so
+  // that every dismissal path (Close button, Escape, outside-click) flows
+  // through trackDismiss before calling the parent handler.
   const onDismissRef = useRef(onDismiss);
   useEffect(() => {
     onDismissRef.current = onDismiss;
   }, [onDismiss]);
+  const dismissAndTrack = () => {
+    trackDismiss();
+    onDismissRef.current();
+  };
 
   // WCAG 2.4.3 / 2.1.2: Escape-to-dismiss + focus trap + focus restoration.
   // Initial focus policy: the Close (X) button — NOT the Upgrade CTA.
