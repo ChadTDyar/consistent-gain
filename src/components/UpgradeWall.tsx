@@ -439,15 +439,36 @@ function UpgradeWallIOSFallback({
   // start a new purchase flow (existing-subscriber maintenance).
   const ctaClickedRef = useRef(false);
   const dismissTrackedRef = useRef(false);
+
+  // Capture mount time for the dwell-time companion event. The parent
+  // <UpgradeWall> fires `upgrade_wall_shown` in the same commit that mounts
+  // this fallback, so the deltas are equivalent — but keeping the timer
+  // local avoids prop-drilling and survives any future refactor that
+  // mounts the fallback independently.
+  const mountTimeRef = useRef<number>(
+    typeof performance !== "undefined" && typeof performance.now === "function"
+      ? performance.now()
+      : Date.now(),
+  );
+  const elapsedMs = (): number => {
+    const now =
+      typeof performance !== "undefined" && typeof performance.now === "function"
+        ? performance.now()
+        : Date.now();
+    return now - mountTimeRef.current;
+  };
+
   const trackDismiss = () => {
     if (ctaClickedRef.current || dismissTrackedRef.current) return;
     dismissTrackedRef.current = true;
     analytics.upgradeWallDismissed(gate, tier);
+    analytics.upgradeWallTiming(gate, tier, "dismissed", elapsedMs());
   };
   const trackCta = () => {
     if (ctaClickedRef.current) return;
     ctaClickedRef.current = true;
     analytics.upgradeWallCtaClicked(gate, tier);
+    analytics.upgradeWallTiming(gate, tier, "cta_clicked", elapsedMs());
   };
   const dismissAndTrackRef = useRef(() => {});
   dismissAndTrackRef.current = () => {
