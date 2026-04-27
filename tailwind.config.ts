@@ -154,6 +154,17 @@ export default {
           from: { transform: "translateY(100%)", opacity: "0" },
           to: { transform: "translateY(0)", opacity: "1" },
         },
+        // Modal-specific entry animations. Kept short (180ms) and translate-free
+        // for the panel so they don't interfere with focus restoration or the
+        // focus trap measuring offsets.
+        "backdrop-fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        "modal-pop-in": {
+          from: { opacity: "0", transform: "scale(0.96)" },
+          to: { opacity: "1", transform: "scale(1)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -166,6 +177,8 @@ export default {
         "flame-pulse": "flame-pulse 2s ease-in-out infinite",
         "fade-in": "fade-in 0.5s ease-out",
         "slide-up": "slide-up 0.4s ease-out",
+        "backdrop-fade-in": "backdrop-fade-in 150ms ease-out",
+        "modal-pop-in": "modal-pop-in 180ms ease-out",
       },
     },
   },
