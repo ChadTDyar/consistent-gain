@@ -34,24 +34,42 @@ export function UpgradeWall({
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
 
-  // WCAG 2.4.3 / 2.1.2: Escape-to-dismiss + focus trap.
+  // Keep onDismiss ref stable so the trap effect can run mount-only.
+  // If we depended on onDismiss in the effect deps, parents passing a new
+  // function identity each render would tear down the trap and re-capture
+  // previouslyFocused.current to the close button (since focus moved into
+  // the modal), breaking trigger restoration.
+  const onDismissRef = useRef(onDismiss);
+  useEffect(() => {
+    onDismissRef.current = onDismiss;
+  }, [onDismiss]);
+
+  // WCAG 2.4.3 / 2.1.2: Escape-to-dismiss + focus trap + focus restoration.
   // Initial focus policy: the Close (X) button — NOT the Upgrade CTA.
   // Rationale: this modal can open passively when a user taps a gated feature.
   // Focusing the CTA would mean the next Enter/Space keystroke triggers a
   // paywall/checkout the user did not ask for. Focusing Close is the
   // accessibility-safe default and keeps the upgrade action one Tab away.
-  // On open: remember the focused element, move focus to the Close button.
-  // On Tab/Shift+Tab: cycle focus between the close button and the upgrade CTA.
-  // On close: restore focus to the originally focused element.
+  //
+  // Focus restoration (WCAG 2.4.3 — Focus Order):
+  // On open we capture the trigger element from document.activeElement BEFORE
+  // moving focus into the modal. On unmount we restore focus to that exact
+  // trigger so keyboard users land back where they were. Guards:
+  //   - Skip restoration if the trigger is no longer in the DOM (e.g., the
+  //     parent rerendered it away).
+  //   - Skip if the trigger is <body> (means nothing was meaningfully focused).
+  //   - Use preventScroll so restoration doesn't jolt long pages.
   useEffect(() => {
     if (ios) return;
-    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    const trigger = document.activeElement as HTMLElement | null;
+    previouslyFocused.current =
+      trigger && trigger !== document.body ? trigger : null;
     closeBtnRef.current?.focus();
 
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onDismiss();
+        onDismissRef.current();
         return;
       }
       if (e.key === "Tab" && panelRef.current) {
@@ -73,9 +91,16 @@ export function UpgradeWall({
     document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("keydown", handleKey);
-      previouslyFocused.current?.focus?.();
+      const target = previouslyFocused.current;
+      if (target && target.isConnected && typeof target.focus === "function") {
+        try {
+          target.focus({ preventScroll: true });
+        } catch {
+          target.focus();
+        }
+      }
     };
-  }, [onDismiss, ios]);
+  }, [ios]);
 
   // Apple IAP compliance: never show paid upgrade walls on iOS native builds
   if (ios) return null;
