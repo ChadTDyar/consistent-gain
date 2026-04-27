@@ -617,7 +617,7 @@ function UpgradeWallIOSFallback({
           </p>
 
           {streakRepairPreview && (
-            <div className="space-y-1.5">
+            <div id={previewId} className="space-y-1.5">
               <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
                 What Streak Repair does
               </p>
@@ -630,7 +630,8 @@ function UpgradeWallIOSFallback({
           )}
 
           {coachPreview && (
-            <div className="space-y-1.5">
+            // Defensive: only the first preview owns previewId (see web variant).
+            <div id={streakRepairPreview ? undefined : previewId} className="space-y-1.5">
               <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
                 What AI Coach does
               </p>
