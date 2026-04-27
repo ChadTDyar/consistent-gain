@@ -4,7 +4,7 @@
  * with App-Review-safe messaging.
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, within, cleanup } from "@testing-library/react";
 import { UpgradeWall } from "./UpgradeWall";
 
 vi.mock("@/lib/platform", () => ({
