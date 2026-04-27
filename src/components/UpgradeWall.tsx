@@ -308,6 +308,8 @@ interface IOSFallbackProps {
   onDismiss: () => void;
   coachPreview: boolean;
   streakRepairPreview: boolean;
+  gate: UpgradeWallGate;
+  tier: UpgradeWallTier;
 }
 
 function UpgradeWallIOSFallback({
@@ -317,6 +319,8 @@ function UpgradeWallIOSFallback({
   onDismiss,
   coachPreview,
   streakRepairPreview,
+  gate,
+  tier,
 }: IOSFallbackProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
@@ -326,6 +330,30 @@ function UpgradeWallIOSFallback({
   useEffect(() => {
     onDismissRef.current = onDismiss;
   }, [onDismiss]);
+
+  // Funnel-event guards (same contract as the web modal). On iOS the
+  // "CTA" is the Reader-rule "Manage on web" button — that is what counts
+  // as a real conversion intent here. Tapping "Manage subscription in
+  // Settings" is treated as a dismissal in funnel terms because it does NOT
+  // start a new purchase flow (existing-subscriber maintenance).
+  const ctaClickedRef = useRef(false);
+  const dismissTrackedRef = useRef(false);
+  const trackDismiss = () => {
+    if (ctaClickedRef.current || dismissTrackedRef.current) return;
+    dismissTrackedRef.current = true;
+    analytics.upgradeWallDismissed(gate, tier);
+  };
+  const trackCta = () => {
+    if (ctaClickedRef.current) return;
+    ctaClickedRef.current = true;
+    analytics.upgradeWallCtaClicked(gate, tier);
+  };
+  const dismissAndTrackRef = useRef(() => {});
+  dismissAndTrackRef.current = () => {
+    trackDismiss();
+    onDismissRef.current();
+  };
+  const dismissAndTrack = () => dismissAndTrackRef.current();
 
   // Focus trap + Escape-to-close, identical contract to the web modal.
   useEffect(() => {
