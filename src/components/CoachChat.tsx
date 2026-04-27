@@ -248,8 +248,8 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
 
         <div className="p-4 border-t">
           <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
-            <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Coach anything..." disabled={isLoading} className="flex-1" />
-            <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="btn-gradient" aria-label="Send message to Coach">
+            <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Coach anything..." disabled={isLoading} className="flex-1 min-h-11" />
+            <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="btn-gradient min-h-11 min-w-11" aria-label="Send message to Coach">
               <Send className="h-4 w-4" aria-hidden="true" />
             </Button>
           </form>
@@ -316,8 +316,8 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
 
           <div className="p-4 border-t">
             <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
-              <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Coach anything..." disabled={isLoading} className="flex-1" />
-              <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="btn-gradient" aria-label="Send message to Coach">
+              <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Coach anything..." disabled={isLoading} className="flex-1 min-h-11" />
+              <Button type="submit" size="icon" disabled={isLoading || !input.trim()} className="btn-gradient min-h-11 min-w-11" aria-label="Send message to Coach">
                 <Send className="h-4 w-4" aria-hidden="true" />
               </Button>
             </form>

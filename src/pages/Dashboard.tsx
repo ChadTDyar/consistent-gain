@@ -238,7 +238,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background-cream">
+    <div className="min-h-screen bg-background-cream pb-24">
       {/* Skip-to-content link is rendered globally in App.tsx; targets the
           <main id="main-content"> wrapper in AppLayout. */}
       <header className="border-b border-border bg-card/80 backdrop-blur-md shadow-sm sticky top-0 z-10">

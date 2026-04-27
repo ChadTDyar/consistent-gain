@@ -54,6 +54,7 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
       .from("activity_logs")
       .select("*")
       .eq("user_id", user.id)
+      .eq("is_deleted", false)
       .gte("completed_at", daysAgo.toISOString())
       .order("completed_at", { ascending: true });
 

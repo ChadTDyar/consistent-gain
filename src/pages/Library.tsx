@@ -102,10 +102,10 @@ export default function Library() {
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors min-h-[36px] ${
+                  className={`flex items-center gap-1.5 px-3 py-3 rounded-full text-xs font-medium whitespace-nowrap transition-colors min-h-[44px] ${
                     activeCategory === cat.id
                       ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-accent"
+                      : "bg-gray-100 text-gray-700 hover:bg-accent"
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5" />
@@ -130,7 +130,7 @@ export default function Library() {
                     <div className="flex flex-col items-end gap-1">
                       <Badge variant="outline" className="text-xs capitalize">{ex.category}</Badge>
                       {ex.jointSafe && (
-                        <Badge className="text-xs bg-success/10 text-success border-success/30">Joint-Safe</Badge>
+                        <Badge className="text-xs bg-emerald-700 text-white border-emerald-800">Joint-Safe</Badge>
                       )}
                     </div>
                   </div>

@@ -100,9 +100,8 @@ export const Testimonials = () => {
           className="mt-10 text-center text-sm text-muted-foreground max-w-2xl mx-auto"
           role="note"
         >
-          Results not typical. Testimonials reflect individual experiences and
-          are not a guarantee of outcomes. Consistency, effort, and personal
-          circumstances vary.
+          Testimonials reflect individual experiences. Results vary by user.
+          We do not pay for endorsements; testimonials are submitted voluntarily.
         </p>
       </div>
     </section>
