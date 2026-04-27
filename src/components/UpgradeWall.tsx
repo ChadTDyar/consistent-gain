@@ -147,20 +147,19 @@ export function UpgradeWall({
     }
   };
   const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    console.log("[UW up]", { pid: e.pointerId, cap: capturedPointerId.current });
     if (capturedPointerId.current !== e.pointerId) return;
     const wasCaptured = capturedPointerId.current;
     capturedPointerId.current = null;
+    const ct = e.currentTarget;
     try {
-      e.currentTarget.releasePointerCapture(wasCaptured);
+      ct.releasePointerCapture(wasCaptured);
     } catch {
       /* element may already have released capture */
     }
-    // Hit-test guard: dismiss only when the lift truly happened over the
-    // backdrop. elementFromPoint returns the backdrop itself on a clean tap,
-    // and the panel (or one of its descendants) when the pointer drifted in.
     const hit = document.elementFromPoint(e.clientX, e.clientY);
-    const liftedOnBackdrop =
-      hit === e.currentTarget || (!panelRef.current?.contains(hit));
+    const liftedOnBackdrop = hit === ct || !panelRef.current?.contains(hit);
+    console.log("[UW result]", { hit: (hit as HTMLElement)?.className?.slice(0, 30), ctIsBackdrop: ct === hit, lifted: liftedOnBackdrop });
     if (liftedOnBackdrop) {
       onDismiss();
     }
