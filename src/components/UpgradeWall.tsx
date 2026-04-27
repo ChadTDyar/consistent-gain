@@ -172,6 +172,8 @@ export function UpgradeWall({
         onDismiss={onDismiss}
         coachPreview={coachPreview}
         streakRepairPreview={streakRepairPreview}
+        gate={gate}
+        tier={tier}
       />
     );
   }
