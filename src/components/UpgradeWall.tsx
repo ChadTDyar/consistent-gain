@@ -322,16 +322,17 @@ function UpgradeWallIOSFallback({
   // Open iOS Settings → app's subscription management page. We use the
   // app-settings: URL scheme via Capacitor App.openUrl. On older iOS or if
   // the plugin is unregistered we silently no-op so we never crash.
-  const openIOSSettings = async () => {
+  // Open iOS Settings → app's subscription management page.
+  // The @capacitor/app plugin does NOT expose openUrl in v7, and we don't
+  // want to introduce a new native plugin just for this. The WKWebView
+  // honors custom URL schemes via window.location, which iOS resolves to
+  // the Settings app for the "app-settings:" scheme. On non-iOS or when the
+  // scheme is blocked, this is a harmless no-op (the page won't navigate).
+  const openIOSSettings = () => {
     try {
-      const { App } = await import("@capacitor/app");
-      // Apple deep-link: opens Settings → [App Name]. From there the user can
-      // tap their Apple ID → Subscriptions to cancel/manage. We avoid the
-      // direct itms-apps://apps.apple.com/account/subscriptions URL because
-      // it's been intermittently blocked by App Review.
-      await App.openUrl({ url: "app-settings:" });
+      window.location.href = "app-settings:";
     } catch {
-      /* plugin unavailable — best effort */
+      /* best effort */
     }
   };
 
