@@ -99,10 +99,10 @@ export function UpgradeWall({
   const ctaClickedRef = useRef(false);
   const dismissTrackedRef = useRef(false);
 
-  const trackDismiss = () => {
+  const trackDismiss = (method: import("@/lib/analytics").UpgradeWallDismissMethod) => {
     if (ctaClickedRef.current || dismissTrackedRef.current) return;
     dismissTrackedRef.current = true;
-    analytics.upgradeWallDismissed(gate, tier);
+    analytics.upgradeWallDismissed(gate, tier, method);
   };
   const trackCta = () => {
     if (ctaClickedRef.current) return;
@@ -125,13 +125,32 @@ export function UpgradeWall({
     returnFocusRef.current = returnFocus;
   }, [returnFocus]);
   // Stable ref to the wrapped dismiss-with-analytics function so the
-  // mount-only key-handler effect can call it without re-binding.
-  const dismissAndTrackRef = useRef(() => {});
-  dismissAndTrackRef.current = () => {
-    trackDismiss();
+  // mount-only key-handler effect can call it without re-binding. The
+  // method must be supplied at the call site so each dismissal path
+  // (escape | close_button | outside_click) is recorded distinctly.
+  const dismissAndTrackRef = useRef(
+    (_method: import("@/lib/analytics").UpgradeWallDismissMethod) => {}
+  );
+  dismissAndTrackRef.current = (
+    method: import("@/lib/analytics").UpgradeWallDismissMethod
+  ) => {
+    trackDismiss(method);
     onDismissRef.current();
   };
-  const dismissAndTrack = () => dismissAndTrackRef.current();
+  const dismissAndTrack = (
+    method: import("@/lib/analytics").UpgradeWallDismissMethod
+  ) => dismissAndTrackRef.current(method);
+
+  // Programmatic-unmount tracker: if the parent unmounts the wall without
+  // any user action firing a method (e.g. route change, auth-state flip,
+  // upstream state cleared), we record `programmatic` exactly once on
+  // cleanup so funnel math isn't silently inflated by zero-event walls.
+  // The tracking guards (ctaClickedRef, dismissTrackedRef) ensure this is
+  // a no-op when the user genuinely interacted.
+  useEffect(() => {
+    return () => trackDismiss("programmatic");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // WCAG 2.4.3 / 2.1.2: Escape-to-dismiss + focus trap + focus restoration.
   // Initial focus policy: the Close (X) button — NOT the Upgrade CTA.
