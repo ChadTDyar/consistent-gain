@@ -24,26 +24,86 @@ describe("UpgradeWall accessibility", () => {
     cleanup();
   });
 
-  it("renders as an accessible modal dialog", () => {
+  it("renders as an accessible modal dialog with per-instance aria ids", () => {
     render(<UpgradeWall {...baseProps} />);
     const dialog = screen.getByRole("dialog");
     expect(dialog).toBeInTheDocument();
     expect(dialog).toHaveAttribute("aria-modal", "true");
-    expect(dialog).toHaveAttribute("aria-labelledby", "upgrade-wall-title");
-    expect(dialog).toHaveAttribute("aria-describedby", "upgrade-wall-body");
+    // IDs come from useId() so they are non-empty and unique per instance,
+    // but the exact value is implementation-defined — assert via resolution.
+    const labelId = dialog.getAttribute("aria-labelledby");
+    const descId = dialog.getAttribute("aria-describedby");
+    expect(labelId).toBeTruthy();
+    expect(descId).toBeTruthy();
   });
 
-  it("aria-labelledby and aria-describedby point to elements with the headline and body copy", () => {
+  it("aria-labelledby points to the headline; aria-describedby includes the body copy", () => {
     // Screen readers announce the dialog as <name> + <description>. If either
     // referenced id is missing or points to the wrong element, the announcement
     // collapses to "dialog" with no context — useless for blind users.
     render(<UpgradeWall {...baseProps} />);
     const dialog = screen.getByRole("dialog");
     const labelId = dialog.getAttribute("aria-labelledby")!;
-    const descId = dialog.getAttribute("aria-describedby")!;
+    const descIds = dialog.getAttribute("aria-describedby")!.split(/\s+/);
     expect(document.getElementById(labelId)).toHaveTextContent(baseProps.headline);
-    expect(document.getElementById(descId)).toHaveTextContent(baseProps.body);
+    // describedby is space-separated and may include preview ids; the body
+    // must be one of the referenced elements.
+    const descTexts = descIds
+      .map((id) => document.getElementById(id)?.textContent ?? "")
+      .join(" ");
+    expect(descTexts).toContain(baseProps.body);
   });
+
+  it("aria-describedby grows to include the preview block when shown", () => {
+    // Without this, SR users hearing only "headline + body" miss the most
+    // persuasive part of the upgrade pitch (the example dialogue or repair
+    // explanation).
+    render(<UpgradeWall {...baseProps} coachPreview />);
+    const dialog = screen.getByRole("dialog");
+    const descIds = dialog.getAttribute("aria-describedby")!.split(/\s+/);
+    expect(descIds.length).toBeGreaterThanOrEqual(2);
+    const concatenated = descIds
+      .map((id) => document.getElementById(id)?.textContent ?? "")
+      .join(" ");
+    expect(concatenated).toContain(baseProps.body);
+    expect(concatenated).toMatch(/AI Coach does/i);
+  });
+
+  it("two stacked UpgradeWalls do not produce colliding aria ids", () => {
+    // Hardcoded ids would resolve to the wrong element when two modals exist.
+    // useId() guarantees uniqueness; verify the rendered ids differ.
+    render(
+      <>
+        <UpgradeWall {...baseProps} headline="First" />
+        <UpgradeWall {...baseProps} headline="Second" />
+      </>
+    );
+    const dialogs = screen.getAllByRole("dialog");
+    expect(dialogs).toHaveLength(2);
+    const id1 = dialogs[0].getAttribute("aria-labelledby");
+    const id2 = dialogs[1].getAttribute("aria-labelledby");
+    expect(id1).not.toBe(id2);
+    expect(document.getElementById(id1!)).toHaveTextContent("First");
+    expect(document.getElementById(id2!)).toHaveTextContent("Second");
+  });
+
+  it("renders a polite live region that announces the dialog opening", async () => {
+    // Belt-and-suspenders for AT that miss the role=dialog mount announcement.
+    // Populated ~100ms after mount so it registers as a live update, not
+    // initial DOM (which would race with and double-speak the headline).
+    vi.useFakeTimers();
+    render(<UpgradeWall {...baseProps} />);
+    const liveRegion = screen.getByRole("status");
+    expect(liveRegion).toHaveAttribute("aria-live", "polite");
+    expect(liveRegion).toHaveAttribute("aria-atomic", "true");
+    // Initially empty so the AT doesn't double-announce on mount.
+    expect(liveRegion.textContent).toBe("");
+    vi.advanceTimersByTime(150);
+    expect(liveRegion.textContent).toContain(baseProps.headline);
+    expect(liveRegion.textContent).toContain(baseProps.body);
+    vi.useRealTimers();
+  });
+
 
   it("places initial focus on the Close button (safe default, not the upgrade CTA)", () => {
     render(<UpgradeWall {...baseProps} />);
