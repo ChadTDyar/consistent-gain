@@ -33,6 +33,22 @@ interface Props {
   gate?: UpgradeWallGate;
   /** Which tier this wall is selling. Drives funnel analytics. */
   tier?: UpgradeWallTier;
+  /**
+   * Explicit element that should receive focus after the modal closes.
+   * When provided, this overrides the auto-captured `document.activeElement`.
+   *
+   * Use this when:
+   * - The trigger is unmounted while the modal is open (e.g. a "locked" card
+   *   that disappears after upgrade) — pass a stable nearby element so SR/
+   *   keyboard users still land somewhere meaningful.
+   * - The modal opened programmatically without a click (no real trigger).
+   * - You want focus to land on a different button than the one clicked
+   *   (e.g. a "Try again" CTA after dismissal).
+   *
+   * Pass either a React ref or a DOM node. Pass `null` to opt out of focus
+   * restoration entirely (rare; only for very deliberate flows).
+   */
+  returnFocus?: React.RefObject<HTMLElement> | HTMLElement | null;
 }
 
 export function UpgradeWall({
@@ -46,6 +62,7 @@ export function UpgradeWall({
   streakRepairPreview = false,
   gate = "unknown",
   tier = "unknown",
+  returnFocus,
 }: Props) {
   const isProCta = cta.toLowerCase().includes("pro");
   const panelRef = useRef<HTMLDivElement>(null);
