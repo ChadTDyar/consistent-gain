@@ -600,6 +600,11 @@ function UpgradeWallIOSFallback({
   // the Settings app for the "app-settings:" scheme. On non-iOS or when the
   // scheme is blocked, this is a harmless no-op (the page won't navigate).
   const openIOSSettings = () => {
+    // Settings deep-link is treated as a *dismissal* in funnel terms — it's
+    // a maintenance flow for an existing subscriber, not a new conversion
+    // intent. Tracking it as `ios_settings` lets the dashboard split this
+    // cohort out from the more interesting backdrop/escape/close paths.
+    trackDismiss("ios_settings");
     try {
       window.location.href = "app-settings:";
     } catch {
@@ -615,7 +620,7 @@ function UpgradeWallIOSFallback({
     // "Manage on web" is the iOS conversion intent — fire CTA before opening
     // the in-app browser so we capture the click even if the browser handoff
     // takes a moment.
-    trackCta();
+    trackCta("manage_on_web");
     const url = "https://momentumfit.app/account";
     try {
       if (Capacitor.isPluginAvailable("Browser")) {
