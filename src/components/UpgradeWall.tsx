@@ -594,7 +594,9 @@ function UpgradeWallIOSFallback({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${
+        prefersReducedMotion ? "" : "animate-backdrop-fade-in"
+      }`}
       style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
       onPointerDown={handleBackdropPointerDown}
       onPointerUp={handleBackdropPointerUp}
@@ -602,11 +604,14 @@ function UpgradeWallIOSFallback({
       aria-modal="true"
       aria-labelledby={titleId}
       aria-describedby={describedBy}
+      data-reduced-motion={prefersReducedMotion ? "true" : "false"}
     >
       <div
         ref={panelRef}
         onClick={(e) => e.stopPropagation()}
-        className="bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl"
+        className={`bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl ${
+          prefersReducedMotion ? "" : "animate-modal-pop-in"
+        }`}
         style={{ borderLeft: `4px solid ${accentColor}` }}
       >
         <div className="p-[22px] pb-0 relative">
