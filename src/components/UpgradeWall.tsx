@@ -500,6 +500,10 @@ interface IOSFallbackProps {
   streakRepairPreview: boolean;
   gate: UpgradeWallGate;
   tier: UpgradeWallTier;
+  // Forwarded from the public <UpgradeWall> so iOS keyboard users get the
+  // same focus-restoration override semantics as web (e.g. when the trigger
+  // unmounts while the modal is open).
+  returnFocus?: React.RefObject<HTMLElement> | HTMLElement | null;
 }
 
 function UpgradeWallIOSFallback({
@@ -511,11 +515,18 @@ function UpgradeWallIOSFallback({
   streakRepairPreview,
   gate,
   tier,
+  returnFocus,
 }: IOSFallbackProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const pointerDownOnBackdrop = useRef(false);
+  // Mirror returnFocus into a ref so the mount-only restoration effect
+  // always reads the latest value at unmount without re-running.
+  const returnFocusRef = useRef(returnFocus);
+  useEffect(() => {
+    returnFocusRef.current = returnFocus;
+  }, [returnFocus]);
 
   // Per-instance unique IDs (see web variant for rationale).
   const reactId = useId();
