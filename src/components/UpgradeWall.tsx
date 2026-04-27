@@ -99,15 +99,15 @@ export function UpgradeWall({
   const ctaClickedRef = useRef(false);
   const dismissTrackedRef = useRef(false);
 
-  const trackDismiss = () => {
+  const trackDismiss = (method: import("@/lib/analytics").UpgradeWallDismissMethod) => {
     if (ctaClickedRef.current || dismissTrackedRef.current) return;
     dismissTrackedRef.current = true;
-    analytics.upgradeWallDismissed(gate, tier);
+    analytics.upgradeWallDismissed(gate, tier, method);
   };
   const trackCta = () => {
     if (ctaClickedRef.current) return;
     ctaClickedRef.current = true;
-    analytics.upgradeWallCtaClicked(gate, tier);
+    analytics.upgradeWallCtaClicked(gate, tier, "cta_button");
   };
 
   // Keep onDismiss ref stable so the trap effect can run mount-only and so
@@ -125,13 +125,32 @@ export function UpgradeWall({
     returnFocusRef.current = returnFocus;
   }, [returnFocus]);
   // Stable ref to the wrapped dismiss-with-analytics function so the
-  // mount-only key-handler effect can call it without re-binding.
-  const dismissAndTrackRef = useRef(() => {});
-  dismissAndTrackRef.current = () => {
-    trackDismiss();
+  // mount-only key-handler effect can call it without re-binding. The
+  // method must be supplied at the call site so each dismissal path
+  // (escape | close_button | outside_click) is recorded distinctly.
+  const dismissAndTrackRef = useRef(
+    (_method: import("@/lib/analytics").UpgradeWallDismissMethod) => {}
+  );
+  dismissAndTrackRef.current = (
+    method: import("@/lib/analytics").UpgradeWallDismissMethod
+  ) => {
+    trackDismiss(method);
     onDismissRef.current();
   };
-  const dismissAndTrack = () => dismissAndTrackRef.current();
+  const dismissAndTrack = (
+    method: import("@/lib/analytics").UpgradeWallDismissMethod
+  ) => dismissAndTrackRef.current(method);
+
+  // Programmatic-unmount tracker: if the parent unmounts the wall without
+  // any user action firing a method (e.g. route change, auth-state flip,
+  // upstream state cleared), we record `programmatic` exactly once on
+  // cleanup so funnel math isn't silently inflated by zero-event walls.
+  // The tracking guards (ctaClickedRef, dismissTrackedRef) ensure this is
+  // a no-op when the user genuinely interacted.
+  useEffect(() => {
+    return () => trackDismiss("programmatic");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // WCAG 2.4.3 / 2.1.2: Escape-to-dismiss + focus trap + focus restoration.
   // Initial focus policy: the Close (X) button — NOT the Upgrade CTA.
@@ -158,7 +177,7 @@ export function UpgradeWall({
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        dismissAndTrackRef.current();
+        dismissAndTrackRef.current("escape");
         return;
       }
       if (e.key === "Tab" && panelRef.current) {
@@ -248,7 +267,7 @@ export function UpgradeWall({
   };
   const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
-      dismissAndTrack();
+      dismissAndTrack("outside_click");
     }
     pointerDownOnBackdrop.current = false;
   };
@@ -316,7 +335,7 @@ export function UpgradeWall({
         <div className="p-[22px] pb-0 relative">
           <button
             ref={closeBtnRef}
-            onClick={dismissAndTrack}
+            onClick={() => dismissAndTrack("close_button")}
             className="absolute top-[10px] right-[10px] text-muted-foreground hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
             aria-label="Close upgrade dialog"
           >
@@ -492,22 +511,40 @@ function UpgradeWallIOSFallback({
   // start a new purchase flow (existing-subscriber maintenance).
   const ctaClickedRef = useRef(false);
   const dismissTrackedRef = useRef(false);
-  const trackDismiss = () => {
+  const trackDismiss = (
+    method: import("@/lib/analytics").UpgradeWallDismissMethod
+  ) => {
     if (ctaClickedRef.current || dismissTrackedRef.current) return;
     dismissTrackedRef.current = true;
-    analytics.upgradeWallDismissed(gate, tier);
+    analytics.upgradeWallDismissed(gate, tier, method);
   };
-  const trackCta = () => {
+  const trackCta = (
+    method: import("@/lib/analytics").UpgradeWallCtaMethod = "manage_on_web"
+  ) => {
     if (ctaClickedRef.current) return;
     ctaClickedRef.current = true;
-    analytics.upgradeWallCtaClicked(gate, tier);
+    analytics.upgradeWallCtaClicked(gate, tier, method);
   };
-  const dismissAndTrackRef = useRef(() => {});
-  dismissAndTrackRef.current = () => {
-    trackDismiss();
+  const dismissAndTrackRef = useRef(
+    (_method: import("@/lib/analytics").UpgradeWallDismissMethod) => {}
+  );
+  dismissAndTrackRef.current = (
+    method: import("@/lib/analytics").UpgradeWallDismissMethod
+  ) => {
+    trackDismiss(method);
     onDismissRef.current();
   };
-  const dismissAndTrack = () => dismissAndTrackRef.current();
+  const dismissAndTrack = (
+    method: import("@/lib/analytics").UpgradeWallDismissMethod
+  ) => dismissAndTrackRef.current(method);
+
+  // Programmatic-unmount tracker (see web variant). Only fires if the user
+  // never produced a method-tagged dismissal or CTA click during the wall's
+  // lifetime.
+  useEffect(() => {
+    return () => trackDismiss("programmatic");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Focus trap + Escape-to-close, identical contract to the web modal.
   useEffect(() => {
@@ -517,7 +554,7 @@ function UpgradeWallIOSFallback({
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        dismissAndTrackRef.current();
+        dismissAndTrackRef.current("escape");
         return;
       }
       if (e.key === "Tab" && panelRef.current) {
@@ -548,7 +585,7 @@ function UpgradeWallIOSFallback({
   };
   const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
-      dismissAndTrack();
+      dismissAndTrack("outside_click");
     }
     pointerDownOnBackdrop.current = false;
   };
@@ -563,6 +600,11 @@ function UpgradeWallIOSFallback({
   // the Settings app for the "app-settings:" scheme. On non-iOS or when the
   // scheme is blocked, this is a harmless no-op (the page won't navigate).
   const openIOSSettings = () => {
+    // Settings deep-link is treated as a *dismissal* in funnel terms — it's
+    // a maintenance flow for an existing subscriber, not a new conversion
+    // intent. Tracking it as `ios_settings` lets the dashboard split this
+    // cohort out from the more interesting backdrop/escape/close paths.
+    trackDismiss("ios_settings");
     try {
       window.location.href = "app-settings:";
     } catch {
@@ -578,7 +620,7 @@ function UpgradeWallIOSFallback({
     // "Manage on web" is the iOS conversion intent — fire CTA before opening
     // the in-app browser so we capture the click even if the browser handoff
     // takes a moment.
-    trackCta();
+    trackCta("manage_on_web");
     const url = "https://momentumfit.app/account";
     try {
       if (Capacitor.isPluginAvailable("Browser")) {
@@ -617,7 +659,7 @@ function UpgradeWallIOSFallback({
         <div className="p-[22px] pb-0 relative">
           <button
             ref={closeBtnRef}
-            onClick={dismissAndTrack}
+            onClick={() => dismissAndTrack("close_button")}
             className="absolute top-[10px] right-[10px] text-muted-foreground hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
             aria-label="Close dialog"
           >
