@@ -260,16 +260,28 @@ export function UpgradeWall({
     // in an effect) and ships a single `upgrade_wall_null_return` event.
     return (
       <IOSBranchGuard gate={gate} tier={tier}>
-        <UpgradeWallIOSFallback
-          headline={headline}
-          body={body}
-          accentColor={accentColor}
-          onDismiss={onDismiss}
-          coachPreview={coachPreview}
-          streakRepairPreview={streakRepairPreview}
+        <UpgradeWallBoundary
           gate={gate}
           tier={tier}
-        />
+          fallback={({ retry }) => (
+            <IOSFallbackErrorState
+              accentColor={accentColor}
+              onDismiss={onDismiss}
+              onRetry={retry}
+            />
+          )}
+        >
+          <UpgradeWallIOSFallback
+            headline={headline}
+            body={body}
+            accentColor={accentColor}
+            onDismiss={onDismiss}
+            coachPreview={coachPreview}
+            streakRepairPreview={streakRepairPreview}
+            gate={gate}
+            tier={tier}
+          />
+        </UpgradeWallBoundary>
       </IOSBranchGuard>
     );
   }
