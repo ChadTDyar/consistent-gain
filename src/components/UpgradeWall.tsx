@@ -169,7 +169,24 @@ export function UpgradeWall({
     document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("keydown", handleKey);
-      const target = previouslyFocused.current;
+      // Resolve the focus target with this priority:
+      //   1. Explicit `returnFocus` prop (ref or DOM node) — caller knows best.
+      //      `null` opts out of restoration entirely.
+      //   2. Auto-captured trigger (`previouslyFocused`) — handles the common
+      //      "user clicked a button, modal opened" case.
+      // Both paths share the same connectedness + focus() guards.
+      const explicit = returnFocusRef.current;
+      let target: HTMLElement | null = null;
+      if (explicit === null) {
+        // Caller explicitly opted out.
+        target = null;
+      } else if (explicit && "current" in explicit) {
+        target = explicit.current ?? null;
+      } else if (explicit instanceof HTMLElement) {
+        target = explicit;
+      } else {
+        target = previouslyFocused.current;
+      }
       if (target && target.isConnected && typeof target.focus === "function") {
         try {
           target.focus({ preventScroll: true });
