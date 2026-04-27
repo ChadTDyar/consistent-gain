@@ -363,7 +363,7 @@ function UpgradeWallIOSFallback({
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onDismissRef.current();
+        dismissAndTrackRef.current();
         return;
       }
       if (e.key === "Tab" && panelRef.current) {
@@ -394,7 +394,7 @@ function UpgradeWallIOSFallback({
   };
   const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
-      onDismiss();
+      dismissAndTrack();
     }
     pointerDownOnBackdrop.current = false;
   };
