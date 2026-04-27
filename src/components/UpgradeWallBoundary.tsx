@@ -158,8 +158,13 @@ function UpgradeWallErrorFallback({ onRetry, onDismiss }: ErrorFallbackProps) {
   const previouslyFocused = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    previouslyFocused.current = captureFocusOrigin();
+    // Capture origin (skip <body> — restoring to it is meaningless and
+    // hides keyboard-focus state from the user).
+    const active = document.activeElement as HTMLElement | null;
+    previouslyFocused.current =
+      active && active !== document.body ? active : null;
     retryBtnRef.current?.focus();
+
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -169,16 +174,19 @@ function UpgradeWallErrorFallback({ onRetry, onDismiss }: ErrorFallbackProps) {
     document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("keydown", handleKey);
-      const main =
-        typeof document !== "undefined"
-          ? (document.querySelector<HTMLElement>("main") ??
-            (document.body as HTMLElement | null))
-          : null;
-      if (main && main.tabIndex < 0) main.tabIndex = -1;
-      restoreFocus({
-        auto: previouslyFocused.current,
-        bodyFallback: main,
-      });
+      // Restore focus: prefer the originating trigger if it's still in the
+      // tree; otherwise land on the page's <main> landmark so SR users
+      // hear something meaningful instead of falling to <body>.
+      const trigger = previouslyFocused.current;
+      if (trigger && trigger.isConnected) {
+        trigger.focus();
+        return;
+      }
+      const main = document.querySelector<HTMLElement>("main");
+      if (main) {
+        if (main.tabIndex < 0) main.tabIndex = -1;
+        main.focus();
+      }
     };
     // We intentionally don't depend on onDismiss — the latest is read via
     // the closure on each keypress. Re-binding listeners on every parent
