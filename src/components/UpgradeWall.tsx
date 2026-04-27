@@ -107,7 +107,7 @@ export function UpgradeWall({
   const trackCta = () => {
     if (ctaClickedRef.current) return;
     ctaClickedRef.current = true;
-    analytics.upgradeWallCtaClicked(gate, tier);
+    analytics.upgradeWallCtaClicked(gate, tier, "cta_button");
   };
 
   // Keep onDismiss ref stable so the trap effect can run mount-only and so
