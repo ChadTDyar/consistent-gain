@@ -274,6 +274,8 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
           body={MOMENTUM.walls.history_limit.body}
           cta={MOMENTUM.walls.history_limit.cta}
           accentColor="#0d3b5e"
+          gate="history_limit"
+          tier="pro"
           onUpgrade={() => { setShowHistoryWall(false); navigate("/pricing"); }}
           onDismiss={() => setShowHistoryWall(false)}
         />

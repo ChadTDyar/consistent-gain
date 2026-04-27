@@ -3,6 +3,21 @@ import { useEffect, useRef } from "react";
 import { X, ExternalLink, Settings as SettingsIcon } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
 import { Capacitor } from "@capacitor/core";
+import { analytics } from "@/lib/analytics";
+
+// Funnel-tracking taxonomy. Keep these in sync with GA4 / dashboards.
+// `gate` identifies the feature that triggered the wall.
+// `tier` is what the wall is selling (or 'unknown' when callers haven't
+// declared a tier — e.g. legacy call sites).
+export type UpgradeWallGate =
+  | "coach"
+  | "streak_repair"
+  | "habit_limit"
+  | "partner_lock"
+  | "analytics_lock"
+  | "history_limit"
+  | "unknown";
+export type UpgradeWallTier = "pro" | "premium" | "unknown";
 
 interface Props {
   headline: string;
@@ -13,6 +28,10 @@ interface Props {
   onDismiss: () => void;
   coachPreview?: boolean;
   streakRepairPreview?: boolean;
+  /** Which gated feature triggered this wall. Drives funnel analytics. */
+  gate?: UpgradeWallGate;
+  /** Which tier this wall is selling. Drives funnel analytics. */
+  tier?: UpgradeWallTier;
 }
 
 export function UpgradeWall({
@@ -24,6 +43,8 @@ export function UpgradeWall({
   onDismiss,
   coachPreview = false,
   streakRepairPreview = false,
+  gate = "unknown",
+  tier = "unknown",
 }: Props) {
   const isProCta = cta.toLowerCase().includes("pro");
   const panelRef = useRef<HTMLDivElement>(null);
@@ -35,15 +56,41 @@ export function UpgradeWall({
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
 
-  // Keep onDismiss ref stable so the trap effect can run mount-only.
-  // If we depended on onDismiss in the effect deps, parents passing a new
-  // function identity each render would tear down the trap and re-capture
-  // previouslyFocused.current to the close button (since focus moved into
-  // the modal), breaking trigger restoration.
+  // Funnel-event guards. We MUST fire dismissed XOR cta_clicked exactly once
+  // per modal lifetime, never both, never zero.
+  // - ctaClickedRef: set when the user clicks the upgrade CTA so subsequent
+  //   onDismiss calls (which the parent typically issues to unmount the modal)
+  //   do NOT also count as a dismissal.
+  // - dismissTrackedRef: dedupe against rapid Escape + outside-click races.
+  const ctaClickedRef = useRef(false);
+  const dismissTrackedRef = useRef(false);
+
+  const trackDismiss = () => {
+    if (ctaClickedRef.current || dismissTrackedRef.current) return;
+    dismissTrackedRef.current = true;
+    analytics.upgradeWallDismissed(gate, tier);
+  };
+  const trackCta = () => {
+    if (ctaClickedRef.current) return;
+    ctaClickedRef.current = true;
+    analytics.upgradeWallCtaClicked(gate, tier);
+  };
+
+  // Keep onDismiss ref stable so the trap effect can run mount-only and so
+  // that every dismissal path (Close button, Escape, outside-click) flows
+  // through trackDismiss before calling the parent handler.
   const onDismissRef = useRef(onDismiss);
   useEffect(() => {
     onDismissRef.current = onDismiss;
   }, [onDismiss]);
+  // Stable ref to the wrapped dismiss-with-analytics function so the
+  // mount-only key-handler effect can call it without re-binding.
+  const dismissAndTrackRef = useRef(() => {});
+  dismissAndTrackRef.current = () => {
+    trackDismiss();
+    onDismissRef.current();
+  };
+  const dismissAndTrack = () => dismissAndTrackRef.current();
 
   // WCAG 2.4.3 / 2.1.2: Escape-to-dismiss + focus trap + focus restoration.
   // Initial focus policy: the Close (X) button — NOT the Upgrade CTA.
@@ -70,7 +117,7 @@ export function UpgradeWall({
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onDismissRef.current();
+        dismissAndTrackRef.current();
         return;
       }
       if (e.key === "Tab" && panelRef.current) {
@@ -125,6 +172,8 @@ export function UpgradeWall({
         onDismiss={onDismiss}
         coachPreview={coachPreview}
         streakRepairPreview={streakRepairPreview}
+        gate={gate}
+        tier={tier}
       />
     );
   }
@@ -141,7 +190,7 @@ export function UpgradeWall({
   };
   const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
-      onDismiss();
+      dismissAndTrack();
     }
     pointerDownOnBackdrop.current = false;
   };
@@ -165,7 +214,7 @@ export function UpgradeWall({
         <div className="p-[22px] pb-0 relative">
           <button
             ref={closeBtnRef}
-            onClick={onDismiss}
+            onClick={dismissAndTrack}
             className="absolute top-[10px] right-[10px] text-muted-foreground hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
             aria-label="Close upgrade dialog"
           >
@@ -215,7 +264,10 @@ export function UpgradeWall({
           )}
 
           <button
-            onClick={onUpgrade}
+            onClick={() => {
+              trackCta();
+              onUpgrade();
+            }}
             className="block w-full py-3 rounded-lg font-bold text-sm text-white cursor-pointer border-none"
             style={{ background: accentColor }}
           >
@@ -256,6 +308,8 @@ interface IOSFallbackProps {
   onDismiss: () => void;
   coachPreview: boolean;
   streakRepairPreview: boolean;
+  gate: UpgradeWallGate;
+  tier: UpgradeWallTier;
 }
 
 function UpgradeWallIOSFallback({
@@ -265,6 +319,8 @@ function UpgradeWallIOSFallback({
   onDismiss,
   coachPreview,
   streakRepairPreview,
+  gate,
+  tier,
 }: IOSFallbackProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
@@ -275,6 +331,30 @@ function UpgradeWallIOSFallback({
     onDismissRef.current = onDismiss;
   }, [onDismiss]);
 
+  // Funnel-event guards (same contract as the web modal). On iOS the
+  // "CTA" is the Reader-rule "Manage on web" button — that is what counts
+  // as a real conversion intent here. Tapping "Manage subscription in
+  // Settings" is treated as a dismissal in funnel terms because it does NOT
+  // start a new purchase flow (existing-subscriber maintenance).
+  const ctaClickedRef = useRef(false);
+  const dismissTrackedRef = useRef(false);
+  const trackDismiss = () => {
+    if (ctaClickedRef.current || dismissTrackedRef.current) return;
+    dismissTrackedRef.current = true;
+    analytics.upgradeWallDismissed(gate, tier);
+  };
+  const trackCta = () => {
+    if (ctaClickedRef.current) return;
+    ctaClickedRef.current = true;
+    analytics.upgradeWallCtaClicked(gate, tier);
+  };
+  const dismissAndTrackRef = useRef(() => {});
+  dismissAndTrackRef.current = () => {
+    trackDismiss();
+    onDismissRef.current();
+  };
+  const dismissAndTrack = () => dismissAndTrackRef.current();
+
   // Focus trap + Escape-to-close, identical contract to the web modal.
   useEffect(() => {
     previouslyFocused.current = document.activeElement as HTMLElement | null;
@@ -283,7 +363,7 @@ function UpgradeWallIOSFallback({
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onDismissRef.current();
+        dismissAndTrackRef.current();
         return;
       }
       if (e.key === "Tab" && panelRef.current) {
@@ -314,7 +394,7 @@ function UpgradeWallIOSFallback({
   };
   const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
-      onDismiss();
+      dismissAndTrack();
     }
     pointerDownOnBackdrop.current = false;
   };
@@ -341,6 +421,10 @@ function UpgradeWallIOSFallback({
   // a purchase form to a logged-out user; it must show subscription
   // management. (Pricing pages are a separate URL and are NOT linked here.)
   const openManageOnWeb = async () => {
+    // "Manage on web" is the iOS conversion intent — fire CTA before opening
+    // the in-app browser so we capture the click even if the browser handoff
+    // takes a moment.
+    trackCta();
     const url = "https://momentumfit.app/account";
     try {
       if (Capacitor.isPluginAvailable("Browser")) {
@@ -374,7 +458,7 @@ function UpgradeWallIOSFallback({
         <div className="p-[22px] pb-0 relative">
           <button
             ref={closeBtnRef}
-            onClick={onDismiss}
+            onClick={dismissAndTrack}
             className="absolute top-[10px] right-[10px] text-muted-foreground hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
             aria-label="Close dialog"
           >

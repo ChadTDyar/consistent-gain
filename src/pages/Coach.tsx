@@ -204,6 +204,8 @@ export default function Coach() {
           cta={MOMENTUM.walls.ai_coach.cta}
           accentColor="#0d3b5e"
           coachPreview
+          gate="coach"
+          tier="premium"
           onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
           onDismiss={() => setShowUpgradeWall(false)}
         />
