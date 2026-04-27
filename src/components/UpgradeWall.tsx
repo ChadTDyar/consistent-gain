@@ -332,6 +332,11 @@ function UpgradeWallIOSFallback({
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const pointerDownOnBackdrop = useRef(false);
+
+  // Lock background scroll on iOS too. Even though the native WKWebView
+  // doesn't show a scrollbar, rubber-band scrolling can still disrupt the
+  // focus trap and pull the modal partially out of view.
+  useBodyScrollLock(true);
   const onDismissRef = useRef(onDismiss);
   useEffect(() => {
     onDismissRef.current = onDismiss;
