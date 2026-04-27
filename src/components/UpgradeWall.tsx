@@ -262,7 +262,10 @@ export function UpgradeWall({
           )}
 
           <button
-            onClick={onUpgrade}
+            onClick={() => {
+              trackCta();
+              onUpgrade();
+            }}
             className="block w-full py-3 rounded-lg font-bold text-sm text-white cursor-pointer border-none"
             style={{ background: accentColor }}
           >
