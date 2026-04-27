@@ -674,6 +674,17 @@ function UpgradeWallIOSFallback({
           </p>
         </div>
       </div>
+
+      {/* Polite live region (see web variant for full rationale). */}
+      <div
+        id={announcementId}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {liveAnnouncement}
+      </div>
     </div>,
     document.body
   );
