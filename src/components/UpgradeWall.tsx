@@ -1,12 +1,10 @@
 import { createPortal } from "react-dom";
-import { useEffect, useId, useRef, useState } from "react";
-import { X, ExternalLink, Settings as SettingsIcon } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { X, ExternalLink, Settings as SettingsIcon, Info } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
 import { Capacitor } from "@capacitor/core";
 import { analytics } from "@/lib/analytics";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import { restoreFocus, captureFocusOrigin } from "@/lib/restoreFocus";
 
 // Funnel-tracking taxonomy. Keep these in sync with GA4 / dashboards.
 // `gate` identifies the feature that triggered the wall.
@@ -76,76 +74,6 @@ export function UpgradeWall({
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
 
-  // -------------------------------------------------------------------------
-  // Parent-level focus safety net (covers ALL render branches including the
-  // iOS fallback path AND any future branch that returns null).
-  //
-  // Why at the parent level (not inside the variant components):
-  //   - The web variant has its own rich restoration in the focus-trap
-  //     effect cleanup. The iOS variant has its own (simpler) restoration.
-  //   - But if either variant unmounts in an unusual way (error boundary
-  //     swallowed the cleanup, the variant returned null on iOS for a
-  //     legacy code path, an experiment short-circuited rendering), the
-  //     keyboard user is left with focus on <body> — visually nowhere,
-  //     no SR announcement, no clear next-tab target.
-  //   - This effect runs OUTSIDE the variant code, so it always fires on
-  //     unmount of the public <UpgradeWall>. The variant-specific cleanups
-  //     run first; if they successfully focused something, this is a no-op
-  //     because the captured trigger is already focused (or `restoreFocus`
-  //     simply re-focuses it idempotently).
-  //
-  // Capture happens via a layout effect so we read activeElement BEFORE the
-  // variant's focus-trap effect moves focus into the dialog (effects in
-  // React run child-then-parent for layout, parent-then-child for passive,
-  // but we want the capture to win the race against the variant's own
-  // focus() call — useLayoutEffect at the parent fires before the child's
-  // useEffect).
-  // -------------------------------------------------------------------------
-  const parentFocusOrigin = useRef<HTMLElement | null>(null);
-  // useLayoutEffect-equivalent semantics matter only on real DOM; useEffect
-  // is sufficient here because document.activeElement at first render is
-  // still the trigger (the variant's focus() runs in its own useEffect,
-  // after this one mounts in the same commit). Using useEffect avoids the
-  // SSR warning for tests/storybooks that import without jsdom.
-  useEffect(() => {
-    parentFocusOrigin.current = captureFocusOrigin();
-    // bodyFallback resolution: prefer the page's <main> landmark for
-    // screen-reader anchor stability, fall back to body so focus is at
-    // least defined. tabIndex is set inline so even non-tabbable landmarks
-    // can receive programmatic focus (cleared on next interaction).
-    const resolveBodyFallback = (): HTMLElement | null => {
-      if (typeof document === "undefined") return null;
-      const main =
-        document.querySelector<HTMLElement>("main") ??
-        (document.body as HTMLElement | null);
-      if (main && main.tabIndex < 0) main.tabIndex = -1;
-      return main;
-    };
-    return () => {
-      // Variant cleanup already ran by this point. We re-attempt with the
-      // bodyFallback wired in case the variant skipped restoration entirely
-      // (e.g. iOS variant in a future null-render branch). restoreFocus is
-      // idempotent: focusing the same element twice is a no-op.
-      restoreFocus({
-        explicit: returnFocus,
-        auto: parentFocusOrigin.current,
-        bodyFallback: resolveBodyFallback(),
-      });
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-
-  // WCAG 2.3.3 Animation from Interactions: when the user prefers reduced
-  // motion, omit the entry animation classes entirely. We don't just rely on
-  // the global `prefers-reduced-motion` CSS guard (which only shortens the
-  // duration) because:
-  //   - Skipping the class avoids any transient transform/opacity state on
-  //     the panel that could interfere with focus restoration math.
-  //   - The dialog appears in its final visual state on the very first paint,
-  //     which is the spec-recommended behavior for non-essential motion.
-  const prefersReducedMotion = usePrefersReducedMotion();
-
   // Lock background scroll while the web variant is mounted. The iOS variant
   // is rendered by UpgradeWallIOSFallback which manages its own lock — we
   // disable here on iOS to avoid double-locking the body.
@@ -160,15 +88,15 @@ export function UpgradeWall({
   const ctaClickedRef = useRef(false);
   const dismissTrackedRef = useRef(false);
 
-  const trackDismiss = (method: import("@/lib/analytics").UpgradeWallDismissMethod) => {
+  const trackDismiss = () => {
     if (ctaClickedRef.current || dismissTrackedRef.current) return;
     dismissTrackedRef.current = true;
-    analytics.upgradeWallDismissed(gate, tier, method);
+    analytics.upgradeWallDismissed(gate, tier);
   };
   const trackCta = () => {
     if (ctaClickedRef.current) return;
     ctaClickedRef.current = true;
-    analytics.upgradeWallCtaClicked(gate, tier, "cta_button");
+    analytics.upgradeWallCtaClicked(gate, tier);
   };
 
   // Keep onDismiss ref stable so the trap effect can run mount-only and so
@@ -186,32 +114,13 @@ export function UpgradeWall({
     returnFocusRef.current = returnFocus;
   }, [returnFocus]);
   // Stable ref to the wrapped dismiss-with-analytics function so the
-  // mount-only key-handler effect can call it without re-binding. The
-  // method must be supplied at the call site so each dismissal path
-  // (escape | close_button | outside_click) is recorded distinctly.
-  const dismissAndTrackRef = useRef(
-    (_method: import("@/lib/analytics").UpgradeWallDismissMethod) => {}
-  );
-  dismissAndTrackRef.current = (
-    method: import("@/lib/analytics").UpgradeWallDismissMethod
-  ) => {
-    trackDismiss(method);
+  // mount-only key-handler effect can call it without re-binding.
+  const dismissAndTrackRef = useRef(() => {});
+  dismissAndTrackRef.current = () => {
+    trackDismiss();
     onDismissRef.current();
   };
-  const dismissAndTrack = (
-    method: import("@/lib/analytics").UpgradeWallDismissMethod
-  ) => dismissAndTrackRef.current(method);
-
-  // Programmatic-unmount tracker: if the parent unmounts the wall without
-  // any user action firing a method (e.g. route change, auth-state flip,
-  // upstream state cleared), we record `programmatic` exactly once on
-  // cleanup so funnel math isn't silently inflated by zero-event walls.
-  // The tracking guards (ctaClickedRef, dismissTrackedRef) ensure this is
-  // a no-op when the user genuinely interacted.
-  useEffect(() => {
-    return () => trackDismiss("programmatic");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const dismissAndTrack = () => dismissAndTrackRef.current();
 
   // WCAG 2.4.3 / 2.1.2: Escape-to-dismiss + focus trap + focus restoration.
   // Initial focus policy: the Close (X) button — NOT the Upgrade CTA.
@@ -238,7 +147,7 @@ export function UpgradeWall({
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        dismissAndTrackRef.current("escape");
+        dismissAndTrackRef.current();
         return;
       }
       if (e.key === "Tab" && panelRef.current) {
@@ -260,22 +169,31 @@ export function UpgradeWall({
     document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("keydown", handleKey);
-      // Resolve the focus target via the shared restoreFocus helper.
-      // Priority: explicit returnFocus → auto-captured trigger → bodyFallback
-      // (page <main> landmark, or <body> as last resort) so keyboard / SR
-      // users always land somewhere named even if the trigger has been
-      // unmounted while the modal was open.
-      const main =
-        typeof document !== "undefined"
-          ? (document.querySelector<HTMLElement>("main") ??
-            (document.body as HTMLElement | null))
-          : null;
-      if (main && main.tabIndex < 0) main.tabIndex = -1;
-      restoreFocus({
-        explicit: returnFocusRef.current,
-        auto: previouslyFocused.current,
-        bodyFallback: main,
-      });
+      // Resolve the focus target with this priority:
+      //   1. Explicit `returnFocus` prop (ref or DOM node) — caller knows best.
+      //      `null` opts out of restoration entirely.
+      //   2. Auto-captured trigger (`previouslyFocused`) — handles the common
+      //      "user clicked a button, modal opened" case.
+      // Both paths share the same connectedness + focus() guards.
+      const explicit = returnFocusRef.current;
+      let target: HTMLElement | null = null;
+      if (explicit === null) {
+        // Caller explicitly opted out.
+        target = null;
+      } else if (explicit && "current" in explicit) {
+        target = explicit.current ?? null;
+      } else if (explicit instanceof HTMLElement) {
+        target = explicit;
+      } else {
+        target = previouslyFocused.current;
+      }
+      if (target && target.isConnected && typeof target.focus === "function") {
+        try {
+          target.focus({ preventScroll: true });
+        } catch {
+          target.focus();
+        }
+      }
     };
   }, [ios]);
 
@@ -303,7 +221,6 @@ export function UpgradeWall({
         streakRepairPreview={streakRepairPreview}
         gate={gate}
         tier={tier}
-        returnFocus={returnFocus}
       />
     );
   }
@@ -320,90 +237,47 @@ export function UpgradeWall({
   };
   const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
-      dismissAndTrack("outside_click");
+      dismissAndTrack();
     }
     pointerDownOnBackdrop.current = false;
   };
 
-  // Per-instance unique IDs.
-  // Why: when two UpgradeWalls stack (rare but possible — e.g. a deferred
-  // gate fires while another wall is mid-animation) or React StrictMode
-  // double-mounts, hard-coded IDs collide and screen readers resolve
-  // aria-labelledby/aria-describedby to the WRONG element. useId() guarantees
-  // uniqueness within and across renders.
-  const reactId = useId();
-  const titleId = `${reactId}-title`;
-  const bodyId = `${reactId}-body`;
-  const previewId = `${reactId}-preview`;
-  const announcementId = `${reactId}-announcement`;
-  const hasPreview = coachPreview || streakRepairPreview;
-
-  // The dialog's accessible description includes the body paragraph plus the
-  // preview block when present. Screen readers concatenate the referenced
-  // nodes' text in document order, so SR users hear: headline → body → preview
-  // copy ("What AI Coach does" / "What Streak Repair looks like" + example).
-  // Without this, the most persuasive content is silently skipped on open.
-  const describedBy = hasPreview ? `${bodyId} ${previewId}` : bodyId;
-
-  // Polite live-region announcement.
-  // Belt-and-suspenders for AT combinations that don't reliably announce a
-  // newly-mounted role="dialog" (some Android TalkBack + Chrome flows). We
-  // populate the live region one tick AFTER mount so the AT registers it as a
-  // live update rather than initial DOM (which would race with the dialog
-  // announcement and double-speak the headline).
-  const [liveAnnouncement, setLiveAnnouncement] = useState("");
-  useEffect(() => {
-    if (ios) return;
-    const t = window.setTimeout(() => {
-      setLiveAnnouncement(`Upgrade dialog opened: ${headline}. ${body}`);
-    }, 100);
-    return () => window.clearTimeout(t);
-    // headline/body are intentionally in the dep list: if a parent swaps the
-    // wall content while the modal stays mounted (e.g. flipping
-    // upgradeWallType), we want the new content re-announced.
-  }, [ios, headline, body]);
-
   return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${
-        prefersReducedMotion ? "" : "animate-backdrop-fade-in"
-      }`}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
       onPointerDown={handleBackdropPointerDown}
       onPointerUp={handleBackdropPointerUp}
       role="dialog"
       aria-modal="true"
-      aria-labelledby={titleId}
-      aria-describedby={describedBy}
-      data-reduced-motion={prefersReducedMotion ? "true" : "false"}
+      aria-labelledby="upgrade-wall-title"
+      aria-describedby="upgrade-wall-body"
     >
       <div
         ref={panelRef}
         onClick={(e) => e.stopPropagation()}
-        className={`bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl ${
-          prefersReducedMotion ? "" : "animate-modal-pop-in"
-        }`}
+        className="bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl"
         style={{ borderLeft: `4px solid ${accentColor}` }}
       >
         <div className="p-[22px] pb-0 relative">
           <button
             ref={closeBtnRef}
-            onClick={() => dismissAndTrack("close_button")}
+            onClick={dismissAndTrack}
             className="absolute top-[10px] right-[10px] text-muted-foreground hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
             aria-label="Close upgrade dialog"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
-          <h3 id={titleId} className="font-semibold text-base text-foreground leading-tight pr-12">
+          <h3 id="upgrade-wall-title" className="font-semibold text-base text-foreground leading-tight pr-12">
             {headline}
           </h3>
         </div>
 
         <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
-          <p id={bodyId} className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+          <p id="upgrade-wall-body" className="text-sm text-muted-foreground leading-relaxed">{body}</p>
 
           {streakRepairPreview && (
-            <div id={previewId} className="space-y-1.5">
+            <div className="space-y-1.5">
               <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
                 This is what Streak Repair looks like
               </p>
@@ -416,10 +290,7 @@ export function UpgradeWall({
           )}
 
           {coachPreview && (
-            // Defensive: only the first rendered preview owns previewId so a
-            // hypothetical caller that sets BOTH preview flags doesn't produce
-            // duplicate IDs (which break aria-describedby resolution).
-            <div id={streakRepairPreview ? undefined : previewId} className="space-y-1.5">
+            <div className="space-y-1.5">
               <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
                 What AI Coach does
               </p>
@@ -455,30 +326,6 @@ export function UpgradeWall({
           </p>
         </div>
       </div>
-
-      {/*
-        Polite live region — screen-reader-only.
-        - aria-live="polite" so it doesn't interrupt the dialog announcement.
-        - aria-atomic="true" so the full message is read on each update,
-          not just the diff.
-        - role="status" gives belt-and-suspenders coverage for AT that don't
-          map aria-live polite onto a generic node.
-        - Lives inside the dialog so the focus-trap + scroll lock don't have
-          to consider an extra portal.
-        - Populated 100ms after mount (see effect above) so the AT registers
-          this as a *live update* rather than initial DOM, which would race
-          with the dialog announcement and double-speak the headline.
-        - sr-only utility hides it from sighted users.
-      */}
-      <div
-        id={announcementId}
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-      >
-        {liveAnnouncement}
-      </div>
     </div>,
     document.body
   );
@@ -511,10 +358,6 @@ interface IOSFallbackProps {
   streakRepairPreview: boolean;
   gate: UpgradeWallGate;
   tier: UpgradeWallTier;
-  // Forwarded from the public <UpgradeWall> so iOS keyboard users get the
-  // same focus-restoration override semantics as web (e.g. when the trigger
-  // unmounts while the modal is open).
-  returnFocus?: React.RefObject<HTMLElement> | HTMLElement | null;
 }
 
 function UpgradeWallIOSFallback({
@@ -526,38 +369,11 @@ function UpgradeWallIOSFallback({
   streakRepairPreview,
   gate,
   tier,
-  returnFocus,
 }: IOSFallbackProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const pointerDownOnBackdrop = useRef(false);
-  // Mirror returnFocus into a ref so the mount-only restoration effect
-  // always reads the latest value at unmount without re-running.
-  const returnFocusRef = useRef(returnFocus);
-  useEffect(() => {
-    returnFocusRef.current = returnFocus;
-  }, [returnFocus]);
-
-  // Per-instance unique IDs (see web variant for rationale).
-  const reactId = useId();
-  const titleId = `${reactId}-title`;
-  const bodyId = `${reactId}-body`;
-  const previewId = `${reactId}-preview`;
-  const announcementId = `${reactId}-announcement`;
-  const hasPreview = coachPreview || streakRepairPreview;
-  const describedBy = hasPreview ? `${bodyId} ${previewId}` : bodyId;
-  // See web variant for rationale; same WCAG 2.3.3 policy applies on iOS.
-  const prefersReducedMotion = usePrefersReducedMotion();
-
-  // Polite live-region announcement (see web variant for rationale).
-  const [liveAnnouncement, setLiveAnnouncement] = useState("");
-  useEffect(() => {
-    const t = window.setTimeout(() => {
-      setLiveAnnouncement(`Upgrade dialog opened: ${headline}. ${body}`);
-    }, 100);
-    return () => window.clearTimeout(t);
-  }, [headline, body]);
 
   // Lock background scroll on iOS too. Even though the native WKWebView
   // doesn't show a scrollbar, rubber-band scrolling can still disrupt the
@@ -575,53 +391,32 @@ function UpgradeWallIOSFallback({
   // start a new purchase flow (existing-subscriber maintenance).
   const ctaClickedRef = useRef(false);
   const dismissTrackedRef = useRef(false);
-  const trackDismiss = (
-    method: import("@/lib/analytics").UpgradeWallDismissMethod
-  ) => {
+  const trackDismiss = () => {
     if (ctaClickedRef.current || dismissTrackedRef.current) return;
     dismissTrackedRef.current = true;
-    analytics.upgradeWallDismissed(gate, tier, method);
+    analytics.upgradeWallDismissed(gate, tier);
   };
-  const trackCta = (
-    method: import("@/lib/analytics").UpgradeWallCtaMethod = "manage_on_web"
-  ) => {
+  const trackCta = () => {
     if (ctaClickedRef.current) return;
     ctaClickedRef.current = true;
-    analytics.upgradeWallCtaClicked(gate, tier, method);
+    analytics.upgradeWallCtaClicked(gate, tier);
   };
-  const dismissAndTrackRef = useRef(
-    (_method: import("@/lib/analytics").UpgradeWallDismissMethod) => {}
-  );
-  dismissAndTrackRef.current = (
-    method: import("@/lib/analytics").UpgradeWallDismissMethod
-  ) => {
-    trackDismiss(method);
+  const dismissAndTrackRef = useRef(() => {});
+  dismissAndTrackRef.current = () => {
+    trackDismiss();
     onDismissRef.current();
   };
-  const dismissAndTrack = (
-    method: import("@/lib/analytics").UpgradeWallDismissMethod
-  ) => dismissAndTrackRef.current(method);
-
-  // Programmatic-unmount tracker (see web variant). Only fires if the user
-  // never produced a method-tagged dismissal or CTA click during the wall's
-  // lifetime.
-  useEffect(() => {
-    return () => trackDismiss("programmatic");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const dismissAndTrack = () => dismissAndTrackRef.current();
 
   // Focus trap + Escape-to-close, identical contract to the web modal.
-  // Capture priority on open: filter out <body> so we don't "restore" to a
-  // non-meaningful target later. Initial focus → Close (X) so a stray
-  // Enter/Space doesn't accidentally trigger any action.
   useEffect(() => {
-    previouslyFocused.current = captureFocusOrigin();
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
     closeBtnRef.current?.focus();
 
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        dismissAndTrackRef.current("escape");
+        dismissAndTrackRef.current();
         return;
       }
       if (e.key === "Tab" && panelRef.current) {
@@ -643,24 +438,7 @@ function UpgradeWallIOSFallback({
     document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("keydown", handleKey);
-      // Hardened restoration — same contract as the web variant. Without
-      // this, a missing/unmounted trigger would leave focus on <body>,
-      // which TalkBack on iOS Safari announces as silence and which
-      // strands keyboard-only WKWebView users with no usable next-Tab
-      // target. The bodyFallback resolves to the page's <main> landmark
-      // (with tabIndex=-1 set so it can receive programmatic focus) so
-      // SR users always land somewhere named.
-      const main =
-        typeof document !== "undefined"
-          ? (document.querySelector<HTMLElement>("main") ??
-            (document.body as HTMLElement | null))
-          : null;
-      if (main && main.tabIndex < 0) main.tabIndex = -1;
-      restoreFocus({
-        explicit: returnFocusRef.current,
-        auto: previouslyFocused.current,
-        bodyFallback: main,
-      });
+      previouslyFocused.current?.focus?.();
     };
   }, []);
 
@@ -669,7 +447,7 @@ function UpgradeWallIOSFallback({
   };
   const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
-      dismissAndTrack("outside_click");
+      dismissAndTrack();
     }
     pointerDownOnBackdrop.current = false;
   };
@@ -684,11 +462,6 @@ function UpgradeWallIOSFallback({
   // the Settings app for the "app-settings:" scheme. On non-iOS or when the
   // scheme is blocked, this is a harmless no-op (the page won't navigate).
   const openIOSSettings = () => {
-    // Settings deep-link is treated as a *dismissal* in funnel terms — it's
-    // a maintenance flow for an existing subscriber, not a new conversion
-    // intent. Tracking it as `ios_settings` lets the dashboard split this
-    // cohort out from the more interesting backdrop/escape/close paths.
-    trackDismiss("ios_settings");
     try {
       window.location.href = "app-settings:";
     } catch {
@@ -704,7 +477,7 @@ function UpgradeWallIOSFallback({
     // "Manage on web" is the iOS conversion intent — fire CTA before opening
     // the in-app browser so we capture the click even if the browser handoff
     // takes a moment.
-    trackCta("manage_on_web");
+    trackCta();
     const url = "https://momentumfit.app/account";
     try {
       if (Capacitor.isPluginAvailable("Browser")) {
@@ -720,37 +493,32 @@ function UpgradeWallIOSFallback({
 
   return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${
-        prefersReducedMotion ? "" : "animate-backdrop-fade-in"
-      }`}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
       onPointerDown={handleBackdropPointerDown}
       onPointerUp={handleBackdropPointerUp}
       role="dialog"
       aria-modal="true"
-      aria-labelledby={titleId}
-      aria-describedby={describedBy}
-      data-reduced-motion={prefersReducedMotion ? "true" : "false"}
+      aria-labelledby="upgrade-wall-ios-title"
+      aria-describedby="upgrade-wall-ios-desc"
     >
       <div
         ref={panelRef}
         onClick={(e) => e.stopPropagation()}
-        className={`bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl ${
-          prefersReducedMotion ? "" : "animate-modal-pop-in"
-        }`}
+        className="bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl"
         style={{ borderLeft: `4px solid ${accentColor}` }}
       >
         <div className="p-[22px] pb-0 relative">
           <button
             ref={closeBtnRef}
-            onClick={() => dismissAndTrack("close_button")}
+            onClick={dismissAndTrack}
             className="absolute top-[10px] right-[10px] text-muted-foreground hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
             aria-label="Close dialog"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
           <h3
-            id={titleId}
+            id="upgrade-wall-ios-title"
             className="font-semibold text-base text-foreground leading-tight pr-12"
           >
             {headline}
@@ -759,14 +527,14 @@ function UpgradeWallIOSFallback({
 
         <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
           <p
-            id={bodyId}
+            id="upgrade-wall-ios-desc"
             className="text-sm text-muted-foreground leading-relaxed"
           >
             {body}
           </p>
 
           {streakRepairPreview && (
-            <div id={previewId} className="space-y-1.5">
+            <div className="space-y-1.5">
               <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
                 What Streak Repair does
               </p>
@@ -779,8 +547,7 @@ function UpgradeWallIOSFallback({
           )}
 
           {coachPreview && (
-            // Defensive: only the first preview owns previewId (see web variant).
-            <div id={streakRepairPreview ? undefined : previewId} className="space-y-1.5">
+            <div className="space-y-1.5">
               <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">
                 What AI Coach does
               </p>
@@ -801,6 +568,14 @@ function UpgradeWallIOSFallback({
             </div>
           )}
 
+          {/* Apple App Review-safe purchase-path notice. No price, no checkout link; web action goes to /account. Sets honest expectations that IAP is not yet available on iOS. "future update" makes no timing promise. */}
+          <div role="note" aria-label="Subscription information" className="rounded-lg border border-border bg-muted/30 p-3 flex items-start gap-2.5">
+            <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
+            <p className="text-xs text-foreground leading-relaxed">
+              In-app purchases on iOS will be available in a future update through the App Store. Until then, you can manage an existing subscription on the web or in your iOS Settings.
+            </p>
+          </div>
+
           <div className="space-y-2 pt-1">
             <button
               onClick={openManageOnWeb}
@@ -818,21 +593,7 @@ function UpgradeWallIOSFallback({
               Manage subscription in Settings
             </button>
           </div>
-          <p className="text-center text-xs text-muted-foreground">
-            Already a member? Sign in on the web to access this on iOS.
-          </p>
         </div>
-      </div>
-
-      {/* Polite live region (see web variant for full rationale). */}
-      <div
-        id={announcementId}
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-      >
-        {liveAnnouncement}
       </div>
     </div>,
     document.body

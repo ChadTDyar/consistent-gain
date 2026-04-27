@@ -148,36 +148,18 @@ describe("UpgradeWall — iOS native fallback", () => {
     expect(document.activeElement).toBe(closeBtn);
   });
 
-  it("dialog exposes its accessible name and description via per-instance ids", () => {
+  it("dialog exposes its accessible name and description", () => {
     render(<UpgradeWall {...baseProps} />);
     const dialog = screen.getByRole("dialog");
     expect(dialog).toHaveAttribute("aria-modal", "true");
-    const labelId = dialog.getAttribute("aria-labelledby")!;
-    const descIds = dialog.getAttribute("aria-describedby")!.split(/\s+/);
-    expect(labelId).toBeTruthy();
-    expect(document.getElementById(labelId)).toHaveTextContent(baseProps.headline);
-    const concatenated = descIds
-      .map((id) => document.getElementById(id)?.textContent ?? "")
-      .join(" ");
-    expect(concatenated).toContain(baseProps.body);
-  });
-
-  it("aria-describedby includes the preview block when shown (iOS)", () => {
-    render(<UpgradeWall {...baseProps} streakRepairPreview />);
-    const dialog = screen.getByRole("dialog");
-    const descIds = dialog.getAttribute("aria-describedby")!.split(/\s+/);
-    expect(descIds.length).toBeGreaterThanOrEqual(2);
-    const concatenated = descIds
-      .map((id) => document.getElementById(id)?.textContent ?? "")
-      .join(" ");
-    expect(concatenated).toMatch(/streak repair/i);
-  });
-
-  it("renders a polite live region for the iOS fallback", () => {
-    render(<UpgradeWall {...baseProps} />);
-    const liveRegion = screen.getByRole("status");
-    expect(liveRegion).toHaveAttribute("aria-live", "polite");
-    expect(liveRegion).toHaveAttribute("aria-atomic", "true");
+    expect(dialog).toHaveAttribute("aria-labelledby", "upgrade-wall-ios-title");
+    expect(dialog).toHaveAttribute("aria-describedby", "upgrade-wall-ios-desc");
+    expect(document.getElementById("upgrade-wall-ios-title")).toHaveTextContent(
+      baseProps.headline
+    );
+    expect(document.getElementById("upgrade-wall-ios-desc")).toHaveTextContent(
+      baseProps.body
+    );
   });
 
   it("renders the coach preview block when coachPreview is true", () => {
@@ -189,103 +171,37 @@ describe("UpgradeWall — iOS native fallback", () => {
     render(<UpgradeWall {...baseProps} streakRepairPreview />);
     expect(screen.getByText(/what streak repair does/i)).toBeInTheDocument();
   });
-});
 
-describe("UpgradeWall iOS — focus restoration safety", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    cleanup();
-  });
+  describe("Apple IAP-compliant purchase-path notice", () => {
+    it("renders an information notice explaining the iOS purchase path", () => {
+      render(<UpgradeWall {...baseProps} />);
+      // Use the accessible name (role=note + aria-label) — independent of copy
+      // wording so future tweaks don't break the test.
+      const notice = screen.getByRole("note", { name: /subscription information/i });
+      expect(notice).toBeInTheDocument();
+      // Confirms the user is told IAP is on its way + comes from the App Store.
+      expect(notice.textContent).toMatch(/in-app purchases/i);
+      expect(notice.textContent).toMatch(/app store/i);
+      expect(notice.textContent).toMatch(/future update/i);
+    });
 
-  it("restores focus to the trigger element when the iOS fallback unmounts", async () => {
-    // Set up a real trigger button so we have a meaningful element to
-    // restore to. Without restoration, focus drops to <body> and SR users
-    // are stranded.
-    const trigger = document.createElement("button");
-    trigger.textContent = "Open paywall";
-    document.body.appendChild(trigger);
-    trigger.focus();
-    expect(document.activeElement).toBe(trigger);
+    it("the notice never advertises a price or in-app checkout", () => {
+      render(<UpgradeWall {...baseProps} />);
+      const notice = screen.getByRole("note", { name: /subscription information/i });
+      const text = notice.textContent ?? "";
+      // Guideline 3.1.1: no price.
+      expect(text).not.toMatch(/\$\d/);
+      expect(text).not.toMatch(/\/mo\b|per month/i);
+      // No words that would imply a non-IAP in-app purchase path.
+      expect(text).not.toMatch(/buy now|checkout|subscribe now|upgrade now/i);
+    });
 
-    const { unmount } = render(<UpgradeWall {...baseProps} />);
-    // After mount the iOS Close (X) takes focus per WCAG-safe initial focus.
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: /close dialog/i })).toHaveFocus()
-    );
-    unmount();
-    // Restoration must put focus back on the captured trigger.
-    expect(document.activeElement).toBe(trigger);
-    document.body.removeChild(trigger);
-  });
-
-  it("falls back to the <main> landmark when the trigger is no longer in the DOM", async () => {
-    // Simulates the "trigger card unmounts while the modal is open"
-    // scenario (e.g. a locked card that disappears after upgrade or a
-    // route change that swaps the page content). Without a fallback,
-    // focus would land on <body> and the SR user gets silence.
-    const main = document.createElement("main");
-    document.body.appendChild(main);
-    const trigger = document.createElement("button");
-    main.appendChild(trigger);
-    trigger.focus();
-
-    const { unmount } = render(<UpgradeWall {...baseProps} />);
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: /close dialog/i })).toHaveFocus()
-    );
-    // Yank the trigger BEFORE unmounting the modal.
-    main.removeChild(trigger);
-    unmount();
-    // <main> should now hold focus (with tabIndex=-1 set by the helper so
-    // it's programmatically focusable).
-    expect(document.activeElement).toBe(main);
-    expect(main.tabIndex).toBe(-1);
-    document.body.removeChild(main);
-  });
-
-  it("honours an explicit returnFocus ref override on iOS", async () => {
-    // Caller-supplied override wins over the auto-captured trigger. This
-    // matters when the trigger unmounts (handled above) AND when the
-    // caller wants focus to land somewhere intentional (e.g. a "Try
-    // again" button revealed after dismissal).
-    const trigger = document.createElement("button");
-    trigger.textContent = "Trigger";
-    document.body.appendChild(trigger);
-    trigger.focus();
-
-    const override = document.createElement("button");
-    override.textContent = "Override";
-    document.body.appendChild(override);
-
-    const ref = { current: override };
-    const { unmount } = render(<UpgradeWall {...baseProps} returnFocus={ref} />);
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: /close dialog/i })).toHaveFocus()
-    );
-    unmount();
-    expect(document.activeElement).toBe(override);
-    document.body.removeChild(trigger);
-    document.body.removeChild(override);
-  });
-
-  it("opts out of restoration when returnFocus={null} is passed", async () => {
-    // `null` is the deliberate opt-out signal. We accept that focus may
-    // land on <body> in this case — the caller has explicitly told us
-    // they don't want restoration (rare; only for very deliberate flows
-    // like a redirect-on-dismiss).
-    const trigger = document.createElement("button");
-    document.body.appendChild(trigger);
-    trigger.focus();
-
-    const { unmount } = render(<UpgradeWall {...baseProps} returnFocus={null} />);
-    await waitFor(() =>
-      expect(screen.getByRole("button", { name: /close dialog/i })).toHaveFocus()
-    );
-    unmount();
-    // The variant cleanup respects null and skips restoration. The parent
-    // safety net ALSO sees null and respects it. Body is the expected
-    // landing spot.
-    expect(document.activeElement).toBe(document.body);
-    document.body.removeChild(trigger);
+    it("the notice does NOT mention a previous-version sign-in workaround", () => {
+      // The old "Already a member? Sign in on the web" footnote was removed
+      // when this notice took over — make sure it doesn't sneak back.
+      render(<UpgradeWall {...baseProps} />);
+      const dialog = screen.getByRole("dialog");
+      expect(dialog.textContent ?? "").not.toMatch(/already a member/i);
+    });
   });
 });

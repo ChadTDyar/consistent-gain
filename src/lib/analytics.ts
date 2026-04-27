@@ -9,34 +9,6 @@ declare global {
 
 export const GA_MEASUREMENT_ID = 'G-DP3CLJWDZB';
 
-// UpgradeWall funnel taxonomy.
-//
-// `UpgradeWallDismissMethod` — exhaustive list of channels by which a user
-// can close the wall WITHOUT converting. Keep these stable; dashboard
-// breakdowns key off the literal string.
-//   - "escape"        : Escape key (keyboard / external keyboard)
-//   - "close_button"  : the (X) icon button in the corner
-//   - "outside_click" : pointer down + up both on the backdrop (web)
-//   - "ios_settings"  : iOS fallback "Manage subscription in Settings"
-//                      (treated as dismissal because it doesn't start a new
-//                      purchase flow — see UpgradeWallIOSFallback)
-//   - "programmatic"  : parent unmounted the wall (e.g. route change). Rare,
-//                      kept distinct from real user dismissals so funnel math
-//                      isn't polluted by navigation noise.
-//   - "unknown"       : legacy/uninstrumented path; should trend toward zero.
-export type UpgradeWallDismissMethod =
-  | 'escape'
-  | 'close_button'
-  | 'outside_click'
-  | 'ios_settings'
-  | 'programmatic'
-  | 'unknown';
-
-// `UpgradeWallCtaMethod` — exhaustive list of channels by which a user
-// signals upgrade intent. Web has one CTA; iOS has the Reader-rule
-// "Manage on web" link which is the only allowed conversion surface.
-export type UpgradeWallCtaMethod = 'cta_button' | 'manage_on_web';
-
 // Session-level dedup guards
 const _firedEvents = new Set<string>();
 
@@ -104,40 +76,26 @@ export const analytics = {
   // `gate` identifies which feature triggered the wall (coach, streak_repair,
   // habit_limit, partner_lock, analytics_lock, history_limit).
   // `tier` is the tier the wall is selling (pro | premium | unknown).
-  // `method` records HOW the user closed/converted the wall so paywall UX
-  // can be tuned per channel (e.g. an Escape-heavy gate may need clearer
-  // copy; an outside-click-heavy gate may need a more committed surface).
   // Together they let you build per-gate conversion funnels:
-  //   shown? -> dismissed{method}? -> cta_clicked{method}? -> begin_checkout? -> purchase?
-  // We pass the GA4 `event_label` as "<gate>:<tier>:<method>" so legacy GA
-  // reports remain readable, and also push a structured payload via gtag's
-  // third arg.
-  upgradeWallDismissed: (
-    gate: string,
-    tier: string,
-    method: UpgradeWallDismissMethod = 'unknown'
-  ) => {
+  //   shown? -> dismissed? -> cta_clicked? -> begin_checkout? -> purchase?
+  // We pass the GA4 `event_label` as "<gate>:<tier>" so legacy GA reports
+  // remain readable, and also push a structured payload via gtag's third arg.
+  upgradeWallDismissed: (gate: string, tier: string) => {
     if (typeof window.gtag === 'undefined') return;
     window.gtag('event', 'upgrade_wall_dismissed', {
       event_category: 'conversion',
-      event_label: `${gate}:${tier}:${method}`,
+      event_label: `${gate}:${tier}`,
       gate,
       tier,
-      method,
     });
   },
-  upgradeWallCtaClicked: (
-    gate: string,
-    tier: string,
-    method: UpgradeWallCtaMethod = 'cta_button'
-  ) => {
+  upgradeWallCtaClicked: (gate: string, tier: string) => {
     if (typeof window.gtag === 'undefined') return;
     window.gtag('event', 'upgrade_wall_cta_clicked', {
       event_category: 'conversion',
-      event_label: `${gate}:${tier}:${method}`,
+      event_label: `${gate}:${tier}`,
       gate,
       tier,
-      method,
     });
   },
 
