@@ -117,7 +117,7 @@ export function UpgradeWall({
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onDismissRef.current();
+        dismissAndTrackRef.current();
         return;
       }
       if (e.key === "Tab" && panelRef.current) {
