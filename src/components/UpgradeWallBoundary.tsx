@@ -2,7 +2,6 @@ import { Component, ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AlertTriangle, Loader2 } from "lucide-react";
 import { analytics } from "@/lib/analytics";
-import { restoreFocus, captureFocusOrigin } from "@/lib/restoreFocus";
 
 /**
  * UpgradeWallBoundary
