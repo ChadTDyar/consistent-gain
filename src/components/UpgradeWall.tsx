@@ -554,7 +554,7 @@ function UpgradeWallIOSFallback({
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        dismissAndTrackRef.current();
+        dismissAndTrackRef.current("escape");
         return;
       }
       if (e.key === "Tab" && panelRef.current) {
@@ -585,7 +585,7 @@ function UpgradeWallIOSFallback({
   };
   const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
-      dismissAndTrack();
+      dismissAndTrack("outside_click");
     }
     pointerDownOnBackdrop.current = false;
   };
@@ -654,7 +654,7 @@ function UpgradeWallIOSFallback({
         <div className="p-[22px] pb-0 relative">
           <button
             ref={closeBtnRef}
-            onClick={dismissAndTrack}
+            onClick={() => dismissAndTrack("close_button")}
             className="absolute top-[10px] right-[10px] text-muted-foreground hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
             aria-label="Close dialog"
           >
