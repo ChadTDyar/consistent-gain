@@ -795,3 +795,200 @@ function IOSBranchGuard({
   return <div ref={wrapperRef}>{children}</div>;
 }
 
+// ----------------------------------------------------------------------------
+// EntitledManageDialog
+// ----------------------------------------------------------------------------
+// Shown when the UpgradeWall's entitlement pre-check determines the user is
+// already on a paid plan (Pro / Premium / any legacy alias normalized via
+// plans.ts). This is the Reader-rule path for an existing customer:
+//
+//   - NO upsell, NO price, NO checkout button.
+//   - NO "in-app purchases coming soon" framing — that's only honest for
+//     non-customers. A paying user already pays; telling them IAP is
+//     "coming soon" would be confusing and wrong.
+//   - Affirms the user has access (so they understand why they're seeing
+//     this dialog at all — typically an upstream gate misfire), and offers
+//     the two Apple-safe management actions:
+//       (a) "Manage on web"  — single Reader-rule account link.
+//       (b) "Settings"       — opens the iOS Settings subscriptions page.
+//
+// Renders identically on web and iOS so the experience for an existing
+// customer is consistent regardless of platform.
+interface EntitledManageDialogProps {
+  headline: string;
+  accentColor: string;
+  plan: PlanTier;
+  onDismiss: () => void;
+}
+
+function EntitledManageDialog({
+  headline,
+  accentColor,
+  plan,
+  onDismiss,
+}: EntitledManageDialogProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+  const pointerDownOnBackdrop = useRef(false);
+
+  // Lock background scroll. Mirrors the iOS fallback's behavior so this
+  // dialog feels the same regardless of whether it's rendered on web or
+  // inside a native WKWebView.
+  useBodyScrollLock(true);
+
+  // Keep onDismiss stable for the mount-only key effect.
+  const onDismissRef = useRef(onDismiss);
+  useEffect(() => { onDismissRef.current = onDismiss; }, [onDismiss]);
+
+  // Standard a11y dialog plumbing — same contract as the upsell modals.
+  useEffect(() => {
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    closeBtnRef.current?.focus();
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onDismissRef.current();
+        return;
+      }
+      if (e.key === "Tab" && panelRef.current) {
+        const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      previouslyFocused.current?.focus?.();
+    };
+  }, []);
+
+  const handleBackdropPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    pointerDownOnBackdrop.current = e.target === e.currentTarget;
+  };
+  const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
+      onDismissRef.current();
+    }
+    pointerDownOnBackdrop.current = false;
+  };
+
+  // Open the iOS Settings → app subscriptions screen. Same best-effort
+  // contract as the iOS fallback: harmless no-op off-platform.
+  const openIOSSettings = () => {
+    try { window.location.href = "app-settings:"; } catch { /* best effort */ }
+  };
+
+  // Reader-rule single account-management link. /account is a management
+  // surface (NOT a checkout) so this link is App-Review safe even when
+  // rendered inside the iOS WKWebView.
+  const openManageOnWeb = async () => {
+    const url = "https://momentumfit.app/account";
+    try {
+      if (Capacitor.isPluginAvailable("Browser")) {
+        const { Browser } = await import("@capacitor/browser");
+        await Browser.open({ url, presentationStyle: "popover" });
+        return;
+      }
+    } catch { /* fall through */ }
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  // Display label maps internal enum to user-facing plan vocabulary used
+  // throughout the rest of the app (Pricing, badges, settings).
+  // Internal 'plus' → "Pro", internal 'pro' → "Premium". See PLANS in
+  // src/lib/plans.ts for the canonical mapping.
+  const planLabel = plan === "pro" ? "Premium" : "Pro";
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+      onPointerDown={handleBackdropPointerDown}
+      onPointerUp={handleBackdropPointerUp}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="upgrade-wall-entitled-title"
+      aria-describedby="upgrade-wall-entitled-desc"
+    >
+      <div
+        ref={panelRef}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl"
+        style={{ borderLeft: `4px solid ${accentColor}` }}
+      >
+        <div className="p-[22px] pb-0 relative">
+          <button
+            ref={closeBtnRef}
+            onClick={() => onDismissRef.current()}
+            className="absolute top-[10px] right-[10px] text-muted-foreground hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+            aria-label="Close dialog"
+          >
+            <X className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <h3
+            id="upgrade-wall-entitled-title"
+            className="font-semibold text-base text-foreground leading-tight pr-12"
+          >
+            You're on {planLabel} — you already have access
+          </h3>
+        </div>
+
+        <div className="px-[22px] pb-[22px] pt-3 space-y-[18px]">
+          <div className="flex items-start gap-2.5">
+            <CheckCircle2 className="h-4 w-4 text-success mt-0.5 shrink-0" aria-hidden="true" />
+            <p
+              id="upgrade-wall-entitled-desc"
+              className="text-sm text-muted-foreground leading-relaxed"
+            >
+              Your {planLabel} plan includes {headline.toLowerCase().includes("coach")
+                ? "the AI Coach"
+                : headline.toLowerCase().includes("streak")
+                ? "Streak Repair"
+                : "this feature"}. If something looks locked, try refreshing the page — your subscription is already active.
+            </p>
+          </div>
+
+          <div role="note" aria-label="Subscription management" className="rounded-lg border border-border bg-muted/30 p-3 flex items-start gap-2.5">
+            <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
+            <p className="text-xs text-foreground leading-relaxed">
+              Need to change your plan or update billing? Manage your subscription on the web or in your iOS Settings.
+            </p>
+          </div>
+
+          <div className="space-y-2 pt-1">
+            <button
+              onClick={openManageOnWeb}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white cursor-pointer border-none"
+              style={{ background: accentColor }}
+            >
+              <ExternalLink className="h-4 w-4" aria-hidden="true" />
+              Manage on web
+            </button>
+            <button
+              onClick={openIOSSettings}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-medium text-sm text-foreground bg-muted hover:bg-muted/80 transition-colors cursor-pointer border-none"
+            >
+              <SettingsIcon className="h-4 w-4" aria-hidden="true" />
+              Manage subscription in Settings
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
