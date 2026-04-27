@@ -573,6 +573,25 @@ function UpgradeWallIOSFallback({
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
+  // Portal target sanity check. document.body is virtually always present,
+  // but during pre-hydration race conditions or in certain test harnesses
+  // it can be null/detached. Without this check React would throw with a
+  // cryptic "Target container is not a DOM element" — we'd rather fire a
+  // dedicated `ios_portal_target_missing` reason and bail to null so the
+  // boundary above can render a graceful fallback.
+  const portalTarget =
+    typeof document !== "undefined" && document.body && document.body.isConnected
+      ? document.body
+      : null;
+  if (!portalTarget) {
+    try {
+      analytics.upgradeWallNullReturn(gate, tier, "ios_portal_target_missing");
+    } catch {
+      /* no-op */
+    }
+    return null;
+  }
+
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
