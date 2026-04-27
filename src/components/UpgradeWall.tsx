@@ -33,6 +33,13 @@ export function UpgradeWall({
   // panel (e.g. selecting text) and releases on the backdrop.
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
+  // Unique IDs prevent collisions if two UpgradeWalls ever mount simultaneously
+  // (e.g. during a route transition). Screen readers rely on these IDs to wire
+  // the dialog to its accessible name (aria-labelledby) and description
+  // (aria-describedby).
+  const reactId = useId();
+  const titleId = `upgrade-wall-title-${reactId}`;
+  const descId = `upgrade-wall-desc-${reactId}`;
 
   // Keep onDismiss ref stable so the trap effect can run mount-only.
   // If we depended on onDismiss in the effect deps, parents passing a new
