@@ -242,6 +242,44 @@ export function UpgradeWall({
     pointerDownOnBackdrop.current = false;
   };
 
+  // Per-instance unique IDs.
+  // Why: when two UpgradeWalls stack (rare but possible — e.g. a deferred
+  // gate fires while another wall is mid-animation) or React StrictMode
+  // double-mounts, hard-coded IDs collide and screen readers resolve
+  // aria-labelledby/aria-describedby to the WRONG element. useId() guarantees
+  // uniqueness within and across renders.
+  const reactId = useId();
+  const titleId = `${reactId}-title`;
+  const bodyId = `${reactId}-body`;
+  const previewId = `${reactId}-preview`;
+  const announcementId = `${reactId}-announcement`;
+  const hasPreview = coachPreview || streakRepairPreview;
+
+  // The dialog's accessible description includes the body paragraph plus the
+  // preview block when present. Screen readers concatenate the referenced
+  // nodes' text in document order, so SR users hear: headline → body → preview
+  // copy ("What AI Coach does" / "What Streak Repair looks like" + example).
+  // Without this, the most persuasive content is silently skipped on open.
+  const describedBy = hasPreview ? `${bodyId} ${previewId}` : bodyId;
+
+  // Polite live-region announcement.
+  // Belt-and-suspenders for AT combinations that don't reliably announce a
+  // newly-mounted role="dialog" (some Android TalkBack + Chrome flows). We
+  // populate the live region one tick AFTER mount so the AT registers it as a
+  // live update rather than initial DOM (which would race with the dialog
+  // announcement and double-speak the headline).
+  const [liveAnnouncement, setLiveAnnouncement] = useState("");
+  useEffect(() => {
+    if (ios) return;
+    const t = window.setTimeout(() => {
+      setLiveAnnouncement(`Upgrade dialog opened: ${headline}. ${body}`);
+    }, 100);
+    return () => window.clearTimeout(t);
+    // headline/body are intentionally in the dep list: if a parent swaps the
+    // wall content while the modal stays mounted (e.g. flipping
+    // upgradeWallType), we want the new content re-announced.
+  }, [ios, headline, body]);
+
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -250,8 +288,8 @@ export function UpgradeWall({
       onPointerUp={handleBackdropPointerUp}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="upgrade-wall-title"
-      aria-describedby="upgrade-wall-body"
+      aria-labelledby={titleId}
+      aria-describedby={describedBy}
     >
       <div
         ref={panelRef}
