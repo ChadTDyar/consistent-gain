@@ -583,8 +583,11 @@ function UpgradeWallIOSFallback({
   const dismissAndTrack = () => dismissAndTrackRef.current();
 
   // Focus trap + Escape-to-close, identical contract to the web modal.
+  // Capture priority on open: filter out <body> so we don't "restore" to a
+  // non-meaningful target later. Initial focus → Close (X) so a stray
+  // Enter/Space doesn't accidentally trigger any action.
   useEffect(() => {
-    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    previouslyFocused.current = captureFocusOrigin();
     closeBtnRef.current?.focus();
 
     const handleKey = (e: KeyboardEvent) => {
@@ -612,7 +615,24 @@ function UpgradeWallIOSFallback({
     document.addEventListener("keydown", handleKey);
     return () => {
       document.removeEventListener("keydown", handleKey);
-      previouslyFocused.current?.focus?.();
+      // Hardened restoration — same contract as the web variant. Without
+      // this, a missing/unmounted trigger would leave focus on <body>,
+      // which TalkBack on iOS Safari announces as silence and which
+      // strands keyboard-only WKWebView users with no usable next-Tab
+      // target. The bodyFallback resolves to the page's <main> landmark
+      // (with tabIndex=-1 set so it can receive programmatic focus) so
+      // SR users always land somewhere named.
+      const main =
+        typeof document !== "undefined"
+          ? (document.querySelector<HTMLElement>("main") ??
+            (document.body as HTMLElement | null))
+          : null;
+      if (main && main.tabIndex < 0) main.tabIndex = -1;
+      restoreFocus({
+        explicit: returnFocusRef.current,
+        auto: previouslyFocused.current,
+        bodyFallback: main,
+      });
     };
   }, []);
 
