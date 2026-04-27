@@ -133,6 +133,8 @@ export const analytics = {
       reason,
     });
   },
+
+  // Engagement events
   streakMilestone: (days: number) => trackEvent('streak_milestone', 'engagement', `${days}_days`, days),
   coachChatOpened: () => trackEvent('coach_chat_opened', 'engagement'),
   coachMessageSent: () => trackEvent('coach_message_sent', 'engagement'),
