@@ -188,6 +188,47 @@ export const analytics = {
     });
   },
 
+  // Dwell-time companion to upgrade_wall_dismissed / upgrade_wall_cta_clicked.
+  // Fires once per modal lifetime, *in addition to* the dismissed/cta event.
+  // Kept as a separate event so the main funnel events stay byte-identical
+  // to existing dashboards while we add timing slices on top.
+  //
+  // `outcome` mirrors which terminal action ended the modal:
+  //   - 'dismissed'   — Close button, Escape, outside-click, programmatic
+  //   - 'cta_clicked' — primary upgrade CTA (web) or "Manage on web" (iOS)
+  // `time_ms` is integer milliseconds from upgrade_wall_shown to the action.
+  // Negative or absurd values are clamped/dropped so a paused tab or clock
+  // skew can't poison percentile reports.
+  // GA4 also receives `value: time_ms` so the event shows up in standard
+  // duration metrics without extra config.
+  upgradeWallTiming: (
+    gate: string,
+    tier: string,
+    outcome: 'dismissed' | 'cta_clicked',
+    time_ms: number,
+  ) => {
+    // Sanity-clamp. Negative ms is impossible (wall-clock skew); cap at 30 min
+    // to keep an idle/backgrounded tab from skewing p95.
+    if (!Number.isFinite(time_ms) || time_ms < 0) return;
+    const clamped = Math.min(Math.round(time_ms), 30 * 60 * 1000);
+    if (typeof window !== 'undefined' && typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'upgrade_wall_timing', {
+        event_category: 'conversion',
+        event_label: `${gate}:${tier}:${outcome}`,
+        gate,
+        tier,
+        outcome,
+        time_ms: clamped,
+        value: clamped,
+      });
+    }
+    void recordEvent('upgrade_wall_timing', {
+      gate,
+      tier,
+      metadata: { outcome, time_ms: clamped },
+    });
+  },
+
   // Engagement events
   streakMilestone: (days: number) => trackEvent('streak_milestone', 'engagement', `${days}_days`, days),
   coachChatOpened: () => trackEvent('coach_chat_opened', 'engagement'),
