@@ -103,8 +103,31 @@ export function UpgradeWall({
     };
   }, [ios]);
 
-  // Apple IAP compliance: never show paid upgrade walls on iOS native builds
-  if (ios) return null;
+  // Apple App Review compliance for iOS native builds:
+  // - The standard web upgrade wall (with its purchase CTA + price) cannot be
+  //   shown on iOS — Guideline 3.1.1 prohibits steering users to non-IAP
+  //   purchase flows from inside the app.
+  // - Returning null here used to mean iOS users tapping a gated feature got
+  //   silence, which is a worse experience than the web and gave them no path
+  //   forward.
+  // - Instead we render an inform-only fallback: explains what the feature is,
+  //   never mentions price or web purchase, and offers two App-Review-safe
+  //   actions: (a) open iOS Settings to manage an existing subscription, and
+  //   (b) the App-Store Reader Rule single Account link to manage on the web.
+  // - Both side actions degrade gracefully if the Capacitor plugins are not
+  //   available (web preview running through the iOS code path during dev).
+  if (ios) {
+    return (
+      <UpgradeWallIOSFallback
+        headline={headline}
+        body={body}
+        accentColor={accentColor}
+        onDismiss={onDismiss}
+        coachPreview={coachPreview}
+        streakRepairPreview={streakRepairPreview}
+      />
+    );
+  }
 
   // Outside-click dismissal (WCAG-safe):
   // - Only dismiss when BOTH pointerdown and pointerup occurred on the backdrop.
