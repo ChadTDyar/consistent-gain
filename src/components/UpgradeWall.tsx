@@ -28,10 +28,13 @@ export function UpgradeWall({
   const panelRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
-  // Tracks whether the pointer press that started this click began on the
-  // backdrop. Prevents accidental dismissal when a user mousedowns inside the
-  // panel (e.g. selecting text) and releases on the backdrop.
-  const pointerDownOnBackdrop = useRef(false);
+  // Pointer-capture state for outside-click dismissal.
+  // Tracks the pointerId of the press that started on the backdrop so the
+  // matching pointerup is guaranteed to fire on the backdrop too — even if
+  // the user's finger/pen drifts onto the panel before lift. Without
+  // pointer capture, touch and pen drags route the up event by hit-test,
+  // which is inconsistent across devices.
+  const capturedPointerId = useRef<number | null>(null);
   const ios = isIOSNative();
   // Unique IDs prevent collisions if two UpgradeWalls ever mount simultaneously
   // (e.g. during a route transition). Screen readers rely on these IDs to wire
