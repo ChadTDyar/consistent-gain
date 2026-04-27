@@ -293,6 +293,7 @@ export function UpgradeWall({
         streakRepairPreview={streakRepairPreview}
         gate={gate}
         tier={tier}
+        returnFocus={returnFocus}
       />
     );
   }
