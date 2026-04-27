@@ -113,9 +113,14 @@ serve(async (req) => {
       goalCount: goals.length,
     };
 
-    // Check user plan for AI depth
+    // Check user plan for AI depth.
+    // Defensive normalization: legacy DB rows or webhook payloads may write
+    // 'premium' as a synonym for the 'pro' tier. Mirror src/lib/plans.ts.
     const { data: profile } = await supabase.from("profiles").select("plan").eq("id", user.id).single();
-    const plan = profile?.plan || "free";
+    const rawPlan = (profile?.plan || "free").toString().toLowerCase();
+    const plan = (rawPlan === "pro" || rawPlan === "premium")
+      ? "pro"
+      : rawPlan === "plus" ? "plus" : "free";
 
     // Generate AI insights for Pro/Premium users
     let aiInsights = null;
