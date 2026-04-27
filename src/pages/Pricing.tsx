@@ -276,7 +276,7 @@ export default function Pricing() {
               </div>
               <CardHeader className="pb-6 pt-10">
                 <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
-                  Premium <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--gradient-secondary)', color: 'white' }}>PREMIUM</span>
+                  Premium <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold text-secondary-foreground" style={{ background: 'var(--gradient-secondary)' }}>PREMIUM</span>
                 </CardTitle>
                 <CardDescription className="text-base">For people who want coaching that adapts to their actual schedule, not an ideal one.</CardDescription>
                 <div className="mt-6">
