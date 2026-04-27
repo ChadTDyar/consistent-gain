@@ -44,7 +44,7 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
   const navigate = useNavigate();
   const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/coach-chat`;
 
-  const isPremiumUser = userContext?.plan === 'pro' || userContext?.isPremium;
+  const isPremiumUser = userContext?.plan === 'pro' || userContext?.plan === 'premium' || userContext?.isPremium;
 
   useEffect(() => {
     if (scrollRef.current) {

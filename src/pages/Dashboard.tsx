@@ -22,7 +22,7 @@ import { DailyContext } from "@/components/DailyContext";
 import { StreakRepair } from "@/components/StreakRepair";
 import PaywallModal from "@/components/PaywallModal";
 import momentumLogo from "@/assets/momentum-logo.png";
-import { type PlanTier, canAccessFeature, getGoalLimit, PLANS } from "@/lib/plans";
+import { type PlanTier, canAccessFeature, getGoalLimit, PLANS, normalizePlan } from "@/lib/plans";
 import { isIOSNative } from "@/lib/platform";
 import { StreakRepairIntro } from "@/components/StreakRepairIntro";
 import { Badge } from "@/components/ui/badge";
@@ -69,7 +69,7 @@ export default function Dashboard() {
   const [upgradeWallType, setUpgradeWallType] = useState<'habit_limit' | 'partner_lock' | 'analytics_lock' | 'ai_coach' | 'history_limit'>('habit_limit');
   const navigate = useNavigate();
 
-  const plan = (profile?.plan || 'free') as PlanTier;
+  const plan: PlanTier = normalizePlan(profile?.plan);
 
   useEffect(() => {
     checkAuth();
