@@ -26,7 +26,7 @@ async function recordEvent(
       variant: fields.variant ?? undefined,
       metadata: (fields.metadata ?? {}) as Record<string, unknown>,
     };
-    await supabase.from("analytics_events").insert(row);
+    await supabase.from("analytics_events").insert([row]);
   } catch {
     // Swallow — analytics is best-effort.
   }
