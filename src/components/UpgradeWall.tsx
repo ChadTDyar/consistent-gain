@@ -5,6 +5,7 @@ import { isIOSNative } from "@/lib/platform";
 import { Capacitor } from "@capacitor/core";
 import { analytics } from "@/lib/analytics";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 // Funnel-tracking taxonomy. Keep these in sync with GA4 / dashboards.
 // `gate` identifies the feature that triggered the wall.
@@ -73,6 +74,16 @@ export function UpgradeWall({
   // panel (e.g. selecting text) and releases on the backdrop.
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
+
+  // WCAG 2.3.3 Animation from Interactions: when the user prefers reduced
+  // motion, omit the entry animation classes entirely. We don't just rely on
+  // the global `prefers-reduced-motion` CSS guard (which only shortens the
+  // duration) because:
+  //   - Skipping the class avoids any transient transform/opacity state on
+  //     the panel that could interfere with focus restoration math.
+  //   - The dialog appears in its final visual state on the very first paint,
+  //     which is the spec-recommended behavior for non-essential motion.
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   // Lock background scroll while the web variant is mounted. The iOS variant
   // is rendered by UpgradeWallIOSFallback which manages its own lock — we
@@ -282,7 +293,9 @@ export function UpgradeWall({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${
+        prefersReducedMotion ? "" : "animate-backdrop-fade-in"
+      }`}
       style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
       onPointerDown={handleBackdropPointerDown}
       onPointerUp={handleBackdropPointerUp}
@@ -290,11 +303,14 @@ export function UpgradeWall({
       aria-modal="true"
       aria-labelledby={titleId}
       aria-describedby={describedBy}
+      data-reduced-motion={prefersReducedMotion ? "true" : "false"}
     >
       <div
         ref={panelRef}
         onClick={(e) => e.stopPropagation()}
-        className="bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl"
+        className={`bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl ${
+          prefersReducedMotion ? "" : "animate-modal-pop-in"
+        }`}
         style={{ borderLeft: `4px solid ${accentColor}` }}
       >
         <div className="p-[22px] pb-0 relative">
@@ -448,6 +464,8 @@ function UpgradeWallIOSFallback({
   const announcementId = `${reactId}-announcement`;
   const hasPreview = coachPreview || streakRepairPreview;
   const describedBy = hasPreview ? `${bodyId} ${previewId}` : bodyId;
+  // See web variant for rationale; same WCAG 2.3.3 policy applies on iOS.
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   // Polite live-region announcement (see web variant for rationale).
   const [liveAnnouncement, setLiveAnnouncement] = useState("");
@@ -576,7 +594,9 @@ function UpgradeWallIOSFallback({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${
+        prefersReducedMotion ? "" : "animate-backdrop-fade-in"
+      }`}
       style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
       onPointerDown={handleBackdropPointerDown}
       onPointerUp={handleBackdropPointerUp}
@@ -584,11 +604,14 @@ function UpgradeWallIOSFallback({
       aria-modal="true"
       aria-labelledby={titleId}
       aria-describedby={describedBy}
+      data-reduced-motion={prefersReducedMotion ? "true" : "false"}
     >
       <div
         ref={panelRef}
         onClick={(e) => e.stopPropagation()}
-        className="bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl"
+        className={`bg-card rounded-xl max-w-[420px] w-full overflow-hidden shadow-2xl ${
+          prefersReducedMotion ? "" : "animate-modal-pop-in"
+        }`}
         style={{ borderLeft: `4px solid ${accentColor}` }}
       >
         <div className="p-[22px] pb-0 relative">

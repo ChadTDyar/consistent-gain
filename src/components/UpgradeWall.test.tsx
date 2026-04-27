@@ -444,3 +444,78 @@ describe("UpgradeWall accessibility", () => {
   });
 });
 
+describe("UpgradeWall reduced-motion support", () => {
+  // We mock window.matchMedia per-test rather than globally so we can flip
+  // the `prefers-reduced-motion` answer on a per-spec basis.
+  const installMatchMedia = (reduced: boolean) => {
+    const listeners: Array<(e: MediaQueryListEvent) => void> = [];
+    const mql = {
+      matches: reduced,
+      media: "(prefers-reduced-motion: reduce)",
+      onchange: null,
+      addEventListener: (_: string, h: (e: MediaQueryListEvent) => void) => {
+        listeners.push(h);
+      },
+      removeEventListener: (_: string, h: (e: MediaQueryListEvent) => void) => {
+        const i = listeners.indexOf(h);
+        if (i >= 0) listeners.splice(i, 1);
+      },
+      addListener: (h: (e: MediaQueryListEvent) => void) => listeners.push(h),
+      removeListener: (h: (e: MediaQueryListEvent) => void) => {
+        const i = listeners.indexOf(h);
+        if (i >= 0) listeners.splice(i, 1);
+      },
+      dispatchEvent: () => true,
+    } as unknown as MediaQueryList;
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      configurable: true,
+      value: vi.fn().mockReturnValue(mql),
+    });
+    return { mql, listeners };
+  };
+
+  beforeEach(() => {
+    cleanup();
+    vi.clearAllMocks();
+  });
+
+  it("applies entry animation classes when motion is allowed (default)", () => {
+    installMatchMedia(false);
+    render(<UpgradeWall {...baseProps} />);
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toHaveAttribute("data-reduced-motion", "false");
+    expect(dialog.className).toContain("animate-backdrop-fade-in");
+    // The panel is the dialog's first element child (the visible card).
+    const panel = dialog.firstElementChild as HTMLElement;
+    expect(panel.className).toContain("animate-modal-pop-in");
+  });
+
+  it("omits entry animation classes when prefers-reduced-motion is set", () => {
+    // WCAG 2.3.3: respect the user's OS-level preference. The CSS guard alone
+    // would still apply the animation class (just shorten it) — for modals we
+    // want to skip it entirely so the dialog appears in its final state on
+    // first paint and focus restoration is not affected by transient
+    // transforms on the panel.
+    installMatchMedia(true);
+    render(<UpgradeWall {...baseProps} />);
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toHaveAttribute("data-reduced-motion", "true");
+    expect(dialog.className).not.toContain("animate-backdrop-fade-in");
+    const panel = dialog.firstElementChild as HTMLElement;
+    expect(panel.className).not.toContain("animate-modal-pop-in");
+  });
+
+  it("modal still renders, traps focus, and is dismissible with reduced motion", async () => {
+    // Reduced motion must not regress the core a11y contract. Smoke-test that
+    // the close button still receives initial focus and Escape still dismisses.
+    installMatchMedia(true);
+    const onDismiss = vi.fn();
+    render(<UpgradeWall {...baseProps} onDismiss={onDismiss} />);
+    const closeBtn = screen.getByRole("button", { name: /close upgrade dialog/i });
+    await waitFor(() => expect(closeBtn).toHaveFocus());
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+  });
+});
+
