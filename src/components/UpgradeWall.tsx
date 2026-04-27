@@ -511,22 +511,40 @@ function UpgradeWallIOSFallback({
   // start a new purchase flow (existing-subscriber maintenance).
   const ctaClickedRef = useRef(false);
   const dismissTrackedRef = useRef(false);
-  const trackDismiss = () => {
+  const trackDismiss = (
+    method: import("@/lib/analytics").UpgradeWallDismissMethod
+  ) => {
     if (ctaClickedRef.current || dismissTrackedRef.current) return;
     dismissTrackedRef.current = true;
-    analytics.upgradeWallDismissed(gate, tier);
+    analytics.upgradeWallDismissed(gate, tier, method);
   };
-  const trackCta = () => {
+  const trackCta = (
+    method: import("@/lib/analytics").UpgradeWallCtaMethod = "manage_on_web"
+  ) => {
     if (ctaClickedRef.current) return;
     ctaClickedRef.current = true;
-    analytics.upgradeWallCtaClicked(gate, tier);
+    analytics.upgradeWallCtaClicked(gate, tier, method);
   };
-  const dismissAndTrackRef = useRef(() => {});
-  dismissAndTrackRef.current = () => {
-    trackDismiss();
+  const dismissAndTrackRef = useRef(
+    (_method: import("@/lib/analytics").UpgradeWallDismissMethod) => {}
+  );
+  dismissAndTrackRef.current = (
+    method: import("@/lib/analytics").UpgradeWallDismissMethod
+  ) => {
+    trackDismiss(method);
     onDismissRef.current();
   };
-  const dismissAndTrack = () => dismissAndTrackRef.current();
+  const dismissAndTrack = (
+    method: import("@/lib/analytics").UpgradeWallDismissMethod
+  ) => dismissAndTrackRef.current(method);
+
+  // Programmatic-unmount tracker (see web variant). Only fires if the user
+  // never produced a method-tagged dismissal or CTA click during the wall's
+  // lifetime.
+  useEffect(() => {
+    return () => trackDismiss("programmatic");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Focus trap + Escape-to-close, identical contract to the web modal.
   useEffect(() => {
