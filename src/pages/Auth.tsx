@@ -23,6 +23,7 @@ export default function Auth() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string; name?: string }>({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -103,6 +104,7 @@ export default function Auth() {
   const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setFieldErrors({});
 
     // Read values directly from form DOM to handle iOS AutoFill
     // which may not trigger React onChange on controlled inputs
@@ -121,8 +123,22 @@ export default function Auth() {
         });
 
         if (!validationResult.success) {
-          const firstError = validationResult.error.errors[0];
-          toast.error(firstError.message);
+          const errors: { email?: string; password?: string; name?: string } = {};
+          validationResult.error.errors.forEach((err) => {
+            const field = err.path[0] as 'email' | 'password' | 'name';
+            if (field && !errors[field]) errors[field] = err.message;
+          });
+          setFieldErrors(errors);
+          setLoading(false);
+          return;
+        }
+      } else {
+        // Lightweight inline checks for login
+        const errors: { email?: string; password?: string } = {};
+        if (!formEmail.trim()) errors.email = "Email is required";
+        if (!formPassword) errors.password = "Password is required";
+        if (Object.keys(errors).length) {
+          setFieldErrors(errors);
           setLoading(false);
           return;
         }
