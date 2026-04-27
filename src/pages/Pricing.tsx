@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { analytics } from "@/lib/analytics";
 import { SEO } from "@/components/SEO";
-import { PLANS, type PlanTier, type BillingInterval } from "@/lib/plans";
+import { PLANS, type PlanTier, type BillingInterval, normalizePlan } from "@/lib/plans";
 import { handleCheckout } from "@/lib/checkout";
 import {
   Accordion,
@@ -36,13 +36,10 @@ export default function Pricing() {
         .select('plan')
         .eq('id', user.id)
         .single();
-      if (profile?.plan) {
-        setCurrentPlan(profile.plan as PlanTier);
-        if (profile.plan !== 'free') {
-          navigate('/dashboard', { replace: true });
-          return;
-        }
-      }
+      // Show pricing page even for paid users so they can compare plans
+      // and reach Manage Subscription. Do NOT auto-redirect — that breaks
+      // the "Upgrade" CTA navigation funnel from premium-gated screens.
+      setCurrentPlan(normalizePlan(profile?.plan));
     }
   };
 
