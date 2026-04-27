@@ -216,8 +216,9 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
             Track how you feel after workouts
             {plan === 'free' && (
               <button
+                type="button"
                 onClick={() => setShowHistoryWall(true)}
-                className="text-primary ml-1 text-xs font-semibold hover:underline"
+                className="text-primary ml-1 text-xs font-semibold hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
               >
                 Upgrade for 30+ days
               </button>
@@ -226,15 +227,20 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
         </CardHeader>
         <CardContent className="relative">
           {plan === 'free' && (
-            <div
-              className="absolute inset-0 z-10 cursor-pointer flex items-end justify-center pb-8"
+            // MUST be a real <button>: this overlay is the primary upgrade
+            // affordance over the chart. Keyboard users need to Tab to it,
+            // and screen readers must announce it as actionable.
+            <button
+              type="button"
+              className="absolute inset-0 z-10 cursor-pointer flex items-end justify-center pb-8 bg-transparent border-0 p-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
               onClick={() => setShowHistoryWall(true)}
+              aria-label="Free plan shows 7 days of history. Opens upgrade dialog to unlock 30 days or more."
             >
-              <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent rounded-lg" />
-              <p className="relative text-sm font-semibold text-foreground bg-card/90 px-4 py-2 rounded-lg shadow border border-border">
+              <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent rounded-lg" aria-hidden="true" />
+              <p className="relative text-sm font-semibold text-foreground bg-card/90 px-4 py-2 rounded-lg shadow border border-border" aria-hidden="true">
                 Free plan shows 7 days · Tap to unlock more history
               </p>
-            </div>
+            </button>
           )}
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={chartData}>
