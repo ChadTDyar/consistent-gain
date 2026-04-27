@@ -29,7 +29,70 @@ describe("UpgradeWall accessibility", () => {
     const dialog = screen.getByRole("dialog");
     expect(dialog).toBeInTheDocument();
     expect(dialog).toHaveAttribute("aria-modal", "true");
-    expect(dialog).toHaveAttribute("aria-labelledby", "upgrade-wall-title");
+    expect(dialog).toHaveAttribute("aria-labelledby");
+    expect(dialog).toHaveAttribute("aria-describedby");
+  });
+
+  describe("aria-labelledby / aria-describedby wiring", () => {
+    it("aria-labelledby points to an element containing the headline", () => {
+      render(<UpgradeWall {...baseProps} headline="Unlock Coach" />);
+      const dialog = screen.getByRole("dialog");
+      const labelId = dialog.getAttribute("aria-labelledby")!;
+      expect(labelId).toBeTruthy();
+      const labelEl = document.getElementById(labelId);
+      expect(labelEl).not.toBeNull();
+      expect(labelEl).toHaveTextContent("Unlock Coach");
+      // The dialog should expose its accessible name via the heading.
+      expect(dialog).toHaveAccessibleName("Unlock Coach");
+    });
+
+    it("aria-describedby points to an element containing the body copy", () => {
+      render(
+        <UpgradeWall {...baseProps} body="Upgrade to access AI Coach insights." />
+      );
+      const dialog = screen.getByRole("dialog");
+      const descId = dialog.getAttribute("aria-describedby")!;
+      expect(descId).toBeTruthy();
+      const descEl = document.getElementById(descId);
+      expect(descEl).not.toBeNull();
+      expect(descEl).toHaveTextContent("Upgrade to access AI Coach insights.");
+      expect(dialog).toHaveAccessibleDescription(
+        "Upgrade to access AI Coach insights."
+      );
+    });
+
+    it("title is a real heading so screen readers announce it as a heading", () => {
+      render(<UpgradeWall {...baseProps} headline="Unlock Coach" />);
+      // The headline is rendered as <h3>.
+      expect(
+        screen.getByRole("heading", { name: "Unlock Coach", level: 3 })
+      ).toBeInTheDocument();
+    });
+
+    it("generates unique IDs per instance (no collisions between two modals)", () => {
+      const { container: c1 } = render(
+        <UpgradeWall {...baseProps} headline="First" />
+      );
+      const { container: c2 } = render(
+        <UpgradeWall {...baseProps} headline="Second" />
+      );
+      // Two dialogs are rendered into document.body via portals.
+      const dialogs = screen.getAllByRole("dialog");
+      expect(dialogs).toHaveLength(2);
+
+      const labelIds = dialogs.map((d) => d.getAttribute("aria-labelledby"));
+      const descIds = dialogs.map((d) => d.getAttribute("aria-describedby"));
+      expect(new Set(labelIds).size).toBe(2);
+      expect(new Set(descIds).size).toBe(2);
+
+      // Sanity: each ID resolves to an element and they don't cross-link.
+      labelIds.forEach((id) => expect(document.getElementById(id!)).not.toBeNull());
+      descIds.forEach((id) => expect(document.getElementById(id!)).not.toBeNull());
+
+      // Suppress unused vars warning while keeping render scopes alive.
+      void c1;
+      void c2;
+    });
   });
 
   it("places initial focus on the Close button (safe default, not the upgrade CTA)", () => {
