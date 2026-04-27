@@ -28,6 +28,10 @@ export function UpgradeWall({
   const panelRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
+  // Tracks whether the pointer press that started this click began on the
+  // backdrop. Prevents accidental dismissal when a user mousedowns inside the
+  // panel (e.g. selecting text) and releases on the backdrop.
+  const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
 
   // WCAG 2.4.3 / 2.1.2: Escape-to-dismiss + focus trap.
@@ -76,11 +80,29 @@ export function UpgradeWall({
   // Apple IAP compliance: never show paid upgrade walls on iOS native builds
   if (ios) return null;
 
+  // Outside-click dismissal (WCAG-safe):
+  // - Only dismiss when BOTH pointerdown and pointerup occurred on the backdrop.
+  //   This avoids accidental close when a user starts a text selection inside
+  //   the panel and drags out, matching Radix/React-Aria dialog behavior.
+  // - Keyboard users are unaffected (they use Escape, handled above).
+  // - Focus trap is preserved: dismiss simply unmounts the modal; the cleanup
+  //   in the focus-trap effect restores focus to the previously focused element.
+  const handleBackdropPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    pointerDownOnBackdrop.current = e.target === e.currentTarget;
+  };
+  const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
+      onDismiss();
+    }
+    pointerDownOnBackdrop.current = false;
+  };
+
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
-      onClick={onDismiss}
+      onPointerDown={handleBackdropPointerDown}
+      onPointerUp={handleBackdropPointerUp}
       role="dialog"
       aria-modal="true"
       aria-labelledby="upgrade-wall-title"
