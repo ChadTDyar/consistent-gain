@@ -623,3 +623,93 @@ function UpgradeWallIOSFallback({
   );
 }
 
+// ----------------------------------------------------------------------------
+// IOSBranchGuard
+// ----------------------------------------------------------------------------
+// Render-time + post-mount observability wrapper for the iOS native branch.
+//
+// Why both signals?
+//   - Render-time check catches the case where `children` evaluated to a
+//     falsy value (null / undefined / false) — i.e. the iOS fallback wasn't
+//     rendered at all. We log immediately so the regression shows up in the
+//     same session it happens.
+//   - Post-mount DOM check (one tick after commit) catches subtler cases
+//     where the fallback rendered an empty fragment or got stripped by an
+//     ancestor portal/error boundary. If our wrapper has zero children in
+//     the live DOM, treat it as a null return for funnel purposes.
+//
+// Both paths emit `analytics.upgradeWallNullReturn` (cheap, idempotent) and
+// a Sentry breadcrumb when available so we can correlate with stack traces.
+// We deliberately do NOT throw — a silent paywall is bad, but throwing on
+// iOS would crash the gated screen entirely. Logging is enough.
+function IOSBranchGuard({
+  children,
+  gate,
+  tier,
+}: {
+  children: React.ReactNode;
+  gate: UpgradeWallGate;
+  tier: UpgradeWallTier;
+}) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const reportedRef = useRef(false);
+
+  const report = (reason: string) => {
+    if (reportedRef.current) return;
+    reportedRef.current = true;
+    try {
+      analytics.upgradeWallNullReturn(gate, tier, reason);
+    } catch {
+      /* never let analytics swallow a render */
+    }
+    // Best-effort Sentry breadcrumb. We use the global to avoid a hard
+    // dependency on @sentry/* in this hot path.
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const w = window as any;
+      w.Sentry?.captureMessage?.(
+        `UpgradeWall iOS branch returned null (${reason})`,
+        {
+          level: "warning",
+          tags: { component: "UpgradeWall", platform: "ios", gate, tier, reason },
+        }
+      );
+    } catch {
+      /* no-op */
+    }
+  };
+
+  // Render-time guard. `children` is what the iOS branch produced; if it's
+  // falsy the fallback never built a tree.
+  const renderedNull =
+    children === null || children === undefined || children === false;
+  if (renderedNull) {
+    // Fire synchronously during the render that already produced nothing.
+    // Safe to call here because the analytics fn is side-effect-only and
+    // doesn't trigger React state updates.
+    report("ios_branch_returned_null");
+  }
+
+  // Post-mount DOM guard. Runs once. If the wrapper exists but is empty
+  // after commit, the fallback effectively rendered nothing.
+  useEffect(() => {
+    if (renderedNull) return; // already reported above
+    const node = wrapperRef.current;
+    if (!node) return;
+    // The iOS fallback uses a portal, so this wrapper itself will be empty
+    // by design when the portal mounts elsewhere. We only flag the case
+    // where BOTH our wrapper is empty AND no dialog node was added to the
+    // document. Querying by role keeps this resilient to id changes.
+    const dialogPresent = !!document.querySelector('[role="dialog"]');
+    if (!dialogPresent) {
+      report("ios_fallback_no_dialog_in_dom");
+    }
+    // Empty deps: we only need to verify once, right after the initial
+    // render. Subsequent updates can't go from "rendered" to "null" without
+    // unmounting first.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return <div ref={wrapperRef}>{children}</div>;
+}
+
