@@ -91,17 +91,17 @@ describe("UpgradeWall accessibility", () => {
     // Belt-and-suspenders for AT that miss the role=dialog mount announcement.
     // Populated ~100ms after mount so it registers as a live update, not
     // initial DOM (which would race with and double-speak the headline).
-    vi.useFakeTimers();
     render(<UpgradeWall {...baseProps} />);
     const liveRegion = screen.getByRole("status");
     expect(liveRegion).toHaveAttribute("aria-live", "polite");
     expect(liveRegion).toHaveAttribute("aria-atomic", "true");
     // Initially empty so the AT doesn't double-announce on mount.
     expect(liveRegion.textContent).toBe("");
-    vi.advanceTimersByTime(150);
-    expect(liveRegion.textContent).toContain(baseProps.headline);
+    // Wait for the post-mount announcement (real timers; React flushes state).
+    await waitFor(() => {
+      expect(liveRegion.textContent).toContain(baseProps.headline);
+    });
     expect(liveRegion.textContent).toContain(baseProps.body);
-    vi.useRealTimers();
   });
 
 
