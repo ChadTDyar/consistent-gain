@@ -421,6 +421,10 @@ function UpgradeWallIOSFallback({
   // a purchase form to a logged-out user; it must show subscription
   // management. (Pricing pages are a separate URL and are NOT linked here.)
   const openManageOnWeb = async () => {
+    // "Manage on web" is the iOS conversion intent — fire CTA before opening
+    // the in-app browser so we capture the click even if the browser handoff
+    // takes a moment.
+    trackCta();
     const url = "https://momentumfit.app/account";
     try {
       if (Capacitor.isPluginAvailable("Browser")) {
