@@ -269,6 +269,86 @@ describe("UpgradeWall accessibility", () => {
       expect(document.activeElement).toBe(trigger);
       document.body.removeChild(trigger);
     });
+
+    it("returnFocus prop (DOM node) overrides the auto-captured trigger", () => {
+      // Use case: the trigger card is unmounted after upgrade. Caller passes a
+      // stable nearby element so SR/keyboard users still land somewhere sane.
+      const trigger = renderWithTrigger();
+      const fallback = document.createElement("button");
+      fallback.textContent = "Fallback target";
+      document.body.appendChild(fallback);
+
+      const { rerender } = render(
+        <UpgradeWall {...baseProps} returnFocus={fallback} />
+      );
+
+      fireEvent.keyDown(document, { key: "Escape" });
+      rerender(<div />);
+
+      expect(document.activeElement).toBe(fallback);
+      expect(document.activeElement).not.toBe(trigger);
+      document.body.removeChild(trigger);
+      document.body.removeChild(fallback);
+    });
+
+    it("returnFocus prop (React ref) is dereferenced at unmount", () => {
+      const trigger = renderWithTrigger();
+      const fallback = document.createElement("button");
+      document.body.appendChild(fallback);
+      const ref = { current: fallback };
+
+      const { rerender } = render(
+        <UpgradeWall {...baseProps} returnFocus={ref} />
+      );
+
+      fireEvent.keyDown(document, { key: "Escape" });
+      rerender(<div />);
+
+      expect(document.activeElement).toBe(fallback);
+      document.body.removeChild(trigger);
+      document.body.removeChild(fallback);
+    });
+
+    it("returnFocus={null} opts out of focus restoration entirely", () => {
+      // Rare, deliberate: caller wants focus to land wherever the browser puts
+      // it (e.g. a navigation will follow immediately). MUST NOT restore to
+      // the trigger.
+      const trigger = renderWithTrigger();
+
+      const { rerender } = render(
+        <UpgradeWall {...baseProps} returnFocus={null} />
+      );
+
+      fireEvent.keyDown(document, { key: "Escape" });
+      rerender(<div />);
+
+      expect(document.activeElement).not.toBe(trigger);
+      document.body.removeChild(trigger);
+    });
+
+    it("returnFocus reads the latest prop value at unmount, not at mount", () => {
+      // Parent may swap returnFocus between renders (e.g. attaching a ref
+      // after mount). The mount-only effect must still pick up the new value.
+      const trigger = renderWithTrigger();
+      const first = document.createElement("button");
+      const second = document.createElement("button");
+      document.body.appendChild(first);
+      document.body.appendChild(second);
+
+      const { rerender } = render(
+        <UpgradeWall {...baseProps} returnFocus={first} />
+      );
+      // Swap target while modal is open.
+      rerender(<UpgradeWall {...baseProps} returnFocus={second} />);
+
+      fireEvent.keyDown(document, { key: "Escape" });
+      rerender(<div />);
+
+      expect(document.activeElement).toBe(second);
+      document.body.removeChild(trigger);
+      document.body.removeChild(first);
+      document.body.removeChild(second);
+    });
   });
 
   describe("body scroll lock", () => {
