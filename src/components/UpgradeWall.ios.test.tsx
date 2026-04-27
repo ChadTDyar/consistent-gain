@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { render, screen, fireEvent, cleanup, waitFor } from "@testing-library/react";
 
 // Force the iOS-native code path so the fallback modal renders instead of
 // the web upgrade wall. Must be hoisted via vi.mock before the import below.
@@ -92,10 +92,7 @@ describe("UpgradeWall — iOS native fallback", () => {
   it("'Manage on web' opens the Reader-rule /account URL via Capacitor Browser", async () => {
     render(<UpgradeWall {...baseProps} />);
     fireEvent.click(screen.getByRole("button", { name: /manage on web/i }));
-    // Wait a microtask for the dynamic import + promise to resolve.
-    await Promise.resolve();
-    await Promise.resolve();
-    expect(browserOpen).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(browserOpen).toHaveBeenCalledTimes(1));
     const arg = browserOpen.mock.calls[0][0] as { url: string };
     expect(arg.url).toBe("https://momentumfit.app/account");
     // Crucially, NOT the pricing/checkout page.
