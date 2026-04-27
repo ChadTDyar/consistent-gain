@@ -210,6 +210,7 @@ export function UpgradeWall({
       role="dialog"
       aria-modal="true"
       aria-labelledby="upgrade-wall-title"
+      aria-describedby="upgrade-wall-body"
     >
       <div
         ref={panelRef}
