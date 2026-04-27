@@ -106,6 +106,13 @@ export function UpgradeWall({
   useEffect(() => {
     onDismissRef.current = onDismiss;
   }, [onDismiss]);
+  // Mirror returnFocus into a ref so the mount-only restoration effect always
+  // reads the latest value at unmount, without re-running and re-capturing
+  // previouslyFocused on every parent render.
+  const returnFocusRef = useRef(returnFocus);
+  useEffect(() => {
+    returnFocusRef.current = returnFocus;
+  }, [returnFocus]);
   // Stable ref to the wrapped dismiss-with-analytics function so the
   // mount-only key-handler effect can call it without re-binding.
   const dismissAndTrackRef = useRef(() => {});
