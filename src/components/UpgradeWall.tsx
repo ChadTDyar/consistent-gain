@@ -576,9 +576,13 @@ function UpgradeWallIOSFallback({
   // Portal target sanity check. document.body is virtually always present,
   // but during pre-hydration race conditions or in certain test harnesses
   // it can be null/detached. Without this check React would throw with a
-  // cryptic "Target container is not a DOM element" — we'd rather fire a
-  // dedicated `ios_portal_target_missing` reason and bail to null so the
-  // boundary above can render a graceful fallback.
+  // cryptic "Target container is not a DOM element".
+  //
+  // Critical UX rule: iOS must NEVER render nothing. If the portal target
+  // is missing we render an inline (non-portal) inform-only notice with the
+  // App-Review-safe coming-soon copy so the user still gets a visible
+  // explanation of why the gated feature didn't open. We still emit the
+  // `ios_portal_target_missing` analytics so the regression is observable.
   const portalTarget =
     typeof document !== "undefined" && document.body && document.body.isConnected
       ? document.body
@@ -589,7 +593,16 @@ function UpgradeWallIOSFallback({
     } catch {
       /* no-op */
     }
-    return null;
+    return (
+      <UpgradeWallIOSInlineNotice
+        headline={headline}
+        body={body}
+        accentColor={accentColor}
+        onDismiss={dismissAndTrack}
+        onManageOnWeb={openManageOnWeb}
+        onOpenSettings={openIOSSettings}
+      />
+    );
   }
 
   return createPortal(
