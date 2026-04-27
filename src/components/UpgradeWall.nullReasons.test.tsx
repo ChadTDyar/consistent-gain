@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, cleanup, act } from "@testing-library/react";
 import React from "react";
 
-// We mock the analytics module directly so we capture calls regardless of
-// whether window.gtag is wired (avoids module-cache races from vi.resetModules).
+// Mock analytics module so we capture the reason values regardless of
+// whether window.gtag is wired in jsdom.
 const upgradeWallNullReturn = vi.fn();
 vi.mock("@/lib/analytics", () => ({
   analytics: {
@@ -27,7 +27,8 @@ const reasons = () =>
 
 describe("UpgradeWall — extended null-return reasons", () => {
   // ios_capacitor_unavailable: heuristic says iOS but canonical Capacitor
-  // probe disagrees (e.g. PWA installed to home screen).
+  // probe disagrees (e.g. PWA installed to home screen). Verifies the
+  // post-mount cross-check effect inside IOSBranchGuard.
   it("fires ios_capacitor_unavailable when isIOSNative=true but Capacitor.isNativePlatform=false", async () => {
     vi.resetModules();
     vi.doMock("@/lib/platform", () => ({
@@ -42,7 +43,6 @@ describe("UpgradeWall — extended null-return reasons", () => {
         getPlatform: () => "ios",
       },
     }));
-    // Re-mock analytics under the new module graph.
     vi.doMock("@/lib/analytics", () => ({
       analytics: {
         upgradeWallShown: vi.fn(),
@@ -69,13 +69,18 @@ describe("UpgradeWall — extended null-return reasons", () => {
     });
     expect(reasons()).toContain("ios_capacitor_unavailable");
   });
+});
 
-  // ios_render_error_recovered: boundary catches, retry succeeds.
-  // We rely on the top-level vi.mock("@/lib/analytics", ...) here — no
-  // resetModules so the boundary keeps the same analytics reference our
-  // spy lives on. (resetModules + doMock is required only for the first
-  // test where we also need to swap @capacitor/core in the same graph.)
-  it("fires ios_fallback_threw on throw and ios_render_error_recovered after retry", async () => {
+// Boundary unit test — runs in its own describe so module mocks don't
+// interfere with the IOSBranchGuard test above.
+describe("UpgradeWallBoundary — error recovery beacons", () => {
+  beforeEach(() => {
+    upgradeWallNullReturn.mockClear();
+  });
+
+  it("emits ios_fallback_threw on initial throw and ios_render_error_recovered on retry", async () => {
+    // No vi.resetModules here — keep the top-level mock active so the
+    // boundary's analytics import resolves to our shared spy.
     const { UpgradeWallBoundary } = await import("./UpgradeWallBoundary");
 
     let throwCount = 0;
@@ -89,9 +94,9 @@ describe("UpgradeWall — extended null-return reasons", () => {
 
     const errSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    let result: ReturnType<typeof render>;
+    let rendered: ReturnType<typeof render>;
     await act(async () => {
-      result = render(
+      rendered = render(
         <UpgradeWallBoundary
           gate="coach"
           tier="premium"
@@ -107,34 +112,35 @@ describe("UpgradeWall — extended null-return reasons", () => {
     });
 
     expect(reasons()).toContain("ios_fallback_threw");
-    const { getByText } = result!;
 
-    const retryBtn = getByText("Try again");
-    act(() => {
+    const retryBtn = rendered!.getByText("Try again");
+    await act(async () => {
       retryBtn.click();
     });
-    expect(getByText("recovered child")).toBeTruthy();
+    expect(rendered!.getByText("recovered child")).toBeTruthy();
     expect(reasons()).toContain("ios_render_error_recovered");
 
     errSpy.mockRestore();
   });
+});
 
-  // ios_platform_detect_failed: Capacitor probe throws → isIOSNative
-  // returns false and emits the reason via lazy-loaded analytics.
-  // We verify the FUNCTION'S RETURN VALUE here; the lazy analytics import
-  // path is a side effect tested separately by the platform-helper unit.
-  // ios_platform_detect_failed: when the canonical Capacitor probe throws,
-  // isIOSNative must NOT propagate the error and must return false.
-  it("isIOSNative returns false (and does not throw) when Capacitor probe throws", async () => {
-    const { Capacitor } = await import("@capacitor/core");
-    const spy = vi
-      .spyOn(Capacitor, "isNativePlatform")
-      .mockImplementation(() => {
-        throw new Error("bridge not ready");
-      });
-    const { isIOSNative } = await import("@/lib/platform");
-    expect(() => isIOSNative()).not.toThrow();
-    expect(isIOSNative()).toBe(false);
-    spy.mockRestore();
+// Direct unit on the platform helper — keeps the Capacitor mock scoped to a
+// single test file (lib/platform.test.ts would be cleaner long-term but this
+// keeps the reason-vocabulary tests colocated).
+describe("isIOSNative — defensive Capacitor probe", () => {
+  it("returns false (and does not throw) when Capacitor.isNativePlatform throws", async () => {
+    vi.resetModules();
+    vi.doMock("@capacitor/core", () => ({
+      Capacitor: {
+        isNativePlatform: () => {
+          throw new Error("bridge not ready");
+        },
+        getPlatform: () => "ios",
+        isPluginAvailable: () => false,
+      },
+    }));
+    const platform = await import("@/lib/platform");
+    expect(() => platform.isIOSNative()).not.toThrow();
+    expect(platform.isIOSNative()).toBe(false);
   });
 });
