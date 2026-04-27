@@ -91,6 +91,11 @@ export function useBodyScrollLock(enabled: boolean = true): void {
   useEffect(() => {
     if (!enabled) return;
     if (typeof document === "undefined") return;
+    // Defensive: if document.body is missing or detached (pre-hydration race,
+    // jsdom test harness with body removed) skip the lock entirely. The
+    // alternative — letting applyLock() touch body.style — would throw and
+    // crash the modal that called us.
+    if (!document.body || !document.body.isConnected) return;
 
     lockCount += 1;
     if (lockCount === 1) {
@@ -99,7 +104,7 @@ export function useBodyScrollLock(enabled: boolean = true): void {
 
     return () => {
       lockCount = Math.max(0, lockCount - 1);
-      if (lockCount === 0) {
+      if (lockCount === 0 && document.body && document.body.isConnected) {
         releaseLock();
       }
     };
