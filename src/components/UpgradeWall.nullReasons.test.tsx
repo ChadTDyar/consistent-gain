@@ -71,17 +71,11 @@ describe("UpgradeWall — extended null-return reasons", () => {
   });
 
   // ios_render_error_recovered: boundary catches, retry succeeds.
+  // We rely on the top-level vi.mock("@/lib/analytics", ...) here — no
+  // resetModules so the boundary keeps the same analytics reference our
+  // spy lives on. (resetModules + doMock is required only for the first
+  // test where we also need to swap @capacitor/core in the same graph.)
   it("fires ios_fallback_threw on throw and ios_render_error_recovered after retry", async () => {
-    vi.resetModules();
-    vi.doMock("@/lib/analytics", () => ({
-      analytics: {
-        upgradeWallShown: vi.fn(),
-        upgradeWallDismissed: vi.fn(),
-        upgradeWallCtaClicked: vi.fn(),
-        upgradeWallTiming: vi.fn(),
-        upgradeWallNullReturn,
-      },
-    }));
     const { UpgradeWallBoundary } = await import("./UpgradeWallBoundary");
 
     let throwCount = 0;
