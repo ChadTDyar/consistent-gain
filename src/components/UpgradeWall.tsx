@@ -211,7 +211,10 @@ export function UpgradeWall({
   //   - Skip if the trigger is <body> (means nothing was meaningfully focused).
   //   - Use preventScroll so restoration doesn't jolt long pages.
   useEffect(() => {
-    if (ios) return;
+    // Skip on iOS (handled by UpgradeWallIOSFallback), when entitled
+    // (handled by EntitledManageDialog), or while entitlement is still
+    // resolving (nothing rendered yet — no panel to trap focus inside).
+    if (ios || entitled || entitlement === "unknown") return;
     const trigger = document.activeElement as HTMLElement | null;
     previouslyFocused.current =
       trigger && trigger !== document.body ? trigger : null;
