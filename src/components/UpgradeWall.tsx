@@ -115,29 +115,74 @@ export function UpgradeWall({
   // Apple IAP compliance: never show paid upgrade walls on iOS native builds
   if (ios) return null;
 
-  // Outside-click dismissal (WCAG-safe):
-  // - Only dismiss when BOTH pointerdown and pointerup occurred on the backdrop.
-  //   This avoids accidental close when a user starts a text selection inside
-  //   the panel and drags out, matching Radix/React-Aria dialog behavior.
+  // Outside-click dismissal with pointer capture (WCAG- and touch/pen-safe):
+  // - On pointerdown DIRECTLY on the backdrop (not bubbling from the panel),
+  //   we call setPointerCapture(pointerId). This guarantees that the matching
+  //   pointerup, pointercancel, and any intermediate pointer events fire on
+  //   the backdrop element regardless of where the pointer travels — even if
+  //   the user's finger or stylus drifts onto the panel before lifting.
+  // - On pointerdown that bubbles from the panel (target !== currentTarget),
+  //   we do NOT capture and we record nothing. A subsequent pointerup that
+  //   happens to land on the backdrop must NOT dismiss (drag-out from panel
+  //   such as text selection).
+  // - On pointerup we dismiss only if (a) we captured this exact pointerId,
+  //   AND (b) the up event's hit-test target is still the backdrop. The
+  //   hit-test guard distinguishes a legitimate tap on the backdrop from a
+  //   captured pointer that drifted onto the panel before lift.
+  // - pointercancel (gesture preempted, e.g. browser scroll, OS interrupt)
+  //   clears state without dismissing.
   // - Keyboard users are unaffected (they use Escape, handled above).
-  // - Focus trap is preserved: dismiss simply unmounts the modal; the cleanup
-  //   in the focus-trap effect restores focus to the previously focused element.
   const handleBackdropPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    pointerDownOnBackdrop.current = e.target === e.currentTarget;
+    if (e.target !== e.currentTarget) return;
+    // Only handle the primary pointer to avoid multi-touch races.
+    if (!e.isPrimary) return;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+      capturedPointerId.current = e.pointerId;
+    } catch {
+      // setPointerCapture can throw if the pointer is already released
+      // (e.g. very fast taps in some test environments). Fall back to the
+      // simple matching-pointerId check without true capture.
+      capturedPointerId.current = e.pointerId;
+    }
   };
   const handleBackdropPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (pointerDownOnBackdrop.current && e.target === e.currentTarget) {
+    if (capturedPointerId.current !== e.pointerId) return;
+    const wasCaptured = capturedPointerId.current;
+    capturedPointerId.current = null;
+    try {
+      e.currentTarget.releasePointerCapture(wasCaptured);
+    } catch {
+      /* element may already have released capture */
+    }
+    // Hit-test guard: dismiss only when the lift truly happened over the
+    // backdrop. elementFromPoint returns the backdrop itself on a clean tap,
+    // and the panel (or one of its descendants) when the pointer drifted in.
+    const hit = document.elementFromPoint(e.clientX, e.clientY);
+    const liftedOnBackdrop =
+      hit === e.currentTarget || (!panelRef.current?.contains(hit));
+    if (liftedOnBackdrop) {
       onDismiss();
     }
-    pointerDownOnBackdrop.current = false;
+  };
+  const handleBackdropPointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (capturedPointerId.current === e.pointerId) {
+      capturedPointerId.current = null;
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        /* noop */
+      }
+    }
   };
 
   return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+      style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", touchAction: "none" }}
       onPointerDown={handleBackdropPointerDown}
       onPointerUp={handleBackdropPointerUp}
+      onPointerCancel={handleBackdropPointerCancel}
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
