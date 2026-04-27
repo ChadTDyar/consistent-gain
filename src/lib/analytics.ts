@@ -1,9 +1,34 @@
 // Google Analytics 4 integration
+import { supabase } from "@/integrations/supabase/client";
 
 declare global {
   interface Window {
     gtag?: (...args: any[]) => void;
     dataLayer?: any[];
+  }
+}
+
+// Fire-and-forget DB mirror for product events.
+// Writes to public.analytics_events (insert-only, RLS: users insert own; admins read all).
+// Never throws and never blocks the caller — analytics must not break user flows.
+async function recordEvent(
+  event_name: string,
+  fields: { gate?: string; tier?: string; variant?: string; metadata?: Record<string, unknown> } = {},
+) {
+  try {
+    if (typeof window === "undefined") return;
+    const { data: { user } } = await supabase.auth.getUser();
+    const row = {
+      user_id: user?.id ?? undefined,
+      event_name,
+      gate: fields.gate ?? undefined,
+      tier: fields.tier ?? undefined,
+      variant: fields.variant ?? undefined,
+      metadata: (fields.metadata ?? {}) as never,
+    };
+    await supabase.from("analytics_events").insert([row]);
+  } catch {
+    // Swallow — analytics is best-effort.
   }
 }
 
@@ -80,23 +105,29 @@ export const analytics = {
   //   shown? -> dismissed? -> cta_clicked? -> begin_checkout? -> purchase?
   // We pass the GA4 `event_label` as "<gate>:<tier>" so legacy GA reports
   // remain readable, and also push a structured payload via gtag's third arg.
-  upgradeWallDismissed: (gate: string, tier: string) => {
-    if (typeof window.gtag === 'undefined') return;
-    window.gtag('event', 'upgrade_wall_dismissed', {
-      event_category: 'conversion',
-      event_label: `${gate}:${tier}`,
-      gate,
-      tier,
-    });
+  upgradeWallDismissed: (gate: string, tier: string, method?: string) => {
+    if (typeof window !== 'undefined' && typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'upgrade_wall_dismissed', {
+        event_category: 'conversion',
+        event_label: `${gate}:${tier}`,
+        gate,
+        tier,
+        method,
+      });
+    }
+    void recordEvent('upgrade_wall_dismissed', { gate, tier, metadata: method ? { method } : {} });
   },
-  upgradeWallCtaClicked: (gate: string, tier: string) => {
-    if (typeof window.gtag === 'undefined') return;
-    window.gtag('event', 'upgrade_wall_cta_clicked', {
-      event_category: 'conversion',
-      event_label: `${gate}:${tier}`,
-      gate,
-      tier,
-    });
+  upgradeWallCtaClicked: (gate: string, tier: string, method?: string) => {
+    if (typeof window !== 'undefined' && typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'upgrade_wall_cta_clicked', {
+        event_category: 'conversion',
+        event_label: `${gate}:${tier}`,
+        gate,
+        tier,
+        method,
+      });
+    }
+    void recordEvent('upgrade_wall_cta_clicked', { gate, tier, metadata: method ? { method } : {} });
   },
 
   // Fired exactly once per UpgradeWall mount, before any user interaction.
@@ -105,26 +136,22 @@ export const analytics = {
   //   - 'ios_fallback'    — App-Review-safe inform-only modal on iOS native
   //   - 'entitled_manage' — pre-check fired: user is already Pro/Premium so
   //                         we show Reader-rule "manage your subscription"
-  //                         content instead of the upsell. A nonzero rate
-  //                         here usually means an upstream gate is
-  //                         mis-checking entitlement and stranding paying
-  //                         users in front of a paywall they don't need.
-  // Together with `upgradeWallNullReturn` below, the ratio
-  //   shown(ios_fallback) / (shown(ios_fallback) + null_return(*))
-  // tells us how reliably iOS users see *something* when a gate fires.
+  //                         content instead of the upsell.
   upgradeWallShown: (
     gate: string,
     tier: string,
     variant: 'web' | 'ios_fallback' | 'entitled_manage',
   ) => {
-    if (typeof window.gtag === 'undefined') return;
-    window.gtag('event', 'upgrade_wall_shown', {
-      event_category: 'conversion',
-      event_label: `${gate}:${tier}:${variant}`,
-      gate,
-      tier,
-      variant,
-    });
+    if (typeof window !== 'undefined' && typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'upgrade_wall_shown', {
+        event_category: 'conversion',
+        event_label: `${gate}:${tier}:${variant}`,
+        gate,
+        tier,
+        variant,
+      });
+    }
+    void recordEvent('upgrade_wall_shown', { gate, tier, variant });
   },
 
   // Regression alarm. UpgradeWall on iOS native MUST never render null —

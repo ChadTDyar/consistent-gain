@@ -77,6 +77,39 @@ export type Database = {
           },
         ]
       }
+      analytics_events: {
+        Row: {
+          created_at: string
+          event_name: string
+          gate: string | null
+          id: string
+          metadata: Json
+          tier: string | null
+          user_id: string | null
+          variant: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_name: string
+          gate?: string | null
+          id?: string
+          metadata?: Json
+          tier?: string | null
+          user_id?: string | null
+          variant?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_name?: string
+          gate?: string | null
+          id?: string
+          metadata?: Json
+          tier?: string | null
+          user_id?: string | null
+          variant?: string | null
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author: string

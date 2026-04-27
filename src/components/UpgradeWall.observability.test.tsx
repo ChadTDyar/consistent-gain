@@ -27,18 +27,6 @@ const renderWithPlatform = async (ios: boolean, props: Record<string, unknown> =
       getPlatform: () => (ios ? "ios" : "web"),
     },
   }));
-  // Re-apply the supabase mock after resetModules so the entitlement
-  // pre-check resolves to the free path inside the freshly-imported module.
-  vi.doMock("@/integrations/supabase/client", () => ({
-    supabase: {
-      auth: {
-        getSession: vi.fn(() =>
-          Promise.resolve({ data: { session: null }, error: null })
-        ),
-      },
-      from: vi.fn(),
-    },
-  }));
   const { UpgradeWall } = await import("./UpgradeWall");
   const baseProps = {
     headline: "Unlock AI Coach",
@@ -50,17 +38,8 @@ const renderWithPlatform = async (ios: boolean, props: Record<string, unknown> =
     tier: "premium" as const,
     ...props,
   };
-  const result = render(<UpgradeWall {...baseProps} />);
-  // Flush the entitlement pre-check microtask so the deferred
-  // upgrade_wall_shown beacon fires before assertions run.
-  await flushPromises();
-  return result;
+  return render(<UpgradeWall {...baseProps} />);
 };
-
-// One macrotask + microtask flush — enough to drain the entitlement
-// pre-check chain (getSession → setEntitlement → effect → analytics).
-const flushPromises = () =>
-  new Promise<void>((resolve) => setTimeout(resolve, 0));
 
 const findEvent = (name: string) =>
   gtag.mock.calls.find((c) => c[0] === "event" && c[1] === name);
@@ -104,16 +83,6 @@ describe("UpgradeWall — render observability", () => {
         getPlatform: () => "web",
       },
     }));
-    vi.doMock("@/integrations/supabase/client", () => ({
-      supabase: {
-        auth: {
-          getSession: vi.fn(() =>
-            Promise.resolve({ data: { session: null }, error: null })
-          ),
-        },
-        from: vi.fn(),
-      },
-    }));
     const { UpgradeWall } = await import("./UpgradeWall");
     const props = {
       headline: "h",
@@ -125,10 +94,8 @@ describe("UpgradeWall — render observability", () => {
       tier: "premium" as const,
     };
     const { rerender } = render(<UpgradeWall {...props} />);
-    await flushPromises();
     rerender(<UpgradeWall {...props} body="b2" />);
     rerender(<UpgradeWall {...props} body="b3" />);
-    await flushPromises();
     const shown = gtag.mock.calls.filter(
       (c) => c[0] === "event" && c[1] === "upgrade_wall_shown"
     );

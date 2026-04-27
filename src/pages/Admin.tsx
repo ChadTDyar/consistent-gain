@@ -4,12 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, ShieldCheck, BarChart3, Users, Star, FileText } from "lucide-react";
+import { ArrowLeft, ShieldCheck, BarChart3, Users, Star, FileText, TrendingUp } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { AdminStats } from "@/components/admin/AdminStats";
 import { AdminUsers } from "@/components/admin/AdminUsers";
 import { AdminTestimonials } from "@/components/admin/AdminTestimonials";
 import { AdminBlog } from "@/components/admin/AdminBlog";
+import { AdminUpgradeWallFunnel } from "@/components/admin/AdminUpgradeWallFunnel";
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -77,12 +78,15 @@ export default function Admin() {
           </div>
 
           <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4" /> Overview
               </TabsTrigger>
               <TabsTrigger value="users" className="flex items-center gap-2">
                 <Users className="h-4 w-4" /> Users
+              </TabsTrigger>
+              <TabsTrigger value="upgrade-wall" className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" /> UpgradeWall
               </TabsTrigger>
               <TabsTrigger value="testimonials" className="flex items-center gap-2">
                 <Star className="h-4 w-4" /> Testimonials
@@ -98,6 +102,10 @@ export default function Admin() {
 
             <TabsContent value="users">
               <AdminUsers />
+            </TabsContent>
+
+            <TabsContent value="upgrade-wall">
+              <AdminUpgradeWallFunnel />
             </TabsContent>
 
             <TabsContent value="testimonials">
