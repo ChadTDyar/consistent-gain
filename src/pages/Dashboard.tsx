@@ -421,19 +421,25 @@ export default function Dashboard() {
                 />
               ))}
 
-              {/* Locked 4th habit slot for free users */}
+              {/* Locked 4th habit slot for free users.
+                  MUST be a real <button>: keyboard users need to Tab into it
+                  and trigger via Enter/Space, and screen readers must announce
+                  it as actionable so blind users hit the same upgrade flow as
+                  sighted ones. After the modal dismisses, focus restores here. */}
               {plan === 'free' && goals.length >= 3 && (
-                <div
-                  className="rounded-xl border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-[200px]"
+                <button
+                  type="button"
+                  className="rounded-xl border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-[200px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary text-left w-full"
                   onClick={() => { setUpgradeWallType('habit_limit'); setShowUpgradeWall(true); }}
+                  aria-label="Add habit — Pro plan required, opens upgrade dialog"
                 >
                   <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                    <Plus className="h-5 w-5" />
+                    <Plus className="h-5 w-5" aria-hidden="true" />
                     <span className="font-semibold text-sm">Add Habit</span>
-                    <span className="text-base">🔒</span>
+                    <span className="text-base" aria-hidden="true">🔒</span>
                   </div>
                   <span className="text-xs text-muted-foreground">Pro</span>
-                </div>
+                </button>
               )}
             </div>
 
