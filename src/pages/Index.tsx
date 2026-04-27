@@ -53,15 +53,11 @@ const Index = () => {
         ogImage="https://momentumfit.app/og-share.jpg"
       />
       <div className="min-h-screen bg-background-cream">
-        <a 
-          href="#main-content" 
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:font-semibold"
-        >
-          Skip to main content
-        </a>
+        {/* Skip-to-content link is rendered globally in App.tsx; targets the
+            <main id="main-content"> wrapper in AppLayout. */}
 
         {/* Hero Section */}
-        <section id="main-content" className="relative overflow-hidden">
+        <section className="relative overflow-hidden">
           <div className="absolute inset-0 opacity-30" style={{background: 'var(--gradient-accent)'}} role="presentation" />
            <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
             {/* Auth buttons */}

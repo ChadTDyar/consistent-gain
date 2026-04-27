@@ -239,12 +239,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background-cream">
-      <a 
-        href="#main-content" 
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:font-semibold"
-      >
-        Skip to main content
-      </a>
+      {/* Skip-to-content link is rendered globally in App.tsx; targets the
+          <main id="main-content"> wrapper in AppLayout. */}
       <header className="border-b border-border bg-card/80 backdrop-blur-md shadow-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center max-w-7xl">
           <div
