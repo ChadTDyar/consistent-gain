@@ -429,7 +429,7 @@ export default function Dashboard() {
               {plan === 'free' && goals.length >= 3 && (
                 <button
                   type="button"
-                  className="rounded-xl border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-[200px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary text-left w-full"
+                  className="w-full rounded-xl border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-[200px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   onClick={() => { setUpgradeWallType('habit_limit'); setShowUpgradeWall(true); }}
                   aria-label="Add habit — Pro plan required, opens upgrade dialog"
                 >
