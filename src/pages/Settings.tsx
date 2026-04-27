@@ -445,57 +445,68 @@ export default function Settings() {
               <CardDescription className="text-base">Manage your membership</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border-l-4 border-l-primary">
-                  <div>
-                    <p className="font-display font-semibold text-lg text-foreground flex items-center gap-2">
-                      {(profile?.plan || 'free').charAt(0).toUpperCase() + (profile?.plan || 'free').slice(1)} Plan
-                      {profile?.plan && profile.plan !== 'free' && (
-                        <Badge className="text-xs uppercase">{profile.plan}</Badge>
-                      )}
-                    </p>
-                    <p className="text-base text-muted-foreground mt-1">
-                    {profile?.plan === 'pro' 
-                        ? "You have access to all features including AI Coach"
-                        : profile?.plan === 'plus'
-                        ? "You have access to unlimited goals & Streak Repair"
-                        : "Upgrade to unlock more features"}
-                    </p>
+              {(() => {
+                const rawPlan = (profile?.plan || 'free').toLowerCase();
+                const planTier: 'free' | 'plus' | 'pro' =
+                  rawPlan === 'pro' || rawPlan === 'premium' ? 'pro' :
+                  rawPlan === 'plus' ? 'plus' : 'free';
+                const planLabel =
+                  planTier === 'pro' ? 'Premium' :
+                  planTier === 'plus' ? 'Pro' : 'Free';
+                const planBlurb =
+                  planTier === 'pro' ? "You're on our top plan — full access including AI Coach, unlimited history, and CSV export." :
+                  planTier === 'plus' ? "You have unlimited goals & Streak Repair." :
+                  "Upgrade to unlock more features.";
+                return (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border-l-4 border-l-primary">
+                      <div>
+                        <p className="font-display font-semibold text-lg text-foreground flex items-center gap-2">
+                          {planLabel} Plan
+                          {planTier !== 'free' && (
+                            <Badge className="text-xs uppercase">{planLabel}</Badge>
+                          )}
+                        </p>
+                        <p className="text-base text-muted-foreground mt-1">
+                          {planBlurb}
+                        </p>
+                      </div>
+                    </div>
+                    {profile?.is_premium || planTier !== 'free' ? (
+                      <Button
+                        onClick={handleManageSubscription}
+                        size="lg"
+                        variant="outline"
+                        disabled={portalLoading}
+                        className="w-full border-2 font-semibold"
+                      >
+                        {portalLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            Loading...
+                          </>
+                        ) : (
+                          "Manage Subscription"
+                        )}
+                      </Button>
+                    ) : !isIOSNative() ? (
+                      <Button
+                        onClick={() => navigate("/pricing")}
+                        size="lg"
+                        className="w-full shadow-sm hover:shadow-md font-semibold"
+                      >
+                        Upgrade
+                      </Button>
+                    ) : null}
                   </div>
-                </div>
-                {profile?.is_premium ? (
-                  <Button 
-                    onClick={handleManageSubscription}
-                    size="lg"
-                    variant="outline"
-                    disabled={portalLoading}
-                    className="w-full border-2 font-semibold"
-                  >
-                    {portalLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Loading...
-                      </>
-                    ) : (
-                      "Manage Subscription"
-                    )}
-                  </Button>
-                ) : !isIOSNative() ? (
-                  <Button 
-                    onClick={() => navigate("/pricing")}
-                    size="lg"
-                    className="w-full shadow-sm hover:shadow-md font-semibold"
-                  >
-                    Upgrade
-                  </Button>
-                ) : null}
-              </div>
+                );
+              })()}
             </CardContent>
           </Card>
 
           {/* Data Management */}
           <div className="grid gap-6 md:grid-cols-2">
-            <DataExport plan={(profile?.plan || 'free') as any} />
+            <DataExport plan={(profile?.plan === 'premium' ? 'pro' : (profile?.plan || 'free')) as any} />
             <DoctorReport />
           </div>
 
