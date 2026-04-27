@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Flame, Loader2, Lock, BarChart3 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { subDays, startOfWeek, endOfWeek, isWithinInterval, format, parseISO } from "date-fns";
+import { subDays, startOfWeek, endOfWeek, isWithinInterval, format } from "date-fns";
 
 // Parse a YYYY-MM-DD date string as a LOCAL date (avoids UTC shift bugs).
 function parseLocalDate(value: string): Date {
