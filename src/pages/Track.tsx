@@ -6,18 +6,24 @@ import { BodyMapPainReport } from "@/components/BodyMapPainReport";
 import { ProgressTab as ProgressTabTrack } from "@/components/ProgressTab";
 import { DailyContext } from "@/components/DailyContext";
 import { SEO } from "@/components/SEO";
-import { Button } from "@/components/ui/button";
-import { BarChart3 } from "lucide-react";
+import { type PlanTier, normalizePlan } from "@/lib/plans";
 
 export default function Track() {
   const navigate = useNavigate();
+  const [plan, setPlan] = useState<PlanTier>("free");
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const init = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) navigate("/auth");
+      if (!session) { navigate("/auth"); return; }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("plan")
+        .eq("id", session.user.id)
+        .single();
+      setPlan(normalizePlan(profile?.plan));
     };
-    checkAuth();
+    init();
   }, [navigate]);
 
   return (
@@ -45,7 +51,7 @@ export default function Track() {
             </TabsContent>
 
             <TabsContent value="progress">
-              <ProgressTabTrack />
+              <ProgressTabTrack plan={plan} />
             </TabsContent>
           </Tabs>
         </div>
