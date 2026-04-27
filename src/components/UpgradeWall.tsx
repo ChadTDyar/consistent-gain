@@ -75,6 +75,16 @@ export function UpgradeWall({
   const pointerDownOnBackdrop = useRef(false);
   const ios = isIOSNative();
 
+  // WCAG 2.3.3 Animation from Interactions: when the user prefers reduced
+  // motion, omit the entry animation classes entirely. We don't just rely on
+  // the global `prefers-reduced-motion` CSS guard (which only shortens the
+  // duration) because:
+  //   - Skipping the class avoids any transient transform/opacity state on
+  //     the panel that could interfere with focus restoration math.
+  //   - The dialog appears in its final visual state on the very first paint,
+  //     which is the spec-recommended behavior for non-essential motion.
+  const prefersReducedMotion = usePrefersReducedMotion();
+
   // Lock background scroll while the web variant is mounted. The iOS variant
   // is rendered by UpgradeWallIOSFallback which manages its own lock — we
   // disable here on iOS to avoid double-locking the body.
