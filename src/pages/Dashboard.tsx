@@ -573,6 +573,18 @@ export default function Dashboard() {
           accentColor="#0d3b5e"
           coachPreview={upgradeWallType === 'ai_coach'}
           streakRepairPreview={upgradeWallType === 'habit_limit'}
+          gate={
+            upgradeWallType === 'ai_coach'
+              ? 'coach'
+              : upgradeWallType === 'habit_limit'
+                ? 'habit_limit'
+                : upgradeWallType === 'partner_lock'
+                  ? 'partner_lock'
+                  : upgradeWallType === 'analytics_lock'
+                    ? 'analytics_lock'
+                    : 'history_limit'
+          }
+          tier={upgradeWallType === 'ai_coach' ? 'premium' : 'pro'}
           onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
           onDismiss={() => setShowUpgradeWall(false)}
         />
