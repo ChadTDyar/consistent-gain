@@ -1,10 +1,12 @@
 import { createPortal } from "react-dom";
-import { useEffect, useRef } from "react";
-import { X, ExternalLink, Settings as SettingsIcon, Info } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { X, ExternalLink, Settings as SettingsIcon, Info, CheckCircle2 } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
 import { Capacitor } from "@capacitor/core";
 import { analytics } from "@/lib/analytics";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+import { supabase } from "@/integrations/supabase/client";
+import { normalizePlan, type PlanTier } from "@/lib/plans";
 
 // Funnel-tracking taxonomy. Keep these in sync with GA4 / dashboards.
 // `gate` identifies the feature that triggered the wall.
