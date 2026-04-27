@@ -101,12 +101,22 @@ export const analytics = {
 
   // Fired exactly once per UpgradeWall mount, before any user interaction.
   // `variant` lets us split the funnel by render path:
-  //   - 'web'           — standard upgrade modal (web + Android Capacitor)
-  //   - 'ios_fallback'  — App-Review-safe inform-only modal on iOS native
+  //   - 'web'             — standard upgrade modal (web + Android Capacitor)
+  //   - 'ios_fallback'    — App-Review-safe inform-only modal on iOS native
+  //   - 'entitled_manage' — pre-check fired: user is already Pro/Premium so
+  //                         we show Reader-rule "manage your subscription"
+  //                         content instead of the upsell. A nonzero rate
+  //                         here usually means an upstream gate is
+  //                         mis-checking entitlement and stranding paying
+  //                         users in front of a paywall they don't need.
   // Together with `upgradeWallNullReturn` below, the ratio
   //   shown(ios_fallback) / (shown(ios_fallback) + null_return(*))
   // tells us how reliably iOS users see *something* when a gate fires.
-  upgradeWallShown: (gate: string, tier: string, variant: 'web' | 'ios_fallback') => {
+  upgradeWallShown: (
+    gate: string,
+    tier: string,
+    variant: 'web' | 'ios_fallback' | 'entitled_manage',
+  ) => {
     if (typeof window.gtag === 'undefined') return;
     window.gtag('event', 'upgrade_wall_shown', {
       event_category: 'conversion',
