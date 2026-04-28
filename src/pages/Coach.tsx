@@ -6,12 +6,10 @@ import { UpgradeWall } from "@/components/UpgradeWall";
 import { MOMENTUM } from "@/constants/value-language";
 import { calculateStreak, getUserActivityLogs, getDaysSinceLastActivity } from "@/lib/streakUtils";
 import { SEO } from "@/components/SEO";
-import { PLANS, type PlanTier, normalizePlan } from "@/lib/plans";
-import { Lock, Loader2 } from "lucide-react";
+import { type PlanTier, normalizePlan } from "@/lib/plans";
+import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isIOSNative } from "@/lib/platform";
-import { purchaseAnnual, purchaseMonthly } from "@/lib/purchases";
-import { toast } from "sonner";
 
 export default function Coach() {
   const navigate = useNavigate();
@@ -20,28 +18,6 @@ export default function Coach() {
   const [daysSinceActivity, setDaysSinceActivity] = useState(0);
   const [plan, setPlan] = useState<PlanTier>("free");
   const [showUpgradeWall, setShowUpgradeWall] = useState(false);
-  const [iapLoading, setIapLoading] = useState<null | 'monthly' | 'annual'>(null);
-
-  const handleIAP = async (interval: 'monthly' | 'annual') => {
-    setIapLoading(interval);
-    try {
-      const fn = interval === 'annual' ? purchaseAnnual : purchaseMonthly;
-      const isActive = await fn();
-      if (isActive) {
-        toast.success("Welcome to Premium!");
-        setPlan('pro');
-      }
-    } catch (err: any) {
-      const msg = String(err?.message ?? err ?? '');
-      // RevenueCat user-cancelled error code is 1; surface only real errors.
-      if (!/cancel|userCancelled|1\b/i.test(msg)) {
-        console.error('[Coach IAP] purchase error:', err);
-        toast.error("Purchase failed. Please try again.");
-      }
-    } finally {
-      setIapLoading(null);
-    }
-  };
 
   useEffect(() => {
     const init = async () => {
@@ -70,7 +46,10 @@ export default function Coach() {
     init();
   }, [navigate]);
 
+  // Per pricing agreement v1.1: Momentum iOS is FREE with no IAP.
+  // Coach is unlocked for all iOS users; web gating via `plan` is unchanged.
   const isPremium = plan === 'pro';
+  const coachUnlocked = isPremium || isIOSNative();
 
   return (
     <>
@@ -82,7 +61,7 @@ export default function Coach() {
         </header>
 
         <div className="container mx-auto px-4 py-4 max-w-2xl h-[calc(100vh-180px)]">
-          {isPremium ? (
+          {coachUnlocked ? (
             <CoachChat
               userContext={{
                 streak,
@@ -91,7 +70,7 @@ export default function Coach() {
                              daysSinceActivity === 1 ? "Active yesterday" : 
                              `${daysSinceActivity} days since last activity`,
                 isPremium: true,
-                plan: 'pro',
+                plan: isPremium ? 'pro' : 'free',
               }}
               fullPage
             />
@@ -125,46 +104,14 @@ export default function Coach() {
                   <p className="text-sm text-muted-foreground">
                     When you miss the same day three weeks running, Coach notices — and adjusts your plan around your actual life, not an ideal one.
                   </p>
-                  {isIOSNative() ? (
-                    <>
-                      <Button
-                        onClick={() => handleIAP('annual')}
-                        disabled={iapLoading !== null}
-                        className="w-full font-bold text-sm text-white min-h-[48px]"
-                        style={{ background: '#0d3b5e' }}
-                      >
-                        {iapLoading === 'annual' ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          `Unlock Premium — $${PLANS.pro.annualPrice}/yr`
-                        )}
-                      </Button>
-                      <Button
-                        onClick={() => handleIAP('monthly')}
-                        disabled={iapLoading !== null}
-                        variant="outline"
-                        className="w-full text-sm min-h-[44px]"
-                      >
-                        {iapLoading === 'monthly' ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          `Or $${PLANS.pro.price.toFixed(2)}/mo`
-                        )}
-                      </Button>
-                      <p className="text-xs text-muted-foreground">Cancel anytime in Settings.</p>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        onClick={() => navigate("/pricing")}
-                        className="w-full font-bold text-sm text-white"
-                        style={{ background: '#0d3b5e' }}
-                      >
-                        🔒 Upgrade to Premium →
-                      </Button>
-                      <p className="text-xs text-muted-foreground">Cancel anytime.</p>
-                    </>
-                  )}
+                  <Button
+                    onClick={() => navigate("/pricing")}
+                    className="w-full font-bold text-sm text-white"
+                    style={{ background: '#0d3b5e' }}
+                  >
+                    🔒 Upgrade to Premium →
+                  </Button>
+                  <p className="text-xs text-muted-foreground">Cancel anytime.</p>
                 </div>
               </div>
             </div>
