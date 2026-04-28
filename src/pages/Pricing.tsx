@@ -9,6 +9,7 @@ import { analytics } from "@/lib/analytics";
 import { SEO } from "@/components/SEO";
 import { PLANS, type PlanTier, type BillingInterval, normalizePlan } from "@/lib/plans";
 import { handleCheckout } from "@/lib/checkout";
+import { isIOSNative } from "@/lib/platform";
 import {
   Accordion,
   AccordionContent,
@@ -23,9 +24,19 @@ export default function Pricing() {
   const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
   const [userEmail, setUserEmail] = useState<string | undefined>();
 
+  // Apple IAP compliance (3.1.1): redirect iOS native users away from web checkout pricing.
   useEffect(() => {
+    if (isIOSNative()) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    if (isIOSNative()) return;
     checkSubscription();
   }, []);
+
+  if (isIOSNative()) return null;
 
   const checkSubscription = async () => {
     const { data: { user } } = await supabase.auth.getUser();
