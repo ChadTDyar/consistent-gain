@@ -10,7 +10,7 @@ import { PLANS, type PlanTier, normalizePlan } from "@/lib/plans";
 import { Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isIOSNative } from "@/lib/platform";
-import { purchaseAnnual, purchaseMonthly, restorePurchases } from "@/lib/purchases";
+import { purchaseAnnual, purchaseMonthly } from "@/lib/purchases";
 import { toast } from "sonner";
 
 export default function Coach() {
@@ -20,7 +20,7 @@ export default function Coach() {
   const [daysSinceActivity, setDaysSinceActivity] = useState(0);
   const [plan, setPlan] = useState<PlanTier>("free");
   const [showUpgradeWall, setShowUpgradeWall] = useState(false);
-  const [iapLoading, setIapLoading] = useState<null | 'monthly' | 'annual' | 'restore'>(null);
+  const [iapLoading, setIapLoading] = useState<null | 'monthly' | 'annual'>(null);
 
   const handleIAP = async (interval: 'monthly' | 'annual') => {
     setIapLoading(interval);
@@ -38,24 +38,6 @@ export default function Coach() {
         console.error('[Coach IAP] purchase error:', err);
         toast.error("Purchase failed. Please try again.");
       }
-    } finally {
-      setIapLoading(null);
-    }
-  };
-
-  const handleRestore = async () => {
-    setIapLoading('restore');
-    try {
-      const isActive = await restorePurchases();
-      if (isActive) {
-        toast.success("Subscription restored!");
-        setPlan('pro');
-      } else {
-        toast.info("No active subscription found.");
-      }
-    } catch (err) {
-      console.error('[Coach IAP] restore error:', err);
-      toast.error("Could not restore purchases.");
     } finally {
       setIapLoading(null);
     }
@@ -169,13 +151,6 @@ export default function Coach() {
                           `Or $${PLANS.pro.price.toFixed(2)}/mo`
                         )}
                       </Button>
-                      <button
-                        onClick={handleRestore}
-                        disabled={iapLoading !== null}
-                        className="text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground transition-colors"
-                      >
-                        {iapLoading === 'restore' ? 'Restoring…' : 'Restore Purchases'}
-                      </button>
                       <p className="text-xs text-muted-foreground">Cancel anytime in Settings.</p>
                     </>
                   ) : (
