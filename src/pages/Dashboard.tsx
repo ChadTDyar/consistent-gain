@@ -126,7 +126,7 @@ export default function Dashboard() {
     const sentTriggers = new Set(triggers?.map(t => t.trigger_type) || []);
 
     if (isNewUser && !sentTriggers.has("welcome")) {
-      setWelcomeMessage("Welcome to Momentum! I'm Coach, your AI fitness companion. I'm here to help you build sustainable habits. Want help setting your first goal?");
+      setWelcomeMessage("Welcome to Momentum! I'm Coach, your AI habit companion. I'm here to help you build sustainable habits. Want help setting your first goal?");
       setShowWelcome(true);
       
       await supabase.from("coach_triggers").insert({
