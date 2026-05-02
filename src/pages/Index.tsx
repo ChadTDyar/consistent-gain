@@ -129,15 +129,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Founder Quote */}
-        <div className="py-10 md:py-14 bg-background-cream">
-          <div className="container mx-auto px-6 md:px-8 max-w-3xl text-center">
-            <p className="text-lg md:text-xl text-muted-foreground italic leading-relaxed">
-              "I've worked out since I was 15. The gap at 50 isn't knowledge. It's momentum."
-            </p>
-            <p className="text-sm text-muted-foreground mt-3 font-medium">— Chad Dyar</p>
-          </div>
-        </div>
 
         {/* Social Proof Strip */}
         <SocialProofStrip />
