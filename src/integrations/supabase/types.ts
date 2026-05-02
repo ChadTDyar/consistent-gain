@@ -585,6 +585,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      grant_premium_unsafe: {
+        Args: { _plan?: string; _user_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
