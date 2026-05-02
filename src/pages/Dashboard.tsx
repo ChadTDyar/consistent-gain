@@ -31,7 +31,7 @@ import { analytics } from "@/lib/analytics";
 import { UpgradeWall } from "@/components/UpgradeWall";
 import { MOMENTUM } from "@/constants/value-language";
 import { Users, BarChart3 } from "lucide-react";
-import { OriginStoryCard } from "@/components/OriginStoryCard";
+
 
 interface Profile {
   id: string;
@@ -314,7 +314,6 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {streak > 0 && <OriginStoryCard />}
         {streak > 0 && <StreakRepairIntro />}
 
         <OnboardingChecklist

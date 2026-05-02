@@ -57,7 +57,7 @@ export default function Coach() {
       <div className="min-h-screen bg-background-cream pb-24">
         <header className="sticky top-0 z-10 bg-card/95 backdrop-blur-md border-b border-border px-4 py-4">
           <h1 className="text-2xl font-display font-bold text-gradient">Coach</h1>
-          <p className="text-sm text-muted-foreground">Your AI fitness companion</p>
+          <p className="text-sm text-muted-foreground">Your AI habit companion</p>
         </header>
 
         <div className="container mx-auto px-4 py-4 max-w-2xl h-[calc(100vh-180px)]">
