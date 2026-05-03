@@ -244,15 +244,41 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
 
         <ScrollArea className="flex-1 p-4" ref={scrollRef}>
           <div className="space-y-4">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[80%] rounded-2xl px-4 py-2 ${
-                  msg.role === "user" ? "bg-gradient-primary text-white" : "bg-muted text-foreground"
-                }`}>
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+            {showEmptyState ? (
+              <div className="py-6 space-y-5" data-testid="coach-empty-state">
+                <div className="bg-muted text-foreground rounded-2xl px-4 py-3 max-w-[90%]">
+                  <p className="text-sm leading-relaxed">
+                    Hi, I am your habit Coach. Tell me what you are working on, what is stuck, or what is working. I will help you stay consistent.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {[
+                    "Help me stick with my current habits",
+                    "I am losing momentum, what should I do?",
+                    "Can you help me set a new goal?",
+                  ].map((chip) => (
+                    <button
+                      key={chip}
+                      type="button"
+                      onClick={() => handleChipClick(chip)}
+                      className="text-sm rounded-full border border-primary/30 bg-primary/5 hover:bg-primary/10 text-foreground px-4 py-2 min-h-11 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      {chip}
+                    </button>
+                  ))}
                 </div>
               </div>
-            ))}
+            ) : (
+              messages.map((msg, idx) => (
+                <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <div className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                    msg.role === "user" ? "bg-gradient-primary text-white" : "bg-muted text-foreground"
+                  }`}>
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                  </div>
+                </div>
+              ))
+            )}
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-muted rounded-2xl px-4 py-2">
