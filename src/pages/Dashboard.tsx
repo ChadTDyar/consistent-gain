@@ -468,7 +468,7 @@ export default function Dashboard() {
                 className="w-full md:w-auto shadow-sm hover:shadow-md"
               >
                 <Plus className="mr-2 h-5 w-5" />
-                Add New Goal
+                Add Habit
               </Button>
             ) : null}
           </>
