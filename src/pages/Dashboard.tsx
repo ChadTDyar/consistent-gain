@@ -272,6 +272,15 @@ export default function Dashboard() {
             )}
             <ThemeToggle />
             <Button
+              variant="default"
+              size="icon"
+              onClick={handleAddGoal}
+              className="min-w-[44px] min-h-[44px] shadow-sm hover:shadow-md"
+              aria-label="Add habit"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+            <Button
               variant="outline"
               size="icon"
               onClick={() => navigate("/profile")}
