@@ -15,6 +15,9 @@ interface ActivityLog {
 
 export default function Progress() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const showWorkoutsList = searchParams.get("filter") === "workouts";
+  const filterDays = parseInt(searchParams.get("days") || "30", 10);
   const [loading, setLoading] = useState(true);
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [chartData, setChartData] = useState<any[]>([]);
