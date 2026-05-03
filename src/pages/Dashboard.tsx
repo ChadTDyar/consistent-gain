@@ -189,12 +189,12 @@ export default function Dashboard() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data, error } = await supabase
-      .from("goals")
+    const { data, error } = await (supabase
+      .from("goals") as any)
       .select("*")
       .eq("user_id", user.id)
-      .is("deleted_at" as any, null)
-      .eq("is_archived" as any, false)
+      .is("deleted_at", null)
+      .eq("is_archived", false)
       .order("created_at", { ascending: false });
 
     if (error) {
