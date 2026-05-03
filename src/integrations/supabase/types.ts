@@ -295,30 +295,39 @@ export type Database = {
       }
       goals: {
         Row: {
+          archived_at: string | null
           category: string | null
           created_at: string | null
+          deleted_at: string | null
           description: string | null
           id: string
+          is_archived: boolean
           start_date: string | null
           target_days_per_week: number | null
           title: string
           user_id: string
         }
         Insert: {
+          archived_at?: string | null
           category?: string | null
           created_at?: string | null
+          deleted_at?: string | null
           description?: string | null
           id?: string
+          is_archived?: boolean
           start_date?: string | null
           target_days_per_week?: number | null
           title: string
           user_id: string
         }
         Update: {
+          archived_at?: string | null
           category?: string | null
           created_at?: string | null
+          deleted_at?: string | null
           description?: string | null
           id?: string
+          is_archived?: boolean
           start_date?: string | null
           target_days_per_week?: number | null
           title?: string
