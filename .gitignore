@@ -35,3 +35,9 @@ supabase/.temp/
 android/build/
 android/app/build/
 android/.gradle/
+# === iOS user data (added 2026-05-03 per blockers 80, 82, 55) ===
+ios/App/App.xcodeproj/xcuserdata/
+ios/App/App.xcworkspace/xcuserdata/
+ios/App/build/
+ios/App/Pods/
+*.xcuserstate
