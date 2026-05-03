@@ -18,12 +18,20 @@ class HealthKitService {
   async requestAuthorization(): Promise<boolean> {
     if (!this.isSupported()) return false;
     if (this.authorized) return true;
+    // The @perfood/capacitor-healthkit plugin maps friendly strings (e.g. 'activity',
+    // 'steps', 'calories') to HKSampleType in its native getTypes() switch. Passing
+    // 'workoutType' does NOT match any case and produces an empty Set, which makes
+    // HKHealthStore raise NSInvalidArgumentException: "Must request authorization
+    // for at least one data type". Use 'activity' which maps to HKWorkoutType.
+    const all: SampleNames[] = ['activity' as SampleNames];
+    const read: SampleNames[] = ['activity' as SampleNames];
+    const write: SampleNames[] = ['activity' as SampleNames];
+    if (all.length === 0 || (read.length === 0 && write.length === 0)) {
+      console.warn('HealthKit: refusing to call requestAuthorization with empty type arrays');
+      return false;
+    }
     try {
-      await CapacitorHealthkit.requestAuthorization({
-        all: ['workoutType' as SampleNames],
-        read: ['workoutType' as SampleNames],
-        write: ['workoutType' as SampleNames],
-      });
+      await CapacitorHealthkit.requestAuthorization({ all, read, write });
       this.authorized = true;
       return true;
     } catch (e) {
