@@ -62,6 +62,46 @@ export function EditGoalDialog({
   const [startDate, setStartDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingGoal, setLoadingGoal] = useState(false);
+  const [archiving, setArchiving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const handleArchive = async () => {
+    if (!goalId) return;
+    setArchiving(true);
+    const { error } = await supabase
+      .from("goals")
+      .update({ is_archived: true, archived_at: new Date().toISOString() } as any)
+      .eq("id", goalId);
+    setArchiving(false);
+    if (error) {
+      toast.error("Failed to archive goal");
+      console.error(error);
+      return;
+    }
+    toast.success("Goal archived");
+    onOpenChange(false);
+    onGoalUpdated();
+  };
+
+  const handleDelete = async () => {
+    if (!goalId) return;
+    setDeleting(true);
+    const { error } = await supabase
+      .from("goals")
+      .update({ deleted_at: new Date().toISOString() } as any)
+      .eq("id", goalId);
+    setDeleting(false);
+    setConfirmDelete(false);
+    if (error) {
+      toast.error("Failed to delete goal");
+      console.error(error);
+      return;
+    }
+    toast.success("Goal deleted");
+    onOpenChange(false);
+    onGoalUpdated();
+  };
 
   useEffect(() => {
     if (open && goalId) {
