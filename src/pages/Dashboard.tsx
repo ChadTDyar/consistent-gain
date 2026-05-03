@@ -193,6 +193,8 @@ export default function Dashboard() {
       .from("goals")
       .select("*")
       .eq("user_id", user.id)
+      .is("deleted_at" as any, null)
+      .eq("is_archived" as any, false)
       .order("created_at", { ascending: false });
 
     if (error) {
