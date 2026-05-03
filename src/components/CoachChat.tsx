@@ -40,6 +40,7 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [hasUserHistory, setHasUserHistory] = useState<boolean | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/coach-chat`;
@@ -57,10 +58,26 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUserId(user.id);
+        const { data: prior } = await supabase
+          .from("chat_messages")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("role", "user")
+          .limit(1);
+        setHasUserHistory((prior?.length ?? 0) > 0);
+      } else {
+        setHasUserHistory(false);
       }
     };
     loadUserId();
   }, []);
+
+  const userMessageCount = messages.filter(m => m.role === "user").length;
+  const showEmptyState = fullPage && hasUserHistory === false && userMessageCount === 0;
+
+  const handleChipClick = (text: string) => {
+    setInput(text);
+  };
 
   const streamChat = async (userMessage: string) => {
     const newMessages = [...messages, { role: "user" as const, content: userMessage }];
