@@ -275,18 +275,39 @@ export function EditGoalDialog({
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
-            <Button 
-              type="button" 
-              variant="outline" 
+          <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-border">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={handleArchive}
+              disabled={archiving || deleting || loading}
+              className="text-muted-foreground hover:text-foreground min-h-11"
+            >
+              {archiving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Archive className="mr-2 h-4 w-4" />}
+              Archive
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setConfirmDelete(true)}
+              disabled={archiving || deleting || loading}
+              className="text-destructive hover:text-destructive hover:bg-destructive/10 min-h-11"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </Button>
+            <div className="flex-1" />
+            <Button
+              type="button"
+              variant="outline"
               onClick={() => onOpenChange(false)}
               className="border-2"
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
-              disabled={loading}
+            <Button
+              type="submit"
+              disabled={loading || archiving || deleting}
               className="shadow-sm hover:shadow-md font-semibold"
             >
               {loading ? (
@@ -301,6 +322,28 @@ export function EditGoalDialog({
           </div>
         </form>
       </DialogContent>
+
+      <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this goal?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This goal will be removed from your habits. Your historical activity stays in your records and reports.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => { e.preventDefault(); handleDelete(); }}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              Delete goal
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
