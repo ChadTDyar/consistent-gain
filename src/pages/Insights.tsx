@@ -169,15 +169,25 @@ export default function Insights() {
             <Card className="border-none shadow-md">
               <CardContent className="pt-5 text-center">
                 <TrendingUp className="h-8 w-8 text-success mx-auto mb-2" />
-                <p className="text-3xl font-display font-bold text-foreground">{stats.avgRating}</p>
+                <p className="text-3xl font-display font-bold text-foreground">
+                  {stats.avgRating}
+                  <span className="text-base font-normal text-muted-foreground"> / 5</span>
+                </p>
                 <p className="text-sm text-muted-foreground">Avg Wellness</p>
               </CardContent>
             </Card>
             <Card className="border-none shadow-md">
-              <CardContent className="pt-5 text-center">
-                <Target className="h-8 w-8 text-primary mx-auto mb-2" />
-                <p className="text-3xl font-display font-bold text-foreground">{stats.totalWorkouts}</p>
-                <p className="text-sm text-muted-foreground">Workouts</p>
+              <CardContent className="pt-0">
+                <button
+                  type="button"
+                  onClick={() => navigate("/progress?filter=workouts&days=30")}
+                  aria-label="View all workouts"
+                  className="w-full min-h-[44px] pt-5 pb-2 text-center rounded-md hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-colors"
+                >
+                  <Target className="h-8 w-8 text-primary mx-auto mb-2" />
+                  <p className="text-3xl font-display font-bold text-foreground">{stats.totalWorkouts}</p>
+                  <p className="text-sm text-muted-foreground">Workouts ›</p>
+                </button>
               </CardContent>
             </Card>
           </div>

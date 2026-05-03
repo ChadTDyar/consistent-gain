@@ -17,9 +17,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Archive, Trash2 } from "lucide-react";
 import { goalSchema } from "@/lib/validations";
 
 const CATEGORIES = [
@@ -52,6 +62,46 @@ export function EditGoalDialog({
   const [startDate, setStartDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingGoal, setLoadingGoal] = useState(false);
+  const [archiving, setArchiving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const handleArchive = async () => {
+    if (!goalId) return;
+    setArchiving(true);
+    const { error } = await supabase
+      .from("goals")
+      .update({ is_archived: true, archived_at: new Date().toISOString() } as any)
+      .eq("id", goalId);
+    setArchiving(false);
+    if (error) {
+      toast.error("Failed to archive goal");
+      console.error(error);
+      return;
+    }
+    toast.success("Goal archived");
+    onOpenChange(false);
+    onGoalUpdated();
+  };
+
+  const handleDelete = async () => {
+    if (!goalId) return;
+    setDeleting(true);
+    const { error } = await supabase
+      .from("goals")
+      .update({ deleted_at: new Date().toISOString() } as any)
+      .eq("id", goalId);
+    setDeleting(false);
+    setConfirmDelete(false);
+    if (error) {
+      toast.error("Failed to delete goal");
+      console.error(error);
+      return;
+    }
+    toast.success("Goal deleted");
+    onOpenChange(false);
+    onGoalUpdated();
+  };
 
   useEffect(() => {
     if (open && goalId) {
@@ -225,18 +275,39 @@ export function EditGoalDialog({
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
-            <Button 
-              type="button" 
-              variant="outline" 
+          <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-border">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={handleArchive}
+              disabled={archiving || deleting || loading}
+              className="text-muted-foreground hover:text-foreground min-h-11"
+            >
+              {archiving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Archive className="mr-2 h-4 w-4" />}
+              Archive
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setConfirmDelete(true)}
+              disabled={archiving || deleting || loading}
+              className="text-destructive hover:text-destructive hover:bg-destructive/10 min-h-11"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </Button>
+            <div className="flex-1" />
+            <Button
+              type="button"
+              variant="outline"
               onClick={() => onOpenChange(false)}
               className="border-2"
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
-              disabled={loading}
+            <Button
+              type="submit"
+              disabled={loading || archiving || deleting}
               className="shadow-sm hover:shadow-md font-semibold"
             >
               {loading ? (
@@ -251,6 +322,28 @@ export function EditGoalDialog({
           </div>
         </form>
       </DialogContent>
+
+      <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this goal?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This goal will be removed from your habits. Your historical activity stays in your records and reports.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => { e.preventDefault(); handleDelete(); }}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              Delete goal
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
