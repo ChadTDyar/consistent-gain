@@ -148,6 +148,37 @@ export default function Progress() {
             Your Progress
           </h1>
 
+          {showWorkoutsList && (
+            <Card className="border-none shadow-md" id="workouts-list">
+              <CardHeader>
+                <CardTitle className="text-2xl font-display font-semibold">
+                  Workouts (Last {filterDays} Days)
+                </CardTitle>
+                <CardDescription className="text-base">
+                  {logs.length} {logs.length === 1 ? "workout" : "workouts"} logged
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {logs.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-6">No workouts logged in this window.</p>
+                ) : (
+                  <ul className="divide-y divide-border">
+                    {[...logs].reverse().map((log) => (
+                      <li key={log.id} className="py-3 flex items-center justify-between gap-3">
+                        <span className="text-foreground font-medium">
+                          {format(new Date(log.completed_at), "EEE, MMM d")}
+                        </span>
+                        <span className="text-sm text-muted-foreground">
+                          {log.rpe_rating != null ? `Wellness ${log.rpe_rating} / 5` : "—"}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           {/* Week Streak */}
           <Card className="border-none shadow-lg bg-gradient-to-br from-success/10 to-primary/5">
             <CardHeader className="text-center pb-6">
