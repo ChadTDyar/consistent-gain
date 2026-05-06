@@ -31,6 +31,24 @@ const HABITS = [
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  // --- Auth boundary: x-seed-token must match server-side env var ---
+  const expectedToken = Deno.env.get("APPLE_REVIEW_SEED_TOKEN");
+  const providedToken = req.headers.get("x-seed-token");
+  if (!expectedToken || !providedToken || providedToken !== expectedToken) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 401,
+    });
+  }
+
+  const PASSWORD = Deno.env.get("APPLE_REVIEW_SEED_PASSWORD");
+  if (!PASSWORD) {
+    return new Response(JSON.stringify({ error: "APPLE_REVIEW_SEED_PASSWORD not configured" }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+    });
+  }
+
   try {
     const admin = createClient(
       Deno.env.get("SUPABASE_URL")!,
