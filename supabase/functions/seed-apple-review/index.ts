@@ -1,5 +1,17 @@
-// One-shot admin function to recreate the Apple Review demo account.
-// Phase 3: 3 habits + 30 days of activity logs (>=14 consecutive day streak each).
+// ============================================================================
+// seed-apple-review
+// ----------------------------------------------------------------------------
+// (a) Seed-only function intended for Apple review credential setup. Recreates
+//     the apple-review@momentumfit.app demo account with 3 habits and 30 days
+//     of activity logs (>=14 consecutive day streak each).
+// (b) Requires BOTH of these env vars to be set on the Supabase project:
+//       - APPLE_REVIEW_SEED_PASSWORD  (password assigned to the demo account)
+//       - APPLE_REVIEW_SEED_TOKEN     (shared secret required in x-seed-token)
+// (c) Returns 401 without a valid x-seed-token header matching
+//     APPLE_REVIEW_SEED_TOKEN. Function has verify_jwt=false because Apple
+//     review tooling cannot present a Supabase JWT; the seed-token header is
+//     the sole authentication boundary.
+// ============================================================================
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
@@ -9,7 +21,6 @@ const corsHeaders = {
 };
 
 const EMAIL = "apple-review@momentumfit.app";
-const PASSWORD = "AppleRev2026!MOM";
 
 const HABITS = [
   { title: "Morning workout", description: "Strength + cardio session", category: "fitness", duration: 25, intensity: "medium", rpe: 6 },
