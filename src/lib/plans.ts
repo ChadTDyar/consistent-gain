@@ -33,6 +33,13 @@ export type BillingInterval = 'monthly' | 'annual';
  * Defensive against legacy values like 'premium' that may exist on older accounts.
  */
 export function normalizePlan(plan: string | null | undefined): PlanTier {
+  // Apple IAP compliance (HomeGrown canonical pattern): on iOS native builds the
+  // app ships with all paid features unlocked and no upgrade surface. Short-circuit
+  // at the source so every consumer of normalizePlan() sees the top tier on iOS,
+  // regardless of what's stored in profiles.plan. This prevents drift where new
+  // gating sites forget to add `!isIOSNative()` checks and accidentally surface
+  // an Upgrade CTA in a native session.
+  if (isIOSNative()) return 'pro';
   if (!plan) return 'free';
   const p = plan.toLowerCase();
   if (p === 'pro' || p === 'premium') return 'pro';
