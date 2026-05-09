@@ -98,6 +98,7 @@ const Index = () => {
                   >
                     Track My First 3 Habits Free
                   </Button>
+                  <AppStoreBadge />
                 </div>
                 <div className="flex items-center gap-2 justify-center lg:justify-start text-xs md:text-sm text-muted-foreground pt-1">
                   <div className="flex">
