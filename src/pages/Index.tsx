@@ -10,6 +10,7 @@ import { analytics } from "@/lib/analytics";
 import { Star, LogIn, LogOut } from "lucide-react";
 import { KitSignupForm } from "@/components/KitSignupForm";
 import { supabase } from "@/integrations/supabase/client";
+import { AppStoreBadge } from "@/components/AppStoreBadge";
 
 // Lazy load below-the-fold sections
 const FAQ = lazy(() => import("@/components/FAQ").then(m => ({ default: m.FAQ })));
