@@ -8,171 +8,150 @@ export default function Terms() {
 
   return (
     <>
-      <SEO 
+      <SEO
         title="Terms of Service - Momentum | Fitness Habit Tracker"
-        description="Read Momentum's Terms of Service. Clear, fair terms for our fitness habit tracking app. Free and Premium subscription details included."
-        keywords="momentum terms of service, fitness app terms, user agreement, subscription terms, fitness tracker legal"
+        description="Read Momentum's Terms of Service. Clear terms covering subscriptions, auto-renewal, account use, and the Apple App Store distribution agreement."
+        keywords="momentum terms of service, fitness app terms, user agreement, subscription terms, auto-renewal, apple eula"
       />
       <div className="min-h-screen bg-background-cream">
-      <div className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-4xl">
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate("/")} 
-          className="mb-8 hover:bg-muted"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Home
-        </Button>
+        <div className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-4xl">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/")}
+            className="mb-8 hover:bg-muted"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Home
+          </Button>
 
-        <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-foreground">
-          Terms of Service
-        </h1>
-        <p className="text-muted-foreground mb-8">Last updated: {new Date().toLocaleDateString()}</p>
+          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-foreground">
+            Terms of Service
+          </h1>
+          <p className="text-muted-foreground mb-8">Last updated: 2026-05-09</p>
 
-        <div className="prose prose-lg max-w-none space-y-6 text-foreground">
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Agreement to Terms</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              By accessing and using Momentum, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using this service.
-            </p>
-          </section>
+          <div className="prose prose-lg max-w-none space-y-6 text-foreground">
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">Acceptance of Terms</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                By creating an account, downloading, or using Momentum ("the Service"), you agree to these Terms of Service. If you do not agree, do not use the Service. These Terms form a binding agreement between you and Momentum.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Description of Service</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Momentum is a fitness habit tracking application designed to help users build sustainable fitness routines through goal setting, activity logging, and streak tracking. Premium features include unlimited goals and AI coaching.
-            </p>
-          </section>
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">Account and Eligibility</h2>
+              <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                <li>You must be at least 18 years old to create an account.</li>
+                <li>You must provide accurate, current, and complete information during registration.</li>
+                <li>You are responsible for safeguarding your password and for all activity under your account.</li>
+                <li>You must notify us immediately of any unauthorized access at support@momentumfit.app.</li>
+                <li>One person or legal entity per account. Sharing accounts is not permitted.</li>
+              </ul>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Account Registration</h2>
-            <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-              <li>You must be at least 18 years old to create an account</li>
-              <li>You must provide accurate and complete information</li>
-              <li>You are responsible for maintaining the security of your account</li>
-              <li>You are responsible for all activities under your account</li>
-              <li>You must notify us immediately of any unauthorized access</li>
-            </ul>
-          </section>
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">Subscriptions and Billing</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Momentum offers a free tier and paid subscription tiers (Pro and Premium). Paid subscriptions unlock additional features such as unlimited habits, streak repair, extended history, data export, and AI Coach access.
+              </p>
 
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Subscription Plans</h2>
-            
-            <h3 className="text-xl font-semibold mb-2">Free Plan</h3>
-            <ul className="list-disc pl-6 space-y-2 text-muted-foreground mb-4">
-              <li>Up to 3 active habits</li>
-              <li>7-day streak tracking</li>
-              <li>Daily check-ins</li>
-              <li>Basic progress graphs</li>
-            </ul>
+              <h3 className="text-xl font-semibold mb-2">Auto-Renewal</h3>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Subscriptions renew automatically at the end of each billing period (monthly or annual) at the then-current price unless you cancel at least 24 hours before the end of the current period. Payment is charged to your Apple ID at confirmation of purchase for in-app purchases, or to your selected payment method on the web.
+              </p>
 
-            <h3 className="text-xl font-semibold mb-2">Pro Plan ($3.99/month or $38/year)</h3>
-            <ul className="list-disc pl-6 space-y-2 text-muted-foreground mb-4">
-              <li>Unlimited habits</li>
-              <li>Streak Repair (48-hour grace period)</li>
-              <li>30-day history</li>
-              <li>Weekly progress email</li>
-              <li>Accountability partner</li>
-            </ul>
+              <h3 className="text-xl font-semibold mb-2">Managing and Cancelling</h3>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                You can manage your subscription and turn off auto-renewal in your Apple ID Account Settings on your device after purchase. Web subscriptions can be managed from the Account page inside Momentum. Cancelling stops future renewals. You retain access to paid features until the end of the current billing period.
+              </p>
 
-            <h3 className="text-xl font-semibold mb-2">Premium Plan ($7.99/month or $77/year)</h3>
-            <ul className="list-disc pl-6 space-y-2 text-muted-foreground mb-4">
-              <li>Everything in Pro</li>
-              <li>AI Coach access</li>
-              <li>Unlimited history</li>
-              <li>CSV data export</li>
-            </ul>
+              <h3 className="text-xl font-semibold mb-2">Refunds</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Purchases made through the App Store are subject to Apple's refund policy and must be requested through Apple. Web purchases are non-refundable except where required by law. Good-faith refund requests for web purchases may be considered within 7 days of the original charge by writing to support@momentumfit.app.
+              </p>
+            </section>
 
-            <p className="text-muted-foreground leading-relaxed">
-              Subscriptions automatically renew unless cancelled before the renewal date. Prices are subject to change with 30 days notice.
-            </p>
-          </section>
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">Apple App Store Distribution</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                If you obtained Momentum from the Apple App Store, your use is also governed by Apple's Licensed Application End User License Agreement (Apple's Standard EULA), available at https://www.apple.com/legal/internet-services/itunes/dev/stdeula/. To the extent these Terms conflict with Apple's Standard EULA on matters Apple's EULA covers, Apple's EULA controls for the App Store version of Momentum. You acknowledge that Apple is not a party to these Terms and is not responsible for the Service or its content. Apple has no obligation to provide maintenance or support for the Service.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Payment and Refunds</h2>
-            <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-              <li>Payments are processed securely through Stripe</li>
-              <li>All fees are non-refundable except as required by law</li>
-              <li>You can cancel your subscription at any time</li>
-              <li>Upon cancellation, you retain access until the end of your billing period</li>
-              <li>Refund requests will be considered on a case-by-case basis within 7 days of purchase</li>
-            </ul>
-          </section>
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">Intellectual Property</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                Momentum and its content, design, logos, and software are owned by us and protected by copyright, trademark, and other laws. We grant you a limited, non-exclusive, non-transferable, revocable license to use the Service for personal, non-commercial purposes. You retain ownership of the data you create within the Service (habits, logs, notes, photos).
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">User Content and Conduct</h2>
-            <p className="text-muted-foreground leading-relaxed mb-4">You agree not to:</p>
-            <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-              <li>Use the service for any illegal purpose</li>
-              <li>Attempt to gain unauthorized access to our systems</li>
-              <li>Upload malicious code or content</li>
-              <li>Harass or abuse other users or support staff</li>
-              <li>Reverse engineer or copy any part of the service</li>
-              <li>Use automated systems to access the service</li>
-            </ul>
-          </section>
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">User Conduct</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">You agree not to:</p>
+              <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                <li>Use the Service for any unlawful purpose or in violation of these Terms.</li>
+                <li>Attempt to gain unauthorized access to other accounts or our systems.</li>
+                <li>Upload malicious code, abusive content, or content that infringes others' rights.</li>
+                <li>Harass, threaten, or abuse other users or our support staff.</li>
+                <li>Reverse engineer, decompile, or copy any part of the Service except as permitted by law.</li>
+                <li>Use bots, scrapers, or other automated systems to access the Service.</li>
+              </ul>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Intellectual Property</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              All content, features, and functionality of Momentum are owned by us and protected by copyright, trademark, and other intellectual property laws. You retain ownership of the data you create (goals, logs, etc.).
-            </p>
-          </section>
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">Health Disclaimer</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                Momentum is a fitness habit tracking tool. It is not medical advice, diagnosis, or treatment. The Service does not replace consultation with qualified healthcare professionals. Consult your physician before beginning any new exercise program, especially if you have existing health conditions, take medication, or are pregnant. You assume all risk for activities you choose to track. We are not responsible for injuries, health issues, or other adverse outcomes that may result from your use of the Service.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Disclaimer of Warranties</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Momentum is provided "as is" without warranties of any kind. We do not guarantee that the service will be uninterrupted, secure, or error-free. This app is not a substitute for professional medical, fitness, or health advice.
-            </p>
-          </section>
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">Termination</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                You may delete your account at any time from the Settings page or by contacting support. We may suspend or terminate your access for violations of these Terms, fraudulent activity, or extended inactivity. On termination, your license to use the Service ends, although certain provisions (intellectual property, liability, governing law) survive.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Limitation of Liability</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              We shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the service. Our total liability shall not exceed the amount you paid us in the past 12 months.
-            </p>
-          </section>
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">Disclaimer of Warranties</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                The Service is provided "as is" and "as available" without warranties of any kind, express or implied, including merchantability, fitness for a particular purpose, and non-infringement. We do not warrant that the Service will be uninterrupted, secure, error-free, or that defects will be corrected.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Health and Safety Disclaimer</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Momentum is a habit tracking tool, not medical advice. Consult with a healthcare professional before starting any fitness program. We are not responsible for any injuries or health issues that may occur from activities you track.
-            </p>
-          </section>
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">Limitation of Liability</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                To the maximum extent permitted by law, Momentum and its affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits, data, or goodwill, arising from your use of the Service. Our total aggregate liability for any claim shall not exceed the greater of the amount you paid us in the 12 months preceding the claim, or USD 50.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Termination</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              We reserve the right to suspend or terminate your account at any time for violations of these terms. You may delete your account at any time from the Settings page.
-            </p>
-          </section>
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">Governing Law</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                These Terms are governed by the laws of the State of Delaware, United States, without regard to conflict of law principles. Any dispute shall be resolved in the state or federal courts located in Delaware, except where local consumer protection law grants you a non-waivable right to pursue claims elsewhere.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Changes to Terms</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              We may modify these terms at any time. Continued use of the service after changes constitutes acceptance of the new terms. Material changes will be notified via email.
-            </p>
-          </section>
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">Changes to Terms</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                We may update these Terms from time to time. Material changes will be communicated by email or in-app notice at least 14 days before they take effect. Continued use of the Service after changes take effect constitutes acceptance of the updated Terms.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Governing Law</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              These terms shall be governed by and construed in accordance with the laws of [Your Jurisdiction], without regard to its conflict of law provisions.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-display font-semibold mb-4">Contact Information</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              For questions about these Terms of Service, contact us at:{" "}
-              <a href="mailto:support@momentumfit.app" className="text-primary hover:underline">
-                support@momentumfit.app
-              </a>
-            </p>
-          </section>
+            <section>
+              <h2 className="text-2xl font-display font-semibold mb-4">Contact</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                Questions about these Terms? Reach us at{" "}
+                <a href="mailto:support@momentumfit.app" className="text-primary hover:underline">
+                  support@momentumfit.app
+                </a>
+                .
+              </p>
+            </section>
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }
