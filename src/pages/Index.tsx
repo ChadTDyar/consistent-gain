@@ -10,6 +10,7 @@ import { analytics } from "@/lib/analytics";
 import { Star, LogIn, LogOut } from "lucide-react";
 import { KitSignupForm } from "@/components/KitSignupForm";
 import { supabase } from "@/integrations/supabase/client";
+import { AppStoreBadge } from "@/components/AppStoreBadge";
 
 // Lazy load below-the-fold sections
 const FAQ = lazy(() => import("@/components/FAQ").then(m => ({ default: m.FAQ })));
@@ -97,6 +98,7 @@ const Index = () => {
                   >
                     Track My First 3 Habits Free
                   </Button>
+                  <AppStoreBadge />
                 </div>
                 <div className="flex items-center gap-2 justify-center lg:justify-start text-xs md:text-sm text-muted-foreground pt-1">
                   <div className="flex">
