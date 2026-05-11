@@ -27,6 +27,7 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Success = lazy(() => import("./pages/Success"));
 const Cancel = lazy(() => import("./pages/Cancel"));
+const Goodbye = lazy(() => import("./pages/Goodbye"));
 const Welcome = lazy(() => import("./pages/Welcome"));
 const About = lazy(() => import("./pages/About"));
 const Blog = lazy(() => import("./pages/Blog"));
@@ -107,6 +108,7 @@ const App = () => {
               <Route path="/terms" element={<Terms />} />
               <Route path="/success" element={<Success />} />
               <Route path="/cancel" element={<Cancel />} />
+              <Route path="/goodbye" element={<Goodbye />} />
               <Route path="/welcome" element={<Welcome />} />
               <Route path="/story" element={<About />} />
               <Route path="/about" element={<About />} />
