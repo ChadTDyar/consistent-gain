@@ -268,10 +268,9 @@ export default function Settings() {
       // back to /dashboard with a stale session.
       try { await supabase.auth.signOut(); } catch { /* ignore */ }
 
-      toast.success("Account deleted successfully");
       setDeleteStep(0);
       setDeleteConfirmText("");
-      navigate('/auth');
+      window.location.href = '/goodbye';
     } catch (error) {
       console.error('Error deleting account:', error);
       toast.error("Failed to delete account. Please try again or contact support.");
