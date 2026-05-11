@@ -30,6 +30,9 @@ export async function purchaseAnnual() {
 }
 
 async function purchaseByInterval(interval: 'monthly' | 'annual') {
+  if (!Capacitor.isNativePlatform()) {
+    throw new Error('Purchases are only available in the native app');
+  }
   const offerings = await Purchases.getOfferings();
   const pkg = offerings.current?.availablePackages.find(p =>
     p.product.identifier.includes(interval)
