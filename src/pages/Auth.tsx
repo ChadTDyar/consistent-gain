@@ -16,6 +16,7 @@ import posthog from "posthog-js";
 import { Separator } from "@/components/ui/separator";
 import { Capacitor } from "@capacitor/core";
 import { Browser } from "@capacitor/browser";
+import * as Sentry from "@sentry/react";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -28,16 +29,20 @@ export default function Auth() {
 
   useEffect(() => {
     // Check if user is already logged in
+    Sentry.addBreadcrumb({ category: 'init', message: 'starting auth-bootstrap getSession', level: 'info' });
     supabase.auth.getSession().then(({ data: { session } }) => {
+      Sentry.addBreadcrumb({ category: 'init', message: 'finished auth-bootstrap getSession', level: 'info' });
       if (session) {
         navigate("/dashboard");
       }
     });
 
     // Listen for auth changes
+    Sentry.addBreadcrumb({ category: 'init', message: 'starting auth-bootstrap onAuthStateChange', level: 'info' });
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
+      Sentry.addBreadcrumb({ category: 'init', message: `auth state changed: ${event}`, level: 'info' });
       if (session) {
         // --- PostHog IDENTITY WIRING ---
         if (event === 'SIGNED_IN' && session.user) {
@@ -54,7 +59,9 @@ export default function Auth() {
             is_new_user: !user.last_sign_in_at || user.last_sign_in_at === user.created_at,
             auth_provider: user.app_metadata?.provider || 'email',
           });
+          Sentry.addBreadcrumb({ category: 'init', message: 'starting initPurchases', level: 'info' });
           initPurchases(user.id);
+          Sentry.addBreadcrumb({ category: 'init', message: 'finished initPurchases (fire-and-forget)', level: 'info' });
         }
         navigate("/dashboard");
       }

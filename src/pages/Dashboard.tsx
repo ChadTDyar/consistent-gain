@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import * as Sentry from "@sentry/react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Plus, LogOut, Settings as SettingsIcon, TrendingUp, UserCircle, Lock, CheckCircle } from "lucide-react";
@@ -72,12 +73,14 @@ export default function Dashboard() {
   const plan: PlanTier = normalizePlan(profile?.plan);
 
   useEffect(() => {
+    Sentry.addBreadcrumb({ category: 'init', message: 'starting dashboard-bootstrap', level: 'info' });
     checkAuth();
     loadProfile();
     loadGoals();
     loadStreakData();
     checkTriggerMessages();
     checkSubscription();
+    Sentry.addBreadcrumb({ category: 'init', message: 'finished dashboard-bootstrap (all calls dispatched)', level: 'info' });
   }, []);
 
   // Fire activation event when user has both goals and a streak
@@ -160,13 +163,16 @@ export default function Dashboard() {
   };
 
   const checkAuth = async () => {
+    Sentry.addBreadcrumb({ category: 'init', message: 'starting dashboard-checkAuth', level: 'info' });
     const { data: { session } } = await supabase.auth.getSession();
+    Sentry.addBreadcrumb({ category: 'init', message: 'finished dashboard-checkAuth', level: 'info' });
     if (!session) {
       navigate("/auth");
     }
   };
 
   const loadProfile = async () => {
+    Sentry.addBreadcrumb({ category: 'init', message: 'starting dashboard-loadProfile', level: 'info' });
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -182,6 +188,7 @@ export default function Dashboard() {
     }
 
     setProfile(data);
+    Sentry.addBreadcrumb({ category: 'init', message: 'finished dashboard-loadProfile', level: 'info' });
   };
 
   const loadGoals = async () => {
