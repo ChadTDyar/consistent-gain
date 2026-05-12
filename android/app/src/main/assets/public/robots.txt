@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /account
+Disallow: /profile
+Disallow: /track
+Disallow: /coach
+Disallow: /progress
+Disallow: /library
+Disallow: /admin
+Disallow: /welcome
+Disallow: /goal/
+Disallow: /reset-password
+Disallow: /success
+Disallow: /cancel
+
+Sitemap: https://momentumfit.app/sitemap.xml
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Workout Split Calculator | Momentum</title>
+<meta name="description" content="Find your optimal workout split based on your schedule, experience level, and goals. Free calculator recommends PPL, Upper/Lower, Full Body, or Bro Split."/>
+<meta name="keywords" content="workout split calculator, training split, PPL split, upper lower split, best workout split"/>
+<meta property="og:title" content="Workout Split Calculator | Momentum"/>
+<meta property="og:description" content="Find your optimal workout split based on schedule, experience, and goals."/>
+<meta property="og:url" content="https://momentumfit.app/seo/workout-split-calculator.html"/>
+<meta property="og:image" content="https://momentumfit.app/og-image.jpg"/>
+<meta property="og:type" content="website"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="canonical" href="https://momentumfit.app/seo/workout-split-calculator.html"/>
+<link rel="icon" type="image/png" href="/app-icon.png"/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","name":"Workout Split Calculator","description":"Find your optimal workout split.","url":"https://momentumfit.app/seo/workout-split-calculator.html","mainEntity":{"@type":"SoftwareApplication","name":"Momentum","applicationCategory":"HealthApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1a1a2e;background:#f8fffe;line-height:1.6}.nav{background:#fff;border-bottom:1px solid #e2e8f0;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}.nav-brand{font-weight:800;font-size:1.25rem;color:#0D9488;text-decoration:none}.btn{background:#0D9488;color:#fff;border:none;padding:.75rem 1.5rem;border-radius:.5rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;font-size:1rem;transition:background .2s}.btn:hover{background:#0f766e}.hero{padding:4rem 2rem;text-align:center;max-width:800px;margin:0 auto}.hero .label{color:#0D9488;font-weight:700;font-size:.875rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}.hero h1{font-size:2.5rem;font-weight:800;line-height:1.2;margin-bottom:1rem}.hero p{font-size:1.125rem;color:#64748b;max-width:600px;margin:0 auto}.container{max-width:800px;margin:0 auto;padding:2rem}h2{font-size:1.75rem;font-weight:700;margin:2.5rem 0 1rem}p.body{color:#475569;margin-bottom:1rem}.tool-card{background:#fff;border:2px solid #e2e8f0;border-radius:1rem;padding:2rem;margin:2rem 0;box-shadow:0 4px 20px rgba(0,0,0,.06)}.tool-card h3{font-size:1.25rem;font-weight:700;margin-bottom:1rem;color:#0D9488}.form-group{margin-bottom:1rem}.form-group label{display:block;font-weight:600;margin-bottom:.25rem;font-size:.9rem}.form-group select{width:100%;padding:.6rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:1rem}.result{background:#f0fdfa;border:2px solid #0D9488;border-radius:.75rem;padding:1.5rem;margin-top:1rem;display:none}.result h4{color:#0D9488;font-weight:700;margin-bottom:.5rem}.split-day{background:#fff;border:1px solid #e2e8f0;border-radius:.5rem;padding:.75rem 1rem;margin:.5rem 0}.split-day strong{color:#0D9488}.cta-section{text-align:center;padding:3rem 2rem;background:#f0fdfa;border-radius:1rem;margin:2rem 0}.cta-section h2{margin-top:0}footer{text-align:center;padding:2rem;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:.875rem}footer a{color:#0D9488}@media(max-width:640px){.hero h1{font-size:1.75rem}}
+</style>
+</head>
+<body>
+<nav class="nav"><a href="/" class="nav-brand">Momentum</a><a href="/auth" class="btn">Start Free</a></nav>
+
+<section class="hero">
+<p class="label">Training Splits</p>
+<h1>Workout Split Calculator: Find Your Optimal Training Schedule</h1>
+<p>The best workout split is the one you can stick to. Answer 3 questions and we'll recommend the perfect split for your schedule and goals.</p>
+</section>
+
+<div class="container">
+<h2>Why Your Split Matters</h2>
+<p class="body">The right training split ensures each muscle group gets enough stimulus and recovery. Train too often and you burn out. Too little and you plateau. The sweet spot depends on your experience and available days.</p>
+
+<div class="tool-card">
+<h3>📅 Split Calculator</h3>
+<div class="form-group"><label>Days per week you can train</label><select id="days"><option value="2">2 days</option><option value="3">3 days</option><option value="4" selected>4 days</option><option value="5">5 days</option><option value="6">6 days</option></select></div>
+<div class="form-group"><label>Experience level</label><select id="exp"><option value="beginner">Beginner (< 1 year)</option><option value="intermediate">Intermediate (1-3 years)</option><option value="advanced">Advanced (3+ years)</option></select></div>
+<div class="form-group"><label>Primary goal</label><select id="goal"><option value="strength">Build strength</option><option value="muscle">Build muscle</option><option value="general">General fitness</option></select></div>
+<button class="btn" onclick="calc()">Find My Split</button>
+<div class="result" id="res"></div>
+</div>
+
+<h2>Popular Splits Explained</h2>
+<p class="body"><strong>Full Body (2-3 days):</strong> Hit every muscle each session. Best for beginners and busy schedules.</p>
+<p class="body"><strong>Upper/Lower (4 days):</strong> Alternate upper and lower body. Great balance of volume and recovery.</p>
+<p class="body"><strong>Push/Pull/Legs (5-6 days):</strong> High volume per muscle group. Best for experienced lifters.</p>
+
+<div class="cta-section">
+<h2>Track Any Split with Momentum</h2>
+<p class="body">Set your training days as goals, check in daily, and watch your consistency climb.</p>
+<a href="/auth" class="btn">Start Free with Momentum</a>
+</div>
+</div>
+
+<footer>Built by <a href="https://www.chadtdyar.com" target="_blank" rel="noopener noreferrer">Chad T Dyar</a> · <a href="/">Momentum</a></footer>
+
+<script>
+function calc(){
+  var d=parseInt(document.getElementById('days').value),e=document.getElementById('exp').value,g=document.getElementById('goal').value;
+  var split,schedule;
+  if(d<=2){split='Full Body';schedule=['Full Body A: Squat, Bench, Row','Full Body B: Deadlift, OHP, Pull-ups'];}
+  else if(d==3){split='Full Body 3-Day';schedule=['Full Body A: Squat, Bench, Row','Full Body B: Deadlift, OHP, Chin-ups','Full Body C: Lunges, Incline Press, Cable Row'];}
+  else if(d==4){split='Upper/Lower';schedule=['Upper A: Bench, Row, OHP, Curls','Lower A: Squat, RDL, Leg Press, Calves','Upper B: OHP, Pull-ups, Incline DB, Triceps','Lower B: Deadlift, Lunges, Leg Curl, Calves'];}
+  else if(d==5){split=e=='beginner'?'Upper/Lower + Full':'Push/Pull/Legs + Upper/Lower';schedule=e=='beginner'?['Upper','Lower','Rest','Full Body','Upper','Lower','Rest']:['Push: Chest, Shoulders, Triceps','Pull: Back, Biceps, Rear Delts','Legs: Quads, Hams, Glutes, Calves','Upper: Bench, Row, OHP','Lower: Squat, RDL, Lunges'];}
+  else{split='Push/Pull/Legs (2x)';schedule=['Push: Chest, Shoulders, Triceps','Pull: Back, Biceps, Rear Delts','Legs: Quads, Hams, Glutes','Push: Variation exercises','Pull: Variation exercises','Legs: Variation exercises'];}
+  var html='<h4>Recommended: '+split+'</h4>';
+  for(var i=0;i<schedule.length;i++) html+='<div class="split-day"><strong>Day '+(i+1)+':</strong> '+schedule[i]+'</div>';
+  html+='<p style="margin-top:1rem;color:#475569">💡 Consistency matters more than the perfect split. Track your adherence with Momentum.</p>';
+  document.getElementById('res').innerHTML=html;document.getElementById('res').style.display='block';
+}
+</script>
+</body>
+</html>
