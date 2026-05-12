@@ -9,7 +9,7 @@ import posthog from "posthog-js";
 posthog.init("phc_LARV0p468D0BoYSBVO8giU7HEyALPke2JlaUNnI6uuy", {
   api_host: "https://us.i.posthog.com",
 });
-posthog.register({ app_name: "MomentumFit" });
+posthog.register({ app_name: "Momentum" });
 import { nativeService } from "./services/native.service";
 import { ThemeProvider } from "./contexts/ThemeContext";
 
