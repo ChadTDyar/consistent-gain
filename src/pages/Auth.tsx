@@ -275,7 +275,7 @@ export default function Auth() {
             </div>
             <Button 
               type="submit" 
-              className="w-full shadow-md hover:shadow-lg transition-all font-semibold" 
+              className="w-full min-h-[44px] touch-manipulation shadow-md hover:shadow-lg transition-all font-semibold"
               size="lg"
               disabled={loading}
             >
@@ -294,7 +294,7 @@ export default function Auth() {
           <Button
             type="button"
             variant="outline"
-            className="w-full"
+            className="w-full min-h-[44px] touch-manipulation"
             size="lg"
             disabled={loading}
             onClick={async () => {
@@ -337,7 +337,7 @@ export default function Auth() {
           <Button
             type="button"
             variant="outline"
-            className="w-full"
+            className="w-full min-h-[44px] touch-manipulation"
             size="lg"
             disabled={loading}
             onClick={async () => {
