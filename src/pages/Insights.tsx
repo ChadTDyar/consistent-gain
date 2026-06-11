@@ -300,7 +300,7 @@ export default function Insights() {
               requirement (requiredPlan="pro"), and Pricing page promise
               ("AI Coach: Premium only") aligned. */}
           {(() => {
-            const aiUnlocked = canAccessFeature(plan, 'pro');
+            const aiUnlocked = isIOSNative() || canAccessFeature(plan, 'pro');
             return (
               <Card className={`border-none shadow-lg ${aiUnlocked ? "bg-gradient-to-br from-primary/5 to-accent/5" : "relative overflow-hidden"}`}>
                 <CardHeader>
