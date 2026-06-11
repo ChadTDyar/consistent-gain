@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns";
 import { CoachChat } from "@/components/CoachChat";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { isIOSNative } from "@/lib/platform";
 
 interface Goal {
   id: string;
@@ -41,6 +42,13 @@ export default function GoalDetail() {
   }, [id]);
 
   const loadProfile = async () => {
+    // iOS native sessions are auto-entitled (free, no IAP per pricing v1.1).
+    // Skip the profile read and grant premium so CoachChat treats iOS users
+    // as paying — keeps the surface consistent with Coach.tsx + checkEntitlement.
+    if (isIOSNative()) {
+      setIsPremium(true);
+      return;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 

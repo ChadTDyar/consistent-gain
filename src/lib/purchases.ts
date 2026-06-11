@@ -45,6 +45,12 @@ async function purchaseByInterval(interval: 'monthly' | 'annual') {
 }
 
 export async function checkEntitlement(): Promise<boolean> {
+  // iOS native sessions are auto-entitled (Momentum iOS is free, no IAP per
+  // pricing agreement v1.1). Return true before any SDK or DB read so the
+  // rest of the app treats iOS users as premium without paywalls.
+  if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios') {
+    return true;
+  }
   if (!Capacitor.isNativePlatform()) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;

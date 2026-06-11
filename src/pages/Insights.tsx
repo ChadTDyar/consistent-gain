@@ -17,6 +17,7 @@ import {
   AreaChart, Area,
 } from "recharts";
 import { type PlanTier, normalizePlan, canAccessFeature } from "@/lib/plans";
+import { isIOSNative } from "@/lib/platform";
 
 interface WeeklyStats {
   totalWorkouts: number;
@@ -60,7 +61,9 @@ export default function Insights() {
         .eq("id", session.user.id)
         .single();
       const userPlan = normalizePlan(profile?.plan);
-      if (!canAccessFeature(userPlan, 'plus')) {
+      // iOS native sessions are auto-entitled (free, no IAP per pricing v1.1);
+      // never redirect them to /pricing. Web users still hit the paywall.
+      if (!isIOSNative() && !canAccessFeature(userPlan, 'plus')) {
         navigate("/pricing");
         return;
       }
@@ -297,7 +300,7 @@ export default function Insights() {
               requirement (requiredPlan="pro"), and Pricing page promise
               ("AI Coach: Premium only") aligned. */}
           {(() => {
-            const aiUnlocked = canAccessFeature(plan, 'pro');
+            const aiUnlocked = isIOSNative() || canAccessFeature(plan, 'pro');
             return (
               <Card className={`border-none shadow-lg ${aiUnlocked ? "bg-gradient-to-br from-primary/5 to-accent/5" : "relative overflow-hidden"}`}>
                 <CardHeader>

@@ -106,12 +106,15 @@ export default function Coach() {
                   </p>
                   <Button
                     onClick={() => navigate("/pricing")}
-                    className="w-full font-bold text-sm text-white"
+                    className="w-full font-bold text-sm text-white min-h-[44px] touch-manipulation"
                     style={{ background: '#0d3b5e' }}
+                    hidden={isIOSNative()}
                   >
                     🔒 Upgrade to Premium →
                   </Button>
-                  <p className="text-xs text-muted-foreground">Cancel anytime.</p>
+                  {!isIOSNative() && (
+                    <p className="text-xs text-muted-foreground">Cancel anytime.</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -119,7 +122,7 @@ export default function Coach() {
         </div>
       </div>
 
-      {showUpgradeWall && (
+      {showUpgradeWall && !isIOSNative() && (
         <UpgradeWall
           headline={MOMENTUM.walls.ai_coach.headline}
           body={MOMENTUM.walls.ai_coach.body}
