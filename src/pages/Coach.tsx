@@ -122,7 +122,7 @@ export default function Coach() {
         </div>
       </div>
 
-      {showUpgradeWall && (
+      {showUpgradeWall && !isIOSNative() && (
         <UpgradeWall
           headline={MOMENTUM.walls.ai_coach.headline}
           body={MOMENTUM.walls.ai_coach.body}
