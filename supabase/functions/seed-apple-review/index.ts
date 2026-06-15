@@ -153,6 +153,30 @@ serve(async (req) => {
     const { error: logErr } = await admin.from("activity_logs").insert(logs);
     if (logErr) throw logErr;
 
+    // 5. Seed 7 days of daily_context (wellness check-ins) so Progress/Trends
+    //    charts render populated state for the reviewer.
+    await admin
+      .from("daily_context")
+      .delete()
+      .eq("user_id", userId)
+      .gte("date", new Date(today.getTime() - 7 * 86400_000).toISOString().slice(0, 10));
+
+    const contexts: any[] = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setUTCDate(d.getUTCDate() - i);
+      contexts.push({
+        user_id: userId,
+        date: d.toISOString().slice(0, 10),
+        sleep_quality: 3 + ((i * 7) % 3),
+        energy_level: 3 + ((i * 11) % 3),
+        sleep_notes: "Apple review demo check-in",
+      });
+    }
+    const { error: ctxErr } = await admin.from("daily_context").insert(contexts);
+    if (ctxErr) throw ctxErr;
+
+
     return new Response(
       JSON.stringify({
         ok: true,
