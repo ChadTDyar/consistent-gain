@@ -259,35 +259,34 @@ export default function Dashboard() {
       {/* Skip-to-content link is rendered globally in App.tsx; targets the
           <main id="main-content"> wrapper in AppLayout. */}
       <header className="border-b border-border bg-card/80 backdrop-blur-md shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center max-w-7xl">
+        <div className="container mx-auto px-4 md:px-8 py-3 max-w-7xl flex items-center justify-between gap-3">
           <div
-            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+            className="flex items-center gap-2 min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
             onClick={() => navigate("/profile")}
             role="link"
             aria-label="Go to profile"
           >
-            <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-gradient">Momentum</h1>
-            <Badge 
-              variant={plan === 'free' ? 'outline' : 'secondary'} 
-              className={`text-xs font-bold uppercase ${
-                plan === 'pro' ? 'bg-secondary text-secondary-foreground' : 
-                plan === 'plus' ? 'badge-premium' : '' 
+            <img src={momentumLogo} alt="Momentum" className="h-7 w-auto shrink-0" />
+            <h1 className="text-xl md:text-2xl font-display font-bold text-gradient truncate">Momentum</h1>
+            <Badge
+              variant={plan === 'free' ? 'outline' : 'secondary'}
+              className={`text-[10px] font-bold uppercase shrink-0 ${
+                plan === 'pro' ? 'bg-secondary text-secondary-foreground' :
+                plan === 'plus' ? 'badge-premium' : ''
               }`}
             >
               {plan === 'free' ? 'Free' : plan === 'plus' ? 'Pro' : 'Premium'}
             </Badge>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-1 shrink-0">
             {plan === 'free' && !isIOSNative() && (
-              <Button 
-                onClick={() => navigate("/pricing")} 
-                className="hidden sm:flex shadow-md hover:shadow-lg transition-all btn-gradient"
+              <Button
+                onClick={() => navigate("/pricing")}
+                className="hidden md:flex shadow-md hover:shadow-lg transition-all btn-gradient"
               >
                 Upgrade
               </Button>
             )}
-            <ThemeToggle />
             <Button
               variant="default"
               size="icon"
@@ -315,18 +314,10 @@ export default function Dashboard() {
             >
               <SettingsIcon className="h-4 w-4" />
             </Button>
-            <Button 
-              variant="outline" 
-              size="icon" 
-              onClick={handleSignOut}
-              className="border-2 min-w-[44px] min-h-[44px]"
-              aria-label="Sign out"
-            >
-              <LogOut className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </header>
+
 
       <main id="main-content" className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-7xl">
         <div className="mb-8 md:mb-12">
