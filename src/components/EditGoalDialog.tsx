@@ -199,14 +199,14 @@ export function EditGoalDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-display font-semibold">Edit Goal</DialogTitle>
+          <DialogTitle className="text-2xl font-display font-semibold">Edit Habit</DialogTitle>
           <DialogDescription className="text-base">
-            Update your goal details and preferences
+            Update your habit details and preferences
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-base font-medium">Goal Title</Label>
+            <Label htmlFor="title" className="text-base font-medium">Habit Name</Label>
             <Input
               id="title"
               value={title}
@@ -223,11 +223,12 @@ export function EditGoalDialog({
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Add any details about your goal..."
+              placeholder="Add any details about your habit..."
               rows={3}
               className="text-base"
             />
           </div>
+
 
           <div className="space-y-2">
             <Label htmlFor="category" className="text-base font-medium">Category</Label>
@@ -326,9 +327,9 @@ export function EditGoalDialog({
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete this goal?</AlertDialogTitle>
+            <AlertDialogTitle>Delete this habit?</AlertDialogTitle>
             <AlertDialogDescription>
-              This goal will be removed from your habits. Your historical activity stays in your records and reports.
+              This habit will be removed from your habits. Your historical activity stays in your records and reports.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -339,7 +340,8 @@ export function EditGoalDialog({
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {deleting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              Delete goal
+              Delete habit
+
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
