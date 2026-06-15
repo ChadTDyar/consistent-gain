@@ -20,6 +20,7 @@ import { CoachChat } from "@/components/CoachChat";
 import { calculateStreak, getUserActivityLogs, getDaysSinceLastActivity } from "@/lib/streakUtils";
 import { MicroblockSuggestion } from "@/components/MicroblockSuggestion";
 import { DailyContext } from "@/components/DailyContext";
+import { AppleHealthCard } from "@/components/AppleHealthCard";
 import { StreakRepair } from "@/components/StreakRepair";
 import PaywallModal from "@/components/PaywallModal";
 import momentumLogo from "@/assets/momentum-logo.png";
@@ -80,6 +81,10 @@ export default function Dashboard() {
     loadStreakData();
     checkTriggerMessages();
     checkSubscription();
+    // Request push notification permission once per device, post sign-in.
+    import("@/services/native.service").then(({ nativeService }) => {
+      nativeService.requestPushPermissionOnce();
+    });
     Sentry.addBreadcrumb({ category: 'init', message: 'finished dashboard-bootstrap (all calls dispatched)', level: 'info' });
   }, []);
 
@@ -89,6 +94,14 @@ export default function Dashboard() {
       analytics.activation();
     }
   }, [goals.length, streak]);
+
+  // Refresh streak/onboarding state when a daily check-in is saved.
+  useEffect(() => {
+    const onCheckin = () => loadStreakData();
+    window.addEventListener("checkin-saved", onCheckin);
+    return () => window.removeEventListener("checkin-saved", onCheckin);
+  }, []);
+
 
   const checkSubscription = async () => {
     try {
@@ -251,35 +264,34 @@ export default function Dashboard() {
       {/* Skip-to-content link is rendered globally in App.tsx; targets the
           <main id="main-content"> wrapper in AppLayout. */}
       <header className="border-b border-border bg-card/80 backdrop-blur-md shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center max-w-7xl">
+        <div className="container mx-auto px-4 md:px-8 py-3 max-w-7xl flex items-center justify-between gap-3">
           <div
-            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+            className="flex items-center gap-2 min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
             onClick={() => navigate("/profile")}
             role="link"
             aria-label="Go to profile"
           >
-            <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
-            <h1 className="text-2xl md:text-3xl font-display font-bold text-gradient">Momentum</h1>
-            <Badge 
-              variant={plan === 'free' ? 'outline' : 'secondary'} 
-              className={`text-xs font-bold uppercase ${
-                plan === 'pro' ? 'bg-secondary text-secondary-foreground' : 
-                plan === 'plus' ? 'badge-premium' : '' 
+            <img src={momentumLogo} alt="Momentum" className="h-7 w-auto shrink-0" />
+            <h1 className="text-xl md:text-2xl font-display font-bold text-gradient truncate">Momentum</h1>
+            <Badge
+              variant={plan === 'free' ? 'outline' : 'secondary'}
+              className={`text-[10px] font-bold uppercase shrink-0 ${
+                plan === 'pro' ? 'bg-secondary text-secondary-foreground' :
+                plan === 'plus' ? 'badge-premium' : ''
               }`}
             >
               {plan === 'free' ? 'Free' : plan === 'plus' ? 'Pro' : 'Premium'}
             </Badge>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-1 shrink-0">
             {plan === 'free' && !isIOSNative() && (
-              <Button 
-                onClick={() => navigate("/pricing")} 
-                className="hidden sm:flex shadow-md hover:shadow-lg transition-all btn-gradient"
+              <Button
+                onClick={() => navigate("/pricing")}
+                className="hidden md:flex shadow-md hover:shadow-lg transition-all btn-gradient"
               >
                 Upgrade
               </Button>
             )}
-            <ThemeToggle />
             <Button
               variant="default"
               size="icon"
@@ -307,18 +319,10 @@ export default function Dashboard() {
             >
               <SettingsIcon className="h-4 w-4" />
             </Button>
-            <Button 
-              variant="outline" 
-              size="icon" 
-              onClick={handleSignOut}
-              className="border-2 min-w-[44px] min-h-[44px]"
-              aria-label="Sign out"
-            >
-              <LogOut className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </header>
+
 
       <main id="main-content" className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-7xl">
         <div className="mb-8 md:mb-12">
@@ -328,7 +332,7 @@ export default function Dashboard() {
           <p className="text-lg text-muted-foreground">
             {goals.length === 0
               ? "Start building your first habit today"
-              : `You have ${goals.length} active ${goals.length === 1 ? "goal" : "goals"}`}
+              : `You have ${goals.length} active ${goals.length === 1 ? "habit" : "habits"}`}
           </p>
         </div>
 
@@ -343,7 +347,7 @@ export default function Dashboard() {
         <Tabs defaultValue="goals" className="w-full">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
             <TabsTrigger value="goals" className="text-base">
-              Goals
+              Habits
             </TabsTrigger>
             <TabsTrigger value="progress" className="text-base">
               <TrendingUp className="h-4 w-4 mr-2" />
@@ -352,9 +356,10 @@ export default function Dashboard() {
           </TabsList>
 
           <TabsContent value="goals" className="space-y-8">
+            <AppleHealthCard />
             {/* Health Tracking & Context Section */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <DailyContext />
+              <DailyContext onSaved={() => loadStreakData()} />
               <BodyMapPainReport onComplete={() => loadStreakData()} />
               <WeatherWidget />
               <CostTracker />
