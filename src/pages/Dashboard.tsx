@@ -327,7 +327,7 @@ export default function Dashboard() {
           <p className="text-lg text-muted-foreground">
             {goals.length === 0
               ? "Start building your first habit today"
-              : `You have ${goals.length} active ${goals.length === 1 ? "goal" : "goals"}`}
+              : `You have ${goals.length} active ${goals.length === 1 ? "habit" : "habits"}`}
           </p>
         </div>
 
@@ -342,7 +342,7 @@ export default function Dashboard() {
         <Tabs defaultValue="goals" className="w-full">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
             <TabsTrigger value="goals" className="text-base">
-              Goals
+              Habits
             </TabsTrigger>
             <TabsTrigger value="progress" className="text-base">
               <TrendingUp className="h-4 w-4 mr-2" />
@@ -351,9 +351,10 @@ export default function Dashboard() {
           </TabsList>
 
           <TabsContent value="goals" className="space-y-8">
+            <AppleHealthCard />
             {/* Health Tracking & Context Section */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <DailyContext />
+              <DailyContext onSaved={() => loadStreakData()} />
               <BodyMapPainReport onComplete={() => loadStreakData()} />
               <WeatherWidget />
               <CostTracker />
