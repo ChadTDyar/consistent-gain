@@ -228,7 +228,7 @@ export default function Dashboard() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    navigate("/auth");
+    setTimeout(() => navigate("/auth", { replace: true }), 50);
   };
 
   const canAddGoal = () => {
