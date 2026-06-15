@@ -8,7 +8,11 @@ import { Moon, Battery } from "lucide-react";
 import { toast } from "sonner";
 import { WellnessFeedbackModal } from "./WellnessFeedbackModal";
 
-export function DailyContext() {
+interface DailyContextProps {
+  onSaved?: () => void;
+}
+
+export function DailyContext({ onSaved }: DailyContextProps = {}) {
   const [sleepQuality, setSleepQuality] = useState<number | null>(null);
   const [energyLevel, setEnergyLevel] = useState<number | null>(null);
   const [sleepNotes, setSleepNotes] = useState("");
@@ -48,11 +52,15 @@ export function DailyContext() {
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        toast.error("You must be signed in to save a check-in");
+        return;
+      }
 
       const today = new Date().toISOString().split('T')[0];
-      
-      const { error } = await supabase
+
+      // 1. Save daily wellness context
+      const { error: ctxError } = await supabase
         .from("daily_context")
         .upsert({
           user_id: user.id,
@@ -60,18 +68,44 @@ export function DailyContext() {
           sleep_quality: sleepQuality,
           energy_level: energyLevel,
           sleep_notes: sleepNotes,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id,date'
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id,date' });
+
+      if (ctxError) throw ctxError;
+
+      // 2. Log an activity entry so the check-in counts toward streak,
+      //    progress charts, and the onboarding "first check-in" step.
+      //    Clear any existing daily_checkin row for today first to keep
+      //    saves idempotent.
+      await supabase
+        .from("activity_logs")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("completed_at", today)
+        .eq("session_type", "daily_checkin");
+
+      const { error: logError } = await supabase
+        .from("activity_logs")
+        .insert({
+          user_id: user.id,
+          goal_id: null,
+          completed_at: today,
+          session_type: "daily_checkin",
+          rpe_rating: energyLevel,
+          notes: sleepNotes || null,
         });
 
-      if (error) throw error;
+      if (logError) throw logError;
 
       setHasLogged(true);
+      toast.success("Check-in saved");
+      onSaved?.();
+      // Broadcast so other panels (Dashboard streak, Progress tab) refresh.
+      window.dispatchEvent(new CustomEvent("checkin-saved"));
       setShowWellnessModal(true);
-    } catch (error) {
-      console.error("Error saving context:", error);
-      toast.error("Failed to save context");
+    } catch (error: any) {
+      console.error("Error saving check-in:", error);
+      toast.error(error?.message || "Failed to save check-in");
     } finally {
       setLoading(false);
     }
@@ -104,7 +138,7 @@ export function DailyContext() {
             key={rating}
             type="button"
             onClick={() => onChange(rating)}
-            className={`h-10 w-10 rounded-full border-2 transition-all ${
+            className={`min-h-[44px] min-w-[44px] rounded-full border-2 transition-all touch-manipulation ${
               value && rating <= value
                 ? "bg-primary border-primary text-primary-foreground"
                 : "border-muted-foreground/30 hover:border-primary/50"
@@ -164,7 +198,7 @@ export function DailyContext() {
         <Button 
           onClick={handleSave} 
           disabled={loading || !sleepQuality || !energyLevel}
-          className="w-full"
+          className="w-full min-h-[44px] touch-manipulation"
         >
           {loading ? "Saving..." : "Save Check-in"}
         </Button>
