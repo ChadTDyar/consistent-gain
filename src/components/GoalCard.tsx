@@ -71,7 +71,6 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
 
       if (daysDiff === currentStreak || (daysDiff === 0 && currentStreak === 0)) {
         currentStreak++;
-        today.setDate(today.getDate() - 1);
       } else {
         break;
       }
