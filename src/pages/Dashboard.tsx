@@ -20,6 +20,7 @@ import { CoachChat } from "@/components/CoachChat";
 import { calculateStreak, getUserActivityLogs, getDaysSinceLastActivity } from "@/lib/streakUtils";
 import { MicroblockSuggestion } from "@/components/MicroblockSuggestion";
 import { DailyContext } from "@/components/DailyContext";
+import { AppleHealthCard } from "@/components/AppleHealthCard";
 import { StreakRepair } from "@/components/StreakRepair";
 import PaywallModal from "@/components/PaywallModal";
 import momentumLogo from "@/assets/momentum-logo.png";
