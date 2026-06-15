@@ -173,7 +173,7 @@ export default function Settings() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    navigate("/auth");
+    setTimeout(() => navigate("/auth", { replace: true }), 50);
   };
 
   const handleManageSubscription = async () => {
