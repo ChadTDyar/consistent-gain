@@ -75,14 +75,16 @@ export function DailyContext({ onSaved }: DailyContextProps = {}) {
 
       // 2. Log an activity entry so the check-in counts toward streak,
       //    progress charts, and the onboarding "first check-in" step.
-      //    Clear any existing daily_checkin row for today first to keep
-      //    saves idempotent.
+      //    Clear any existing daily check-in row for today first to keep
+      //    saves idempotent. Identified by goal_id IS NULL (habit logs
+      //    always carry a goal_id) since session_type='regular' is shared.
       await supabase
         .from("activity_logs")
         .delete()
         .eq("user_id", user.id)
         .eq("completed_at", today)
-        .eq("session_type", "daily_checkin");
+        .is("goal_id", null)
+        .eq("session_type", "regular");
 
       const { error: logError } = await supabase
         .from("activity_logs")
@@ -90,10 +92,11 @@ export function DailyContext({ onSaved }: DailyContextProps = {}) {
           user_id: user.id,
           goal_id: null,
           completed_at: today,
-          session_type: "daily_checkin",
+          session_type: "regular",
           rpe_rating: energyLevel,
           notes: sleepNotes || null,
         });
+
 
       if (logError) throw logError;
 
