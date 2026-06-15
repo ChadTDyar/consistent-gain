@@ -90,6 +90,14 @@ export default function Dashboard() {
     }
   }, [goals.length, streak]);
 
+  // Refresh streak/onboarding state when a daily check-in is saved.
+  useEffect(() => {
+    const onCheckin = () => loadStreakData();
+    window.addEventListener("checkin-saved", onCheckin);
+    return () => window.removeEventListener("checkin-saved", onCheckin);
+  }, []);
+
+
   const checkSubscription = async () => {
     try {
       const { data, error } = await supabase.functions.invoke('check-subscription');
