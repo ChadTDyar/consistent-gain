@@ -81,6 +81,10 @@ export default function Dashboard() {
     loadStreakData();
     checkTriggerMessages();
     checkSubscription();
+    // Request push notification permission once per device, post sign-in.
+    import("@/services/native.service").then(({ nativeService }) => {
+      nativeService.requestPushPermissionOnce();
+    });
     Sentry.addBreadcrumb({ category: 'init', message: 'finished dashboard-bootstrap (all calls dispatched)', level: 'info' });
   }, []);
 
