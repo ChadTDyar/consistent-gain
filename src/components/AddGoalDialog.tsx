@@ -140,14 +140,14 @@ export function AddGoalDialog({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-display font-semibold">Add New Goal</DialogTitle>
+            <DialogTitle className="text-2xl font-display font-semibold">Add New Habit</DialogTitle>
             <DialogDescription className="text-base">
-              Create a new fitness goal to track your progress
+              Create a new habit to track your progress
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="title" className="text-base font-medium">Goal Title</Label>
+              <Label htmlFor="title" className="text-base font-medium">Habit Name</Label>
               <Input
                 id="title"
                 value={title}
