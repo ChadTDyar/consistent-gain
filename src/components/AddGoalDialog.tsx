@@ -236,7 +236,7 @@ export function AddGoalDialog({
                     Creating...
                   </>
                 ) : (
-                  "Create Goal"
+                  "Create Habit"
                 )}
               </Button>
             </div>
