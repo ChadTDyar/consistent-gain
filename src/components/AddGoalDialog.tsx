@@ -164,7 +164,7 @@ export function AddGoalDialog({
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Add any details about your goal..."
+                placeholder="Add any details about your habit..."
                 rows={3}
                 className="text-base"
               />
