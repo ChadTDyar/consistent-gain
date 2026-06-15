@@ -43,6 +43,7 @@ const Index = () => {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setIsSignedIn(false);
+    setTimeout(() => navigate("/auth", { replace: true }), 50);
   };
 
   return (
