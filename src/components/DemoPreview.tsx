@@ -52,7 +52,7 @@ export const DemoPreview = () => {
               <h3 className="text-xl md:text-2xl font-display font-bold text-foreground">
                 Welcome back, Chad!
               </h3>
-              <p className="text-sm text-muted-foreground">You have 3 active goals</p>
+              <p className="text-sm text-muted-foreground">You have 3 active habits</p>
             </div>
 
             {/* Tab toggle */}
@@ -116,7 +116,7 @@ export const DemoPreview = () => {
                 {/* Mock add goal */}
                 <div className="rounded-xl border-2 border-dashed border-primary/20 p-4 flex items-center justify-center text-muted-foreground hover:border-primary/40 transition-colors">
                   <Plus className="h-4 w-4 mr-2" />
-                  <span className="text-sm font-medium">Add New Goal</span>
+                  <span className="text-sm font-medium">Add New Habit</span>
                 </div>
               </div>
             )}
