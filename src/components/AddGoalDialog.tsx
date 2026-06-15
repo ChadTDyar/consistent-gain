@@ -114,11 +114,11 @@ export function AddGoalDialog({
       });
 
       if (error) {
-        toast.error("Failed to create goal");
+        toast.error("Failed to create habit");
         console.error(error);
       } else {
         analytics.goalCreated();
-        toast.success("Goal created successfully!");
+        toast.success("Habit created successfully!");
         setTitle("");
         setDescription("");
         setCategory("");
