@@ -393,14 +393,14 @@ export default function Dashboard() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-xl font-display font-semibold text-foreground">Your Habits</h3>
+                  <h3 className="sr-only">Your Habits</h3>
                   {(plan !== 'free' || isIOSNative() || goals.length < 3) && (
                     <Button
                       onClick={handleAddGoal}
                       size="sm"
-                      className="shadow-sm hover:shadow-md"
+                      className="ml-auto shadow-sm hover:shadow-md"
                     >
                       <Plus className="mr-2 h-4 w-4" />
                       Add Habit
@@ -408,7 +408,7 @@ export default function Dashboard() {
                   )}
                 </div>
 
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-3 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {goals.map((goal) => (
                     <GoalCard
                       key={goal.id}
