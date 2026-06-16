@@ -293,15 +293,6 @@ export default function Dashboard() {
               </Button>
             )}
             <Button
-              variant="default"
-              size="icon"
-              onClick={handleAddGoal}
-              className="min-w-[44px] min-h-[44px] shadow-sm hover:shadow-md"
-              aria-label="Add habit"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-            <Button
               variant="outline"
               size="icon"
               onClick={() => navigate("/profile")}
@@ -320,6 +311,7 @@ export default function Dashboard() {
               <SettingsIcon className="h-4 w-4" />
             </Button>
           </div>
+
         </div>
       </header>
 
@@ -357,7 +349,116 @@ export default function Dashboard() {
 
           <TabsContent value="goals" className="space-y-8">
             <AppleHealthCard />
-            {/* Health Tracking & Context Section */}
+
+            {/* Habits section — rendered FIRST so cards are above the fold on
+                mobile. Previously the wellness widget grid pushed the habit
+                cards ~1000px below on phone viewports and reviewers reported
+                the cards as missing. */}
+            {goals.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 px-4">
+                <div className="max-w-md w-full text-center space-y-6">
+                  <div className="mx-auto h-24 w-24 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
+                    <CheckCircle className="h-12 w-12 text-white" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground">
+                      What's one thing you want to do more often?
+                    </h3>
+                  </div>
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      placeholder="Walk in the morning, stretch, lift 3x a week..."
+                      className="w-full h-12 px-4 rounded-lg border border-border bg-background text-base focus:outline-none focus:ring-2 focus:ring-primary"
+                      id="first-habit-input"
+                      onKeyDown={async (e) => {
+                        if (e.key === "Enter") {
+                          const val = (e.target as HTMLInputElement).value.trim();
+                          if (!val) return;
+                          const { data: { user } } = await supabase.auth.getUser();
+                          if (!user) return;
+                          await supabase.from("goals").insert({ user_id: user.id, title: val, target_days_per_week: 3 });
+                          toast.success("Let's build momentum.");
+                          loadGoals();
+                        }
+                      }}
+                    />
+                    <Button
+                      onClick={async () => {
+                        const input = document.getElementById("first-habit-input") as HTMLInputElement;
+                        const val = input?.value.trim();
+                        if (!val) return;
+                        const { data: { user } } = await supabase.auth.getUser();
+                        if (!user) return;
+                        await supabase.from("goals").insert({ user_id: user.id, title: val, target_days_per_week: 3 });
+                        toast.success("Let's build momentum.");
+                        loadGoals();
+                      }}
+                      size="lg"
+                      className="w-full h-12 text-base font-semibold text-white"
+                      style={{ background: '#0d3b5e' }}
+                    >
+                      Start With This
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-xl font-display font-semibold text-foreground">Your Habits</h3>
+                  {(plan !== 'free' || isIOSNative() || goals.length < 3) && (
+                    <Button
+                      onClick={handleAddGoal}
+                      size="sm"
+                      className="shadow-sm hover:shadow-md"
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Habit
+                    </Button>
+                  )}
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {goals.map((goal) => (
+                    <GoalCard
+                      key={goal.id}
+                      goal={goal}
+                      onUpdate={loadGoals}
+                      onEdit={handleEditGoal}
+                    />
+                  ))}
+
+                  {plan === 'free' && goals.length >= 3 && (
+                    <button
+                      type="button"
+                      className="w-full rounded-xl border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-[200px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      onClick={() => { setUpgradeWallType('habit_limit'); setShowUpgradeWall(true); }}
+                      aria-label="Add habit — Pro plan required, opens upgrade dialog"
+                    >
+                      <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                        <Plus className="h-5 w-5" aria-hidden="true" />
+                        <span className="font-semibold text-sm">Add Habit</span>
+                        <span className="text-base" aria-hidden="true">🔒</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">Pro</span>
+                    </button>
+                  )}
+                </div>
+
+                {plan === 'free' && !isIOSNative() && goals.length >= 3 && (
+                  <p className="text-[0.8rem] text-muted-foreground">
+                    3 of 3 habit slots used —{" "}
+                    <a href="/pricing" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }} className="text-primary hover:underline font-medium">
+                      Pro unlocks unlimited
+                    </a>
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Health Tracking & Context Section — moved BELOW habits so habit
+                cards stay above the fold on mobile. */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               <DailyContext onSaved={() => loadStreakData()} />
               <BodyMapPainReport onComplete={() => loadStreakData()} />
@@ -376,117 +477,11 @@ export default function Dashboard() {
               <Button
                 onClick={() => setShowMicroblock(true)}
                 variant="outline"
-                className="mb-4"
               >
                 Show Microblock Suggestion
               </Button>
             )}
 
-            {goals.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 px-4">
-            <div className="max-w-md w-full text-center space-y-6">
-              <div className="mx-auto h-24 w-24 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
-                <CheckCircle className="h-12 w-12 text-white" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground">
-                  What's one thing you want to do more often?
-                </h3>
-              </div>
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  placeholder="Walk in the morning, stretch, lift 3x a week..."
-                  className="w-full h-12 px-4 rounded-lg border border-border bg-background text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                  id="first-habit-input"
-                  onKeyDown={async (e) => {
-                    if (e.key === "Enter") {
-                      const val = (e.target as HTMLInputElement).value.trim();
-                      if (!val) return;
-                      const { data: { user } } = await supabase.auth.getUser();
-                      if (!user) return;
-                      await supabase.from("goals").insert({ user_id: user.id, title: val, target_days_per_week: 3 });
-                      toast.success("Let's build momentum.");
-                      loadGoals();
-                    }
-                  }}
-                />
-                <Button 
-                  onClick={async () => {
-                    const input = document.getElementById("first-habit-input") as HTMLInputElement;
-                    const val = input?.value.trim();
-                    if (!val) return;
-                    const { data: { user } } = await supabase.auth.getUser();
-                    if (!user) return;
-                    await supabase.from("goals").insert({ user_id: user.id, title: val, target_days_per_week: 3 });
-                    toast.success("Let's build momentum.");
-                    loadGoals();
-                  }}
-                  size="lg" 
-                  className="w-full h-12 text-base font-semibold text-white"
-                  style={{ background: '#0d3b5e' }}
-                >
-                  Start With This
-                </Button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-4">
-              {goals.map((goal) => (
-                <GoalCard 
-                  key={goal.id} 
-                  goal={goal} 
-                  onUpdate={loadGoals}
-                  onEdit={handleEditGoal}
-                />
-              ))}
-
-              {/* Locked 4th habit slot for free users.
-                  MUST be a real <button>: keyboard users need to Tab into it
-                  and trigger via Enter/Space, and screen readers must announce
-                  it as actionable so blind users hit the same upgrade flow as
-                  sighted ones. After the modal dismisses, focus restores here. */}
-              {plan === 'free' && goals.length >= 3 && (
-                <button
-                  type="button"
-                  className="w-full rounded-xl border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-[200px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                  onClick={() => { setUpgradeWallType('habit_limit'); setShowUpgradeWall(true); }}
-                  aria-label="Add habit — Pro plan required, opens upgrade dialog"
-                >
-                  <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                    <Plus className="h-5 w-5" aria-hidden="true" />
-                    <span className="font-semibold text-sm">Add Habit</span>
-                    <span className="text-base" aria-hidden="true">🔒</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground">Pro</span>
-                </button>
-              )}
-            </div>
-
-            {/* Habit slot counter for free users (web only — iOS has unlimited) */}
-            {plan === 'free' && !isIOSNative() && goals.length >= 3 && (
-              <p className="text-[0.8rem] text-muted-foreground mb-4">
-                3 of 3 habit slots used —{" "}
-                <a href="/pricing" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }} className="text-primary hover:underline font-medium">
-                  Pro unlocks unlimited
-                </a>
-              </p>
-            )}
-
-            {plan !== 'free' || isIOSNative() || goals.length < 3 ? (
-              <Button 
-                onClick={handleAddGoal} 
-                size="lg"
-                className="w-full md:w-auto shadow-sm hover:shadow-md"
-              >
-                <Plus className="mr-2 h-5 w-5" />
-                Add Habit
-              </Button>
-            ) : null}
-          </>
-        )}
 
             {/* Accountability Partner Section */}
             <div className="mt-8">
