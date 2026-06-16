@@ -72,6 +72,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const plan: PlanTier = normalizePlan(profile?.plan);
+  const onboardingComplete = goals.length > 0 && streak > 0;
 
   useEffect(() => {
     Sentry.addBreadcrumb({ category: 'init', message: 'starting dashboard-bootstrap', level: 'info' });
@@ -316,20 +317,9 @@ export default function Dashboard() {
       </header>
 
 
-      <main id="main-content" className="container mx-auto px-4 md:px-8 py-4 md:py-12 max-w-7xl">
-        <div className="mb-4 md:mb-12">
-          <h2 className="text-3xl md:text-4xl font-display font-bold mb-2 text-gradient">
-            Welcome back, {profile?.name || "there"}!
-          </h2>
-          <p className="text-lg text-muted-foreground">
-            {goals.length === 0
-              ? "Start building your first habit today"
-              : `You have ${goals.length} active ${goals.length === 1 ? "habit" : "habits"}`}
-          </p>
-        </div>
-
+      <main id="main-content" className="container mx-auto px-4 md:px-8 py-3 md:py-12 max-w-7xl">
         <Tabs defaultValue="goals" className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-4 md:mb-8">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-3 md:mb-8">
             <TabsTrigger value="goals" className="text-base">
               Habits
             </TabsTrigger>
@@ -340,118 +330,125 @@ export default function Dashboard() {
           </TabsList>
 
           <TabsContent value="goals" className="space-y-6 md:space-y-8">
-            {/* Habit cards must be the first substantive content in this tab.
-                Keep every health, onboarding, and wellness component below
-                this map so physical phone viewports show habits immediately. */}
-            {goals.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 px-4">
-                <div className="max-w-md w-full text-center space-y-6">
-                  <div className="mx-auto h-24 w-24 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
-                    <CheckCircle className="h-12 w-12 text-white" />
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground">
-                      What's one thing you want to do more often?
-                    </h3>
-                  </div>
-                  <div className="space-y-3">
-                    <input
-                      type="text"
-                      placeholder="Walk in the morning, stretch, lift 3x a week..."
-                      className="w-full h-12 px-4 rounded-lg border border-border bg-background text-base focus:outline-none focus:ring-2 focus:ring-primary"
-                      id="first-habit-input"
-                      onKeyDown={async (e) => {
-                        if (e.key === "Enter") {
-                          const val = (e.target as HTMLInputElement).value.trim();
+            <section className="space-y-3 md:space-y-4" aria-labelledby="habits-heading">
+              <div className="mb-1 md:mb-4">
+                <h2 id="habits-heading" className="text-2xl md:text-4xl font-display font-bold mb-1 md:mb-2 text-gradient">
+                  Welcome back, {profile?.name || "there"}!
+                </h2>
+                <p className="text-base md:text-lg text-muted-foreground">
+                  {goals.length === 0
+                    ? "Start building your first habit today"
+                    : `You have ${goals.length} active ${goals.length === 1 ? "habit" : "habits"}`}
+                </p>
+              </div>
+
+              {goals.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 md:py-16 px-4">
+                  <div className="max-w-md w-full text-center space-y-6">
+                    <div className="mx-auto h-24 w-24 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
+                      <CheckCircle className="h-12 w-12 text-white" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground">
+                        What's one thing you want to do more often?
+                      </h3>
+                    </div>
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        placeholder="Walk in the morning, stretch, lift 3x a week..."
+                        className="w-full h-12 px-4 rounded-lg border border-border bg-background text-base focus:outline-none focus:ring-2 focus:ring-primary"
+                        id="first-habit-input"
+                        onKeyDown={async (e) => {
+                          if (e.key === "Enter") {
+                            const val = (e.target as HTMLInputElement).value.trim();
+                            if (!val) return;
+                            const { data: { user } } = await supabase.auth.getUser();
+                            if (!user) return;
+                            await supabase.from("goals").insert({ user_id: user.id, title: val, target_days_per_week: 3 });
+                            toast.success("Let's build momentum.");
+                            loadGoals();
+                          }
+                        }}
+                      />
+                      <Button
+                        onClick={async () => {
+                          const input = document.getElementById("first-habit-input") as HTMLInputElement;
+                          const val = input?.value.trim();
                           if (!val) return;
                           const { data: { user } } = await supabase.auth.getUser();
                           if (!user) return;
                           await supabase.from("goals").insert({ user_id: user.id, title: val, target_days_per_week: 3 });
                           toast.success("Let's build momentum.");
                           loadGoals();
-                        }
-                      }}
-                    />
-                    <Button
-                      onClick={async () => {
-                        const input = document.getElementById("first-habit-input") as HTMLInputElement;
-                        const val = input?.value.trim();
-                        if (!val) return;
-                        const { data: { user } } = await supabase.auth.getUser();
-                        if (!user) return;
-                        await supabase.from("goals").insert({ user_id: user.id, title: val, target_days_per_week: 3 });
-                        toast.success("Let's build momentum.");
-                        loadGoals();
-                      }}
-                      size="lg"
-                      className="w-full h-12 text-base font-semibold text-white"
-                      style={{ background: '#0d3b5e' }}
-                    >
-                      Start With This
-                    </Button>
+                        }}
+                        size="lg"
+                        className="w-full h-12 text-base font-semibold text-white"
+                        style={{ background: '#0d3b5e' }}
+                      >
+                        Start With This
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <div className="space-y-3 md:space-y-4">
-                <h3 className="sr-only">Your Habits</h3>
-                <div className="grid gap-3 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {goals.map((goal) => (
-                    <GoalCard
-                      key={goal.id}
-                      goal={goal}
-                      onUpdate={loadGoals}
-                      onEdit={handleEditGoal}
-                    />
-                  ))}
+              ) : (
+                <>
+                  <div className="grid gap-3 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {goals.map((goal) => (
+                      <GoalCard
+                        key={goal.id}
+                        goal={goal}
+                        onUpdate={loadGoals}
+                        onEdit={handleEditGoal}
+                      />
+                    ))}
+                  </div>
 
-                  {plan === 'free' && goals.length >= 3 && (
-                    <button
-                      type="button"
-                      className="w-full rounded-xl border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-muted/40 transition-colors min-h-[200px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                      onClick={() => { setUpgradeWallType('habit_limit'); setShowUpgradeWall(true); }}
-                      aria-label="Add habit — Pro plan required, opens upgrade dialog"
-                    >
-                      <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                        <Plus className="h-5 w-5" aria-hidden="true" />
-                        <span className="font-semibold text-sm">Add Habit</span>
-                        <span className="text-base" aria-hidden="true">🔒</span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">Pro</span>
-                    </button>
-                  )}
-                </div>
+                  <div className="flex flex-col items-start gap-2">
+                    {plan === 'free' && !isIOSNative() && goals.length >= 3 ? (
+                      <button
+                        type="button"
+                        className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-border bg-muted/20 px-4 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                        onClick={() => { setUpgradeWallType('habit_limit'); setShowUpgradeWall(true); }}
+                        aria-label="Add habit — Pro plan required, opens upgrade dialog"
+                      >
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        Add Habit
+                        <span aria-hidden="true">🔒</span>
+                      </button>
+                    ) : (
+                      <Button
+                        onClick={handleAddGoal}
+                        className="min-h-[44px] shadow-sm hover:shadow-md"
+                        aria-label="Add Habit"
+                      >
+                        <Plus className="mr-2 h-4 w-4" />
+                        Add Habit
+                      </Button>
+                    )}
 
-                {(plan !== 'free' || isIOSNative() || goals.length < 3) && (
-                  <Button
-                    onClick={handleAddGoal}
-                    size="icon"
-                    className="fixed right-20 bottom-20 z-20 h-12 w-12 rounded-full shadow-lg md:static md:h-auto md:w-auto md:rounded-md md:px-3 md:shadow-sm md:hover:shadow-md"
-                    aria-label="Add Habit"
-                  >
-                    <Plus className="h-5 w-5 md:mr-2 md:h-4 md:w-4" />
-                    <span className="hidden md:inline">Add Habit</span>
-                  </Button>
-                )}
-
-                {plan === 'free' && !isIOSNative() && goals.length >= 3 && (
-                  <p className="text-[0.8rem] text-muted-foreground">
-                    3 of 3 habit slots used —{" "}
-                    <a href="/pricing" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }} className="text-primary hover:underline font-medium">
-                      Pro unlocks unlimited
-                    </a>
-                  </p>
-                )}
-              </div>
-            )}
+                    {plan === 'free' && !isIOSNative() && goals.length >= 3 && (
+                      <p className="text-[0.8rem] text-muted-foreground">
+                        3 of 3 habit slots used —{" "}
+                        <a href="/pricing" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }} className="text-primary hover:underline font-medium">
+                          Pro unlocks unlimited
+                        </a>
+                      </p>
+                    )}
+                  </div>
+                </>
+              )}
+            </section>
 
             {streak > 0 && <StreakRepairIntro />}
 
-            <OnboardingChecklist
-              hasGoals={goals.length > 0}
-              hasCheckin={streak > 0}
-              onCreateGoal={handleAddGoal}
-            />
+            {!onboardingComplete && (
+              <OnboardingChecklist
+                hasGoals={goals.length > 0}
+                hasCheckin={streak > 0}
+                onCreateGoal={handleAddGoal}
+              />
+            )}
 
             <AppleHealthCard />
 
