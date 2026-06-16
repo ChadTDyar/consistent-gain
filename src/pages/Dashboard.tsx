@@ -328,14 +328,6 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {streak > 0 && <StreakRepairIntro />}
-
-        <OnboardingChecklist
-          hasGoals={goals.length > 0}
-          hasCheckin={streak > 0}
-          onCreateGoal={handleAddGoal}
-        />
-
         <Tabs defaultValue="goals" className="w-full">
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
             <TabsTrigger value="goals" className="text-base">
@@ -348,12 +340,9 @@ export default function Dashboard() {
           </TabsList>
 
           <TabsContent value="goals" className="space-y-8">
-            <AppleHealthCard />
-
-            {/* Habits section — rendered FIRST so cards are above the fold on
-                mobile. Previously the wellness widget grid pushed the habit
-                cards ~1000px below on phone viewports and reviewers reported
-                the cards as missing. */}
+            {/* Habit cards must be the first substantive content in this tab.
+                Keep every health, onboarding, and wellness component below
+                this map so physical phone viewports show habits immediately. */}
             {goals.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 px-4">
                 <div className="max-w-md w-full text-center space-y-6">
@@ -456,6 +445,16 @@ export default function Dashboard() {
                 )}
               </div>
             )}
+
+            {streak > 0 && <StreakRepairIntro />}
+
+            <OnboardingChecklist
+              hasGoals={goals.length > 0}
+              hasCheckin={streak > 0}
+              onCreateGoal={handleAddGoal}
+            />
+
+            <AppleHealthCard />
 
             {/* Health Tracking & Context Section — moved BELOW habits so habit
                 cards stay above the fold on mobile. */}
