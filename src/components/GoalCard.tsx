@@ -175,7 +175,7 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
           <div className="flex-1 min-w-0">
             <CardTitle className="text-lg md:text-xl font-display font-semibold text-foreground line-clamp-2">{goal.title}</CardTitle>
             {goal.category && (
-              <div className="mt-2">
+              <div className="hidden md:block mt-2">
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary capitalize">
                   {goal.category}
                 </span>
@@ -196,12 +196,12 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
           </Button>
         </div>
         {goal.description && (
-          <CardDescription className="line-clamp-1 md:line-clamp-2 text-sm md:text-base leading-relaxed">
+          <CardDescription className="hidden md:block md:line-clamp-2 text-sm md:text-base leading-relaxed">
             {goal.description}
           </CardDescription>
         )}
       </CardHeader>
-      <CardContent className="p-4 pt-2 md:p-6 md:pt-0 space-y-3 md:space-y-4">
+      <CardContent className="p-4 pt-1 md:p-6 md:pt-0 space-y-2 md:space-y-4">
         <div className="flex items-center justify-center gap-2 py-2 md:py-3 px-4 rounded-full shadow-glow" style={{background: 'var(--gradient-secondary)'}}>
           <Flame className="h-5 w-5 md:h-6 md:w-6 text-white flame-pulse" />
           <span className="font-display font-bold text-lg md:text-xl text-white">
