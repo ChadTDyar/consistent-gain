@@ -468,14 +468,7 @@ export default function Dashboard() {
               )}
             </div>
 
-            {!showMicroblock && (
-              <Button
-                onClick={() => setShowMicroblock(true)}
-                variant="outline"
-              >
-                Show Microblock Suggestion
-              </Button>
-            )}
+            {/* Microblock debug toggle removed for App Store build. */}
 
 
             {/* Accountability Partner Section */}
