@@ -394,20 +394,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="space-y-3 md:space-y-4">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="sr-only">Your Habits</h3>
-                  {(plan !== 'free' || isIOSNative() || goals.length < 3) && (
-                    <Button
-                      onClick={handleAddGoal}
-                      size="sm"
-                      className="ml-auto shadow-sm hover:shadow-md"
-                    >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Add Habit
-                    </Button>
-                  )}
-                </div>
-
+                <h3 className="sr-only">Your Habits</h3>
                 <div className="grid gap-3 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {goals.map((goal) => (
                     <GoalCard
@@ -434,6 +421,17 @@ export default function Dashboard() {
                     </button>
                   )}
                 </div>
+
+                {(plan !== 'free' || isIOSNative() || goals.length < 3) && (
+                  <Button
+                    onClick={handleAddGoal}
+                    size="sm"
+                    className="fixed right-4 bottom-20 z-20 shadow-lg md:static md:shadow-sm md:hover:shadow-md"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Habit
+                  </Button>
+                )}
 
                 {plan === 'free' && !isIOSNative() && goals.length >= 3 && (
                   <p className="text-[0.8rem] text-muted-foreground">
