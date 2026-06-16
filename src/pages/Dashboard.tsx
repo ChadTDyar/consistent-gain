@@ -316,8 +316,8 @@ export default function Dashboard() {
       </header>
 
 
-      <main id="main-content" className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-7xl">
-        <div className="mb-8 md:mb-12">
+      <main id="main-content" className="container mx-auto px-4 md:px-8 py-4 md:py-12 max-w-7xl">
+        <div className="mb-4 md:mb-12">
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-2 text-gradient">
             Welcome back, {profile?.name || "there"}!
           </h2>
@@ -329,7 +329,7 @@ export default function Dashboard() {
         </div>
 
         <Tabs defaultValue="goals" className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-4 md:mb-8">
             <TabsTrigger value="goals" className="text-base">
               Habits
             </TabsTrigger>
@@ -339,7 +339,7 @@ export default function Dashboard() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="goals" className="space-y-8">
+          <TabsContent value="goals" className="space-y-6 md:space-y-8">
             {/* Habit cards must be the first substantive content in this tab.
                 Keep every health, onboarding, and wellness component below
                 this map so physical phone viewports show habits immediately. */}
