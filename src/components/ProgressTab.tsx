@@ -43,6 +43,13 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
     return () => controller.abort();
   }, [plan]);
 
+  // Refresh immediately when a daily check-in is saved elsewhere in the app.
+  useEffect(() => {
+    const onCheckin = () => loadProgressData();
+    window.addEventListener("checkin-saved", onCheckin);
+    return () => window.removeEventListener("checkin-saved", onCheckin);
+  }, [plan]);
+
   const loadProgressData = async (signal?: AbortSignal) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
