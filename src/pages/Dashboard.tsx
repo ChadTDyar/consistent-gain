@@ -316,8 +316,8 @@ export default function Dashboard() {
       </header>
 
 
-      <main id="main-content" className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-7xl">
-        <div className="mb-8 md:mb-12">
+      <main id="main-content" className="container mx-auto px-4 md:px-8 py-4 md:py-12 max-w-7xl">
+        <div className="mb-4 md:mb-12">
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-2 text-gradient">
             Welcome back, {profile?.name || "there"}!
           </h2>
@@ -328,16 +328,8 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {streak > 0 && <StreakRepairIntro />}
-
-        <OnboardingChecklist
-          hasGoals={goals.length > 0}
-          hasCheckin={streak > 0}
-          onCreateGoal={handleAddGoal}
-        />
-
         <Tabs defaultValue="goals" className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-4 md:mb-8">
             <TabsTrigger value="goals" className="text-base">
               Habits
             </TabsTrigger>
@@ -347,13 +339,10 @@ export default function Dashboard() {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="goals" className="space-y-8">
-            <AppleHealthCard />
-
-            {/* Habits section — rendered FIRST so cards are above the fold on
-                mobile. Previously the wellness widget grid pushed the habit
-                cards ~1000px below on phone viewports and reviewers reported
-                the cards as missing. */}
+          <TabsContent value="goals" className="space-y-6 md:space-y-8">
+            {/* Habit cards must be the first substantive content in this tab.
+                Keep every health, onboarding, and wellness component below
+                this map so physical phone viewports show habits immediately. */}
             {goals.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 px-4">
                 <div className="max-w-md w-full text-center space-y-6">
@@ -404,22 +393,9 @@ export default function Dashboard() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-xl font-display font-semibold text-foreground">Your Habits</h3>
-                  {(plan !== 'free' || isIOSNative() || goals.length < 3) && (
-                    <Button
-                      onClick={handleAddGoal}
-                      size="sm"
-                      className="shadow-sm hover:shadow-md"
-                    >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Add Habit
-                    </Button>
-                  )}
-                </div>
-
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="space-y-3 md:space-y-4">
+                <h3 className="sr-only">Your Habits</h3>
+                <div className="grid gap-3 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {goals.map((goal) => (
                     <GoalCard
                       key={goal.id}
@@ -446,6 +422,18 @@ export default function Dashboard() {
                   )}
                 </div>
 
+                {(plan !== 'free' || isIOSNative() || goals.length < 3) && (
+                  <Button
+                    onClick={handleAddGoal}
+                    size="icon"
+                    className="fixed right-20 bottom-20 z-20 h-12 w-12 rounded-full shadow-lg md:static md:h-auto md:w-auto md:rounded-md md:px-3 md:shadow-sm md:hover:shadow-md"
+                    aria-label="Add Habit"
+                  >
+                    <Plus className="h-5 w-5 md:mr-2 md:h-4 md:w-4" />
+                    <span className="hidden md:inline">Add Habit</span>
+                  </Button>
+                )}
+
                 {plan === 'free' && !isIOSNative() && goals.length >= 3 && (
                   <p className="text-[0.8rem] text-muted-foreground">
                     3 of 3 habit slots used —{" "}
@@ -456,6 +444,16 @@ export default function Dashboard() {
                 )}
               </div>
             )}
+
+            {streak > 0 && <StreakRepairIntro />}
+
+            <OnboardingChecklist
+              hasGoals={goals.length > 0}
+              hasCheckin={streak > 0}
+              onCreateGoal={handleAddGoal}
+            />
+
+            <AppleHealthCard />
 
             {/* Health Tracking & Context Section — moved BELOW habits so habit
                 cards stay above the fold on mobile. */}
