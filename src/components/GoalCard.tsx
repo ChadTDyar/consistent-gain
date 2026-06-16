@@ -227,7 +227,7 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
 
         <Button
           onClick={handleLogActivity}
-          className={`w-full shadow-sm hover:shadow-md transition-all font-semibold ${justCompleted ? 'habit-fill-complete' : ''}`}
+          className={`w-full h-11 md:h-12 shadow-sm hover:shadow-md transition-all font-semibold ${justCompleted ? 'habit-fill-complete' : ''}`}
           size="lg"
           disabled={alreadyLoggedToday || loggingActivity}
         >
