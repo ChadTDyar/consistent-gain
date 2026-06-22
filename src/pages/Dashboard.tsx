@@ -475,9 +475,9 @@ export default function Dashboard() {
             <div className="mt-8">
               <h3 className="text-xl font-display font-semibold text-foreground mb-3 flex items-center gap-2">
                 <Users className="h-5 w-5" /> Accountability Partner
-                {plan === 'free' && !isIOSNative() && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
+                {plan === 'free' && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
               </h3>
-              {plan === 'free' && !isIOSNative() ? (
+              {plan === 'free' ? (
                 <button
                   type="button"
                   className="w-full text-left p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
