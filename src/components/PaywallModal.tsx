@@ -26,8 +26,8 @@ export default function PaywallModal({ open, onOpenChange, feature }: PaywallMod
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  // Apple IAP compliance: do not render paywall on iOS native builds
-  if (isIOSNative()) return null;
+  // iOS native renders this paywall and routes purchases through RevenueCat
+  // StoreKit (handlePurchase below). Web renders it and routes to Stripe.
 
   const isNative = Capacitor.isNativePlatform();
   const monthlyPrice = PLANS.pro.price;
