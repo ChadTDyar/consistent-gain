@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PLANS, type BillingInterval } from "@/lib/plans";
 import { purchaseMonthly, purchaseAnnual, restorePurchases } from "@/lib/purchases";
 import { handleCheckout } from "@/lib/checkout";
-import { isIOSNative } from "@/lib/platform";
+
 
 interface PaywallModalProps {
   open: boolean;
