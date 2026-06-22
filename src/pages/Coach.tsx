@@ -46,10 +46,10 @@ export default function Coach() {
     init();
   }, [navigate]);
 
-  // Per pricing agreement v1.1: Momentum iOS is FREE with no IAP.
-  // Coach is unlocked for all iOS users; web gating via `plan` is unchanged.
+  // Coach unlock now driven by real entitlement (plan === 'pro').
+  // iOS users without entitlement see the locked preview + paywall.
   const isPremium = plan === 'pro';
-  const coachUnlocked = isPremium || isIOSNative();
+  const coachUnlocked = isPremium;
 
   return (
     <>
