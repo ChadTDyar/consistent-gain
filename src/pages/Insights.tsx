@@ -17,7 +17,7 @@ import {
   AreaChart, Area,
 } from "recharts";
 import { type PlanTier, normalizePlan, canAccessFeature } from "@/lib/plans";
-import { isIOSNative } from "@/lib/platform";
+
 
 interface WeeklyStats {
   totalWorkouts: number;
