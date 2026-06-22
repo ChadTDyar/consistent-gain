@@ -95,9 +95,8 @@ export function AddGoalDialog({
       const goalCount = goals?.length || 0;
       const isPremium = profile?.is_premium || false;
 
-      // Enforce 3-goal limit for free users (web only — iOS sessions are
-      // auto-entitled per pricing agreement v1.1, no paywall on native).
-      if (!isIOSNative() && !isPremium && goalCount >= 3) {
+      // Enforce 3-goal limit for free users on every platform.
+      if (!isPremium && goalCount >= 3) {
         setLoading(false);
         onOpenChange(false);
         setShowPaywall(true);
