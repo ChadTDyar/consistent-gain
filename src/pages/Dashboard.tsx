@@ -558,7 +558,7 @@ export default function Dashboard() {
           lastActivity: daysSinceActivity === 0 ? "Active today" : 
                        daysSinceActivity === 1 ? "Active yesterday" : 
                        `${daysSinceActivity} days since last activity`,
-          isPremium: profile?.is_premium || false,
+          isPremium: plan === 'pro',
           plan,
         }}
         autoOpen={showWelcome}
