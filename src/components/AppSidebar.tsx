@@ -27,10 +27,9 @@ export function AppSidebar() {
   const shouldShow = showOnPaths.some(p => location.pathname.startsWith(p));
   if (!shouldShow) return null;
 
-  // On iOS native builds: hide all paid plan badges and treat everything as unlocked
-  const ios = isIOSNative();
-  const isPremium = ios || plan === 'pro';
-  const isPro = ios || plan === 'plus' || plan === 'pro';
+  // Gating reads real entitlement via normalized plan. No iOS bypass.
+  const isPremium = plan === 'pro';
+  const isPro = plan === 'plus' || plan === 'pro';
 
   const items = [
     { path: "/dashboard", label: "Today", icon: Calendar, locked: false },
