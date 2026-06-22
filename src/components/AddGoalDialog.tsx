@@ -23,7 +23,7 @@ import { Loader2 } from "lucide-react";
 import PaywallModal from "./PaywallModal";
 import { analytics } from "@/lib/analytics";
 import { goalSchema } from "@/lib/validations";
-import { isIOSNative } from "@/lib/platform";
+
 
 const CATEGORIES = [
   "Strength",
