@@ -405,7 +405,7 @@ export default function Dashboard() {
                   </div>
 
                   <div className="flex flex-col items-start gap-2">
-                    {plan === 'free' && !isIOSNative() && goals.length >= 3 ? (
+                    {plan === 'free' && goals.length >= 3 ? (
                       <button
                         type="button"
                         className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-border bg-muted/20 px-4 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
