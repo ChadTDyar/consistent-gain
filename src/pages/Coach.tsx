@@ -9,7 +9,7 @@ import { SEO } from "@/components/SEO";
 import { type PlanTier, normalizePlan } from "@/lib/plans";
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { isIOSNative } from "@/lib/platform";
+
 
 export default function Coach() {
   const navigate = useNavigate();
