@@ -61,9 +61,8 @@ export default function Insights() {
         .eq("id", session.user.id)
         .single();
       const userPlan = normalizePlan(profile?.plan);
-      // iOS native sessions are auto-entitled (free, no IAP per pricing v1.1);
-      // never redirect them to /pricing. Web users still hit the paywall.
-      if (!isIOSNative() && !canAccessFeature(userPlan, 'plus')) {
+      // Gate by real entitlement. Unentitled users (web or iOS) hit the gate.
+      if (!canAccessFeature(userPlan, 'plus')) {
         navigate("/pricing");
         return;
       }
