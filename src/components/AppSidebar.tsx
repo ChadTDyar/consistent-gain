@@ -71,7 +71,7 @@ export function AppSidebar() {
         })}
       </div>
 
-      {!ios && plan !== 'pro' && (
+      {plan !== 'pro' && (
         <Button
           onClick={() => navigate("/pricing")}
           className="w-full mt-4 font-semibold"
