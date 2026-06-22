@@ -1,5 +1,5 @@
 // Stripe plan configuration
-import { isIOSNative } from './platform';
+
 
 export const PLANS = {
   free: { name: 'Free', price: 0, annualPrice: 0, price_id: null, annual_price_id: null, product_id: null, payment_link: null, annual_payment_link: null },
