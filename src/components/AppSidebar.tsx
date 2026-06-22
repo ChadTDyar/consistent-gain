@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { type PlanTier, normalizePlan } from "@/lib/plans";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { isIOSNative } from "@/lib/platform";
+
 
 export function AppSidebar() {
   const location = useLocation();
