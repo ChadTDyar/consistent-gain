@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns";
 import { CoachChat } from "@/components/CoachChat";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { isIOSNative } from "@/lib/platform";
+import { normalizePlan } from "@/lib/plans";
 
 interface Goal {
   id: string;
@@ -42,23 +42,18 @@ export default function GoalDetail() {
   }, [id]);
 
   const loadProfile = async () => {
-    // iOS native sessions are auto-entitled (free, no IAP per pricing v1.1).
-    // Skip the profile read and grant premium so CoachChat treats iOS users
-    // as paying — keeps the surface consistent with Coach.tsx + checkEntitlement.
-    if (isIOSNative()) {
-      setIsPremium(true);
-      return;
-    }
+    // Premium state now driven by real plan (RevenueCat entitlement mirrored
+    // into profiles.plan on native, Stripe on web). No iOS auto-unlock.
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
     const { data } = await supabase
       .from("profiles")
-      .select("is_premium")
+      .select("plan")
       .eq("id", user.id)
       .single();
 
-    setIsPremium(data?.is_premium || false);
+    setIsPremium(normalizePlan(data?.plan) === 'pro');
   };
 
   const loadGoal = async () => {

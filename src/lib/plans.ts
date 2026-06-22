@@ -1,5 +1,5 @@
 // Stripe plan configuration
-import { isIOSNative } from './platform';
+
 
 export const PLANS = {
   free: { name: 'Free', price: 0, annualPrice: 0, price_id: null, annual_price_id: null, product_id: null, payment_link: null, annual_payment_link: null },
@@ -33,13 +33,6 @@ export type BillingInterval = 'monthly' | 'annual';
  * Defensive against legacy values like 'premium' that may exist on older accounts.
  */
 export function normalizePlan(plan: string | null | undefined): PlanTier {
-  // Apple IAP compliance (HomeGrown canonical pattern): on iOS native builds the
-  // app ships with all paid features unlocked and no upgrade surface. Short-circuit
-  // at the source so every consumer of normalizePlan() sees the top tier on iOS,
-  // regardless of what's stored in profiles.plan. This prevents drift where new
-  // gating sites forget to add `!isIOSNative()` checks and accidentally surface
-  // an Upgrade CTA in a native session.
-  if (isIOSNative()) return 'pro';
   if (!plan) return 'free';
   const p = plan.toLowerCase();
   if (p === 'pro' || p === 'premium') return 'pro';
@@ -61,21 +54,18 @@ export function getPlanFromProductId(productId: string | null): PlanTier {
   return 'plus';
 }
 
-// iOS Apple IAP compliance: on native iOS builds, all paid features are unlocked
-// since we don't show any subscription/upgrade UI in the iOS app.
+// iOS gating now flows through RevenueCat entitlement (see checkEntitlement);
+// no platform shortcuts here.
 export function canAccessFeature(plan: PlanTier, requiredPlan: PlanTier): boolean {
-  if (isIOSNative()) return true;
   const tierOrder: PlanTier[] = ['free', 'plus', 'pro'];
   return tierOrder.indexOf(plan) >= tierOrder.indexOf(requiredPlan);
 }
 
 export function getGoalLimit(plan: PlanTier): number | null {
-  if (isIOSNative()) return null;
   return plan === 'free' ? 3 : null;
 }
 
 export function getHistoryDays(plan: PlanTier): number | null {
-  if (isIOSNative()) return null;
   if (plan === 'free') return 7;
   if (plan === 'plus') return 30;
   return null;

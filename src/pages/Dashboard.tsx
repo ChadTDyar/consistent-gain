@@ -25,7 +25,7 @@ import { StreakRepair } from "@/components/StreakRepair";
 import PaywallModal from "@/components/PaywallModal";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { type PlanTier, canAccessFeature, getGoalLimit, PLANS, normalizePlan } from "@/lib/plans";
-import { isIOSNative } from "@/lib/platform";
+
 import { StreakRepairIntro } from "@/components/StreakRepairIntro";
 import { Badge } from "@/components/ui/badge";
 import { OnboardingChecklist } from "@/components/OnboardingChecklist";
@@ -285,7 +285,7 @@ export default function Dashboard() {
             </Badge>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            {plan === 'free' && !isIOSNative() && (
+            {plan === 'free' && (
               <Button
                 onClick={() => navigate("/pricing")}
                 className="hidden md:flex shadow-md hover:shadow-lg transition-all btn-gradient"
@@ -405,7 +405,7 @@ export default function Dashboard() {
                   </div>
 
                   <div className="flex flex-col items-start gap-2">
-                    {plan === 'free' && !isIOSNative() && goals.length >= 3 ? (
+                    {plan === 'free' && goals.length >= 3 ? (
                       <button
                         type="button"
                         className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-border bg-muted/20 px-4 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -427,7 +427,7 @@ export default function Dashboard() {
                       </Button>
                     )}
 
-                    {plan === 'free' && !isIOSNative() && goals.length >= 3 && (
+                    {plan === 'free' && goals.length >= 3 && (
                       <p className="text-[0.8rem] text-muted-foreground">
                         3 of 3 habit slots used —{" "}
                         <a href="/pricing" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }} className="text-primary hover:underline font-medium">
@@ -475,9 +475,9 @@ export default function Dashboard() {
             <div className="mt-8">
               <h3 className="text-xl font-display font-semibold text-foreground mb-3 flex items-center gap-2">
                 <Users className="h-5 w-5" /> Accountability Partner
-                {plan === 'free' && !isIOSNative() && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
+                {plan === 'free' && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
               </h3>
-              {plan === 'free' && !isIOSNative() ? (
+              {plan === 'free' ? (
                 <button
                   type="button"
                   className="w-full text-left p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -498,9 +498,9 @@ export default function Dashboard() {
             <div className="mt-8">
               <h3 className="text-xl font-display font-semibold text-foreground mb-3 flex items-center gap-2">
                 <BarChart3 className="h-5 w-5" /> Trend Analytics
-                {plan === 'free' && !isIOSNative() && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
+                {plan === 'free' && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
               </h3>
-              {plan === 'free' && !isIOSNative() ? (
+              {plan === 'free' ? (
                 <button
                   type="button"
                   className="w-full text-left relative p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -558,7 +558,7 @@ export default function Dashboard() {
           lastActivity: daysSinceActivity === 0 ? "Active today" : 
                        daysSinceActivity === 1 ? "Active yesterday" : 
                        `${daysSinceActivity} days since last activity`,
-          isPremium: profile?.is_premium || false,
+          isPremium: plan === 'pro',
           plan,
         }}
         autoOpen={showWelcome}

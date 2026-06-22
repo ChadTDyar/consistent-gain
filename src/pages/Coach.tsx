@@ -9,7 +9,7 @@ import { SEO } from "@/components/SEO";
 import { type PlanTier, normalizePlan } from "@/lib/plans";
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { isIOSNative } from "@/lib/platform";
+
 
 export default function Coach() {
   const navigate = useNavigate();
@@ -46,10 +46,10 @@ export default function Coach() {
     init();
   }, [navigate]);
 
-  // Per pricing agreement v1.1: Momentum iOS is FREE with no IAP.
-  // Coach is unlocked for all iOS users; web gating via `plan` is unchanged.
+  // Coach unlock now driven by real entitlement (plan === 'pro').
+  // iOS users without entitlement see the locked preview + paywall.
   const isPremium = plan === 'pro';
-  const coachUnlocked = isPremium || isIOSNative();
+  const coachUnlocked = isPremium;
 
   return (
     <>
@@ -108,13 +108,10 @@ export default function Coach() {
                     onClick={() => navigate("/pricing")}
                     className="w-full font-bold text-sm text-white min-h-[44px] touch-manipulation"
                     style={{ background: '#0d3b5e' }}
-                    hidden={isIOSNative()}
                   >
                     🔒 Upgrade to Premium →
                   </Button>
-                  {!isIOSNative() && (
-                    <p className="text-xs text-muted-foreground">Cancel anytime.</p>
-                  )}
+                  <p className="text-xs text-muted-foreground">Cancel anytime.</p>
                 </div>
               </div>
             </div>
@@ -122,7 +119,7 @@ export default function Coach() {
         </div>
       </div>
 
-      {showUpgradeWall && !isIOSNative() && (
+      {showUpgradeWall && (
         <UpgradeWall
           headline={MOMENTUM.walls.ai_coach.headline}
           body={MOMENTUM.walls.ai_coach.body}

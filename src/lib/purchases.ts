@@ -45,24 +45,26 @@ async function purchaseByInterval(interval: 'monthly' | 'annual') {
 }
 
 export async function checkEntitlement(): Promise<boolean> {
-  // iOS native sessions are auto-entitled (Momentum iOS is free, no IAP per
-  // pricing agreement v1.1). Return true before any SDK or DB read so the
-  // rest of the app treats iOS users as premium without paywalls.
-  if (Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'ios') {
-    return true;
+  // Native (iOS + Android): read real entitlement from RevenueCat.
+  // iOS is paid via StoreKit IAP through RevenueCat as of v1.2.
+  if (Capacitor.isNativePlatform()) {
+    try {
+      const { customerInfo } = await Purchases.getCustomerInfo();
+      return !!customerInfo.entitlements.active[ENTITLEMENT_ID]?.isActive;
+    } catch (e) {
+      console.error('[purchases] getCustomerInfo failed:', e);
+      return false;
+    }
   }
-  if (!Capacitor.isNativePlatform()) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return false;
-    const { data } = await supabase
-      .from('profiles')
-      .select('is_premium')
-      .eq('id', user.id)
-      .single();
-    return !!data?.is_premium;
-  }
-  const { customerInfo } = await Purchases.getCustomerInfo();
-  return !!customerInfo.entitlements.active[ENTITLEMENT_ID]?.isActive;
+  // Web: read is_premium from profiles (Stripe path).
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return false;
+  const { data } = await supabase
+    .from('profiles')
+    .select('is_premium')
+    .eq('id', user.id)
+    .single();
+  return !!data?.is_premium;
 }
 
 export async function restorePurchases() {
