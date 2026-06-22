@@ -413,8 +413,10 @@ export default function Settings() {
                   <Heart className="h-6 w-6 text-primary" />
                   Apple Health
                 </CardTitle>
-                <CardDescription className="text-base">
-                  Save completed workouts to the Health app automatically.
+                <CardDescription className="text-base" data-testid="apple-health-disclosure">
+                  Momentum reads your workouts and activity from Apple Health,
+                  and writes completed workouts back to Apple Health so your
+                  fitness history stays in one place.
                 </CardDescription>
               </CardHeader>
               <CardContent>
