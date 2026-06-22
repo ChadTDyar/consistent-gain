@@ -427,7 +427,7 @@ export default function Dashboard() {
                       </Button>
                     )}
 
-                    {plan === 'free' && !isIOSNative() && goals.length >= 3 && (
+                    {plan === 'free' && goals.length >= 3 && (
                       <p className="text-[0.8rem] text-muted-foreground">
                         3 of 3 habit slots used —{" "}
                         <a href="/pricing" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }} className="text-primary hover:underline font-medium">
