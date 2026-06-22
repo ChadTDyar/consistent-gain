@@ -285,7 +285,7 @@ export default function Dashboard() {
             </Badge>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            {plan === 'free' && !isIOSNative() && (
+            {plan === 'free' && (
               <Button
                 onClick={() => navigate("/pricing")}
                 className="hidden md:flex shadow-md hover:shadow-lg transition-all btn-gradient"
