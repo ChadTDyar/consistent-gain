@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns";
 import { CoachChat } from "@/components/CoachChat";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { isIOSNative } from "@/lib/platform";
+import { normalizePlan } from "@/lib/plans";
 
 interface Goal {
   id: string;
