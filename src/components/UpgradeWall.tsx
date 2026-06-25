@@ -626,10 +626,9 @@ function UpgradeWallIOSFallback({
       <UpgradeWallIOSInlineNotice
         headline={headline}
         body={body}
+        cta={cta}
         accentColor={accentColor}
         onDismiss={dismissAndTrack}
-        onManageOnWeb={openManageOnWeb}
-        onOpenSettings={openIOSSettings}
       />
     );
   }
@@ -957,18 +956,37 @@ function IOSFallbackErrorState({
 function UpgradeWallIOSInlineNotice({
   headline,
   body,
+  cta,
   accentColor,
   onDismiss,
-  onManageOnWeb,
-  onOpenSettings,
 }: {
   headline: string;
   body: string;
+  cta: string;
   accentColor: string;
   onDismiss: () => void;
-  onManageOnWeb: () => void;
-  onOpenSettings: () => void;
 }) {
+  const [purchasing, setPurchasing] = useState(false);
+  const [purchaseError, setPurchaseError] = useState<string | null>(null);
+
+  const handlePurchase = async () => {
+    if (purchasing) return;
+    setPurchaseError(null);
+    setPurchasing(true);
+    try {
+      const ok = await purchaseMonthly();
+      if (ok) {
+        onDismiss();
+        return;
+      }
+      setPurchaseError("Subscribe in the App Store");
+    } catch {
+      setPurchaseError("Subscribe in the App Store");
+    } finally {
+      setPurchasing(false);
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -1006,37 +1024,27 @@ function UpgradeWallIOSInlineNotice({
             {body}
           </p>
 
-          <div
-            role="note"
-            aria-label="Subscription information"
-            className="rounded-lg border border-border bg-muted/30 p-3 flex items-start gap-2.5"
-          >
-            <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
-            <p className="text-xs text-foreground leading-relaxed">
-              In-app purchases on iOS will be available in a future update through the App Store. Until then, you can manage an existing subscription on the web or in your iOS Settings.
-            </p>
-          </div>
-
+          {/* StoreKit purchase entry. No external link, no web checkout —
+              Guideline 3.1.1 compliant. */}
           <div className="space-y-2 pt-1">
             <button
-              onClick={onManageOnWeb}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white cursor-pointer border-none"
+              onClick={handlePurchase}
+              disabled={purchasing}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white cursor-pointer border-none disabled:opacity-60"
               style={{ background: accentColor }}
             >
-              <ExternalLink className="h-4 w-4" aria-hidden="true" />
-              Manage on web
+              {purchasing ? "Opening App Store…" : cta}
             </button>
-            <button
-              onClick={onOpenSettings}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-medium text-sm text-foreground bg-muted hover:bg-muted/80 transition-colors cursor-pointer border-none"
-            >
-              <SettingsIcon className="h-4 w-4" aria-hidden="true" />
-              Manage subscription in Settings
-            </button>
+            {purchaseError && (
+              <p className="text-xs text-muted-foreground text-center" role="status">
+                {purchaseError}
+              </p>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 }
+
 
