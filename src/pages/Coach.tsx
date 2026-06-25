@@ -9,6 +9,8 @@ import { SEO } from "@/components/SEO";
 import { type PlanTier, normalizePlan } from "@/lib/plans";
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { isIOSNative } from "@/lib/platform";
+import { purchaseMonthly } from "@/lib/purchases";
 
 
 export default function Coach() {
@@ -128,7 +130,15 @@ export default function Coach() {
           coachPreview
           gate="coach"
           tier="premium"
-          onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
+          onUpgrade={() => {
+            setShowUpgradeWall(false);
+            if (isIOSNative()) {
+              // iOS: trigger StoreKit via RevenueCat directly. No web fallback.
+              void purchaseMonthly().catch(() => { /* user-cancel or store error: silent */ });
+            } else {
+              navigate("/pricing");
+            }
+          }}
           onDismiss={() => setShowUpgradeWall(false)}
         />
       )}
