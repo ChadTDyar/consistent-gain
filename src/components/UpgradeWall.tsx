@@ -1,11 +1,12 @@
 import { createPortal } from "react-dom";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { X, ExternalLink, Settings as SettingsIcon, Info } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
 import { Capacitor } from "@capacitor/core";
 import { analytics } from "@/lib/analytics";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { UpgradeWallBoundary } from "@/components/UpgradeWallBoundary";
+import { purchaseMonthly } from "@/lib/purchases";
 
 // Funnel-tracking taxonomy. Keep these in sync with GA4 / dashboards.
 // `gate` identifies the feature that triggered the wall.
@@ -274,6 +275,7 @@ export function UpgradeWall({
           <UpgradeWallIOSFallback
             headline={headline}
             body={body}
+            cta={cta}
             accentColor={accentColor}
             onDismiss={onDismiss}
             coachPreview={coachPreview}
@@ -413,6 +415,7 @@ export function UpgradeWall({
 interface IOSFallbackProps {
   headline: string;
   body: string;
+  cta: string;
   accentColor: string;
   onDismiss: () => void;
   coachPreview: boolean;
@@ -424,6 +427,7 @@ interface IOSFallbackProps {
 function UpgradeWallIOSFallback({
   headline,
   body,
+  cta,
   accentColor,
   onDismiss,
   coachPreview,
@@ -435,6 +439,8 @@ function UpgradeWallIOSFallback({
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const pointerDownOnBackdrop = useRef(false);
+  const [iosPurchasing, setIosPurchasing] = useState(false);
+  const [iosPurchaseError, setIosPurchaseError] = useState<string | null>(null);
 
   // Lock background scroll on iOS too. Even though the native WKWebView
   // doesn't show a scrollbar, rubber-band scrolling can still disrupt the
@@ -489,6 +495,29 @@ function UpgradeWallIOSFallback({
     onDismissRef.current();
   };
   const dismissAndTrack = () => dismissAndTrackRef.current();
+
+  // Native StoreKit purchase entry. Routes through RevenueCat
+  // (purchaseMonthly → Purchases.purchasePackage), which presents Apple's
+  // native purchase sheet. No external link, no web checkout — Guideline
+  // 3.1.1 compliant. On failure we show a neutral, link-free message.
+  const handleIOSPurchase = async () => {
+    if (iosPurchasing) return;
+    trackCta();
+    setIosPurchaseError(null);
+    setIosPurchasing(true);
+    try {
+      const ok = await purchaseMonthly();
+      if (ok) {
+        onDismissRef.current();
+        return;
+      }
+      setIosPurchaseError("Subscribe in the App Store");
+    } catch {
+      setIosPurchaseError("Subscribe in the App Store");
+    } finally {
+      setIosPurchasing(false);
+    }
+  };
 
   // Focus trap + Escape-to-close, identical contract to the web modal.
   useEffect(() => {
@@ -597,10 +626,9 @@ function UpgradeWallIOSFallback({
       <UpgradeWallIOSInlineNotice
         headline={headline}
         body={body}
+        cta={cta}
         accentColor={accentColor}
         onDismiss={dismissAndTrack}
-        onManageOnWeb={openManageOnWeb}
-        onOpenSettings={openIOSSettings}
       />
     );
   }
@@ -682,30 +710,24 @@ function UpgradeWallIOSFallback({
             </div>
           )}
 
-          {/* Apple App Review-safe purchase-path notice. No price, no checkout link; web action goes to /account. Sets honest expectations that IAP is not yet available on iOS. "future update" makes no timing promise. */}
-          <div role="note" aria-label="Subscription information" className="rounded-lg border border-border bg-muted/30 p-3 flex items-start gap-2.5">
-            <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
-            <p className="text-xs text-foreground leading-relaxed">
-              In-app purchases on iOS will be available in a future update through the App Store. Until then, you can manage an existing subscription on the web or in your iOS Settings.
-            </p>
-          </div>
-
+          {/* StoreKit purchase entry point. Tapping triggers RevenueCat →
+              StoreKit native sheet on iOS. No web checkout link, no external
+              payment path, no "IAP unavailable" messaging — Guideline 3.1.1
+              compliant. */}
           <div className="space-y-2 pt-1">
             <button
-              onClick={openManageOnWeb}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white cursor-pointer border-none"
+              onClick={handleIOSPurchase}
+              disabled={iosPurchasing}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white cursor-pointer border-none disabled:opacity-60"
               style={{ background: accentColor }}
             >
-              <ExternalLink className="h-4 w-4" aria-hidden="true" />
-              Manage on web
+              {iosPurchasing ? "Opening App Store…" : cta}
             </button>
-            <button
-              onClick={openIOSSettings}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-medium text-sm text-foreground bg-muted hover:bg-muted/80 transition-colors cursor-pointer border-none"
-            >
-              <SettingsIcon className="h-4 w-4" aria-hidden="true" />
-              Manage subscription in Settings
-            </button>
+            {iosPurchaseError && (
+              <p className="text-xs text-muted-foreground text-center" role="status">
+                {iosPurchaseError}
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -934,18 +956,37 @@ function IOSFallbackErrorState({
 function UpgradeWallIOSInlineNotice({
   headline,
   body,
+  cta,
   accentColor,
   onDismiss,
-  onManageOnWeb,
-  onOpenSettings,
 }: {
   headline: string;
   body: string;
+  cta: string;
   accentColor: string;
   onDismiss: () => void;
-  onManageOnWeb: () => void;
-  onOpenSettings: () => void;
 }) {
+  const [purchasing, setPurchasing] = useState(false);
+  const [purchaseError, setPurchaseError] = useState<string | null>(null);
+
+  const handlePurchase = async () => {
+    if (purchasing) return;
+    setPurchaseError(null);
+    setPurchasing(true);
+    try {
+      const ok = await purchaseMonthly();
+      if (ok) {
+        onDismiss();
+        return;
+      }
+      setPurchaseError("Subscribe in the App Store");
+    } catch {
+      setPurchaseError("Subscribe in the App Store");
+    } finally {
+      setPurchasing(false);
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -983,37 +1024,27 @@ function UpgradeWallIOSInlineNotice({
             {body}
           </p>
 
-          <div
-            role="note"
-            aria-label="Subscription information"
-            className="rounded-lg border border-border bg-muted/30 p-3 flex items-start gap-2.5"
-          >
-            <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
-            <p className="text-xs text-foreground leading-relaxed">
-              In-app purchases on iOS will be available in a future update through the App Store. Until then, you can manage an existing subscription on the web or in your iOS Settings.
-            </p>
-          </div>
-
+          {/* StoreKit purchase entry. No external link, no web checkout —
+              Guideline 3.1.1 compliant. */}
           <div className="space-y-2 pt-1">
             <button
-              onClick={onManageOnWeb}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white cursor-pointer border-none"
+              onClick={handlePurchase}
+              disabled={purchasing}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white cursor-pointer border-none disabled:opacity-60"
               style={{ background: accentColor }}
             >
-              <ExternalLink className="h-4 w-4" aria-hidden="true" />
-              Manage on web
+              {purchasing ? "Opening App Store…" : cta}
             </button>
-            <button
-              onClick={onOpenSettings}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-medium text-sm text-foreground bg-muted hover:bg-muted/80 transition-colors cursor-pointer border-none"
-            >
-              <SettingsIcon className="h-4 w-4" aria-hidden="true" />
-              Manage subscription in Settings
-            </button>
+            {purchaseError && (
+              <p className="text-xs text-muted-foreground text-center" role="status">
+                {purchaseError}
+              </p>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 }
+
 
