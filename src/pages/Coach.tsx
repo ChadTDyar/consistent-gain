@@ -107,7 +107,13 @@ export default function Coach() {
                     When you miss the same day three weeks running, Coach notices — and adjusts your plan around your actual life, not an ideal one.
                   </p>
                   <Button
-                    onClick={() => navigate("/pricing")}
+                    onClick={() => {
+                      if (isIOSNative()) {
+                        void purchaseMonthly().catch(() => { /* user-cancel or store error: silent */ });
+                      } else {
+                        navigate("/pricing");
+                      }
+                    }}
                     className="w-full font-bold text-sm text-white min-h-[44px] touch-manipulation"
                     style={{ background: '#0d3b5e' }}
                   >
