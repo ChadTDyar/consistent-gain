@@ -496,6 +496,29 @@ function UpgradeWallIOSFallback({
   };
   const dismissAndTrack = () => dismissAndTrackRef.current();
 
+  // Native StoreKit purchase entry. Routes through RevenueCat
+  // (purchaseMonthly → Purchases.purchasePackage), which presents Apple's
+  // native purchase sheet. No external link, no web checkout — Guideline
+  // 3.1.1 compliant. On failure we show a neutral, link-free message.
+  const handleIOSPurchase = async () => {
+    if (iosPurchasing) return;
+    trackCta();
+    setIosPurchaseError(null);
+    setIosPurchasing(true);
+    try {
+      const ok = await purchaseMonthly();
+      if (ok) {
+        onDismissRef.current();
+        return;
+      }
+      setIosPurchaseError("Subscribe in the App Store");
+    } catch {
+      setIosPurchaseError("Subscribe in the App Store");
+    } finally {
+      setIosPurchasing(false);
+    }
+  };
+
   // Focus trap + Escape-to-close, identical contract to the web modal.
   useEffect(() => {
     previouslyFocused.current = document.activeElement as HTMLElement | null;
