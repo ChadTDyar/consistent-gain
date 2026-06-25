@@ -275,6 +275,7 @@ export function UpgradeWall({
           <UpgradeWallIOSFallback
             headline={headline}
             body={body}
+            cta={cta}
             accentColor={accentColor}
             onDismiss={onDismiss}
             coachPreview={coachPreview}
@@ -414,6 +415,7 @@ export function UpgradeWall({
 interface IOSFallbackProps {
   headline: string;
   body: string;
+  cta: string;
   accentColor: string;
   onDismiss: () => void;
   coachPreview: boolean;
@@ -425,6 +427,7 @@ interface IOSFallbackProps {
 function UpgradeWallIOSFallback({
   headline,
   body,
+  cta,
   accentColor,
   onDismiss,
   coachPreview,
@@ -436,6 +439,8 @@ function UpgradeWallIOSFallback({
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
   const pointerDownOnBackdrop = useRef(false);
+  const [iosPurchasing, setIosPurchasing] = useState(false);
+  const [iosPurchaseError, setIosPurchaseError] = useState<string | null>(null);
 
   // Lock background scroll on iOS too. Even though the native WKWebView
   // doesn't show a scrollbar, rubber-band scrolling can still disrupt the
