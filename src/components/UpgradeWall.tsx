@@ -1,11 +1,12 @@
 import { createPortal } from "react-dom";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { X, ExternalLink, Settings as SettingsIcon, Info } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
 import { Capacitor } from "@capacitor/core";
 import { analytics } from "@/lib/analytics";
 import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 import { UpgradeWallBoundary } from "@/components/UpgradeWallBoundary";
+import { purchaseMonthly } from "@/lib/purchases";
 
 // Funnel-tracking taxonomy. Keep these in sync with GA4 / dashboards.
 // `gate` identifies the feature that triggered the wall.
@@ -682,30 +683,24 @@ function UpgradeWallIOSFallback({
             </div>
           )}
 
-          {/* Apple App Review-safe purchase-path notice. No price, no checkout link; web action goes to /account. Sets honest expectations that IAP is not yet available on iOS. "future update" makes no timing promise. */}
-          <div role="note" aria-label="Subscription information" className="rounded-lg border border-border bg-muted/30 p-3 flex items-start gap-2.5">
-            <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
-            <p className="text-xs text-foreground leading-relaxed">
-              In-app purchases on iOS will be available in a future update through the App Store. Until then, you can manage an existing subscription on the web or in your iOS Settings.
-            </p>
-          </div>
-
+          {/* StoreKit purchase entry point. Tapping triggers RevenueCat →
+              StoreKit native sheet on iOS. No web checkout link, no external
+              payment path, no "IAP unavailable" messaging — Guideline 3.1.1
+              compliant. */}
           <div className="space-y-2 pt-1">
             <button
-              onClick={openManageOnWeb}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white cursor-pointer border-none"
+              onClick={handleIOSPurchase}
+              disabled={iosPurchasing}
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold text-sm text-white cursor-pointer border-none disabled:opacity-60"
               style={{ background: accentColor }}
             >
-              <ExternalLink className="h-4 w-4" aria-hidden="true" />
-              Manage on web
+              {iosPurchasing ? "Opening App Store…" : cta}
             </button>
-            <button
-              onClick={openIOSSettings}
-              className="flex items-center justify-center gap-2 w-full py-3 rounded-lg font-medium text-sm text-foreground bg-muted hover:bg-muted/80 transition-colors cursor-pointer border-none"
-            >
-              <SettingsIcon className="h-4 w-4" aria-hidden="true" />
-              Manage subscription in Settings
-            </button>
+            {iosPurchaseError && (
+              <p className="text-xs text-muted-foreground text-center" role="status">
+                {iosPurchaseError}
+              </p>
+            )}
           </div>
         </div>
       </div>
