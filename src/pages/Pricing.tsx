@@ -307,7 +307,6 @@ export default function Pricing() {
                     <tr className="border-b border-border">
                       <th className="text-left p-4 font-semibold text-foreground">Feature</th>
                       <th className="text-center p-4 font-semibold text-foreground">Free</th>
-                      <th className="text-center p-4 font-semibold text-primary">Pro</th>
                       <th className="text-center p-4 font-semibold text-secondary relative">
                         <div className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-full">
                           <span className="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-t-lg font-bold text-secondary-foreground" style={{ background: 'var(--gradient-secondary)' }}>
@@ -320,20 +319,20 @@ export default function Pricing() {
                   </thead>
                   <tbody>
                     {[
-                      { feature: "Habits", free: "Up to 3", plus: "Unlimited", pro: "Unlimited" },
-                      { feature: "Daily check-ins", free: true, plus: true, pro: true },
-                      { feature: "Streak tracking", free: "7 days", plus: "30 days", pro: "Unlimited" },
-                      { feature: "Progress graphs", free: "Basic", plus: "Enhanced", pro: "Full" },
-                      { feature: "Streak Repair (48hr window)", free: false, plus: true, pro: true },
-                      { feature: "Weekly email summary", free: false, plus: true, pro: true },
-                      { feature: "AI Coach", free: false, plus: false, pro: true },
-                      { feature: "CSV data export", free: false, plus: false, pro: true },
-                      { feature: "Priority support", free: false, plus: true, pro: true },
+                      { feature: "Habits", free: "Up to 3", pro: "Unlimited" },
+                      { feature: "Daily check-ins", free: true, pro: true },
+                      { feature: "Streak tracking", free: "7 days", pro: "Unlimited" },
+                      { feature: "Progress graphs", free: "Basic", pro: "Full" },
+                      { feature: "Streak Repair (48hr window)", free: false, pro: true },
+                      { feature: "Weekly email summary", free: false, pro: true },
+                      { feature: "AI Coach", free: false, pro: true },
+                      { feature: "CSV data export", free: false, pro: true },
+                      { feature: "Priority support", free: false, pro: true },
                     ].map((row, i) => (
                       <tr key={i} className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors">
                         <td className="p-4 font-medium text-foreground">{row.feature}</td>
-                        {[row.free, row.plus, row.pro].map((val, j) => (
-                          <td key={j} className={`p-4 text-center ${j === 2 ? 'bg-secondary/5' : ''}`}>
+                        {[row.free, row.pro].map((val, j) => (
+                          <td key={j} className={`p-4 text-center ${j === 1 ? 'bg-secondary/5' : ''}`}>
                             {val === true ? (
                               <CheckCircle className="h-5 w-5 text-success mx-auto" />
                             ) : val === false ? (
