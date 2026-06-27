@@ -99,7 +99,7 @@ export default function HowToStayConsistentWorkingOut() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">What To Do When You Miss a Day</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              First: don't panic. One missed day doesn't erase your progress. Your streak might break, but your identity doesn't. On Momentum Plus, you can repair a missed day within 48 hours - because real life happens. The important thing is getting back on track immediately. Show up the next day, even if it's just a 10-minute walk. The streak is recoverable. The habit is what matters.
+              First: don't panic. One missed day doesn't erase your progress. Your streak might break, but your identity doesn't. On Momentum Premium, you can repair a missed day within 48 hours - because real life happens. The important thing is getting back on track immediately. Show up the next day, even if it's just a 10-minute walk. The streak is recoverable. The habit is what matters.
             </p>
 
             <div className="my-8">
