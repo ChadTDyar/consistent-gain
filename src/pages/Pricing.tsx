@@ -105,7 +105,7 @@ export default function Pricing() {
     },
     {
       question: "What is Streak Repair?",
-      answer: "Life happens. Pro and Premium members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
+      answer: "Life happens. Premium members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
     },
     {
       question: "How does the AI Coach work?",
