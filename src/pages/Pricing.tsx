@@ -87,20 +87,15 @@ export default function Pricing() {
     "Basic progress graphs",
   ];
 
-  const proFeatures = [
+  const premiumFeatures = [
     "Everything in Free",
-    "Unlimited goals",
-    "30-day history",
+    "Unlimited habits",
+    "Unlimited history",
     "Streak Repair",
+    "AI Coach",
+    "CSV data export",
     "Weekly progress email",
     "Priority support",
-  ];
-
-  const premiumFeatures = [
-    "Everything in Pro",
-    "AI Coach",
-    "Unlimited history",
-    "CSV data export",
   ];
 
   const faqData = [
