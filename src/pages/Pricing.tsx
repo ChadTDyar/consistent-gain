@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Star, Crown, Shield, Loader2 } from "lucide-react";
+import { CheckCircle, Crown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
@@ -130,8 +130,8 @@ export default function Pricing() {
   return (
     <>
       <SEO
-        title="Pricing - Momentum | Free, Pro & Premium Plans"
-        description="Start free with 3 habits. Upgrade to Pro ($3.99/mo) for unlimited goals and Streak Repair, or Premium ($7.99/mo) for AI coaching and unlimited history."
+        title="Pricing - Momentum | Free & Premium Plans"
+        description="Start free with 3 habits. Upgrade to Premium ($7.99/mo) for unlimited habits, AI coaching, and unlimited history."
         keywords="habit tracker pricing, habit app cost, premium habit features, affordable habit tracker"
       />
       <div className="min-h-screen bg-background-cream py-16 md:py-24">
@@ -139,7 +139,7 @@ export default function Pricing() {
           {currentPlan !== 'free' && (
             <div className="mb-8 mx-auto max-w-2xl rounded-lg border-2 border-primary/30 bg-primary/5 p-4 text-center">
               <p className="text-sm font-semibold text-foreground">
-                You're currently on the <span className="uppercase">{currentPlan === 'pro' ? 'Premium' : 'Pro'}</span> plan.
+                You're currently on the <span className="uppercase">Premium</span> plan.
               </p>
               <p className="text-xs text-muted-foreground mt-1">
                 Manage billing or cancel anytime from{" "}
