@@ -49,11 +49,11 @@ describe("UpgradeWall iOS inline fallback (no portal target)", () => {
       <UpgradeWall
         headline="Unlock AI Coach"
         body="Get personalized accountability."
-        cta="Upgrade to Pro"
+        cta="Upgrade to Premium"
         onUpgrade={() => {}}
         onDismiss={() => {}}
         gate="coach"
-        tier="pro"
+        tier="premium"
       />,
       { container },
     );
