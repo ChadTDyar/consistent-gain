@@ -598,7 +598,7 @@ export default function Dashboard() {
                     ? 'analytics_lock'
                     : 'history_limit'
           }
-          tier={upgradeWallType === 'ai_coach' ? 'premium' : 'pro'}
+          tier="premium"
           onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
           onDismiss={() => setShowUpgradeWall(false)}
         />
