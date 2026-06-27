@@ -216,7 +216,7 @@ export default function Pricing() {
             </Card>
 
 
-            {/* Pro Plan */}
+            {/* Premium Plan */}
             <Card className="border-2 border-secondary shadow-xl card-lift-heavy relative">
               <div className="absolute -top-3.5 right-4 z-10 px-3 py-1 rounded-full text-xs font-semibold text-secondary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-secondary)' }}>
                 <Crown className="h-3 w-3" /> Full Access
