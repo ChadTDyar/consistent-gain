@@ -50,17 +50,84 @@
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "MomentumFit - Fitness Habit Tracker App",
-      "alternateName": "MomentumFit",
+      "name": "MomentumFit",
+      "alternateName": "MomentumFit - Fitness Habit Tracker App",
       "url": "https://momentumfit.app",
-      "description": "A daily fitness habit tracker that helps you build streaks, track progress, and stay consistent with your health goals.",
+      "description": "Daily fitness habit tracker for the 50+ athlete. Build streaks, track progress, and stay consistent with your health goals.",
       "applicationCategory": "HealthApplication",
       "operatingSystem": "Web",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
+      "featureList": [
+        "Daily habit check-ins with streak tracking",
+        "Visual progress charts and milestone celebrations",
+        "Customizable fitness goals",
+        "Recovery day tracking",
+        "Weekly and monthly consistency reports"
+      ],
+      "screenshot": "https://momentumfit.app/og-share.jpg",
+      "author": {
+        "@type": "Organization",
+        "name": "MomentumFit",
+        "url": "https://momentumfit.app"
+      },
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Free",
+          "price": "0",
+          "priceCurrency": "USD",
+          "description": "3 habits, streak tracking, basic charts"
+        },
+        {
+          "@type": "Offer",
+          "name": "Plus (Monthly)",
+          "price": "3.99",
+          "priceCurrency": "USD",
+          "billingIncrement": "P1M",
+          "description": "Unlimited habits, advanced analytics, milestone badges, export data"
+        },
+        {
+          "@type": "Offer",
+          "name": "Plus (Annual)",
+          "price": "7.99",
+          "priceCurrency": "USD",
+          "billingIncrement": "P1Y",
+          "description": "Unlimited habits, advanced analytics, milestone badges, export data"
+        }
+      ]
+    }
+    </script>
+
+    <!-- FAQ Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What makes MomentumFit different from other habit trackers?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MomentumFit is designed specifically for athletes over 40 and 50 who need recovery-aware tracking. It celebrates consistency over intensity, tracks recovery days as wins, and adapts to the rhythm of experienced athletes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is MomentumFit free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The free plan includes 3 habits, streak tracking, and basic progress charts. The Plus plan ($3.99/month or $7.99/year) adds unlimited habits, advanced analytics, milestone badges, and data export."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I track recovery days?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. MomentumFit treats recovery as part of your training, not a break from it. Recovery days count toward your streak and are tracked alongside active training days."
+          }
+        }
+      ]
     }
     </script>
   </head>
