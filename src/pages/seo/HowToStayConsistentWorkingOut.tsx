@@ -85,7 +85,7 @@ export default function HowToStayConsistentWorkingOut() {
               {[
                 { step: "1", title: "Choose 1-3 small goals", body: "Not \"get ripped.\" Try \"move for 15 minutes\" or \"stretch after work.\" Momentum's free tier tracks up to 3 goals - enough to build a foundation." },
                 { step: "2", title: "Check in daily, no matter what", body: "Even if you didn't work out. Even on rest days. The habit is the check-in. It takes 10 seconds and it keeps the chain alive." },
-                { step: "3", title: "Never miss twice", body: "You will miss days. That's life. The rule is simple: never miss two in a row. Pro members can repair a missed day within 48 hours." },
+                { step: "3", title: "Never miss twice", body: "You will miss days. That's life. The rule is simple: never miss two in a row. Premium members can repair a missed day within 48 hours." },
               ].map(({ step, title, body }) => (
                 <li key={step} className="flex gap-4">
                   <span className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">{step}</span>
@@ -108,7 +108,7 @@ export default function HowToStayConsistentWorkingOut() {
                   <h3 className="text-2xl font-display font-bold text-foreground mb-2">Plans that grow with you</h3>
                   <p className="text-muted-foreground mb-6">Start free. Upgrade when you're ready.</p>
                   <div className="space-y-3">
-                    {["Free - 3 habits, 7-day streaks, daily check-ins", "Pro ($3.99/mo) - Unlimited habits, Streak Repair, 30-day history", "Premium ($7.99/mo) - AI Coach, unlimited history, data export"].map((line) => (
+                    {["Free - 3 habits, 7-day streaks, daily check-ins", "Premium ($7.99/mo) - Unlimited habits, Streak Repair, unlimited history, AI Coach, data export"].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <span className="text-sm text-foreground">{line}</span>

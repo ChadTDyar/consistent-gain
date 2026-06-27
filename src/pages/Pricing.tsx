@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Star, Crown, Shield, Loader2 } from "lucide-react";
+import { CheckCircle, Crown, Shield, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
@@ -54,16 +54,15 @@ export default function Pricing() {
     }
   };
 
-  const onCheckout = async (plan: 'plus' | 'pro') => {
+  const onCheckout = async (plan: 'pro') => {
     const priceIds = {
-      plus: { monthly: 'price_1TLROuL98dr6Pw0kEFuhgPnA', annual: 'price_1TLRPCL98dr6Pw0kvyaljYet' },
       pro:  { monthly: 'price_1TLRRxL98dr6Pw0kdyFkEsEp', annual: 'price_1TLRT0L98dr6Pw0kBgfProeu' },
     };
     const priceId = priceIds[plan][billingInterval];
     const label = `${plan}-${billingInterval}`;
     setLoading(label);
     try {
-      analytics.startCheckout(plan === 'plus' ? 'pro' : 'premium');
+      analytics.startCheckout('premium');
       await handleCheckout(priceId, 'momentum', userEmail);
     } catch (error) {
       console.error('[Pricing] Checkout error:', error);
@@ -73,7 +72,7 @@ export default function Pricing() {
     }
   };
 
-  const getPrice = (plan: 'plus' | 'pro') => {
+  const getPrice = (plan: 'pro') => {
     if (billingInterval === 'annual') {
       const monthlyEquiv = (PLANS[plan].annualPrice / 12).toFixed(2);
       return monthlyEquiv;
@@ -88,20 +87,15 @@ export default function Pricing() {
     "Basic progress graphs",
   ];
 
-  const proFeatures = [
+  const premiumFeatures = [
     "Everything in Free",
-    "Unlimited goals",
-    "30-day history",
+    "Unlimited habits",
+    "Unlimited history",
     "Streak Repair",
+    "AI Coach",
+    "CSV data export",
     "Weekly progress email",
     "Priority support",
-  ];
-
-  const premiumFeatures = [
-    "Everything in Pro",
-    "AI Coach",
-    "Unlimited history",
-    "CSV data export",
   ];
 
   const faqData = [
@@ -111,7 +105,7 @@ export default function Pricing() {
     },
     {
       question: "What is Streak Repair?",
-      answer: "Life happens. Pro and Premium members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
+      answer: "Life happens. Premium members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
     },
     {
       question: "How does the AI Coach work?",
@@ -130,8 +124,8 @@ export default function Pricing() {
   return (
     <>
       <SEO
-        title="Pricing - Momentum | Free, Pro & Premium Plans"
-        description="Start free with 3 habits. Upgrade to Pro ($3.99/mo) for unlimited goals and Streak Repair, or Premium ($7.99/mo) for AI coaching and unlimited history."
+        title="Pricing - Momentum | Free & Premium Plans"
+        description="Start free with 3 habits. Upgrade to Premium ($7.99/mo) for unlimited habits, AI coaching, and unlimited history."
         keywords="habit tracker pricing, habit app cost, premium habit features, affordable habit tracker"
       />
       <div className="min-h-screen bg-background-cream py-16 md:py-24">
@@ -139,7 +133,7 @@ export default function Pricing() {
           {currentPlan !== 'free' && (
             <div className="mb-8 mx-auto max-w-2xl rounded-lg border-2 border-primary/30 bg-primary/5 p-4 text-center">
               <p className="text-sm font-semibold text-foreground">
-                You're currently on the <span className="uppercase">{currentPlan === 'pro' ? 'Premium' : 'Pro'}</span> plan.
+                You're currently on the <span className="uppercase">Premium</span> plan.
               </p>
               <p className="text-xs text-muted-foreground mt-1">
                 Manage billing or cancel anytime from{" "}
@@ -186,7 +180,7 @@ export default function Pricing() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
             {/* Free Plan */}
             <Card className="border-none shadow-md card-lift">
               <CardHeader className="pb-6">
@@ -221,66 +215,8 @@ export default function Pricing() {
               </CardContent>
             </Card>
 
-            {/* Pro Plan */}
-            <Card className="border-2 shadow-xl card-lift-heavy relative bg-card" style={{ borderColor: '#0d3b5e' }}>
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
-                <span className="inline-flex items-center gap-1 px-4 py-1 rounded-full text-xs font-bold text-white" style={{ background: '#0d3b5e' }}>
-                  <Star className="h-3 w-3" /> Most Popular
-                </span>
-              </div>
-              <CardHeader className="pb-6 pt-10">
-                <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
-                  Pro <span className="badge-premium text-xs px-2 py-0.5">PRO</span>
-                </CardTitle>
-                <CardDescription className="text-base">For people who are showing up — and want to stay that way even when life gets in the way.</CardDescription>
-                <div className="mt-6">
-                  <span className="text-5xl font-display font-bold text-primary">${getPrice('plus')}</span>
-                  <span className="text-lg text-muted-foreground">/mo</span>
-                  {billingInterval === 'annual' && (
-                    <div className="mt-1">
-                  <span className="text-sm text-muted-foreground line-through">${PLANS.plus.price.toFixed(2)}/mo</span>
-                      <span className="text-sm font-semibold text-success ml-2">
-                        Billed annually at ${PLANS.plus.annualPrice}/yr
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="bg-primary/10 rounded-lg p-3">
-                  <p className="text-xs font-semibold text-foreground mb-1">This is for you if…</p>
-                  <p className="text-xs text-muted-foreground">You're building 2-3 core habits, want light reminders, and need streak protection so one bad day doesn't erase your progress.</p>
-                </div>
-                <ul className="space-y-3">
-                  {proFeatures.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
 
-                {/* Streak Repair product moment */}
-                <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-1">
-                  <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">What Streak Repair looks like</p>
-                  <p className="text-xs text-foreground leading-relaxed">
-                    "You missed Tuesday. Your streak is safe until Thursday. 48 hours to pick it back up."
-                  </p>
-                </div>
-
-                <Button
-                  className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
-                  size="lg"
-                  disabled={loading === `plus-${billingInterval}`}
-                  onClick={() => onCheckout('plus')}
-                >
-                  {loading === `plus-${billingInterval}` ? 'Redirecting…' : 'Go Pro — $3.99/mo'}
-                </Button>
-                <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
-              </CardContent>
-            </Card>
-
-            {/* Pro Plan */}
+            {/* Premium Plan */}
             <Card className="border-2 border-secondary shadow-xl card-lift-heavy relative">
               <div className="absolute -top-3.5 right-4 z-10 px-3 py-1 rounded-full text-xs font-semibold text-secondary-foreground flex items-center gap-1" style={{ background: 'var(--gradient-secondary)' }}>
                 <Crown className="h-3 w-3" /> Full Access
@@ -371,7 +307,6 @@ export default function Pricing() {
                     <tr className="border-b border-border">
                       <th className="text-left p-4 font-semibold text-foreground">Feature</th>
                       <th className="text-center p-4 font-semibold text-foreground">Free</th>
-                      <th className="text-center p-4 font-semibold text-primary">Pro</th>
                       <th className="text-center p-4 font-semibold text-secondary relative">
                         <div className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-full">
                           <span className="inline-flex items-center gap-1 text-xs px-3 py-1 rounded-t-lg font-bold text-secondary-foreground" style={{ background: 'var(--gradient-secondary)' }}>
@@ -384,20 +319,20 @@ export default function Pricing() {
                   </thead>
                   <tbody>
                     {[
-                      { feature: "Habits", free: "Up to 3", plus: "Unlimited", pro: "Unlimited" },
-                      { feature: "Daily check-ins", free: true, plus: true, pro: true },
-                      { feature: "Streak tracking", free: "7 days", plus: "30 days", pro: "Unlimited" },
-                      { feature: "Progress graphs", free: "Basic", plus: "Enhanced", pro: "Full" },
-                      { feature: "Streak Repair (48hr window)", free: false, plus: true, pro: true },
-                      { feature: "Weekly email summary", free: false, plus: true, pro: true },
-                      { feature: "AI Coach", free: false, plus: false, pro: true },
-                      { feature: "CSV data export", free: false, plus: false, pro: true },
-                      { feature: "Priority support", free: false, plus: true, pro: true },
+                      { feature: "Habits", free: "Up to 3", pro: "Unlimited" },
+                      { feature: "Daily check-ins", free: true, pro: true },
+                      { feature: "Streak tracking", free: "7 days", pro: "Unlimited" },
+                      { feature: "Progress graphs", free: "Basic", pro: "Full" },
+                      { feature: "Streak Repair (48hr window)", free: false, pro: true },
+                      { feature: "Weekly email summary", free: false, pro: true },
+                      { feature: "AI Coach", free: false, pro: true },
+                      { feature: "CSV data export", free: false, pro: true },
+                      { feature: "Priority support", free: false, pro: true },
                     ].map((row, i) => (
                       <tr key={i} className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors">
                         <td className="p-4 font-medium text-foreground">{row.feature}</td>
-                        {[row.free, row.plus, row.pro].map((val, j) => (
-                          <td key={j} className={`p-4 text-center ${j === 2 ? 'bg-secondary/5' : ''}`}>
+                        {[row.free, row.pro].map((val, j) => (
+                          <td key={j} className={`p-4 text-center ${j === 1 ? 'bg-secondary/5' : ''}`}>
                             {val === true ? (
                               <CheckCircle className="h-5 w-5 text-success mx-auto" />
                             ) : val === false ? (

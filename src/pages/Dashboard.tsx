@@ -277,11 +277,10 @@ export default function Dashboard() {
             <Badge
               variant={plan === 'free' ? 'outline' : 'secondary'}
               className={`text-[10px] font-bold uppercase shrink-0 ${
-                plan === 'pro' ? 'bg-secondary text-secondary-foreground' :
-                plan === 'plus' ? 'badge-premium' : ''
+                plan !== 'free' ? 'bg-secondary text-secondary-foreground' : ''
               }`}
             >
-              {plan === 'free' ? 'Free' : plan === 'plus' ? 'Pro' : 'Premium'}
+              {plan === 'free' ? 'Free' : 'Premium'}
             </Badge>
           </div>
           <div className="flex items-center gap-1 shrink-0">
@@ -410,7 +409,7 @@ export default function Dashboard() {
                         type="button"
                         className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-border bg-muted/20 px-4 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                         onClick={() => { setUpgradeWallType('habit_limit'); setShowUpgradeWall(true); }}
-                        aria-label="Add habit — Pro plan required, opens upgrade dialog"
+                        aria-label="Add habit — Premium plan required, opens upgrade dialog"
                       >
                         <Plus className="h-4 w-4" aria-hidden="true" />
                         Add Habit
@@ -431,7 +430,7 @@ export default function Dashboard() {
                       <p className="text-[0.8rem] text-muted-foreground">
                         3 of 3 habit slots used —{" "}
                         <a href="/pricing" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }} className="text-primary hover:underline font-medium">
-                          Pro unlocks unlimited
+                          Premium unlocks unlimited
                         </a>
                       </p>
                     )}
@@ -475,14 +474,14 @@ export default function Dashboard() {
             <div className="mt-8">
               <h3 className="text-xl font-display font-semibold text-foreground mb-3 flex items-center gap-2">
                 <Users className="h-5 w-5" /> Accountability Partner
-                {plan === 'free' && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
+                {plan === 'free' && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Premium</Badge>}
               </h3>
               {plan === 'free' ? (
                 <button
                   type="button"
                   className="w-full text-left p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   onClick={() => { setUpgradeWallType('partner_lock'); setShowUpgradeWall(true); }}
-                  aria-label="Accountability Partner — Pro plan required, opens upgrade dialog"
+                  aria-label="Accountability Partner — Premium plan required, opens upgrade dialog"
                 >
                   <p className="text-sm text-muted-foreground">Your partner sees your weekly completion. You see theirs. The social pressure is real.</p>
                   <p className="text-xs text-primary font-semibold mt-2" aria-hidden="true">Tap to unlock →</p>
@@ -498,14 +497,14 @@ export default function Dashboard() {
             <div className="mt-8">
               <h3 className="text-xl font-display font-semibold text-foreground mb-3 flex items-center gap-2">
                 <BarChart3 className="h-5 w-5" /> Trend Analytics
-                {plan === 'free' && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Pro</Badge>}
+                {plan === 'free' && <Badge variant="outline" className="text-xs"><Lock className="h-3 w-3 mr-1" />Premium</Badge>}
               </h3>
               {plan === 'free' ? (
                 <button
                   type="button"
                   className="w-full text-left relative p-6 rounded-xl border border-border bg-muted/30 cursor-pointer hover:bg-muted/50 transition-colors overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                   onClick={() => { setUpgradeWallType('analytics_lock'); setShowUpgradeWall(true); }}
-                  aria-label={`Trend Analytics — Pro plan required at $${PLANS.plus.price} per month, opens upgrade dialog`}
+                  aria-label={`Trend Analytics — Premium plan required at $${PLANS.pro.price} per month, opens upgrade dialog`}
                 >
                   <div className="blur-sm select-none pointer-events-none" aria-hidden="true">
                     <div className="flex gap-2 items-end h-24">
@@ -516,7 +515,7 @@ export default function Dashboard() {
                   </div>
                   <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
                   <p className="text-sm font-semibold text-foreground bg-card/90 px-4 py-2 rounded-lg shadow">
-                       Trend analytics unlock on Pro — ${PLANS.plus.price}/month
+                       Trend analytics unlock on Premium — ${PLANS.pro.price}/month
                     </p>
                   </div>
                 </button>
@@ -599,7 +598,7 @@ export default function Dashboard() {
                     ? 'analytics_lock'
                     : 'history_limit'
           }
-          tier={upgradeWallType === 'ai_coach' ? 'premium' : 'pro'}
+          tier="premium"
           onUpgrade={() => { setShowUpgradeWall(false); navigate("/pricing"); }}
           onDismiss={() => setShowUpgradeWall(false)}
         />

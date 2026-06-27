@@ -33,7 +33,7 @@ export function AppSidebar() {
 
   const items = [
     { path: "/dashboard", label: "Today", icon: Calendar, locked: false },
-    { path: "/insights", label: "Insights", icon: TrendingUp, locked: !isPro, lockLabel: "Pro" },
+    { path: "/insights", label: "Insights", icon: TrendingUp, locked: !isPremium, lockLabel: "Premium" },
     { path: "/track", label: "Track", icon: Activity, locked: false },
     { path: "/coach", label: "Coach", icon: MessageCircle, locked: !isPremium, lockLabel: "Premium" },
     { path: "/profile", label: "Profile", icon: User, locked: false },

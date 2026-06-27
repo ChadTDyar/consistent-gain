@@ -20,30 +20,12 @@ const tiers = [
     highlight: false,
     mostPopular: false,
     cta: "Get Started Free",
-    plan: null as null | 'plus' | 'pro',
+    plan: null as null | 'pro',
     priceIds: null as null | { monthly: string; annual: string },
     features: [
       "3 habits",
       "Daily check-ins",
       "7-day streaks",
-    ],
-  },
-  {
-    name: "Pro",
-    monthlyPrice: "$3.99",
-    annualMonthlyPrice: "$3.17",
-    annualTotal: "$38",
-    savingsLabel: "21%",
-    highlight: true,
-    mostPopular: true,
-    cta: "Go Pro — $3.99/mo",
-    plan: 'plus' as null | 'plus' | 'pro',
-    priceIds: { monthly: 'price_1TLROuL98dr6Pw0kEFuhgPnA', annual: 'price_1TLRPCL98dr6Pw0kvyaljYet' },
-    features: [
-      "Unlimited goals",
-      "30-day history",
-      "Streak Repair",
-      "Priority support",
     ],
   },
   {
@@ -55,13 +37,13 @@ const tiers = [
     highlight: false,
     mostPopular: false,
     cta: "Go Premium — $7.99/mo",
-    plan: 'pro' as null | 'plus' | 'pro',
+    plan: 'pro' as null | 'pro',
     priceIds: { monthly: 'price_1TLRRxL98dr6Pw0kdyFkEsEp', annual: 'price_1TLRT0L98dr6Pw0kBgfProeu' },
     features: [
       "AI Coach",
       "Unlimited history",
       "Data export",
-      "Everything in Pro",
+      "Everything in Free",
     ],
   },
 ];
@@ -135,7 +117,7 @@ export function LandingPricing() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
           {tiers.map((tier) => (
             <Card
               key={tier.name}

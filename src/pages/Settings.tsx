@@ -452,12 +452,11 @@ export default function Settings() {
                   rawPlan === 'pro' || rawPlan === 'premium' ? 'pro' :
                   rawPlan === 'plus' ? 'plus' : 'free';
                 const planLabel =
-                  planTier === 'pro' ? 'Premium' :
-                  planTier === 'plus' ? 'Pro' : 'Free';
+                  planTier === 'free' ? 'Free' : 'Premium';
                 const planBlurb =
-                  planTier === 'pro' ? "You're on our top plan — full access including AI Coach, unlimited history, and CSV export." :
-                  planTier === 'plus' ? "You have unlimited goals & Streak Repair." :
-                  "Upgrade to unlock more features.";
+                  planTier === 'free'
+                    ? "Upgrade to unlock more features."
+                    : "You're on our top plan — full access including AI Coach, unlimited history, and CSV export.";
                 return (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border-l-4 border-l-primary">

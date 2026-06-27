@@ -13,7 +13,7 @@ vi.mock("@/lib/platform", () => ({
 const baseProps = {
   headline: "Unlock Coach",
   body: "Upgrade to access AI Coach.",
-  cta: "Upgrade to Pro",
+  cta: "Upgrade to Premium",
   onUpgrade: vi.fn(),
   onDismiss: vi.fn(),
 };
