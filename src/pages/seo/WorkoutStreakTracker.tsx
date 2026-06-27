@@ -82,7 +82,7 @@ export default function WorkoutStreakTracker() {
               {[
                 { step: "1", title: "Daily check-in", body: "Open the app, tap the goals you completed. It takes 10 seconds." },
                 { step: "2", title: "Visual chain grows", body: "Watch your streak counter climb. The longer the chain, the harder it is to break." },
-                { step: "3", title: "Streak repair (Plus)", body: "Missed a day? Repair it within 48 hours. One bad day doesn't erase weeks of progress." },
+                { step: "3", title: "Streak repair (Premium)", body: "Missed a day? Repair it within 48 hours. One bad day doesn't erase weeks of progress." },
               ].map(({ step, title, body }) => (
                 <li key={step} className="flex gap-4">
                   <span className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">{step}</span>
