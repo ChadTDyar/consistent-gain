@@ -54,16 +54,15 @@ export default function Pricing() {
     }
   };
 
-  const onCheckout = async (plan: 'plus' | 'pro') => {
+  const onCheckout = async (plan: 'pro') => {
     const priceIds = {
-      plus: { monthly: 'price_1TLROuL98dr6Pw0kEFuhgPnA', annual: 'price_1TLRPCL98dr6Pw0kvyaljYet' },
       pro:  { monthly: 'price_1TLRRxL98dr6Pw0kdyFkEsEp', annual: 'price_1TLRT0L98dr6Pw0kBgfProeu' },
     };
     const priceId = priceIds[plan][billingInterval];
     const label = `${plan}-${billingInterval}`;
     setLoading(label);
     try {
-      analytics.startCheckout(plan === 'plus' ? 'pro' : 'premium');
+      analytics.startCheckout('premium');
       await handleCheckout(priceId, 'momentum', userEmail);
     } catch (error) {
       console.error('[Pricing] Checkout error:', error);
@@ -73,7 +72,7 @@ export default function Pricing() {
     }
   };
 
-  const getPrice = (plan: 'plus' | 'pro') => {
+  const getPrice = (plan: 'pro') => {
     if (billingInterval === 'annual') {
       const monthlyEquiv = (PLANS[plan].annualPrice / 12).toFixed(2);
       return monthlyEquiv;
