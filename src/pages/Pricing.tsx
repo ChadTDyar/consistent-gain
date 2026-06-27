@@ -185,7 +185,7 @@ export default function Pricing() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
             {/* Free Plan */}
             <Card className="border-none shadow-md card-lift">
               <CardHeader className="pb-6">
