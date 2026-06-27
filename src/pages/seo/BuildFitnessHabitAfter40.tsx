@@ -112,7 +112,6 @@ export default function BuildFitnessHabitAfter40() {
                     {[
                       "Free - 3 goals, 7-day streaks, daily check-ins",
                       "Premium ($7.99/mo) - Unlimited goals, Streak Repair, unlimited history, AI Coach, data export",
-                      "Premium ($7.99/mo) - AI Coach, unlimited history, data export",
                     ].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
