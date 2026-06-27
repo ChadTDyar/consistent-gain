@@ -293,11 +293,10 @@ export default function Insights() {
           )}
 
           {/* AI Insights — Premium-only feature.
-              Free users never reach this page (gated above), so the locked
-              state is what Pro (plus) users see; Premium (pro) users see
-              the generated analysis. This keeps the lock label, paywall
-              requirement (requiredPlan="pro"), and Pricing page promise
-              ("AI Coach: Premium only") aligned. */}
+               Free users never reach this page (gated above); Premium users
+               see the generated analysis. This keeps the lock label, paywall
+               requirement (requiredPlan="pro"), and Pricing page promise
+               ("AI Coach: Premium only") aligned. */}
           {(() => {
             const aiUnlocked = canAccessFeature(plan, 'pro');
             return (
