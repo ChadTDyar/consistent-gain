@@ -220,64 +220,6 @@ export default function Pricing() {
               </CardContent>
             </Card>
 
-            {/* Pro Plan */}
-            <Card className="border-2 shadow-xl card-lift-heavy relative bg-card" style={{ borderColor: '#0d3b5e' }}>
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
-                <span className="inline-flex items-center gap-1 px-4 py-1 rounded-full text-xs font-bold text-white" style={{ background: '#0d3b5e' }}>
-                  <Star className="h-3 w-3" /> Most Popular
-                </span>
-              </div>
-              <CardHeader className="pb-6 pt-10">
-                <CardTitle className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
-                  Pro <span className="badge-premium text-xs px-2 py-0.5">PRO</span>
-                </CardTitle>
-                <CardDescription className="text-base">For people who are showing up — and want to stay that way even when life gets in the way.</CardDescription>
-                <div className="mt-6">
-                  <span className="text-5xl font-display font-bold text-primary">${getPrice('plus')}</span>
-                  <span className="text-lg text-muted-foreground">/mo</span>
-                  {billingInterval === 'annual' && (
-                    <div className="mt-1">
-                  <span className="text-sm text-muted-foreground line-through">${PLANS.plus.price.toFixed(2)}/mo</span>
-                      <span className="text-sm font-semibold text-success ml-2">
-                        Billed annually at ${PLANS.plus.annualPrice}/yr
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="bg-primary/10 rounded-lg p-3">
-                  <p className="text-xs font-semibold text-foreground mb-1">This is for you if…</p>
-                  <p className="text-xs text-muted-foreground">You're building 2-3 core habits, want light reminders, and need streak protection so one bad day doesn't erase your progress.</p>
-                </div>
-                <ul className="space-y-3">
-                  {proFeatures.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Streak Repair product moment */}
-                <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-1">
-                  <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground font-semibold">What Streak Repair looks like</p>
-                  <p className="text-xs text-foreground leading-relaxed">
-                    "You missed Tuesday. Your streak is safe until Thursday. 48 hours to pick it back up."
-                  </p>
-                </div>
-
-                <Button
-                  className="w-full shadow-lg hover:shadow-xl transition-all font-semibold btn-gradient min-h-[44px]"
-                  size="lg"
-                  disabled={loading === `plus-${billingInterval}`}
-                  onClick={() => onCheckout('plus')}
-                >
-                  {loading === `plus-${billingInterval}` ? 'Redirecting…' : 'Go Pro — $3.99/mo'}
-                </Button>
-                <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
-              </CardContent>
-            </Card>
 
             {/* Pro Plan */}
             <Card className="border-2 border-secondary shadow-xl card-lift-heavy relative">
