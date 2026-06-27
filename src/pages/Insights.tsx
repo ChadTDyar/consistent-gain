@@ -51,9 +51,9 @@ export default function Insights() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { navigate("/auth"); return; }
 
-    // Gate the entire Insights page on Pro (plus) or Premium (pro).
+    // Gate the entire Insights page on Premium (pro).
     // Free users are redirected to /pricing — analytics are a paid feature
-    // per the Pricing page promise ("30-day history" / "Weekly progress email").
+    // per the Pricing page promise ("unlimited history" / "Weekly progress email").
     try {
       const { data: profile } = await supabase
         .from("profiles")
