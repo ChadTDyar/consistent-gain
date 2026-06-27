@@ -20,7 +20,7 @@ const tiers = [
     highlight: false,
     mostPopular: false,
     cta: "Get Started Free",
-    plan: null as null | 'plus' | 'pro',
+    plan: null as null | 'pro',
     priceIds: null as null | { monthly: string; annual: string },
     features: [
       "3 habits",
