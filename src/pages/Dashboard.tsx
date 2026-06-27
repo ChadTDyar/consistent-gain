@@ -277,11 +277,10 @@ export default function Dashboard() {
             <Badge
               variant={plan === 'free' ? 'outline' : 'secondary'}
               className={`text-[10px] font-bold uppercase shrink-0 ${
-                plan === 'pro' ? 'bg-secondary text-secondary-foreground' :
-                plan === 'plus' ? 'badge-premium' : ''
+                plan !== 'free' ? 'bg-secondary text-secondary-foreground' : ''
               }`}
             >
-              {plan === 'free' ? 'Free' : plan === 'plus' ? 'Pro' : 'Premium'}
+              {plan === 'free' ? 'Free' : 'Premium'}
             </Badge>
           </div>
           <div className="flex items-center gap-1 shrink-0">
