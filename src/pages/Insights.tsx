@@ -61,9 +61,13 @@ export default function Insights() {
         .eq("id", session.user.id)
         .single();
       const userPlan = normalizePlan(profile?.plan);
-      // Gate by real entitlement. Unentitled users (web or iOS) hit the gate.
+      setPlan(userPlan);
+      // Gate by real entitlement. Unentitled users see the inline UpgradeWall
+      // on /insights itself — do NOT navigate away, or the Trends tab appears
+      // non-functional (iOS additionally redirects /pricing → /dashboard).
       if (!canAccessFeature(userPlan, 'plus')) {
-        navigate("/pricing");
+        setShowPaywall(true);
+        setLoading(false);
         return;
       }
 
@@ -71,7 +75,6 @@ export default function Insights() {
       if (fnError) throw fnError;
       setStats(data.stats);
       setAiInsights(data.aiInsights);
-      setPlan(normalizePlan(data?.plan));
     } catch (e: any) {
       console.error("Insights error:", e);
       setError("Failed to load insights");
