@@ -61,9 +61,13 @@ export default function Insights() {
         .eq("id", session.user.id)
         .single();
       const userPlan = normalizePlan(profile?.plan);
-      // Gate by real entitlement. Unentitled users (web or iOS) hit the gate.
+      setPlan(userPlan);
+      // Gate by real entitlement. Unentitled users see the inline UpgradeWall
+      // on /insights itself — do NOT navigate away, or the Trends tab appears
+      // non-functional (iOS additionally redirects /pricing → /dashboard).
       if (!canAccessFeature(userPlan, 'plus')) {
-        navigate("/pricing");
+        setShowPaywall(true);
+        setLoading(false);
         return;
       }
 
@@ -71,7 +75,6 @@ export default function Insights() {
       if (fnError) throw fnError;
       setStats(data.stats);
       setAiInsights(data.aiInsights);
-      setPlan(normalizePlan(data?.plan));
     } catch (e: any) {
       console.error("Insights error:", e);
       setError("Failed to load insights");
@@ -85,6 +88,31 @@ export default function Insights() {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
+    );
+  }
+
+  if (showPaywall && !stats) {
+    return (
+      <>
+        <SEO title="Insights - Momentum" description="AI-powered weekly intelligence report on your fitness habits." />
+        <div className="min-h-screen bg-background-cream flex items-center justify-center px-4">
+          <div className="text-center max-w-md">
+            <Brain className="h-12 w-12 text-primary mx-auto mb-4" />
+            <h1 className="text-2xl font-display font-bold mb-2">Weekly Insights</h1>
+            <p className="text-muted-foreground">Premium unlocks your full intelligence report.</p>
+          </div>
+        </div>
+        <UpgradeWall
+          headline={MOMENTUM.walls.ai_coach.headline}
+          body={MOMENTUM.walls.ai_coach.body}
+          cta={MOMENTUM.walls.ai_coach.cta}
+          accentColor="#0d3b5e"
+          gate="analytics_lock"
+          tier="premium"
+          onUpgrade={() => { setShowPaywall(false); navigate("/pricing"); }}
+          onDismiss={() => { setShowPaywall(false); navigate("/dashboard"); }}
+        />
+      </>
     );
   }
 

@@ -33,6 +33,7 @@ export function AppSidebar() {
 
   const items = [
     { path: "/dashboard", label: "Today", icon: Calendar, locked: false },
+    // Trends tab — route must match App.tsx path exactly
     { path: "/insights", label: "Insights", icon: TrendingUp, locked: !isPremium, lockLabel: "Premium" },
     { path: "/track", label: "Track", icon: Activity, locked: false },
     { path: "/coach", label: "Coach", icon: MessageCircle, locked: !isPremium, lockLabel: "Premium" },
