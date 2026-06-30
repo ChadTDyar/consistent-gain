@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 const tabs = [
   { path: "/dashboard", label: "Habits", icon: Calendar },
+  // Trends tab — route must match App.tsx path exactly
   { path: "/insights", label: "Trends", icon: TrendingUp },
   { path: "/track", label: "Track", icon: Activity },
   { path: "/coach", label: "Coach", icon: MessageCircle },
