@@ -11,6 +11,7 @@ import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isIOSNative } from "@/lib/platform";
 import { purchaseMonthly } from "@/lib/purchases";
+import { toast } from "sonner";
 
 
 export default function Coach() {
