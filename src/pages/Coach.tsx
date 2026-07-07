@@ -21,6 +21,26 @@ export default function Coach() {
   const [daysSinceActivity, setDaysSinceActivity] = useState(0);
   const [plan, setPlan] = useState<PlanTier>("free");
   const [showUpgradeWall, setShowUpgradeWall] = useState(false);
+  const [iosPurchasing, setIosPurchasing] = useState(false);
+
+  const handleIOSPurchase = async () => {
+    if (iosPurchasing) return;
+    setIosPurchasing(true);
+    try {
+      const ok = await purchaseMonthly();
+      if (ok) {
+        setShowUpgradeWall(false);
+        setPlan("pro");
+        toast.success("Welcome to Premium!");
+        return;
+      }
+      toast.error("Subscribe in the App Store");
+    } catch {
+      toast.error("Subscribe in the App Store");
+    } finally {
+      setIosPurchasing(false);
+    }
+  };
 
   useEffect(() => {
     const init = async () => {
