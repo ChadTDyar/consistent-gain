@@ -130,15 +130,16 @@ export default function Coach() {
                   <Button
                     onClick={() => {
                       if (isIOSNative()) {
-                        void purchaseMonthly().catch(() => { /* user-cancel or store error: silent */ });
+                        void handleIOSPurchase();
                       } else {
                         navigate("/pricing");
                       }
                     }}
+                    disabled={iosPurchasing}
                     className="w-full font-bold text-sm text-white min-h-[44px] touch-manipulation"
                     style={{ background: '#0d3b5e' }}
                   >
-                    🔒 Upgrade to Premium →
+                    {iosPurchasing ? "Opening App Store…" : "🔒 Upgrade to Premium →"}
                   </Button>
                   <p className="text-xs text-muted-foreground">Cancel anytime.</p>
                 </div>
