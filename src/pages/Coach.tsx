@@ -159,11 +159,11 @@ export default function Coach() {
           gate="coach"
           tier="premium"
           onUpgrade={() => {
-            setShowUpgradeWall(false);
             if (isIOSNative()) {
-              // iOS: trigger StoreKit via RevenueCat directly. No web fallback.
-              void purchaseMonthly().catch(() => { /* user-cancel or store error: silent */ });
+              // iOS: await StoreKit result; only dismiss on success (inside handler).
+              void handleIOSPurchase();
             } else {
+              setShowUpgradeWall(false);
               navigate("/pricing");
             }
           }}
