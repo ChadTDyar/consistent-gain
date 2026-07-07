@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,8 @@ import {
   AreaChart, Area,
 } from "recharts";
 import { type PlanTier, normalizePlan, canAccessFeature } from "@/lib/plans";
+import { isIOSNative } from "@/lib/platform";
+import { purchaseMonthly } from "@/lib/purchases";
 
 
 interface WeeklyStats {
