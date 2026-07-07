@@ -44,7 +44,36 @@ export default function Insights() {
   const [aiInsights, setAiInsights] = useState<string | null>(null);
   const [plan, setPlan] = useState<PlanTier>("free");
   const [showPaywall, setShowPaywall] = useState(false);
+  const [iosPurchasing, setIosPurchasing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Web → /pricing. iOS native → StoreKit via RevenueCat (no /pricing redirect
+  // dead-end, no external link — Guideline 3.1.1 compliant). Mirrors the
+  // handleIOSPurchase pattern used in UpgradeWall.tsx and Coach.tsx.
+  const handleUpgrade = async () => {
+    if (!isIOSNative()) {
+      setShowPaywall(false);
+      navigate("/pricing");
+      return;
+    }
+    if (iosPurchasing) return;
+    setIosPurchasing(true);
+    try {
+      const ok = await purchaseMonthly();
+      if (ok) {
+        setShowPaywall(false);
+        setPlan("pro");
+        toast.success("Welcome to Premium!");
+        loadInsights();
+        return;
+      }
+      toast.error("Subscribe in the App Store");
+    } catch {
+      toast.error("Subscribe in the App Store");
+    } finally {
+      setIosPurchasing(false);
+    }
+  };
 
   useEffect(() => {
     loadInsights();
