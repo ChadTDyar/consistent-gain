@@ -48,6 +48,8 @@ export default function PaywallModal({ open, onOpenChange, feature }: PaywallMod
             onOpenChange(false);
             navigate("/dashboard");
           }, 1500);
+        } else {
+          toast.error("Purchase not completed. Subscribe in the App Store.");
         }
       } else {
         // Web: redirect to Stripe Checkout
