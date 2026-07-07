@@ -11,6 +11,7 @@ import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { isIOSNative } from "@/lib/platform";
 import { purchaseMonthly } from "@/lib/purchases";
+import { toast } from "sonner";
 
 
 export default function Coach() {
@@ -20,6 +21,26 @@ export default function Coach() {
   const [daysSinceActivity, setDaysSinceActivity] = useState(0);
   const [plan, setPlan] = useState<PlanTier>("free");
   const [showUpgradeWall, setShowUpgradeWall] = useState(false);
+  const [iosPurchasing, setIosPurchasing] = useState(false);
+
+  const handleIOSPurchase = async () => {
+    if (iosPurchasing) return;
+    setIosPurchasing(true);
+    try {
+      const ok = await purchaseMonthly();
+      if (ok) {
+        setShowUpgradeWall(false);
+        setPlan("pro");
+        toast.success("Welcome to Premium!");
+        return;
+      }
+      toast.error("Subscribe in the App Store");
+    } catch {
+      toast.error("Subscribe in the App Store");
+    } finally {
+      setIosPurchasing(false);
+    }
+  };
 
   useEffect(() => {
     const init = async () => {
@@ -109,15 +130,16 @@ export default function Coach() {
                   <Button
                     onClick={() => {
                       if (isIOSNative()) {
-                        void purchaseMonthly().catch(() => { /* user-cancel or store error: silent */ });
+                        void handleIOSPurchase();
                       } else {
                         navigate("/pricing");
                       }
                     }}
+                    disabled={iosPurchasing}
                     className="w-full font-bold text-sm text-white min-h-[44px] touch-manipulation"
                     style={{ background: '#0d3b5e' }}
                   >
-                    🔒 Upgrade to Premium →
+                    {iosPurchasing ? "Opening App Store…" : "🔒 Upgrade to Premium →"}
                   </Button>
                   <p className="text-xs text-muted-foreground">Cancel anytime.</p>
                 </div>
@@ -137,11 +159,11 @@ export default function Coach() {
           gate="coach"
           tier="premium"
           onUpgrade={() => {
-            setShowUpgradeWall(false);
             if (isIOSNative()) {
-              // iOS: trigger StoreKit via RevenueCat directly. No web fallback.
-              void purchaseMonthly().catch(() => { /* user-cancel or store error: silent */ });
+              // iOS: await StoreKit result; only dismiss on success (inside handler).
+              void handleIOSPurchase();
             } else {
+              setShowUpgradeWall(false);
               navigate("/pricing");
             }
           }}
