@@ -141,7 +141,7 @@ export default function Insights() {
           accentColor="#0d3b5e"
           gate="analytics_lock"
           tier="premium"
-          onUpgrade={() => { setShowPaywall(false); navigate("/pricing"); }}
+          onUpgrade={handleUpgrade}
           onDismiss={() => { setShowPaywall(false); navigate("/dashboard"); }}
         />
       </>
