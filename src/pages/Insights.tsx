@@ -67,9 +67,12 @@ export default function Insights() {
         loadInsights();
         return;
       }
-      toast.error("Subscribe in the App Store");
-    } catch {
-      toast.error("Subscribe in the App Store");
+      // Keep wall open on failure — do not silently dismiss.
+      toast.error("Purchase didn't complete. Please try again.");
+    } catch (err: any) {
+      // Surface the real StoreKit / RevenueCat error text; keep wall open.
+      const msg = err?.message || err?.userInfo?.readableErrorCode || "Purchase failed. Please try again.";
+      toast.error(msg);
     } finally {
       setIosPurchasing(false);
     }
