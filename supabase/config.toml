@@ -29,3 +29,6 @@ verify_jwt = false
 
 [functions.seed-vera-test]
 verify_jwt = false
+
+[functions.daily-signup-sync]
+verify_jwt = false
