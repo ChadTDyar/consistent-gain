@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 import React, { useEffect, useRef, useState } from "react";
-import { X, ExternalLink, Settings as SettingsIcon, Info } from "lucide-react";
+import { X } from "lucide-react";
 import { isIOSNative } from "@/lib/platform";
 import { Capacitor } from "@capacitor/core";
 import { analytics } from "@/lib/analytics";
@@ -561,45 +561,6 @@ function UpgradeWallIOSFallback({
       dismissAndTrack();
     }
     pointerDownOnBackdrop.current = false;
-  };
-
-  // Open iOS Settings → app's subscription management page. We use the
-  // app-settings: URL scheme via Capacitor App.openUrl. On older iOS or if
-  // the plugin is unregistered we silently no-op so we never crash.
-  // Open iOS Settings → app's subscription management page.
-  // The @capacitor/app plugin does NOT expose openUrl in v7, and we don't
-  // want to introduce a new native plugin just for this. The WKWebView
-  // honors custom URL schemes via window.location, which iOS resolves to
-  // the Settings app for the "app-settings:" scheme. On non-iOS or when the
-  // scheme is blocked, this is a harmless no-op (the page won't navigate).
-  const openIOSSettings = () => {
-    try {
-      window.location.href = "app-settings:";
-    } catch {
-      /* best effort */
-    }
-  };
-
-  // App-Store Reader Rule 3.1.3(a) compliant link: opens the marketing site's
-  // /account page in an in-app SFSafariViewController. /account must NOT show
-  // a purchase form to a logged-out user; it must show subscription
-  // management. (Pricing pages are a separate URL and are NOT linked here.)
-  const openManageOnWeb = async () => {
-    // "Manage on web" is the iOS conversion intent — fire CTA before opening
-    // the in-app browser so we capture the click even if the browser handoff
-    // takes a moment.
-    trackCta();
-    const url = "https://momentumfit.app/account";
-    try {
-      if (Capacitor.isPluginAvailable("Browser")) {
-        const { Browser } = await import("@capacitor/browser");
-        await Browser.open({ url, presentationStyle: "popover" });
-        return;
-      }
-    } catch {
-      /* fall through to window.open */
-    }
-    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   // Portal target sanity check. document.body is virtually always present,
