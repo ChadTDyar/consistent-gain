@@ -66,7 +66,6 @@ export function UpgradeWall({
   tier = "unknown",
   returnFocus,
 }: Props) {
-  const isProCta = cta.toLowerCase().includes("pro");
   const panelRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
@@ -397,17 +396,17 @@ export function UpgradeWall({
 // ---------------------------------------------------------------------------
 // iOS native fallback
 // ---------------------------------------------------------------------------
-// Apple App Review-safe modal shown when the standard upgrade wall would have
-// returned null on iOS native builds. Strict rules enforced here:
-//   1. NO mention of price.
-//   2. NO purchase CTA. The only actions are dismiss, open iOS Settings, and
-//      the single App-Store Reader Rule "Manage on web" link.
-//   3. The "Manage on web" link goes to /account on the marketing site, which
-//      is a subscription management surface, NOT a checkout. Apple permits a
-//      single account-management link out per Reader Rule 3.1.3(a).
-//   4. Capacitor plugin calls are best-effort: if the plugin is unavailable
-//      (e.g. running in the web preview through this code path during a test)
-//      the buttons silently no-op rather than crashing.
+// Apple App Review-safe modal shown on iOS native builds. The upgrade flow
+// uses StoreKit exclusively via purchaseMonthly() (RevenueCat →
+// Purchases.purchasePackage), which presents Apple's native purchase sheet.
+// Strict rules enforced here:
+//   1. NO mention of price in our UI — StoreKit's native sheet displays the
+//      App Store price.
+//   2. The only purchase path is the StoreKit sheet triggered by the CTA
+//      button. No external payment links, no web checkout, no Settings
+//      navigation — Guideline 3.1.1 compliant.
+//   3. On purchase failure, a neutral "Subscribe in the App Store" message
+//      is shown with no links.
 //
 // The component reuses the same focus-trap, Escape-to-close, and outside-click
 // patterns as the main modal so iOS keyboard / external-keyboard users get the
@@ -905,10 +904,11 @@ function IOSFallbackErrorState({
 //     mounted us. This guarantees iOS users ALWAYS see something.
 //
 // App Review compliance is identical to the regular iOS fallback:
-//   - No price.
-//   - No purchase CTA.
-//   - "Manage on web" goes to /account (subscription management, not
-//     checkout) per Reader Rule 3.1.3(a).
+//   - No price displayed in our UI.
+//   - The only purchase path is StoreKit via purchaseMonthly() (RevenueCat →
+//     Purchases.purchasePackage). No external payment links, no web checkout,
+//     no Settings navigation — Guideline 3.1.1 compliant.
+//   - On failure, a neutral "Subscribe in the App Store" message with no links.
 //
 // Visually we still use a fixed full-screen overlay so the user perceives
 // it as a modal even though it's not portaled. It does not focus-trap or

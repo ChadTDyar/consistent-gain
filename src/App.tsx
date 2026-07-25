@@ -126,12 +126,16 @@ const App = () => {
               <Route path="/resources/habit-streaks-science" element={<HabitStreaksScience />} />
               <Route path="/resources/fitness-habit-guide" element={<FitnessHabitGuide />} />
               <Route path="/resources/fitness-tracker-vs-habit-tracker" element={<FitnessTrackerVsHabitTracker />} />
-              <Route path="/fitness-habit-after-40" element={<BuildFitnessHabitAfter40 />} />
-              <Route path="/best-habit-tracker-app" element={<BestHabitTrackerApp />} />
-              <Route path="/workout-streak-tracker" element={<WorkoutStreakTracker />} />
-              <Route path="/fitness-motivation-over-50" element={<FitnessMotivationOver50 />} />
-              <Route path="/how-to-stay-consistent-working-out" element={<HowToStayConsistentWorkingOut />} />
-              <Route path="/daily-fitness-checkin-app" element={<DailyFitnessCheckinApp />} />
+              {!isIOSNative() && (
+                <>
+                  <Route path="/fitness-habit-after-40" element={<BuildFitnessHabitAfter40 />} />
+                  <Route path="/best-habit-tracker-app" element={<BestHabitTrackerApp />} />
+                  <Route path="/workout-streak-tracker" element={<WorkoutStreakTracker />} />
+                  <Route path="/fitness-motivation-over-50" element={<FitnessMotivationOver50 />} />
+                  <Route path="/how-to-stay-consistent-working-out" element={<HowToStayConsistentWorkingOut />} />
+                  <Route path="/daily-fitness-checkin-app" element={<DailyFitnessCheckinApp />} />
+                </>
+              )}
               <Route path="/features" element={<Features />} />
               <Route path="/support" element={<Support />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
