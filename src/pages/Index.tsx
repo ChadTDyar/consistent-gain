@@ -79,13 +79,13 @@ const Index = () => {
                 </Button>
               )}
             </div>
-            <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center py-8 md:py-24 lg:py-32">
-              <div className="space-y-4 md:space-y-6 text-center lg:text-left fade-in">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center py-8 md:py-12 lg:py-14">
+              <div className="space-y-4 md:space-y-5 text-center lg:text-left fade-in">
                 <div className="inline-flex items-center gap-3 mb-1 md:mb-2">
-                  <img src={momentumLogo} alt="Momentum" className="h-10 md:h-14 w-auto drop-shadow-sm" width="56" height="56" />
+                  <img src={momentumLogo} alt="Momentum" className="h-10 md:h-12 w-auto drop-shadow-sm" width="56" height="56" />
                   <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">MomentumFit</h2>
                 </div>
-                <h1 className="text-3xl md:text-6xl lg:text-7xl font-display font-bold text-foreground leading-[1.1] tracking-tight">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground leading-[1.15] tracking-tight">
                   Consistency is harder at 50. <span className="text-gradient">Not because you know less. Because you have more.</span>
                 </h1>
                 <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
