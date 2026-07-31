@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
+
 import { Button } from "@/components/ui/button";
 import momentumLogo from "@/assets/momentum-logo.png";
 import heroRunner from "@/assets/hero-runner.png";
@@ -12,18 +14,19 @@ import { KitSignupForm } from "@/components/KitSignupForm";
 import { supabase } from "@/integrations/supabase/client";
 import { AppStoreBadge } from "@/components/AppStoreBadge";
 
-// Lazy load below-the-fold sections
-const FAQ = lazy(() => import("@/components/FAQ").then(m => ({ default: m.FAQ })));
-const Testimonials = lazy(() => import("@/components/Testimonials").then(m => ({ default: m.Testimonials })));
-const ProductShowcase = lazy(() => import("@/components/ProductShowcase").then(m => ({ default: m.ProductShowcase })));
-const ComparisonTable = lazy(() => import("@/components/ComparisonTable").then(m => ({ default: m.ComparisonTable })));
-const DemoPreview = lazy(() => import("@/components/DemoPreview").then(m => ({ default: m.DemoPreview })));
-const FeatureGrid = lazy(() => import("@/components/FeatureGrid").then(m => ({ default: m.FeatureGrid })));
-const NotificationExplainer = lazy(() => import("@/components/NotificationExplainer").then(m => ({ default: m.NotificationExplainer })));
-const HowItWorks = lazy(() => import("@/components/HowItWorks").then(m => ({ default: m.HowItWorks })));
-const DifferentiationCallout = lazy(() => import("@/components/DifferentiationCallout").then(m => ({ default: m.DifferentiationCallout })));
-const LandingPricing = lazy(() => import("@/components/LandingPricing").then(m => ({ default: m.LandingPricing })));
-const StreakRepairDemo = lazy(() => import("@/components/StreakRepairDemo").then(m => ({ default: m.StreakRepairDemo })));
+// Lazy load below-the-fold sections (retry-aware: survives stale chunks after deploys)
+const FAQ = lazyWithRetry(() => import("@/components/FAQ").then(m => ({ default: m.FAQ })));
+const Testimonials = lazyWithRetry(() => import("@/components/Testimonials").then(m => ({ default: m.Testimonials })));
+const ProductShowcase = lazyWithRetry(() => import("@/components/ProductShowcase").then(m => ({ default: m.ProductShowcase })));
+const ComparisonTable = lazyWithRetry(() => import("@/components/ComparisonTable").then(m => ({ default: m.ComparisonTable })));
+const DemoPreview = lazyWithRetry(() => import("@/components/DemoPreview").then(m => ({ default: m.DemoPreview })));
+const FeatureGrid = lazyWithRetry(() => import("@/components/FeatureGrid").then(m => ({ default: m.FeatureGrid })));
+const NotificationExplainer = lazyWithRetry(() => import("@/components/NotificationExplainer").then(m => ({ default: m.NotificationExplainer })));
+const HowItWorks = lazyWithRetry(() => import("@/components/HowItWorks").then(m => ({ default: m.HowItWorks })));
+const DifferentiationCallout = lazyWithRetry(() => import("@/components/DifferentiationCallout").then(m => ({ default: m.DifferentiationCallout })));
+const LandingPricing = lazyWithRetry(() => import("@/components/LandingPricing").then(m => ({ default: m.LandingPricing })));
+const StreakRepairDemo = lazyWithRetry(() => import("@/components/StreakRepairDemo").then(m => ({ default: m.StreakRepairDemo })));
+
 
 const Index = () => {
   const navigate = useNavigate();
@@ -119,7 +122,7 @@ const Index = () => {
                     alt="Professional starting their morning routine" 
                     className="w-full h-auto object-cover"
                     loading="eager"
-                    fetchPriority="high"
+                    {...{ fetchpriority: "high" }}
                     width="800"
                     height="600"
                   />
