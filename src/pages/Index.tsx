@@ -307,7 +307,7 @@ const Index = () => {
                 <p className="text-xs text-muted-foreground mt-1">
                   Also by Chad:{" "}
                   <a href="https://pawformance.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">tools for pets</a>,{" "}
-                  <a href="https://getpillpal.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">health</a>,{" "}
+                  <a href="https://carecadence.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">health</a>,{" "}
                   <a href="https://palettepro.design" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">design</a>, and{" "}
                   <a href="https://thehomegrown.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">gardening</a>
                 </p>
