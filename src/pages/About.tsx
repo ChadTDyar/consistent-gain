@@ -193,7 +193,7 @@ export default function About() {
                 <p><strong className="text-foreground">Momentum</strong> - Because my fitness couldn't wait any longer</p>
                 <p><strong className="text-foreground">HomeGrown</strong> - Because I garden and waste too much produce</p>
                 <p><strong className="text-foreground">Out Tonight</strong> - Because I want to support local businesses and events</p>
-                <p><strong className="text-foreground">PillPal</strong> - Because managing my heart medications was chaotic</p>
+                <p><strong className="text-foreground">CareCadence</strong> - Because managing my heart medications was chaotic</p>
                 <p><strong className="text-foreground">Pawformance</strong> - Because my dog's health matters as much as mine</p>
               </div>
               <p className="text-muted-foreground leading-relaxed mt-4 italic">
