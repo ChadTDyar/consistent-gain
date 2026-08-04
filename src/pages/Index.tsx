@@ -94,6 +94,9 @@ const Index = () => {
                 <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
                   Three habits. Five minutes. Built for people who have everything except time.
                 </p>
+                <p className="text-xs md:text-sm text-muted-foreground font-medium">
+                  Independently built by Chad Dyar. One developer, real support.
+                </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
                   <Button 
                     size="lg" 
