@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { initGA } from "./lib/analytics";
+import { isNativeMobile } from "./lib/platform";
 import { initSentry } from "./lib/sentry";
 import posthog from "posthog-js";
 
@@ -25,8 +26,12 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Initialize Google Analytics
-initGA();
+// Initialize Google Analytics — web only.
+// Inside the Capacitor native shell (iOS/Android WebView) we skip GA4 entirely
+// so in-app traffic doesn't pollute the momentumfit.app web property.
+if (!isNativeMobile()) {
+  initGA();
+}
 
 // Initialize native features
 nativeService.initialize();
