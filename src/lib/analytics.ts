@@ -59,6 +59,10 @@ export const initGA = () => {
     gtag('js', new Date());
     gtag('config', '${GA_MEASUREMENT_ID}', {
       page_path: window.location.pathname,
+      linker: {
+        domains: ['consistent-gain.lovable.app', 'momentumfit.app'],
+        accept_incoming: true
+      }
     });
   `;
   document.head.appendChild(script2);
