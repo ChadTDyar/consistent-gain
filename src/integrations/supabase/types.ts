@@ -266,6 +266,33 @@ export type Database = {
         }
         Relationships: []
       }
+      email_sequence_log: {
+        Row: {
+          created_at: string
+          email_type: string
+          id: string
+          sequence_day: number
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email_type: string
+          id?: string
+          sequence_day?: number
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email_type?: string
+          id?: string
+          sequence_day?: number
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       exercise_alternatives: {
         Row: {
           alternative_exercise: string
