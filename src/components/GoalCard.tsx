@@ -7,6 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { analytics } from "@/lib/analytics";
 import { healthKitService } from "@/services/healthkit.service";
+import posthog from "posthog-js";
+
 
 interface Goal {
   id: string;
