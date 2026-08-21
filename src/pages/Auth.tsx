@@ -161,7 +161,7 @@ export default function Auth() {
         analytics.login();
         toast.success("Welcome back!");
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: formEmail,
           password: formPassword,
           options: {
@@ -172,6 +172,11 @@ export default function Auth() {
 
         if (error) throw error;
         analytics.completeSignup();
+        supabase.functions
+          .invoke('send-welcome-email', {
+            body: { email: formEmail, name: formName, userId: data?.user?.id },
+          })
+          .catch((err) => console.warn('[welcome-email]', err));
         toast.success("Account created! Welcome to Momentum!");
         // Redirect to welcome page for first-time users
         navigate("/welcome");
