@@ -17,7 +17,7 @@ export const PLANS = {
     name: 'Premium',
     price: 7.99,
     annualPrice: 69.99,
-    price_id: 'price_1TLRRxL98dr6Pw0kdyFkEsEp',
+    price_id: 'price_1TFkM0L98dr6Pw0kXiu1hjbs',
     annual_price_id: 'price_1TNbD3L98dr6Pw0krnhh7i50',
     product_id: 'prod_U3w9PqaaJVSOto',
     payment_link: 'https://buy.stripe.com/cNi8wQgwk6D48HKcHB3ZK0v',

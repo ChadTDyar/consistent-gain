@@ -54,8 +54,8 @@ export default function PaywallModal({ open, onOpenChange, feature }: PaywallMod
       } else {
         // Web: redirect to Stripe Checkout
         const priceIds = {
-          monthly: 'price_1TLRRxL98dr6Pw0kdyFkEsEp',
-          annual: 'price_1TLRT0L98dr6Pw0kBgfProeu',
+          monthly: 'price_1TFkM0L98dr6Pw0kXiu1hjbs',
+          annual: 'price_1TNbD3L98dr6Pw0krnhh7i50',
         };
         const { data: { user } } = await supabase.auth.getUser();
         await handleCheckout(priceIds[selected], 'momentum', user?.email ?? undefined);

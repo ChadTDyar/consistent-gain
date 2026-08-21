@@ -31,14 +31,14 @@ const tiers = [
   {
     name: "Premium",
     monthlyPrice: "$7.99",
-    annualMonthlyPrice: "$6.00",
-    annualTotal: "$72",
-    savingsLabel: "20%",
+    annualMonthlyPrice: "$5.83",
+    annualTotal: "$69.99",
+    savingsLabel: "27%",
     highlight: false,
     mostPopular: false,
     cta: "Go Premium — $7.99/mo",
     plan: 'pro' as null | 'pro',
-    priceIds: { monthly: 'price_1TLRRxL98dr6Pw0kdyFkEsEp', annual: 'price_1TLRT0L98dr6Pw0kBgfProeu' },
+    priceIds: { monthly: 'price_1TFkM0L98dr6Pw0kXiu1hjbs', annual: 'price_1TNbD3L98dr6Pw0krnhh7i50' },
     features: [
       "AI Coach",
       "Unlimited history",

@@ -56,7 +56,7 @@ export default function Pricing() {
 
   const onCheckout = async (plan: 'pro') => {
     const priceIds = {
-      pro:  { monthly: 'price_1TLRRxL98dr6Pw0kdyFkEsEp', annual: 'price_1TLRT0L98dr6Pw0kBgfProeu' },
+      pro:  { monthly: 'price_1TFkM0L98dr6Pw0kXiu1hjbs', annual: 'price_1TNbD3L98dr6Pw0krnhh7i50' },
     };
     const priceId = priceIds[plan][billingInterval];
     const label = `${plan}-${billingInterval}`;
