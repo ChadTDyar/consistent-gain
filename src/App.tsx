@@ -54,6 +54,7 @@ const HowToStayConsistentWorkingOut = lazy(() => import("./pages/seo/HowToStayCo
 const DailyFitnessCheckinApp = lazy(() => import("./pages/seo/DailyFitnessCheckinApp"));
 const Features = lazy(() => import("./pages/Features"));
 const Support = lazy(() => import("./pages/Support"));
+const MyFitnessPalAlternative = lazy(() => import("./pages/MyFitnessPalAlternative"));
 
 const queryClient = new QueryClient();
 
