@@ -3,16 +3,6 @@
 
 export const PLANS = {
   free: { name: 'Free', price: 0, annualPrice: 0, price_id: null, annual_price_id: null, product_id: null, payment_link: null, annual_payment_link: null },
-  plus: {
-    name: 'Pro',
-    price: 3.99,
-    annualPrice: 38,
-    price_id: 'price_1TLROuL98dr6Pw0kEFuhgPnA',
-    annual_price_id: 'price_1TLRPCL98dr6Pw0kvyaljYet',
-    product_id: 'prod_U3w81PJvJRTiQQ',
-    payment_link: 'https://buy.stripe.com/7sY14o3Jyd1sf68bDx3ZK0r',
-    annual_payment_link: 'https://buy.stripe.com/5kQ3cw93S1iKbTW7nh3ZK0t',
-  },
   pro: {
     name: 'Premium',
     price: 7.99,
@@ -25,6 +15,8 @@ export const PLANS = {
   },
 } as const;
 
+// 'plus' remains a legacy tier value for historical DB rows / webhooks only.
+// There is no purchasable 'plus' plan.
 export type PlanTier = 'free' | 'plus' | 'pro';
 export type BillingInterval = 'monthly' | 'annual';
 
@@ -40,19 +32,19 @@ export function normalizePlan(plan: string | null | undefined): PlanTier {
   return 'free';
 }
 
-export function getPaymentLink(plan: 'plus' | 'pro', interval: BillingInterval): string {
+export function getPaymentLink(plan: 'pro', interval: BillingInterval): string {
   return interval === 'annual' ? PLANS[plan].annual_payment_link : PLANS[plan].payment_link;
 }
 
 export function getPlanFromProductId(productId: string | null): PlanTier {
   if (!productId) return 'free';
-  if (productId === PLANS.plus.product_id) return 'plus';
   if (productId === PLANS.pro.product_id) return 'pro';
   // Legacy product IDs
-  if (productId === 'prod_U2Duyohl5m98ud' || productId === 'prod_U3vSrPHBDq24U8') return 'plus';
+  if (productId === 'prod_U3w81PJvJRTiQQ' || productId === 'prod_U2Duyohl5m98ud' || productId === 'prod_U3vSrPHBDq24U8') return 'plus';
   if (productId === 'prod_U2Dxf2eZc9xwan' || productId === 'prod_U3vT2StszUp7uL') return 'pro';
   return 'plus';
 }
+
 
 // iOS gating now flows through RevenueCat entitlement (see checkEntitlement);
 // no platform shortcuts here.
