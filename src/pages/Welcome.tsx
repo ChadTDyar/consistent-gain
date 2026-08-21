@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
+import { captureHabitAdded } from "@/lib/lifecycleEvents";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
@@ -28,6 +29,7 @@ export default function Welcome() {
         title: habitText.trim(),
         target_days_per_week: 3,
       });
+      captureHabitAdded(user.id);
 
       toast.success("Let's build momentum.");
       navigate("/dashboard");

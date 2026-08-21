@@ -23,6 +23,7 @@ import { Loader2 } from "lucide-react";
 import PaywallModal from "./PaywallModal";
 import { analytics } from "@/lib/analytics";
 import { goalSchema } from "@/lib/validations";
+import { captureHabitAdded } from "@/lib/lifecycleEvents";
 
 
 const CATEGORIES = [
@@ -117,6 +118,7 @@ export function AddGoalDialog({
         console.error(error);
       } else {
         analytics.goalCreated();
+        captureHabitAdded(user.id);
         toast.success("Habit created successfully!");
         setTitle("");
         setDescription("");
