@@ -166,7 +166,7 @@ export default function MyFitnessPalAlternative() {
               </p>
               <Button
                 size="lg"
-                onClick={() => { analytics.startSignup(); navigate("/auth"); }}
+                onClick={() => { analytics.startSignup(); navigate("/auth?utm_source=organic&utm_medium=comparison_page&utm_campaign=myfitnesspal_alternative"); }}
                 className="btn-gradient btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-base md:text-lg h-12 md:h-14 px-8 md:px-10"
               >
                 Start Your First Habit Free
