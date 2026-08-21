@@ -7,7 +7,7 @@ interface SEOProps {
   keywords?: string;
   ogImage?: string;
   canonical?: string;
-  schema?: object;
+  schema?: object | object[];
 }
 
 export const SEO = ({
@@ -68,15 +68,23 @@ export const SEO = ({
 
     // Add or update schema markup
     if (schema) {
-      let schemaElement = document.querySelector('script[type="application/ld+json"][data-dynamic]');
-      if (!schemaElement) {
-        schemaElement = document.createElement('script');
+      const schemas = Array.isArray(schema) ? schema : [schema];
+      // Remove any existing dynamic schema blocks to avoid stale markup from previous pages
+      document.querySelectorAll('script[type="application/ld+json"][data-dynamic]').forEach(el => el.remove());
+      schemas.forEach((s, index) => {
+        const schemaElement = document.createElement('script');
         schemaElement.setAttribute('type', 'application/ld+json');
         schemaElement.setAttribute('data-dynamic', 'true');
+        schemaElement.setAttribute('data-dynamic-index', String(index));
+        schemaElement.textContent = JSON.stringify(s);
         document.head.appendChild(schemaElement);
-      }
-      schemaElement.textContent = JSON.stringify(schema);
+      });
     }
+
+    return () => {
+      // Clean up dynamic schema blocks on unmount
+      document.querySelectorAll('script[type="application/ld+json"][data-dynamic]').forEach(el => el.remove());
+    };
   }, [title, description, keywords, ogImage, currentUrl, canonicalUrl, schema]);
 
   return null;

@@ -54,6 +54,7 @@ const HowToStayConsistentWorkingOut = lazy(() => import("./pages/seo/HowToStayCo
 const DailyFitnessCheckinApp = lazy(() => import("./pages/seo/DailyFitnessCheckinApp"));
 const Features = lazy(() => import("./pages/Features"));
 const Support = lazy(() => import("./pages/Support"));
+const MyFitnessPalAlternative = lazy(() => import("./pages/MyFitnessPalAlternative"));
 
 const queryClient = new QueryClient();
 
@@ -138,6 +139,7 @@ const App = () => {
               )}
               <Route path="/features" element={<Features />} />
               <Route path="/support" element={<Support />} />
+              <Route path="/myfitnesspal-alternative" element={<MyFitnessPalAlternative />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
