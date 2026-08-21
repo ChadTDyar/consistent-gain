@@ -8,15 +8,12 @@ const corsHeaders = {
 };
 
 const PRICES: Record<string, Record<string, string>> = {
-  plus: {
-    monthly: "price_1TLROuL98dr6Pw0kEFuhgPnA",  // Pro $3.99/mo
-    annual: "price_1TLRPCL98dr6Pw0kvyaljYet",   // Pro $38/yr
-  },
   pro: {
     monthly: "price_1TFkM0L98dr6Pw0kXiu1hjbs",  // Premium $7.99/mo
     annual: "price_1TNbD3L98dr6Pw0krnhh7i50",   // Premium $69.99/yr
   },
 };
+
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
