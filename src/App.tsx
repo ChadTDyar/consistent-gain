@@ -139,6 +139,7 @@ const App = () => {
               )}
               <Route path="/features" element={<Features />} />
               <Route path="/support" element={<Support />} />
+              <Route path="/myfitnesspal-alternative" element={<MyFitnessPalAlternative />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
