@@ -7,6 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { analytics } from "@/lib/analytics";
 import { healthKitService } from "@/services/healthkit.service";
+import posthog from "posthog-js";
+
 
 interface Goal {
   id: string;
@@ -128,6 +130,19 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
     } = await supabase.auth.getUser();
     if (!user) return;
 
+    // Check for prior completions BEFORE inserting, so we can detect the
+    // user's very first habit log (first-value moment).
+    let isFirstEverLog = false;
+    try {
+      const { count } = await supabase
+        .from("activity_logs")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id);
+      isFirstEverLog = (count ?? 0) === 0;
+    } catch {
+      // Best-effort only — never block logging.
+    }
+
     const { error } = await supabase.from("activity_logs").insert({
       goal_id: goal.id,
       user_id: user.id,
@@ -142,7 +157,31 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
       if ((streak + 1) % 7 === 0) {
         analytics.streakMilestone(streak + 1);
       }
+
+      if (isFirstEverLog) {
+        try {
+          posthog.capture("first_value_achieved", {
+            event_detail: "first_habit_logged",
+            user_id: user.id,
+          });
+        } catch {
+          // Best-effort analytics.
+        }
+        void supabase
+          .from("app_events")
+          .insert({
+            app_name: "momentum",
+            event_type: "first_value_achieved",
+            distinct_id: user.email ?? user.id,
+            properties: { event_detail: "first_habit_logged" },
+          })
+          .then(({ error: eventError }) => {
+            if (eventError) console.error("app_events insert failed", eventError);
+          });
+      }
+
       toast.success("Great job! 🎉 Streak continues!");
+
 
       // Best-effort write to Apple Health (no-op on web/Android). Default 15min session.
       healthKitService.saveWorkout(15, new Date(), goal.title).catch(() => {});

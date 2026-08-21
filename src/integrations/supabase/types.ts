@@ -110,6 +110,33 @@ export type Database = {
         }
         Relationships: []
       }
+      app_events: {
+        Row: {
+          app_name: string
+          created_at: string
+          distinct_id: string | null
+          event_type: string
+          id: string
+          properties: Json
+        }
+        Insert: {
+          app_name: string
+          created_at?: string
+          distinct_id?: string | null
+          event_type: string
+          id?: string
+          properties?: Json
+        }
+        Update: {
+          app_name?: string
+          created_at?: string
+          distinct_id?: string | null
+          event_type?: string
+          id?: string
+          properties?: Json
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author: string
