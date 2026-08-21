@@ -43,7 +43,7 @@ serve(async (req) => {
     } else if (legacyPriceId) {
       resolvedPriceId = legacyPriceId;
     } else {
-      throw new Error("plan ('plus' or 'pro') or priceId is required");
+      throw new Error("plan ('pro') or priceId is required");
     }
     logStep("Request parsed", { plan, interval, priceId: resolvedPriceId });
 
