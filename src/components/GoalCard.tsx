@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { analytics } from "@/lib/analytics";
 import { healthKitService } from "@/services/healthkit.service";
 import posthog from "posthog-js";
+import { captureStreakBroken } from "@/lib/lifecycleEvents";
 
 
 interface Goal {
@@ -79,6 +80,27 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
     }
 
     setStreak(currentStreak);
+
+    // Lifecycle instrumentation: a streak of 3+ days that has now reset to 0.
+    if (currentStreak === 0 && logs.length > 0) {
+      const days = Array.from(
+        new Set(
+          logs.map((log) => {
+            const d = new Date(log.completed_at);
+            d.setHours(0, 0, 0, 0);
+            return d.getTime();
+          })
+        )
+      ).sort((a, b) => b - a);
+
+      let brokenLength = 1;
+      for (let i = 1; i < days.length; i++) {
+        if (days[i - 1] - days[i] === 86400000) brokenLength++;
+        else break;
+      }
+
+      captureStreakBroken(goal.id, brokenLength, goal.title, String(days[0]));
+    }
   };
 
   const calculateLast7Days = (logs: ActivityLog[]) => {

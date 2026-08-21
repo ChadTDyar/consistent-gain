@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { captureHabitAdded } from "@/lib/lifecycleEvents";
 import * as Sentry from "@sentry/react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -365,6 +366,7 @@ export default function Dashboard() {
                             const { data: { user } } = await supabase.auth.getUser();
                             if (!user) return;
                             await supabase.from("goals").insert({ user_id: user.id, title: val, target_days_per_week: 3 });
+                            captureHabitAdded(user.id);
                             toast.success("Let's build momentum.");
                             loadGoals();
                           }
@@ -378,6 +380,7 @@ export default function Dashboard() {
                           const { data: { user } } = await supabase.auth.getUser();
                           if (!user) return;
                           await supabase.from("goals").insert({ user_id: user.id, title: val, target_days_per_week: 3 });
+                          captureHabitAdded(user.id);
                           toast.success("Let's build momentum.");
                           loadGoals();
                         }}
