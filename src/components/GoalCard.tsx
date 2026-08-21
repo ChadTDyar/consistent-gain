@@ -167,18 +167,8 @@ export function GoalCard({ goal, onUpdate, onEdit }: GoalCardProps) {
         } catch {
           // Best-effort analytics.
         }
-        void supabase
-          .from("app_events")
-          .insert({
-            app_name: "momentum",
-            event_type: "first_value_achieved",
-            distinct_id: user.email ?? user.id,
-            properties: { event_detail: "first_habit_logged" },
-          })
-          .then(({ error: eventError }) => {
-            if (eventError) console.error("app_events insert failed", eventError);
-          });
       }
+
 
       toast.success("Great job! 🎉 Streak continues!");
 
