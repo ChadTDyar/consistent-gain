@@ -34,6 +34,7 @@ import { analytics } from "@/lib/analytics";
 import { UpgradeWall } from "@/components/UpgradeWall";
 import { MOMENTUM } from "@/constants/value-language";
 import { Users, BarChart3 } from "lucide-react";
+import { useSendWelcomeEmail } from "@/hooks/use-welcome-email";
 
 
 interface Profile {
@@ -70,7 +71,10 @@ export default function Dashboard() {
   const [paywallPlan, setPaywallPlan] = useState<PlanTier>('plus');
   const [showUpgradeWall, setShowUpgradeWall] = useState(false);
   const [upgradeWallType, setUpgradeWallType] = useState<'habit_limit' | 'partner_lock' | 'analytics_lock' | 'ai_coach' | 'history_limit'>('habit_limit');
+  const [authUser, setAuthUser] = useState<any>(null);
   const navigate = useNavigate();
+
+  useSendWelcomeEmail(authUser);
 
   const plan: PlanTier = normalizePlan(profile?.plan);
   const onboardingComplete = goals.length > 0 && streak > 0;
@@ -183,6 +187,8 @@ export default function Dashboard() {
     Sentry.addBreadcrumb({ category: 'init', message: 'finished dashboard-checkAuth', level: 'info' });
     if (!session) {
       navigate("/auth");
+    } else {
+      setAuthUser(session.user);
     }
   };
 
