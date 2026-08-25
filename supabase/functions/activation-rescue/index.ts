@@ -136,7 +136,7 @@ Deno.serve(async (req) => {
           Authorization: `Bearer ${RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-          from: 'Momentum <onboarding@resend.dev>',
+          from: 'Momentum <hello@momentumfit.app>',
           to: [email],
           subject: 'Your first habit is waiting 🏋️',
           html: buildHtml(name, days, goalTitle),
