@@ -16,6 +16,12 @@ Disallow: /success
 Disallow: /cancel
 
 Sitemap: https://momentumfit.app/sitemap.xml
+# Private / authenticated routes
+Disallow: /auth
+Disallow: /auth/callback
+Disallow: /insights
+Disallow: /forgot-password
+Disallow: /goodbye
 
 User-agent: GPTBot
 Allow: /
