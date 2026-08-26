@@ -51,23 +51,14 @@
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "MomentumFit",
-      "alternateName": "MomentumFit - Fitness Habit Tracker App",
       "url": "https://momentumfit.app",
-      "description": "Daily fitness habit tracker for the 50+ athlete. Build streaks, track progress, and stay consistent with your health goals.",
       "applicationCategory": "HealthApplication",
       "operatingSystem": "Web",
-      "featureList": [
-        "Daily habit check-ins with streak tracking",
-        "Visual progress charts and milestone celebrations",
-        "Customizable fitness goals",
-        "Recovery day tracking",
-        "Weekly and monthly consistency reports"
-      ],
-      "screenshot": "https://momentumfit.app/og-share.jpg",
+      "description": "Streak-based habit tracker built for busy professionals over 50. Three habits, five minutes a day. Features 48-hour streak repair, body-map pain tracking, joint-safe exercise swaps, and an AI coach that adapts to your energy and sleep patterns.",
       "author": {
-        "@type": "Organization",
-        "name": "MomentumFit",
-        "url": "https://momentumfit.app"
+        "@type": "Person",
+        "name": "Chad T. Dyar",
+        "url": "https://chadtdyar.com"
       },
       "offers": [
         {
@@ -75,23 +66,20 @@
           "name": "Free",
           "price": "0",
           "priceCurrency": "USD",
-          "description": "3 habits, streak tracking, basic charts"
+          "description": "3 habits, daily check-ins, 7-day streaks"
         },
         {
           "@type": "Offer",
-          "name": "Premium (Monthly)",
+          "name": "Premium",
           "price": "7.99",
           "priceCurrency": "USD",
-          "billingIncrement": "P1M",
-          "description": "Unlimited habits, AI Coach, unlimited history, data export"
-        },
-        {
-          "@type": "Offer",
-          "name": "Premium (Annual)",
-          "price": "69.99",
-          "priceCurrency": "USD",
-          "billingIncrement": "P1Y",
-          "description": "Unlimited habits, AI Coach, unlimited history, data export"
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "7.99",
+            "priceCurrency": "USD",
+            "billingDuration": "P1M"
+          },
+          "description": "AI Coach, unlimited history, data export, everything in Free"
         }
       ]
     }
