@@ -30,12 +30,26 @@ export interface RepairState {
 }
 
 const toDayKey = (value: string | Date): string => {
-  const d = typeof value === "string" ? new Date(value) : value;
+  // Postgres DATE values arrive as "YYYY-MM-DD". `new Date("YYYY-MM-DD")`
+  // parses as UTC midnight, which shifts back a day in negative-offset
+  // timezones, so date-only strings are handled as plain calendar days.
+  if (typeof value === "string") {
+    const dateOnly = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (dateOnly) return `${dateOnly[1]}-${dateOnly[2]}-${dateOnly[3]}`;
+  }
+  const d = typeof value === "string" ? new Date(value) : new Date(value);
   d.setHours(0, 0, 0, 0);
   const m = `${d.getMonth() + 1}`.padStart(2, "0");
   const day = `${d.getDate()}`.padStart(2, "0");
   return `${d.getFullYear()}-${m}-${day}`;
 };
+
+/** Parse a "YYYY-MM-DD" day key into a local-midnight Date. */
+const fromDayKey = (key: string): Date => {
+  const [y, m, d] = key.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
+
 
 const dayMs = 24 * 60 * 60 * 1000;
 
@@ -75,12 +89,11 @@ export const evaluateRepairState = (
   if (!logs || logs.length === 0) return empty;
 
   const days = Array.from(new Set(logs.map((l) => toDayKey(l.completed_at))))
-    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+    .sort((a, b) => fromDayKey(b).getTime() - fromDayKey(a).getTime());
 
   const today = new Date(now);
   today.setHours(0, 0, 0, 0);
-  const lastLogged = new Date(days[0]);
-  lastLogged.setHours(0, 0, 0, 0);
+  const lastLogged = fromDayKey(days[0]);
 
   const gap = Math.round((today.getTime() - lastLogged.getTime()) / dayMs);
 
@@ -88,16 +101,17 @@ export const evaluateRepairState = (
   if (gap !== 2) return empty;
 
   // The missed day is the day right after the last logged day.
-  const missed = new Date(lastLogged.getTime() + dayMs);
+  const missed = new Date(lastLogged.getFullYear(), lastLogged.getMonth(), lastLogged.getDate() + 1);
 
   // How long is the run that is at risk?
   let streakAtRisk = 1;
   for (let i = 1; i < days.length; i++) {
-    const prev = new Date(days[i - 1]).getTime();
-    const cur = new Date(days[i]).getTime();
+    const prev = fromDayKey(days[i - 1]).getTime();
+    const cur = fromDayKey(days[i]).getTime();
     if (Math.round((prev - cur) / dayMs) === 1) streakAtRisk++;
     else break;
   }
+
 
   // Window closes at the end of the day after the missed day.
   const windowCloses = new Date(missed.getTime() + REPAIR_WINDOW_HOURS * 60 * 60 * 1000);

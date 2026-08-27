@@ -53,22 +53,11 @@ class NotificationService {
   }
 
   private async savePushToken(token: string) {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      // Save token to user profile
-      await supabase
-        .from('profiles')
-        .upsert({ 
-          id: user.id,
-          push_token: token,
-          updated_at: new Date().toISOString()
-        });
-    } catch (error) {
-      console.error('Failed to save push token:', error);
-    }
+    // The profiles table has no push_token column, so there is nowhere to
+    // persist this yet. Kept as a no-op hook until that storage exists.
+    console.log('Push token received (not persisted):', token.slice(0, 8));
   }
+
 
   // Schedule local notification (for reminders)
   async scheduleStreakReminder(hour: number = 9, minute: number = 0) {
