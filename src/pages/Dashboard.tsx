@@ -28,6 +28,7 @@ import momentumLogo from "@/assets/momentum-logo.png";
 import { type PlanTier, canAccessFeature, getGoalLimit, PLANS, normalizePlan } from "@/lib/plans";
 
 import { StreakRepairIntro } from "@/components/StreakRepairIntro";
+import { ReferralPrompt } from "@/components/ReferralPrompt";
 import { StreakRepairCard } from "@/components/StreakRepairCard";
 import { MinimumViableDay } from "@/components/MinimumViableDay";
 import { Badge } from "@/components/ui/badge";
@@ -72,6 +73,7 @@ export default function Dashboard() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallFeature, setPaywallFeature] = useState<string>('goals');
   const [paywallPlan, setPaywallPlan] = useState<PlanTier>('plus');
+  const [showReferral, setShowReferral] = useState(false);
   const [showUpgradeWall, setShowUpgradeWall] = useState(false);
   const [upgradeWallType, setUpgradeWallType] = useState<'habit_limit' | 'partner_lock' | 'analytics_lock' | 'ai_coach' | 'history_limit'>('habit_limit');
   const [authUser, setAuthUser] = useState<any>(null);
@@ -165,11 +167,14 @@ export default function Dashboard() {
       if (currentStreak === 7 && !sentTriggers.has("streak_7")) {
         setWelcomeMessage("🔥 7 days in a row - that's amazing! You're building real consistency. How are you feeling?");
         setShowWelcome(true);
-        
+        setShowReferral(true);
+
         await supabase.from("coach_triggers").insert({
           user_id: user.id,
           trigger_type: "streak_7"
         });
+      } else if (currentStreak >= 7 && currentStreak % 7 === 0 && !sentTriggers.has(`streak_${currentStreak}`)) {
+        setShowReferral(true);
       }
 
       const daysSince = getDaysSinceLastActivity(logs);
@@ -471,6 +476,13 @@ export default function Dashboard() {
             )}
 
             {streak > 0 && <StreakRepairIntro />}
+
+            {showReferral && (
+              <ReferralPrompt
+                streak={streak}
+                onDismiss={() => setShowReferral(false)}
+              />
+            )}
 
             {!onboardingComplete && (
               <OnboardingChecklist
