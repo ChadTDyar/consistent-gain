@@ -79,6 +79,43 @@ Deno.serve(async (req) => {
       });
     }
 
+    const admin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+    );
+
+    // Server-side dedupe: one welcome email per user, ever.
+    if (userId) {
+      const { data: existing } = await admin
+        .from('email_sequence_log')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('sequence_day', 0)
+        .eq('email_type', 'welcome')
+        .maybeSingle();
+
+      if (existing) {
+        return new Response(JSON.stringify({ success: true, skipped: 'already_sent' }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Claim the send before calling the provider so concurrent invocations
+      // (multiple tabs/devices) cannot both send.
+      const { error: claimError } = await admin
+        .from('email_sequence_log')
+        .insert({ user_id: userId, sequence_day: 0, email_type: 'welcome', user_email: email });
+
+      if (claimError) {
+        return new Response(JSON.stringify({ success: true, skipped: 'already_claimed' }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
