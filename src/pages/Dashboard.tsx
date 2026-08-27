@@ -28,6 +28,8 @@ import momentumLogo from "@/assets/momentum-logo.png";
 import { type PlanTier, canAccessFeature, getGoalLimit, PLANS, normalizePlan } from "@/lib/plans";
 
 import { StreakRepairIntro } from "@/components/StreakRepairIntro";
+import { StreakRepairCard } from "@/components/StreakRepairCard";
+import { MinimumViableDay } from "@/components/MinimumViableDay";
 import { Badge } from "@/components/ui/badge";
 import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 import { analytics } from "@/lib/analytics";
