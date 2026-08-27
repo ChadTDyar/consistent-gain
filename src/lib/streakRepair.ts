@@ -89,12 +89,11 @@ export const evaluateRepairState = (
   if (!logs || logs.length === 0) return empty;
 
   const days = Array.from(new Set(logs.map((l) => toDayKey(l.completed_at))))
-    .sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+    .sort((a, b) => fromDayKey(b).getTime() - fromDayKey(a).getTime());
 
   const today = new Date(now);
   today.setHours(0, 0, 0, 0);
-  const lastLogged = new Date(days[0]);
-  lastLogged.setHours(0, 0, 0, 0);
+  const lastLogged = fromDayKey(days[0]);
 
   const gap = Math.round((today.getTime() - lastLogged.getTime()) / dayMs);
 
@@ -102,16 +101,17 @@ export const evaluateRepairState = (
   if (gap !== 2) return empty;
 
   // The missed day is the day right after the last logged day.
-  const missed = new Date(lastLogged.getTime() + dayMs);
+  const missed = new Date(lastLogged.getFullYear(), lastLogged.getMonth(), lastLogged.getDate() + 1);
 
   // How long is the run that is at risk?
   let streakAtRisk = 1;
   for (let i = 1; i < days.length; i++) {
-    const prev = new Date(days[i - 1]).getTime();
-    const cur = new Date(days[i]).getTime();
+    const prev = fromDayKey(days[i - 1]).getTime();
+    const cur = fromDayKey(days[i]).getTime();
     if (Math.round((prev - cur) / dayMs) === 1) streakAtRisk++;
     else break;
   }
+
 
   // Window closes at the end of the day after the missed day.
   const windowCloses = new Date(missed.getTime() + REPAIR_WINDOW_HOURS * 60 * 60 * 1000);
