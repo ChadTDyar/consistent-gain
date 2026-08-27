@@ -133,6 +133,15 @@ Deno.serve(async (req) => {
     if (!res.ok) {
       const details = await res.text();
       console.error(`Resend request failed [${res.status}]: ${details}`);
+      // Release the claim so a later attempt can retry.
+      if (userId) {
+        await admin
+          .from('email_sequence_log')
+          .delete()
+          .eq('user_id', userId)
+          .eq('sequence_day', 0)
+          .eq('email_type', 'welcome');
+      }
       return new Response(JSON.stringify({ error: 'Email send failed', status: res.status, details }), {
         status: res.status,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -141,19 +150,6 @@ Deno.serve(async (req) => {
 
     const sent = await res.json();
 
-    if (userId) {
-      const supabase = createClient(
-        Deno.env.get('SUPABASE_URL') ?? '',
-        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-      );
-      const { error: logError } = await supabase
-        .from('email_sequence_log')
-        .upsert(
-          { user_id: userId, sequence_day: 0, email_type: 'welcome', user_email: email },
-          { onConflict: 'user_id,sequence_day,email_type' },
-        );
-      if (logError) console.error('email_sequence_log upsert failed:', logError.message);
-    }
 
     return new Response(JSON.stringify({ success: true, id: sent?.id ?? null }), {
       status: 200,
