@@ -450,6 +450,25 @@ export default function Dashboard() {
               )}
             </section>
 
+            <StreakRepairCard
+              refreshKey={repairRefreshKey}
+              onRepaired={() => {
+                loadStreakData();
+                loadGoals();
+                setRepairRefreshKey((k) => k + 1);
+              }}
+            />
+
+            {goals.length > 0 && (
+              <MinimumViableDay
+                onLogged={() => {
+                  loadStreakData();
+                  loadGoals();
+                  setRepairRefreshKey((k) => k + 1);
+                }}
+              />
+            )}
+
             {streak > 0 && <StreakRepairIntro />}
 
             {!onboardingComplete && (
