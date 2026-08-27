@@ -30,12 +30,26 @@ export interface RepairState {
 }
 
 const toDayKey = (value: string | Date): string => {
-  const d = typeof value === "string" ? new Date(value) : value;
+  // Postgres DATE values arrive as "YYYY-MM-DD". `new Date("YYYY-MM-DD")`
+  // parses as UTC midnight, which shifts back a day in negative-offset
+  // timezones, so date-only strings are handled as plain calendar days.
+  if (typeof value === "string") {
+    const dateOnly = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (dateOnly) return `${dateOnly[1]}-${dateOnly[2]}-${dateOnly[3]}`;
+  }
+  const d = typeof value === "string" ? new Date(value) : new Date(value);
   d.setHours(0, 0, 0, 0);
   const m = `${d.getMonth() + 1}`.padStart(2, "0");
   const day = `${d.getDate()}`.padStart(2, "0");
   return `${d.getFullYear()}-${m}-${day}`;
 };
+
+/** Parse a "YYYY-MM-DD" day key into a local-midnight Date. */
+const fromDayKey = (key: string): Date => {
+  const [y, m, d] = key.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
+
 
 const dayMs = 24 * 60 * 60 * 1000;
 
