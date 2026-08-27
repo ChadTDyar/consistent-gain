@@ -89,7 +89,7 @@ const Index = () => {
                   <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">MomentumFit</h2>
                 </div>
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground leading-[1.15] tracking-tight">
-                  Consistency is harder at 50. <span className="text-gradient">Not because you know less. Because you have more.</span>
+                  Consistency is harder at 40. <span className="text-gradient">Not because you know less. Because you have more.</span>
                 </h1>
                 <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
                   Three habits. Five minutes. Built for people who have everything except time.
