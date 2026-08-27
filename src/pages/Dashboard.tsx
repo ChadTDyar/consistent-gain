@@ -28,6 +28,8 @@ import momentumLogo from "@/assets/momentum-logo.png";
 import { type PlanTier, canAccessFeature, getGoalLimit, PLANS, normalizePlan } from "@/lib/plans";
 
 import { StreakRepairIntro } from "@/components/StreakRepairIntro";
+import { StreakRepairCard } from "@/components/StreakRepairCard";
+import { MinimumViableDay } from "@/components/MinimumViableDay";
 import { Badge } from "@/components/ui/badge";
 import { OnboardingChecklist } from "@/components/OnboardingChecklist";
 import { analytics } from "@/lib/analytics";
@@ -66,6 +68,7 @@ export default function Dashboard() {
   const [welcomeMessage, setWelcomeMessage] = useState("");
   const [showStreakRepair, setShowStreakRepair] = useState(false);
   const [showMicroblock, setShowMicroblock] = useState(false);
+  const [repairRefreshKey, setRepairRefreshKey] = useState(0);
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallFeature, setPaywallFeature] = useState<string>('goals');
   const [paywallPlan, setPaywallPlan] = useState<PlanTier>('plus');
@@ -447,6 +450,25 @@ export default function Dashboard() {
                 </>
               )}
             </section>
+
+            <StreakRepairCard
+              refreshKey={repairRefreshKey}
+              onRepaired={() => {
+                loadStreakData();
+                loadGoals();
+                setRepairRefreshKey((k) => k + 1);
+              }}
+            />
+
+            {goals.length > 0 && (
+              <MinimumViableDay
+                onLogged={() => {
+                  loadStreakData();
+                  loadGoals();
+                  setRepairRefreshKey((k) => k + 1);
+                }}
+              />
+            )}
 
             {streak > 0 && <StreakRepairIntro />}
 
