@@ -68,6 +68,7 @@ export default function Dashboard() {
   const [welcomeMessage, setWelcomeMessage] = useState("");
   const [showStreakRepair, setShowStreakRepair] = useState(false);
   const [showMicroblock, setShowMicroblock] = useState(false);
+  const [repairRefreshKey, setRepairRefreshKey] = useState(0);
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallFeature, setPaywallFeature] = useState<string>('goals');
   const [paywallPlan, setPaywallPlan] = useState<PlanTier>('plus');
