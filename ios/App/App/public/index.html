@@ -50,28 +50,120 @@
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "MomentumFit - Fitness Habit Tracker App",
-      "alternateName": "MomentumFit",
+      "name": "MomentumFit",
+      "alternateName": "MomentumFit - Fitness Habit Tracker App",
       "url": "https://momentumfit.app",
-      "description": "A daily fitness habit tracker that helps you build streaks, track progress, and stay consistent with your health goals.",
+      "description": "Daily fitness habit tracker for the 50+ athlete. Build streaks, track progress, and stay consistent with your health goals.",
       "applicationCategory": "HealthApplication",
       "operatingSystem": "Web",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
+      "featureList": [
+        "Daily habit check-ins with streak tracking",
+        "Visual progress charts and milestone celebrations",
+        "Customizable fitness goals",
+        "Recovery day tracking",
+        "Weekly and monthly consistency reports"
+      ],
+      "screenshot": "https://momentumfit.app/og-share.jpg",
+      "author": {
+        "@type": "Organization",
+        "name": "MomentumFit",
+        "url": "https://momentumfit.app"
+      },
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Free",
+          "price": "0",
+          "priceCurrency": "USD",
+          "description": "3 habits, streak tracking, basic charts"
+        },
+        {
+          "@type": "Offer",
+          "name": "Premium (Monthly)",
+          "price": "7.99",
+          "priceCurrency": "USD",
+          "billingIncrement": "P1M",
+          "description": "Unlimited habits, AI Coach, unlimited history, data export"
+        },
+        {
+          "@type": "Offer",
+          "name": "Premium (Annual)",
+          "price": "72",
+          "priceCurrency": "USD",
+          "billingIncrement": "P1Y",
+          "description": "Unlimited habits, AI Coach, unlimited history, data export"
+        }
+      ]
     }
     </script>
-    <script type="module" crossorigin src="/assets/index-CVCEybCK.js"></script>
+
+    <!-- FAQ Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What makes MomentumFit different from other habit trackers?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MomentumFit is designed specifically for athletes over 40 and 50 who need recovery-aware tracking. It celebrates consistency over intensity, tracks recovery days as wins, and adapts to the rhythm of experienced athletes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is MomentumFit free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The free plan includes 3 habits, streak tracking, and basic progress charts. The Premium plan ($7.99/month or $72/year) adds unlimited habits, AI Coach, unlimited history, and data export."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I track recovery days?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. MomentumFit treats recovery as part of your training, not a break from it. Recovery days count toward your streak and are tracked alongside active training days."
+          }
+        }
+      ]
+    }
+    </script>
+    <script type="module" crossorigin src="/assets/index-CadGBSPZ.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/vendor-rPO8xhZ0.js">
     <link rel="modulepreload" crossorigin href="/assets/ui-BX0kCbCB.js">
     <link rel="modulepreload" crossorigin href="/assets/charts-633SZnSg.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-BtIKGFVu.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-Iphl362f.css">
   </head>
 
   <body>
     <div id="root"></div>
+
+    <noscript>
+      <div style="max-width:680px;margin:0 auto;padding:40px 20px;font-family:system-ui,sans-serif;color:#1a1a1a;line-height:1.6;">
+        <h1>MomentumFit: The Streak Tracker for the 50+ Athlete</h1>
+        <p>Build streaks, track progress, and stay consistent. The daily fitness habit tracker designed to keep you moving.</p>
+        <h2>How It Works</h2>
+        <ol>
+          <li>Set your daily fitness habits and goals</li>
+          <li>Check in each day to build your streak</li>
+          <li>Track progress over time with visual charts and milestones</li>
+        </ol>
+        <h2>Features</h2>
+        <ul>
+          <li>Daily habit check-ins with streak tracking</li>
+          <li>Visual progress charts and milestone celebrations</li>
+          <li>Customizable fitness goals</li>
+          <li>Recovery day tracking</li>
+          <li>Weekly and monthly consistency reports</li>
+        </ul>
+        <h2>Pricing</h2>
+        <p><strong>Free:</strong> 3 habits, streak tracking, basic charts.</p>
+        <p><strong>Premium ($7.99/mo or $72/yr):</strong> Unlimited habits, AI Coach, unlimited history, data export.</p>
+        <p><a href="https://momentumfit.app/">Start free — no credit card required</a></p>
+      </div>
+    </noscript>
 
     <!-- Deferred Analytics - loaded after page render -->
     <script defer>
