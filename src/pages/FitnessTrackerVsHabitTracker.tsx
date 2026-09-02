@@ -63,7 +63,7 @@ const FitnessTrackerVsHabitTracker = () => {
             <div className="border-t border-border pt-8 mt-8 space-y-4">
               <p className="text-foreground font-semibold text-lg">If consistency is your goal, try Momentum.</p>
               <Button onClick={() => navigate("/auth")} className="btn-gradient">
-                Start your streak - free for 30 days
+                Start your streak - free forever
               </Button>
             </div>
 

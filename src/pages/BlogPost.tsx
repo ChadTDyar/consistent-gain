@@ -137,7 +137,7 @@ export default function BlogPost() {
                   variant="secondary"
                   className="bg-white text-primary hover:bg-white hover:scale-105 transition-all font-semibold"
                 >
-                  Start your streak - free for 30 days
+                  Start your streak - free forever
                 </Button>
               </div>
             </>
