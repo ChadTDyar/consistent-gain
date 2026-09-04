@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SEO } from "@/components/SEO";
 import { CheckCircle, ArrowRight, XCircle, Star, Zap, Brain, Shield } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
+import { premiumPlanLine, canShowWebPricing } from "@/lib/pricingDisplay";
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -143,7 +144,7 @@ export default function BestHabitTrackerApp() {
                   <div className="space-y-3">
                     {[
                       "Free - 3 habits, 7-day streaks, daily check-ins",
-                      "Premium ($7.99/mo) - Unlimited habits, Streak Repair, unlimited history, AI Coach, data export",
+                      premiumPlanLine("Unlimited habits, Streak Repair, unlimited history, AI Coach, data export"),
                     ].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
@@ -155,7 +156,9 @@ export default function BestHabitTrackerApp() {
                     <Button onClick={() => navigate("/auth")} className="btn-gradient" size="lg">
                       Start free <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
-                    <Button variant="outline" onClick={() => navigate("/pricing")} size="lg">Compare plans</Button>
+                    {canShowWebPricing() && (
+                      <Button variant="outline" onClick={() => navigate("/pricing")} size="lg">Compare plans</Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>

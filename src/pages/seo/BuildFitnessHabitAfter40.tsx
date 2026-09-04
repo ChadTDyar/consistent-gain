@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SEO } from "@/components/SEO";
 import { CheckCircle, Target, TrendingUp, Brain, ArrowRight } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
+import { premiumPlanLine, canShowWebPricing } from "@/lib/pricingDisplay";
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -111,7 +112,7 @@ export default function BuildFitnessHabitAfter40() {
                   <div className="space-y-3">
                     {[
                       "Free - 3 goals, 7-day streaks, daily check-ins",
-                      "Premium ($7.99/mo) - Unlimited goals, Streak Repair, unlimited history, AI Coach, data export",
+                      premiumPlanLine("Unlimited goals, Streak Repair, unlimited history, AI Coach, data export"),
                     ].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-success flex-shrink-0 mt-0.5" />
