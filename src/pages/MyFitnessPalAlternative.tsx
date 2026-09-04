@@ -4,7 +4,7 @@ import { SEO } from "@/components/SEO";
 import { Check, X } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { analytics } from "@/lib/analytics";
-import { premiumTierLabel, canShowWebPricing } from "@/lib/pricingDisplay";
+import { premiumTierLabel } from "@/lib/pricingDisplay";
 
 const schema = [
   {
