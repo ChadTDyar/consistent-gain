@@ -124,9 +124,11 @@ export default function BuildFitnessHabitAfter40() {
                     <Button onClick={() => navigate("/auth")} className="btn-gradient" size="lg">
                       Start free <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
-                    <Button variant="outline" onClick={() => navigate("/pricing")} size="lg">
-                      Compare plans
-                    </Button>
+                    {canShowWebPricing() && (
+                      <Button variant="outline" onClick={() => navigate("/pricing")} size="lg">
+                        Compare plans
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
