@@ -4,6 +4,7 @@ import { SEO } from "@/components/SEO";
 import { Check, X } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { analytics } from "@/lib/analytics";
+import { premiumTierLabel, canShowWebPricing } from "@/lib/pricingDisplay";
 
 const schema = [
   {
@@ -100,7 +101,7 @@ export default function MyFitnessPalAlternative() {
             <section className="mt-12">
               <h2 className="text-2xl font-display font-bold text-foreground mb-4">What does Momentum actually track?</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Workouts and habits, day by day, with a streak that survives a missed day instead of resetting to zero. Free covers basic tracking, three habits. Premium ($7.99/mo) adds unlimited habits, an AI Coach, unlimited history, and CSV export.
+                Workouts and habits, day by day, with a streak that survives a missed day instead of resetting to zero. Free covers basic tracking, three habits. {premiumTierLabel()} adds unlimited habits, an AI Coach, unlimited history, and CSV export.
               </p>
             </section>
 
@@ -136,7 +137,7 @@ export default function MyFitnessPalAlternative() {
                     <tr>
                       <th className="text-left p-3 font-display font-bold text-foreground">Feature</th>
                       <th className="text-center p-3 font-display font-bold text-foreground">Momentum Free</th>
-                      <th className="text-center p-3 font-display font-bold text-primary bg-primary/5">Momentum Premium ($7.99/mo)</th>
+                      <th className="text-center p-3 font-display font-bold text-primary bg-primary/5">Momentum {premiumTierLabel()}</th>
                       <th className="text-center p-3 font-display font-bold text-muted-foreground">MyFitnessPal Premium ($79.99/yr)</th>
                       <th className="text-center p-3 font-display font-bold text-muted-foreground">MyFitnessPal Premium+ ($24.99/mo)</th>
                     </tr>
