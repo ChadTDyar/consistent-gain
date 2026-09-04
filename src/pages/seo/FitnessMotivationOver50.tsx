@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SEO } from "@/components/SEO";
 import { CheckCircle, ArrowRight, Battery, Clock, Heart, RefreshCw } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
+import { premiumPlanLine, canShowWebPricing } from "@/lib/pricingDisplay";
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -107,7 +108,7 @@ export default function FitnessMotivationOver50() {
                   <h3 className="text-2xl font-display font-bold text-foreground mb-2">Plans that grow with you</h3>
                   <p className="text-muted-foreground mb-6">Start free. Upgrade when you're ready.</p>
                   <div className="space-y-3">
-                    {["Free - 3 goals, 7-day streaks, daily check-ins", "Premium ($7.99/mo) - Unlimited goals, Streak Repair, unlimited history, AI Coach, data export"].map((line) => (
+                    {["Free - 3 goals, 7-day streaks, daily check-ins", premiumPlanLine("Unlimited goals, Streak Repair, unlimited history, AI Coach, data export")].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <span className="text-sm text-foreground">{line}</span>
@@ -116,7 +117,9 @@ export default function FitnessMotivationOver50() {
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3 mt-6">
                     <Button onClick={() => navigate("/auth")} className="btn-gradient" size="lg">Start free <ArrowRight className="ml-2 h-4 w-4" /></Button>
-                    <Button variant="outline" onClick={() => navigate("/pricing")} size="lg">Compare plans</Button>
+                    {canShowWebPricing() && (
+                      <Button variant="outline" onClick={() => navigate("/pricing")} size="lg">Compare plans</Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
