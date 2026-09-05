@@ -208,10 +208,17 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
       if (signal?.aborted) return;
 
       const goals = goalsRes.data || [];
+      // Adherence is measured in days trained per week, so the target is the
+      // most demanding habit's weekly target (capped at 7), not the sum across
+      // habits — summing would make the target unreachable for multi-habit users.
       const target = goals.length > 0
-        ? goals.reduce((sum, g: any) => sum + (g.target_days_per_week || 0), 0)
+        ? Math.min(
+            7,
+            goals.reduce((max: number, g: any) => Math.max(max, g.target_days_per_week || 0), 0)
+          ) || DEFAULT_WEEKLY_TARGET
         : DEFAULT_WEEKLY_TARGET;
       setWeeklyTarget(target);
+
 
       const logs = logsRes.data || [];
       const contextRows = contextRes.data || [];
