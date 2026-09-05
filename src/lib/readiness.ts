@@ -21,8 +21,9 @@ const clamp = (n: number) => Math.min(5, Math.max(1, n));
 
 /**
  * Turns six 1-5 taps into one plain-language recommendation. This is a fixed,
- * legible weighted average — not a model, not a diagnosis. Soreness and pain
- * are entered as severity (1 = worst), so they're inverted before averaging.
+ * legible weighted average — not a model, not a diagnosis. Every input is
+ * entered in the same direction (5 = best, 1 = worst), including soreness
+ * ("A lot" = 1, "None" = 5) and pain ("Yes, notable" = 1, "None" = 5).
  */
 export function scoreReadiness(inputs: ReadinessInputs): ReadinessResult {
   const energy = clamp(inputs.energy);
@@ -32,11 +33,9 @@ export function scoreReadiness(inputs: ReadinessInputs): ReadinessResult {
   const sleep = clamp(inputs.sleep);
   const desire = clamp(inputs.desire);
 
-  const sorenessInverted = 6 - soreness;
-  const painInverted = 6 - pain;
-
   const rawScore =
-    (energy + recovery + sorenessInverted + painInverted + sleep + desire) / 6;
+    (energy + recovery + soreness + pain + sleep + desire) / 6;
+
 
   const painFlag = pain <= 2; // "notable" discomfort or worse
 
