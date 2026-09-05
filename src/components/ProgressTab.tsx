@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Flame, Loader2, Lock, BarChart3 } from "lucide-react";
+import { Target, Loader2, Lock, BarChart3, Moon, Trophy } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { subDays, startOfWeek, endOfWeek, isWithinInterval, format } from "date-fns";
 
@@ -28,6 +28,18 @@ interface ProgressTabProps {
   plan?: PlanTier;
 }
 
+// How many trailing weeks the Consistency section looks back over.
+const CONSISTENCY_WEEKS = 4;
+// Fallback weekly target when the user has no goals with a target set yet.
+const DEFAULT_WEEKLY_TARGET = 3;
+
+interface WeekBucket {
+  daysLogged: number;
+  target: number;
+  ratio: number; // daysLogged / target, capped at 1.0
+  metTarget: boolean;
+}
+
 export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -37,15 +49,26 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
   const [lastWeekAverage, setLastWeekAverage] = useState(0);
   const [showHistoryWall, setShowHistoryWall] = useState(false);
 
+  // Consistency section state.
+  const [weeklyTarget, setWeeklyTarget] = useState(DEFAULT_WEEKLY_TARGET);
+  const [sessionsThisWeek, setSessionsThisWeek] = useState(0);
+  const [adherenceRate, setAdherenceRate] = useState(0);
+  const [weeksAtTarget, setWeeksAtTarget] = useState(0);
+  const [recoveryDays, setRecoveryDays] = useState(0);
+
   useEffect(() => {
     const controller = new AbortController();
     loadProgressData(controller.signal);
+    loadConsistencyData(controller.signal);
     return () => controller.abort();
   }, [plan]);
 
   // Refresh immediately when a daily check-in is saved elsewhere in the app.
   useEffect(() => {
-    const onCheckin = () => loadProgressData();
+    const onCheckin = () => {
+      loadProgressData();
+      loadConsistencyData();
+    };
     window.addEventListener("checkin-saved", onCheckin);
     return () => window.removeEventListener("checkin-saved", onCheckin);
   }, [plan]);
@@ -149,6 +172,88 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
     }
   };
 
+  // Consistency measures how often the user actually shows up relative to
+  // their own target, and whether recovery is part of that pattern — not
+  // just an unbroken daily streak. Deliberately queried un-gated by plan:
+  // free-plan history limits are for the chart, not for whether someone can
+  // see their own adherence.
+  const loadConsistencyData = async (signal?: AbortSignal) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user;
+      if (!user) return;
+
+      const since28 = subDays(new Date(), 28);
+
+      const [goalsRes, logsRes, contextRes] = await Promise.all([
+        supabase
+          .from("goals")
+          .select("target_days_per_week")
+          .eq("user_id", user.id)
+          .is("deleted_at", null)
+          .eq("is_archived", false),
+        supabase
+          .from("activity_logs")
+          .select("completed_at")
+          .eq("user_id", user.id)
+          .eq("is_deleted", false)
+          .gte("completed_at", since28.toISOString()),
+        supabase
+          .from("daily_context")
+          .select("date, recommendation")
+          .eq("user_id", user.id)
+          .gte("date", format(since28, "yyyy-MM-dd")),
+      ]);
+
+      if (signal?.aborted) return;
+
+      const goals = goalsRes.data || [];
+      const target = goals.length > 0
+        ? goals.reduce((sum, g: any) => sum + (g.target_days_per_week || 0), 0)
+        : DEFAULT_WEEKLY_TARGET;
+      setWeeklyTarget(target);
+
+      const logs = logsRes.data || [];
+      const contextRows = contextRes.data || [];
+
+      const recovery = contextRows.filter(
+        (row: any) => row.recommendation === "mobility" || row.recommendation === "rest"
+      ).length;
+      setRecoveryDays(recovery);
+
+      const today = new Date();
+      const currentWeekStart = startOfWeek(today, { weekStartsOn: 1 });
+
+      const buckets: WeekBucket[] = Array.from({ length: CONSISTENCY_WEEKS }, (_, i) => {
+        const bucketStart = subDays(currentWeekStart, 7 * i);
+        const bucketEnd = endOfWeek(bucketStart, { weekStartsOn: 1 });
+
+        const daysInBucket = new Set(
+          logs
+            .filter((log: any) => {
+              const logDate = parseLocalDate(log.completed_at);
+              return isWithinInterval(logDate, { start: bucketStart, end: bucketEnd });
+            })
+            .map((log: any) => parseLocalDate(log.completed_at).toDateString())
+        );
+
+        const daysLogged = daysInBucket.size;
+        const ratio = target > 0 ? Math.min(daysLogged / target, 1) : 0;
+
+        return { daysLogged, target, ratio, metTarget: target > 0 && daysLogged >= target };
+      });
+
+      setSessionsThisWeek(buckets[0]?.daysLogged ?? 0);
+      setWeeksAtTarget(buckets.filter((b) => b.metTarget).length);
+
+      const avgRatio = buckets.reduce((sum, b) => sum + b.ratio, 0) / buckets.length;
+      setAdherenceRate(Math.round(avgRatio * 100));
+    } catch (err: any) {
+      if (err?.name === 'AbortError') return;
+      console.error("Error loading consistency data:", err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -178,19 +283,46 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
 
   return (
     <div className="space-y-8">
-      {/* Week Streak */}
+      {/* Consistency */}
       <Card className="border-none shadow-lg bg-gradient-to-br from-success/10 to-primary/5">
-        <CardHeader className="text-center pb-6">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Flame className="h-10 w-10 text-streak flame-pulse" />
-            <CardTitle className="text-4xl md:text-5xl font-display font-bold text-foreground">
-              {weekStreak}
+        <CardHeader className="pb-2">
+          <div className="flex items-center gap-3 mb-2">
+            <Target className="h-8 w-8 text-primary" />
+            <CardTitle className="text-3xl md:text-4xl font-display font-bold text-foreground">
+              {sessionsThisWeek}/{weeklyTarget}
             </CardTitle>
           </div>
-          <p className="text-xl md:text-2xl font-semibold text-muted-foreground">
-            You've worked out {weekStreak} {weekStreak === 1 ? "day" : "days"} this week
-          </p>
+          <CardDescription className="text-base">
+            Sessions logged this week toward your target
+          </CardDescription>
         </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+            <div className="rounded-lg bg-card/60 p-4 text-center">
+              <p className="text-2xl font-display font-bold text-foreground">{adherenceRate}%</p>
+              <p className="text-sm text-muted-foreground mt-1">4-week adherence</p>
+            </div>
+            <div className="rounded-lg bg-card/60 p-4 text-center">
+              <div className="flex items-center justify-center gap-1.5">
+                <Moon className="h-4 w-4 text-primary" aria-hidden="true" />
+                <p className="text-2xl font-display font-bold text-foreground">{recoveryDays}</p>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1">Recovery days honored (28d)</p>
+            </div>
+            <div className="rounded-lg bg-card/60 p-4 text-center">
+              <div className="flex items-center justify-center gap-1.5">
+                <Trophy className="h-4 w-4 text-primary" aria-hidden="true" />
+                <p className="text-2xl font-display font-bold text-foreground">{weeksAtTarget}/{CONSISTENCY_WEEKS}</p>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1">Weeks at target</p>
+            </div>
+          </div>
+          {recoveryDays > 0 && (
+            <p className="text-sm text-muted-foreground mt-4 text-center">
+              Resting or going light when your plan called for it counts toward showing up — it's not a gap in your consistency.
+            </p>
+          )}
+        </CardContent>
       </Card>
 
       {/* Weekly Comparison */}
@@ -261,21 +393,21 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="date" 
+              <XAxis
+                dataKey="date"
                 tick={{ fontSize: 12 }}
                 interval="preserveStartEnd"
               />
-              <YAxis 
-                domain={[1, 5]} 
+              <YAxis
+                domain={[1, 5]}
                 ticks={[1, 2, 3, 4, 5]}
                 tick={{ fontSize: 12 }}
               />
               <Tooltip />
-              <Line 
-                type="monotone" 
-                dataKey="rating" 
-                stroke="hsl(var(--primary))" 
+              <Line
+                type="monotone"
+                dataKey="rating"
+                stroke="hsl(var(--primary))"
                 strokeWidth={2}
                 dot={{ fill: "hsl(var(--primary))", r: 4 }}
                 connectNulls
