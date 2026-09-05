@@ -5,6 +5,7 @@ import { captureHabitAdded } from "@/lib/lifecycleEvents";
 import * as Sentry from "@sentry/react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Loader2, Plus, LogOut, Settings as SettingsIcon, TrendingUp, UserCircle, Lock, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { ProgressTab } from "@/components/ProgressTab";
@@ -20,7 +21,8 @@ import { EditGoalDialog } from "@/components/EditGoalDialog";
 import { CoachChat } from "@/components/CoachChat";
 import { calculateStreak, getUserActivityLogs, getDaysSinceLastActivity } from "@/lib/streakUtils";
 import { MicroblockSuggestion } from "@/components/MicroblockSuggestion";
-import { DailyContext } from "@/components/DailyContext";
+import { ReadinessCheckIn } from "@/components/ReadinessCheckIn";
+import type { Recommendation } from "@/lib/readiness";
 import { AppleHealthCard } from "@/components/AppleHealthCard";
 import { StreakRepair } from "@/components/StreakRepair";
 import PaywallModal from "@/components/PaywallModal";
@@ -77,6 +79,8 @@ export default function Dashboard() {
   const [showUpgradeWall, setShowUpgradeWall] = useState(false);
   const [upgradeWallType, setUpgradeWallType] = useState<'habit_limit' | 'partner_lock' | 'analytics_lock' | 'ai_coach' | 'history_limit'>('habit_limit');
   const [authUser, setAuthUser] = useState<any>(null);
+  const [showPainDetail, setShowPainDetail] = useState(false);
+  const [todaysRecommendation, setTodaysRecommendation] = useState<Recommendation | null>(null);
   const navigate = useNavigate();
 
   useSendWelcomeEmail(authUser);
@@ -344,6 +348,14 @@ export default function Dashboard() {
           </TabsList>
 
           <TabsContent value="goals" className="space-y-6 md:space-y-8">
+            <ReadinessCheckIn
+              onSaved={(result) => {
+                setTodaysRecommendation(result.recommendation);
+                loadStreakData();
+              }}
+              onWantsDetailedPainLog={() => setShowPainDetail(true)}
+            />
+
             <section className="space-y-3 md:space-y-4" aria-labelledby="habits-heading">
               <div className="mb-1 md:mb-4">
                 <h2 id="habits-heading" className="text-2xl md:text-4xl font-display font-bold mb-1 md:mb-2 text-gradient">
@@ -497,8 +509,6 @@ export default function Dashboard() {
             {/* Health Tracking & Context Section — moved BELOW habits so habit
                 cards stay above the fold on mobile. */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <DailyContext onSaved={() => loadStreakData()} />
-              <BodyMapPainReport onComplete={() => loadStreakData()} />
               <WeatherWidget />
               <CostTracker />
               <CalendarReminder />
@@ -593,6 +603,20 @@ export default function Dashboard() {
         goalId={editingGoalId}
       />
 
+      <Dialog open={showPainDetail} onOpenChange={setShowPainDetail}>
+        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Log exact location</DialogTitle>
+          </DialogHeader>
+          <BodyMapPainReport
+            onComplete={() => {
+              setShowPainDetail(false);
+              loadStreakData();
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+
       <CoachChat
         userContext={{
           streak: streak,
@@ -602,6 +626,7 @@ export default function Dashboard() {
                        `${daysSinceActivity} days since last activity`,
           isPremium: plan === 'pro',
           plan,
+          todaysRecommendation,
         }}
         autoOpen={showWelcome}
         welcomeMessage={welcomeMessage}

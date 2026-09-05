@@ -22,6 +22,8 @@ interface CoachChatProps {
     lastActivity?: string;
     isPremium?: boolean;
     plan?: string;
+    /** Today's readiness recommendation, if the user has checked in. */
+    todaysRecommendation?: "full" | "reduced" | "mobility" | "rest" | null;
   };
   autoOpen?: boolean;
   welcomeMessage?: string;
