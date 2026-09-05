@@ -7,6 +7,13 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const RECOMMENDATION_TEXT: Record<string, string> = {
+  full: "Full workout — everything is lining up today",
+  reduced: "Reduced/lighter workout today",
+  mobility: "Mobility and recovery day",
+  rest: "Rest day",
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -22,13 +29,14 @@ serve(async (req) => {
       userContext: z.object({
         streak: z.number().optional(),
         goalsCount: z.number().optional(),
-        lastActivity: z.string().optional()
+        lastActivity: z.string().optional(),
+        todaysRecommendation: z.enum(['full', 'reduced', 'mobility', 'rest']).nullable().optional()
       }).optional()
     });
 
     const body = await req.json();
     const { messages, userContext } = requestSchema.parse(body);
-    
+
     // Get authenticated user from JWT
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
@@ -38,7 +46,7 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    
+
     // Verify user with anon key
     const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } }
@@ -81,9 +89,9 @@ serve(async (req) => {
         console.error("Error checking rate limit:", countError);
       } else if (messageCount && (messageCount as any).count >= 10) {
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             error: "Daily message limit reached. Upgrade to Premium for unlimited messages!",
-            limitReached: true 
+            limitReached: true
           }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
@@ -102,7 +110,7 @@ serve(async (req) => {
       }
     }
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    
+
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
@@ -129,6 +137,7 @@ You are a supportive, knowledgeable fitness coach who specializes in helping mat
 4. **Age-appropriate** - Respect joint health, recovery time
 5. **Individual pace** - Everyone's journey is different
 6. **Holistic wellness** - Fitness is part of overall health
+7. **Respect today's plan** - If the user has a rest or mobility day recommended below, do not push them toward a harder workout. Support the lighter day. If they ask what to do today, tell them their plan.
 
 ## RESPONSE GUIDELINES
 - Keep responses SHORT (2-4 sentences ideal)
@@ -149,6 +158,7 @@ ${userContext ? `
 - Current Streak: ${userContext?.streak || 0} days
 - Active Goals: ${userContext?.goalsCount || 0}
 - Recent Activity: ${userContext?.lastActivity || "No recent activity"}
+- Today's Plan: ${userContext?.todaysRecommendation ? RECOMMENDATION_TEXT[userContext.todaysRecommendation] : "No check-in yet today"}
 - Premium User: ${profile?.is_premium ? "Yes" : "No"}
 ` : ""}`;
 

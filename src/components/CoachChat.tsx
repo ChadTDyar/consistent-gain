@@ -102,12 +102,13 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
           "Content-Type": "application/json",
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           messages: newMessages.map(m => ({ role: m.role, content: m.content })),
           userContext: {
             streak: userContext?.streak,
             goalsCount: userContext?.goalsCount,
             lastActivity: userContext?.lastActivity,
+            todaysRecommendation: userContext?.todaysRecommendation,
           }
         }),
       });

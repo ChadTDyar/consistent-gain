@@ -159,7 +159,7 @@ export default function Dashboard() {
     if (isNewUser && !sentTriggers.has("welcome")) {
       setWelcomeMessage("Welcome to Momentum! I'm Coach, your AI habit companion. I'm here to help you build sustainable habits. Want help setting your first goal?");
       setShowWelcome(true);
-      
+
       await supabase.from("coach_triggers").insert({
         user_id: user.id,
         trigger_type: "welcome"
@@ -167,7 +167,7 @@ export default function Dashboard() {
     } else {
       const logs = await getUserActivityLogs();
       const currentStreak = calculateStreak(logs);
-      
+
       if (currentStreak === 7 && !sentTriggers.has("streak_7")) {
         setWelcomeMessage("🔥 7 days in a row - that's amazing! You're building real consistency. How are you feeling?");
         setShowWelcome(true);
@@ -184,7 +184,7 @@ export default function Dashboard() {
       const daysSince = getDaysSinceLastActivity(logs);
       if (daysSince >= 3 && !sentTriggers.has("missed_3_days")) {
         setShowStreakRepair(true);
-        
+
         await supabase.from("coach_triggers").insert({
           user_id: user.id,
           trigger_type: "missed_3_days"
@@ -479,6 +479,7 @@ export default function Dashboard() {
 
             {goals.length > 0 && (
               <MinimumViableDay
+                recommendation={todaysRecommendation}
                 onLogged={() => {
                   loadStreakData();
                   loadGoals();
@@ -621,8 +622,8 @@ export default function Dashboard() {
         userContext={{
           streak: streak,
           goalsCount: goals.length,
-          lastActivity: daysSinceActivity === 0 ? "Active today" : 
-                       daysSinceActivity === 1 ? "Active yesterday" : 
+          lastActivity: daysSinceActivity === 0 ? "Active today" :
+                       daysSinceActivity === 1 ? "Active yesterday" :
                        `${daysSinceActivity} days since last activity`,
           isPremium: plan === 'pro',
           plan,
