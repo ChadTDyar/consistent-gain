@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BodyMapPainReport } from "@/components/BodyMapPainReport";
 import { ProgressTab as ProgressTabTrack } from "@/components/ProgressTab";
-import { DailyContext } from "@/components/DailyContext";
+import { ReadinessCheckIn } from "@/components/ReadinessCheckIn";
 import { SEO } from "@/components/SEO";
 import { type PlanTier, normalizePlan } from "@/lib/plans";
 
@@ -47,7 +47,7 @@ export default function Track() {
             </TabsContent>
 
             <TabsContent value="context">
-              <DailyContext />
+              <ReadinessCheckIn />
             </TabsContent>
 
             <TabsContent value="progress">
