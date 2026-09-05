@@ -264,30 +264,48 @@ export type Database = {
         Row: {
           created_at: string | null
           date: string
+          desire: number | null
           energy_level: number | null
           id: string
+          pain: number | null
+          readiness_score: number | null
+          recommendation: string | null
+          recovery: number | null
           sleep_notes: string | null
           sleep_quality: number | null
+          soreness: number | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
           created_at?: string | null
           date?: string
+          desire?: number | null
           energy_level?: number | null
           id?: string
+          pain?: number | null
+          readiness_score?: number | null
+          recommendation?: string | null
+          recovery?: number | null
           sleep_notes?: string | null
           sleep_quality?: number | null
+          soreness?: number | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
           created_at?: string | null
           date?: string
+          desire?: number | null
           energy_level?: number | null
           id?: string
+          pain?: number | null
+          readiness_score?: number | null
+          recommendation?: string | null
+          recovery?: number | null
           sleep_notes?: string | null
           sleep_quality?: number | null
+          soreness?: number | null
           updated_at?: string | null
           user_id?: string
         }
