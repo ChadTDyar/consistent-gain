@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Heart, Sparkles, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { isIOSNative } from "@/lib/platform";
+import { purchaseMonthly } from "@/lib/purchases";
 
 interface StreakRepairProps {
   daysMissed: number;
@@ -107,16 +108,23 @@ export function StreakRepair({ daysMissed, open, onClose, plan = 'free' }: Strea
               Just browsing
             </Button>
             {plan === 'free' ? (
-              isIOSNative() ? null : (
                 <Button
-                  onClick={() => { onClose(); window.location.href = '/pricing'; }}
+                  onClick={async () => {
+                    if (isIOSNative()) {
+                      try {
+                        await purchaseMonthly();
+                      } catch { /* StoreKit handles errors */ }
+                    } else {
+                      onClose();
+                      window.location.href = '/pricing';
+                    }
+                  }}
                   className="flex-1"
                   variant="secondary"
                 >
                   <Lock className="mr-2 h-4 w-4" />
                   Upgrade to Repair
                 </Button>
-              )
             ) : (
               <Button
                 onClick={handleSave}

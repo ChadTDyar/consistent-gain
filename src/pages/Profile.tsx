@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner";
 import { calculateStreak, getUserActivityLogs } from "@/lib/streakUtils";
 import { isIOSNative } from "@/lib/platform";
+import PaywallModal from "@/components/PaywallModal";
 
 interface ProfileData {
   id: string;
@@ -50,6 +51,7 @@ export default function Profile() {
   const [editName, setEditName] = useState("");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
 
   useEffect(() => {
     loadAll();
@@ -296,11 +298,11 @@ export default function Profile() {
                     <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0">
                       <Crown className="h-3 w-3 mr-1" /> Premium Member
                     </Badge>
-                  ) : !isIOSNative() ? (
-                    <Badge variant="secondary" className="cursor-pointer" onClick={() => navigate("/pricing")}>
+                  ) : (
+                    <Badge variant="secondary" className="cursor-pointer" onClick={() => isIOSNative() ? setShowPaywall(true) : navigate("/pricing")}>
                       Free Plan - Upgrade
                     </Badge>
-                  ) : null}
+                  )}
                 </div>
               </div>
             </div>
@@ -384,6 +386,7 @@ export default function Profile() {
           </div>
         </div>
       </div>
+      <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} />
     </>
   );
 }

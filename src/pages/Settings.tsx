@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Loader2, LogOut, Download, Trash2, AlertTriangle, ShieldCheck } from "lucide-react";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { DataExport } from "@/components/DataExport";
+import PaywallModal from "@/components/PaywallModal";
 import { WorkoutBuddies } from "@/components/WorkoutBuddies";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DoctorReport } from "@/components/DoctorReport";
@@ -45,6 +46,7 @@ export default function Settings() {
   const [deleting, setDeleting] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
+  const [showPaywall, setShowPaywall] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -489,15 +491,15 @@ export default function Settings() {
                           "Manage Subscription"
                         )}
                       </Button>
-                    ) : !isIOSNative() ? (
+                    ) : (
                       <Button
-                        onClick={() => navigate("/pricing")}
+                        onClick={() => isIOSNative() ? setShowPaywall(true) : navigate("/pricing")}
                         size="lg"
                         className="w-full shadow-sm hover:shadow-md font-semibold"
                       >
                         Upgrade
                       </Button>
-                    ) : null}
+                    )}
                   </div>
                 );
               })()}
@@ -679,6 +681,7 @@ export default function Settings() {
           </Button>
         </div>
       </div>
+      <PaywallModal open={showPaywall} onOpenChange={setShowPaywall} />
     </div>
   );
 }
