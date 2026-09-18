@@ -24,6 +24,8 @@ interface StreakRepairProps {
 export function StreakRepair({ daysMissed, open, onClose, plan = 'free' }: StreakRepairProps) {
   const [response, setResponse] = useState("");
   const [saving, setSaving] = useState(false);
+  const [purchasing, setPurchasing] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
 
   const getCompassionateMessage = (days: number) => {
     if (days <= 3) {
@@ -107,13 +109,26 @@ export function StreakRepair({ daysMissed, open, onClose, plan = 'free' }: Strea
             >
               Just browsing
             </Button>
-            {plan === 'free' ? (
+            {plan === 'free' && !unlocked ? (
                 <Button
+                  disabled={purchasing}
                   onClick={async () => {
                     if (isIOSNative()) {
+                      setPurchasing(true);
                       try {
-                        await purchaseMonthly();
-                      } catch { /* StoreKit handles errors */ }
+                        const active = await purchaseMonthly();
+                        if (active) {
+                          setUnlocked(true);
+                          toast.success("You're all set. Repair your streak below.");
+                        } else {
+                          toast.info("Purchase not completed.");
+                        }
+                      } catch (error) {
+                        console.error("Purchase failed:", error);
+                        toast.error("Purchase failed. Please try again.");
+                      } finally {
+                        setPurchasing(false);
+                      }
                     } else {
                       onClose();
                       window.location.href = '/pricing';
@@ -123,7 +138,7 @@ export function StreakRepair({ daysMissed, open, onClose, plan = 'free' }: Strea
                   variant="secondary"
                 >
                   <Lock className="mr-2 h-4 w-4" />
-                  Upgrade to Repair
+                  {purchasing ? "Processing..." : "Upgrade to Repair"}
                 </Button>
             ) : (
               <Button
