@@ -18,10 +18,47 @@ export default defineConfig(({ mode }) => ({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ["react", "react-dom", "react-router-dom"],
-          ui: ["@radix-ui/react-dialog", "@radix-ui/react-tooltip", "@radix-ui/react-popover"],
-          charts: ["recharts"],
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (
+              id.includes("node_modules/react-dom") ||
+              id.includes("node_modules/react-router-dom") ||
+              /[\\/]node_modules[\\/]react[\\/]/.test(id)
+            ) {
+              return "vendor";
+            }
+            if (
+              id.includes("node_modules/@radix-ui/react-dialog") ||
+              id.includes("node_modules/@radix-ui/react-tooltip") ||
+              id.includes("node_modules/@radix-ui/react-popover")
+            ) {
+              return "ui";
+            }
+            if (id.includes("node_modules/recharts")) {
+              return "charts";
+            }
+            return undefined;
+          }
+
+          // Group the below-the-fold landing page sections into a single
+          // chunk so they load as one request on scroll/interaction instead
+          // of one separate request per component.
+          const belowFoldLandingSections = [
+            "src/components/StreakRepairDemo",
+            "src/components/DifferentiationCallout",
+            "src/components/ProductShowcase",
+            "src/components/DemoPreview",
+            "src/components/NotificationExplainer",
+            "src/components/Testimonials",
+            "src/components/LandingPricing",
+            "src/components/ComparisonTable",
+            "src/components/FAQ",
+          ];
+          if (belowFoldLandingSections.some((section) => id.includes(section))) {
+            return "landing-below-fold";
+          }
+
+          return undefined;
         },
       },
     },
