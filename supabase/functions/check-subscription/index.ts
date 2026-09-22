@@ -86,13 +86,7 @@ serve(async (req) => {
       productId = subscription.items.data[0].price.product as string;
       logStep("Active subscription found", { productId, subscriptionEnd });
 
-      // Determine plan from product ID
-      const PLUS_PRODUCT = 'prod_U2Duyohl5m98ud';
-      const PRO_PRODUCT = 'prod_U2Dxf2eZc9xwan';
-
-      if (productId === PRO_PRODUCT) plan = 'pro';
-      else if (productId === PLUS_PRODUCT) plan = 'plus';
-      else plan = 'plus'; // Legacy fallback
+      plan = resolvePlanFromProductId(productId);
 
       // Update profile
       await supabaseClient.from('profiles').update({
@@ -113,12 +107,7 @@ serve(async (req) => {
         subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
         productId = subscription.items.data[0].price.product as string;
 
-        const PLUS_PRODUCT = 'prod_U2Duyohl5m98ud';
-        const PRO_PRODUCT = 'prod_U2Dxf2eZc9xwan';
-
-        if (productId === PRO_PRODUCT) plan = 'pro';
-        else if (productId === PLUS_PRODUCT) plan = 'plus';
-        else plan = 'plus';
+        plan = resolvePlanFromProductId(productId);
 
         await supabaseClient.from('profiles').update({
           plan,

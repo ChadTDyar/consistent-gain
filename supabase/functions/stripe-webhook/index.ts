@@ -64,7 +64,7 @@ serve(async (req) => {
           // Get the subscription to determine the plan
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
           const productId = subscription.items.data[0]?.price.product as string;
-          const plan = planFromProductId(productId);
+          const plan = resolvePlanFromProductId(productId);
 
           await supabaseClient
             .from('stripe_customers')
@@ -108,7 +108,7 @@ serve(async (req) => {
         }
 
         const productId = subscription.items.data[0]?.price.product as string;
-        const plan = planFromProductId(productId);
+        const plan = resolvePlanFromProductId(productId);
         const isActive = subscription.status === 'active' || subscription.status === 'trialing';
 
         await supabaseClient
