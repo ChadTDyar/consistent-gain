@@ -36,14 +36,18 @@ export function getPaymentLink(plan: 'pro', interval: BillingInterval): string {
   return interval === 'annual' ? PLANS[plan].annual_payment_link : PLANS[plan].payment_link;
 }
 
-export function getPlanFromProductId(productId: string | null): PlanTier {
+/**
+ * The single place a Stripe product ID is ever compared to a plan.
+ * Unknown (legacy/retired) products keep the legacy 'plus' tier so no existing
+ * subscriber is demoted; only a missing product ID means free.
+ * NOTE: supabase/functions/{check-subscription,stripe-webhook} duplicate
+ * PLANS.pro.product_id (edge functions cannot import from src/). Keep in sync.
+ */
+export function resolvePlanFromProductId(productId: string | null | undefined): PlanTier {
   if (!productId) return 'free';
-  if (productId === PLANS.pro.product_id) return 'pro';
-  // Legacy product IDs
-  if (productId === 'prod_U3w81PJvJRTiQQ' || productId === 'prod_U2Duyohl5m98ud' || productId === 'prod_U3vSrPHBDq24U8') return 'plus';
-  if (productId === 'prod_U2Dxf2eZc9xwan' || productId === 'prod_U3vT2StszUp7uL') return 'pro';
-  return 'plus';
+  return productId === PLANS.pro.product_id ? 'pro' : 'plus';
 }
+
 
 
 // iOS gating now flows through RevenueCat entitlement (see checkEntitlement);

@@ -2,13 +2,13 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const PLUS_PRODUCT = 'prod_U2Duyohl5m98ud';
-const PRO_PRODUCT = 'prod_U2Dxf2eZc9xwan';
+// Must stay in sync with PLANS.pro.product_id in src/lib/plans.ts
+const PREMIUM_PRODUCT = 'prod_U3w9PqaaJVSOto';
 
-function planFromProductId(productId: string | null): string {
-  if (productId === PRO_PRODUCT) return 'pro';
-  if (productId === PLUS_PRODUCT) return 'plus';
-  return 'plus'; // Legacy fallback for old products
+// Mirrors resolvePlanFromProductId() in src/lib/plans.ts
+function resolvePlanFromProductId(productId: string | null): string {
+  if (!productId) return 'free';
+  return productId === PREMIUM_PRODUCT ? 'pro' : 'plus'; // legacy products keep 'plus'
 }
 
 const logStep = (step: string, details?: any) => {
@@ -64,7 +64,7 @@ serve(async (req) => {
           // Get the subscription to determine the plan
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
           const productId = subscription.items.data[0]?.price.product as string;
-          const plan = planFromProductId(productId);
+          const plan = resolvePlanFromProductId(productId);
 
           await supabaseClient
             .from('stripe_customers')
@@ -108,7 +108,7 @@ serve(async (req) => {
         }
 
         const productId = subscription.items.data[0]?.price.product as string;
-        const plan = planFromProductId(productId);
+        const plan = resolvePlanFromProductId(productId);
         const isActive = subscription.status === 'active' || subscription.status === 'trialing';
 
         await supabaseClient
