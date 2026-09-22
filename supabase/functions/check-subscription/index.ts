@@ -7,6 +7,15 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Must stay in sync with PLANS.pro.product_id in src/lib/plans.ts
+const PREMIUM_PRODUCT = 'prod_U3w9PqaaJVSOto';
+
+// Mirrors resolvePlanFromProductId() in src/lib/plans.ts
+function resolvePlanFromProductId(productId: string | null): string {
+  if (!productId) return 'free';
+  return productId === PREMIUM_PRODUCT ? 'pro' : 'plus'; // legacy products keep 'plus'
+}
+
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
   console.log(`[CHECK-SUBSCRIPTION] ${step}${detailsStr}`);
