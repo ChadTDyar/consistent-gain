@@ -38,13 +38,14 @@ export function getPaymentLink(plan: 'pro', interval: BillingInterval): string {
 
 /**
  * The single place a Stripe product ID is ever compared to a plan.
- * Anything that is not the currently sold Premium product is treated as free.
+ * Unknown (legacy/retired) products keep the legacy 'plus' tier so no existing
+ * subscriber is demoted; only a missing product ID means free.
  * NOTE: supabase/functions/{check-subscription,stripe-webhook} duplicate
  * PLANS.pro.product_id (edge functions cannot import from src/). Keep in sync.
  */
 export function resolvePlanFromProductId(productId: string | null | undefined): PlanTier {
   if (!productId) return 'free';
-  return productId === PLANS.pro.product_id ? 'pro' : 'free';
+  return productId === PLANS.pro.product_id ? 'pro' : 'plus';
 }
 
 
