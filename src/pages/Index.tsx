@@ -13,16 +13,20 @@ import { Star, LogIn, LogOut } from "lucide-react";
 import { KitSignupForm } from "@/components/KitSignupForm";
 import { supabase } from "@/integrations/supabase/client";
 import { AppStoreBadge } from "@/components/AppStoreBadge";
+// Above-the-fold sections: bundled eagerly (main bundle) since they render
+// immediately on load — no benefit to lazy-loading these.
+import { HowItWorks } from "@/components/HowItWorks";
+import { FeatureGrid } from "@/components/FeatureGrid";
 
-// Lazy load below-the-fold sections (retry-aware: survives stale chunks after deploys)
+// Lazy load below-the-fold sections (retry-aware: survives stale chunks after deploys).
+// These are grouped into a single "landing-below-fold" chunk via manualChunks
+// in vite.config.ts, so they still load on demand but as one request, not nine.
 const FAQ = lazyWithRetry(() => import("@/components/FAQ").then(m => ({ default: m.FAQ })));
 const Testimonials = lazyWithRetry(() => import("@/components/Testimonials").then(m => ({ default: m.Testimonials })));
 const ProductShowcase = lazyWithRetry(() => import("@/components/ProductShowcase").then(m => ({ default: m.ProductShowcase })));
 const ComparisonTable = lazyWithRetry(() => import("@/components/ComparisonTable").then(m => ({ default: m.ComparisonTable })));
 const DemoPreview = lazyWithRetry(() => import("@/components/DemoPreview").then(m => ({ default: m.DemoPreview })));
-const FeatureGrid = lazyWithRetry(() => import("@/components/FeatureGrid").then(m => ({ default: m.FeatureGrid })));
 const NotificationExplainer = lazyWithRetry(() => import("@/components/NotificationExplainer").then(m => ({ default: m.NotificationExplainer })));
-const HowItWorks = lazyWithRetry(() => import("@/components/HowItWorks").then(m => ({ default: m.HowItWorks })));
 const DifferentiationCallout = lazyWithRetry(() => import("@/components/DifferentiationCallout").then(m => ({ default: m.DifferentiationCallout })));
 const LandingPricing = lazyWithRetry(() => import("@/components/LandingPricing").then(m => ({ default: m.LandingPricing })));
 const StreakRepairDemo = lazyWithRetry(() => import("@/components/StreakRepairDemo").then(m => ({ default: m.StreakRepairDemo })));
@@ -164,18 +168,18 @@ const Index = () => {
           </div>
         </nav>
 
-        {/* Below-the-fold lazy-loaded sections */}
-        <Suspense fallback={<div className="py-16" />}>
-          {/* How It Works */}
-          <HowItWorks />
+        {/* How It Works — above the fold, bundled eagerly */}
+        <HowItWorks />
 
+        {/* Below-the-fold lazy-loaded sections (single grouped chunk) */}
+        <Suspense fallback={<div className="py-16" />}>
           {/* Streak Repair Demo */}
           <StreakRepairDemo />
 
           {/* Differentiation Callout */}
           <DifferentiationCallout />
 
-          {/* Feature Grid */}
+          {/* Feature Grid — above the fold, bundled eagerly */}
           <FeatureGrid />
 
           {/* Product Showcase */}
