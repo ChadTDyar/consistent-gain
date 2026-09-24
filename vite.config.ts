@@ -34,12 +34,10 @@ export default defineConfig(({ mode }) => ({
             ) {
               return "ui";
             }
-            // Bundle recharts together with its own runtime dependency tree
-            // (lodash, d3-*, victory-vendor, etc). If those fall through to
-            // Rollup's automatic chunking they land in a separate implicit
-            // chunk, creating a circular chunk dependency that surfaces at
-            // runtime as "Cannot access '_' before initialization" (lodash's
-            // default export binding) and blanks the app.
+            // Keep recharts and its runtime dependency tree in the same chunk
+            // as React. A separate charts chunk created a vendor <-> charts
+            // ESM cycle where recharts called React.forwardRef before its
+            // React binding initialized, blanking the app in production.
             const chartsTreeMatchers = [
               "node_modules/recharts",
               "node_modules/lodash",
@@ -60,7 +58,7 @@ export default defineConfig(({ mode }) => ({
               "node_modules/fast-equals",
             ];
             if (chartsTreeMatchers.some((m) => id.includes(m))) {
-              return "charts";
+              return "vendor";
             }
             return undefined;
           }
