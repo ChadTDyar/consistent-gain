@@ -19,20 +19,21 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          // Vite's lazy-load helper is shared by vendor and app code; keep it
+          // in vendor so it cannot create a vendor <-> app chunk cycle.
+          if (id.includes("vite/preload-helper")) {
+            return "vendor";
+          }
           if (id.includes("node_modules")) {
+            // All third-party code, including Radix UI, stays in one vendor
+            // chunk. Splitting shared Radix pieces into "ui" created a
+            // vendor <-> ui cycle in production.
             if (
               id.includes("node_modules/react-dom") ||
               id.includes("node_modules/react-router-dom") ||
               /[\\/]node_modules[\\/]react[\\/]/.test(id)
             ) {
               return "vendor";
-            }
-            if (
-              id.includes("node_modules/@radix-ui/react-dialog") ||
-              id.includes("node_modules/@radix-ui/react-tooltip") ||
-              id.includes("node_modules/@radix-ui/react-popover")
-            ) {
-              return "ui";
             }
             // Keep recharts and its runtime dependency tree in the same chunk
             // as React. A separate charts chunk created a vendor <-> charts
