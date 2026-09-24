@@ -19,7 +19,15 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          // Vite's lazy-load helper is shared by vendor and app code; keep it
+          // in vendor so it cannot create a vendor <-> app chunk cycle.
+          if (id.includes("vite/preload-helper")) {
+            return "vendor";
+          }
           if (id.includes("node_modules")) {
+            // All third-party code, including Radix UI, stays in one vendor
+            // chunk. Splitting shared Radix pieces into "ui" created a
+            // vendor <-> ui cycle in production.
             if (
               id.includes("node_modules/react-dom") ||
               id.includes("node_modules/react-router-dom") ||
@@ -27,19 +35,10 @@ export default defineConfig(({ mode }) => ({
             ) {
               return "vendor";
             }
-            if (
-              id.includes("node_modules/@radix-ui/react-dialog") ||
-              id.includes("node_modules/@radix-ui/react-tooltip") ||
-              id.includes("node_modules/@radix-ui/react-popover")
-            ) {
-              return "ui";
-            }
-            // Bundle recharts together with its own runtime dependency tree
-            // (lodash, d3-*, victory-vendor, etc). If those fall through to
-            // Rollup's automatic chunking they land in a separate implicit
-            // chunk, creating a circular chunk dependency that surfaces at
-            // runtime as "Cannot access '_' before initialization" (lodash's
-            // default export binding) and blanks the app.
+            // Keep recharts and its runtime dependency tree in the same chunk
+            // as React. A separate charts chunk created a vendor <-> charts
+            // ESM cycle where recharts called React.forwardRef before its
+            // React binding initialized, blanking the app in production.
             const chartsTreeMatchers = [
               "node_modules/recharts",
               "node_modules/lodash",
@@ -60,9 +59,11 @@ export default defineConfig(({ mode }) => ({
               "node_modules/fast-equals",
             ];
             if (chartsTreeMatchers.some((m) => id.includes(m))) {
-              return "charts";
+              return "vendor";
             }
-            return undefined;
+            // Never let shared third-party code fall into an app chunk such
+            // as landing-below-fold; that creates vendor <-> app cycles.
+            return "vendor";
           }
 
           // Group the below-the-fold landing page sections into a single
