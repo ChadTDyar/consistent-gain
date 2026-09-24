@@ -34,7 +34,32 @@ export default defineConfig(({ mode }) => ({
             ) {
               return "ui";
             }
-            if (id.includes("node_modules/recharts")) {
+            // Bundle recharts together with its own runtime dependency tree
+            // (lodash, d3-*, victory-vendor, etc). If those fall through to
+            // Rollup's automatic chunking they land in a separate implicit
+            // chunk, creating a circular chunk dependency that surfaces at
+            // runtime as "Cannot access '_' before initialization" (lodash's
+            // default export binding) and blanks the app.
+            const chartsTreeMatchers = [
+              "node_modules/recharts",
+              "node_modules/lodash",
+              "node_modules/d3-shape",
+              "node_modules/d3-scale",
+              "node_modules/d3-interpolate",
+              "node_modules/d3-array",
+              "node_modules/d3-time",
+              "node_modules/d3-time-format",
+              "node_modules/d3-color",
+              "node_modules/d3-format",
+              "node_modules/d3-path",
+              "node_modules/victory-vendor",
+              "node_modules/decimal.js-light",
+              "node_modules/eventemitter3",
+              "node_modules/recharts-scale",
+              "node_modules/tiny-invariant",
+              "node_modules/fast-equals",
+            ];
+            if (chartsTreeMatchers.some((m) => id.includes(m))) {
               return "charts";
             }
             return undefined;
