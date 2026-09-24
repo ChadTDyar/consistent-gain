@@ -60,7 +60,9 @@ export default defineConfig(({ mode }) => ({
             if (chartsTreeMatchers.some((m) => id.includes(m))) {
               return "vendor";
             }
-            return undefined;
+            // Never let shared third-party code fall into an app chunk such
+            // as landing-below-fold; that creates vendor <-> app cycles.
+            return "vendor";
           }
 
           // Group the below-the-fold landing page sections into a single
