@@ -18,6 +18,12 @@ export default defineConfig(({ mode }) => ({
   build: {
     rollupOptions: {
       output: {
+        // DO NOT re-split third-party code. All node_modules must stay in the
+        // single "vendor" chunk. Splitting any package into a chunk separate
+        // from React can create a circular ESM chunk dependency that only
+        // crashes in the real production bundle (not the dev sandbox); this
+        // caused a P1 white-screen outage. Enforced at build time by
+        // scripts/check-manual-chunks.mjs (runs as "prebuild").
         manualChunks(id) {
           // Vite's lazy-load helper is shared by vendor and app code; keep it
           // in vendor so it cannot create a vendor <-> app chunk cycle.
