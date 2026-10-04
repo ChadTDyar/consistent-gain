@@ -26,3 +26,11 @@ Daily Readiness Phase 1 shipped (2026-09-05) via Lovable. Merged DailyContext + 
 ## Pricing
 
 Do not modify Stripe/pricing configuration without explicit instruction from Chad. Pricing source of truth is Stripe Live, not code.
+
+## Merge Closeout
+
+After any merge to main, run these three steps before calling it done:
+
+1. `git rev-parse origin/main` — print the SHA so the commit is on record.
+2. Verify the change is live with a **change-specific marker** — not the generic `health.json` (it returns `{"status":"ok"}` regardless of which version is deployed). Name one thing the merge was supposed to change (e.g. "pricing page shows new Plus copy", "readiness check-in route exists") and curl for that exact thing. Do NOT assume a merge is live until the marker passes. Lovable deploys are not instant.
+3. Tell Chad: **"Merged, ready for Claude to publish."**
