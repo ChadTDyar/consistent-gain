@@ -40,6 +40,7 @@ ios/App/App.xcodeproj/xcuserdata/
 ios/App/App.xcworkspace/xcuserdata/
 ios/App/build/
 ios/App/Pods/
+ios/App/App/public/assets/
 *.xcuserstate
 
 # Stale function copies
