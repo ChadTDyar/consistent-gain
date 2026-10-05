@@ -164,7 +164,11 @@ export function LandingPricing() {
                   className={tier.mostPopular ? "btn-gradient w-full" : "w-full"}
                   disabled={tier.plan ? loading === `${tier.plan}-${interval}` : false}
                 >
-                  {tier.plan && loading === `${tier.plan}-${interval}` ? 'Redirecting…' : tier.cta}
+                  {tier.plan && loading === `${tier.plan}-${interval}`
+                    ? 'Redirecting…'
+                    : tier.plan && interval === 'annual'
+                      ? `Go Premium — ${tier.annualTotal}/yr`
+                      : tier.cta}
                 </Button>
                 {tier.plan && (
                   <p className="text-center mt-2 text-xs text-muted-foreground">
