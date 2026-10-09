@@ -111,6 +111,15 @@ const Index = () => {
                   </Button>
                   <AppStoreBadge />
                 </div>
+                <p className="text-sm">
+                  <a
+                    href="/7-day-reset"
+                    onClick={(e) => { e.preventDefault(); navigate("/7-day-reset"); }}
+                    className="text-primary font-semibold underline-offset-4 hover:underline inline-flex items-center min-h-[44px]"
+                  >
+                    New: try the free 7-Day Readiness Reset
+                  </a>
+                </p>
                 <div className="flex items-center gap-2 justify-center lg:justify-start text-xs md:text-sm text-muted-foreground pt-1">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
