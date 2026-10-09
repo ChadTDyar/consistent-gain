@@ -21,7 +21,7 @@ const schema = {
   "@type": "WebPage",
   name: "The 7-Day Readiness Reset",
   url: "https://momentumfit.app/7-day-reset",
-  description: "A free 7-day reset for busy people. One small action per day, with a daily prompt and simple streak tracking in MomentumFit.",
+  description: "A free 7-day reset for busy people. One small action per day, all seven listed on this page. Check in daily and track your streak in MomentumFit.",
 };
 
 export default function SevenDayReset() {
@@ -40,7 +40,7 @@ export default function SevenDayReset() {
     <>
       <SEO
         title="The 7-Day Readiness Reset | MomentumFit"
-        description="A free 7-day reset for busy people. One small action per day: sleep, light, water, movement, shutdown, reflection, planning. Daily prompts and streak tracking in the app."
+        description="A free 7-day reset for busy people. One small action per day: sleep, light, water, movement, shutdown, reflection, planning. All seven actions are listed on this page. Check in daily and track your streak in the app."
         keywords="7 day reset, readiness reset, habit reset challenge, busy professionals routine, daily habit challenge"
         schema={schema}
       />
@@ -62,7 +62,7 @@ export default function SevenDayReset() {
               The 7-Day Readiness Reset
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              One small action a day for a week. Nothing to buy, nothing to overhaul. Just a simple way to start again.
+              One small action a day for a week. Nothing to buy, nothing to overhaul. All seven actions are listed right here on this page, so you always know what today asks of you.
             </p>
             <Button size="lg" onClick={() => start("top")} className="btn-gradient h-12 md:h-14 px-8 text-base md:text-lg">
               Start the 7-day reset free
@@ -72,7 +72,10 @@ export default function SevenDayReset() {
 
         <section className="pb-12">
           <div className="container mx-auto px-6 md:px-8 max-w-3xl">
-            <h2 className="text-2xl font-display font-bold text-foreground mb-6">What each day asks of you</h2>
+            <h2 className="text-2xl font-display font-bold text-foreground mb-3">What each day asks of you</h2>
+            <p className="text-muted-foreground mb-6">
+              The seven actions are listed below. No email series, no app notification: come back here each day to see what's next.
+            </p>
             <ol className="space-y-3">
               {days.map((d, i) => (
                 <li key={d.title}>
@@ -104,8 +107,9 @@ export default function SevenDayReset() {
             <div>
               <h2 className="text-2xl font-display font-bold text-foreground mb-3">What you get</h2>
               <ul className="text-muted-foreground space-y-2 list-disc pl-5">
-                <li>A daily prompt inside the app telling you today's action</li>
-                <li>Simple streak tracking so you can see the week add up</li>
+                <li>A simple place to check in each day, so the week leaves a record</li>
+                <li>Streak tracking that shows how many days in a row you showed up</li>
+                <li>The free plan holds three habits, enough to keep one or two of these going</li>
               </ul>
             </div>
           </div>
