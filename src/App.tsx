@@ -55,6 +55,7 @@ const DailyFitnessCheckinApp = lazy(() => import("./pages/seo/DailyFitnessChecki
 const Features = lazy(() => import("./pages/Features"));
 const Support = lazy(() => import("./pages/Support"));
 const MyFitnessPalAlternative = lazy(() => import("./pages/MyFitnessPalAlternative"));
+const SevenDayReset = lazy(() => import("./pages/SevenDayReset"));
 
 const queryClient = new QueryClient();
 
@@ -140,6 +141,7 @@ const App = () => {
               <Route path="/features" element={<Features />} />
               <Route path="/support" element={<Support />} />
               <Route path="/myfitnesspal-alternative" element={<MyFitnessPalAlternative />} />
+              <Route path="/7-day-reset" element={<SevenDayReset />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

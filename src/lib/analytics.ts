@@ -254,4 +254,8 @@ export const analytics = {
   startCheckout: (tier: string) => trackEvent('momentum_start_checkout', 'conversion', tier),
   checkoutSuccess: () => fireOnce('checkout_success', () => trackEvent('momentum_checkout_success', 'conversion')),
   activation: () => fireOnce('activation', () => trackEvent('momentum_activation', 'activation', 'first_habit_and_checkin')),
+
+  // 7-Day Readiness Reset landing page
+  resetPageView: () => trackEvent('reset_page_view', 'acquisition'),
+  resetCtaClick: (position: string) => trackEvent('reset_cta_click', 'acquisition', position),
 };
