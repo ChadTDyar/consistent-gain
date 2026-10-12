@@ -2,9 +2,10 @@ import { isIOSNative } from "@/lib/platform";
 
 export const APP_STORE_URL = "https://apps.apple.com/app/momentum";
 
+const SHOW_APP_STORE_BADGE = false;
+
 export function AppStoreBadge() {
-  // Hidden on iOS native builds (already in the App Store)
-  if (isIOSNative()) return null;
+  if (!SHOW_APP_STORE_BADGE || isIOSNative()) return null;
 
   return (
     <a
