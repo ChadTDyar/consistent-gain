@@ -54,7 +54,11 @@ serve(async (req) => {
         });
       }
     } else {
-      logStep("WARNING: REVENUECAT_WEBHOOK_AUTH_HEADER not configured, skipping auth check");
+      logStep("ERROR: REVENUECAT_WEBHOOK_AUTH_HEADER not configured — rejecting (fail closed)");
+      return new Response(JSON.stringify({ error: "Webhook auth not configured" }), {
+        headers: { "Content-Type": "application/json" },
+        status: 503,
+      });
     }
 
     const body = await req.text();
