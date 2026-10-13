@@ -79,7 +79,6 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <CookieConsent />
         <BrowserRouter
           future={{
             v7_startTransition: true,
@@ -148,6 +147,7 @@ const App = () => {
           </Suspense>
           </AppLayout>
           <BottomTabBar />
+          <CookieConsent />
         </BrowserRouter>
       </TooltipProvider>
     </ErrorBoundary>
