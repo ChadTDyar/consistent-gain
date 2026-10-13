@@ -33,7 +33,7 @@ export default function SevenDayReset() {
 
   const start = (position: "top" | "bottom") => {
     analytics.resetCtaClick(position);
-    navigate("/auth");
+    navigate("/auth?mode=signup");
   };
 
   return (

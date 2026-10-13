@@ -166,7 +166,7 @@ export const DemoPreview = () => {
               <p className="text-sm text-muted-foreground font-medium">
                 Ready to start your own journey?
               </p>
-              <Button onClick={() => navigate("/auth")} className="btn-gradient shadow-lg">
+              <Button onClick={() => navigate("/auth?mode=signup")} className="btn-gradient shadow-lg">
                 Create Free Account
               </Button>
             </div>

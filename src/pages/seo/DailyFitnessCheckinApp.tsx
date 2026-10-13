@@ -36,7 +36,7 @@ export default function DailyFitnessCheckinApp() {
               <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
               <span className="font-display font-bold text-lg text-gradient">Momentum</span>
             </a>
-            <Button size="sm" onClick={() => navigate("/auth")} className="btn-gradient">Start Free</Button>
+            <Button size="sm" onClick={() => navigate("/auth?mode=signup")} className="btn-gradient">Start Free</Button>
           </div>
         </nav>
 
@@ -117,7 +117,7 @@ export default function DailyFitnessCheckinApp() {
                     ))}
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3 mt-6">
-                    <Button onClick={() => navigate("/auth")} className="btn-gradient" size="lg">Start free <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                    <Button onClick={() => navigate("/auth?mode=signup")} className="btn-gradient" size="lg">Start free <ArrowRight className="ml-2 h-4 w-4" /></Button>
                     {canShowWebPricing() && (
                       <Button variant="outline" onClick={() => navigate("/pricing")} size="lg">Compare plans</Button>
                     )}

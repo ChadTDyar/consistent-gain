@@ -208,7 +208,7 @@ export default function Pricing() {
                   variant="outline"
                   className="w-full border-2 min-h-[44px]"
                   size="lg"
-                  onClick={() => navigate("/auth")}
+                  onClick={() => navigate("/auth?mode=signup")}
                 >
                   Start free
                 </Button>

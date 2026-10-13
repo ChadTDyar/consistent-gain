@@ -78,7 +78,7 @@ export default function MyFitnessPalAlternative() {
               <a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }}>Pricing</a>
               <a href="/blog" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/blog"); }}>Blog</a>
             </div>
-            <Button size="sm" onClick={() => { analytics.startSignup(); navigate("/auth"); }} className="btn-gradient">
+            <Button size="sm" onClick={() => { analytics.startSignup(); navigate("/auth?mode=signup"); }} className="btn-gradient">
               Start Free
             </Button>
           </div>
@@ -167,7 +167,7 @@ export default function MyFitnessPalAlternative() {
               </p>
               <Button
                 size="lg"
-                onClick={() => { analytics.startSignup(); navigate("/auth?utm_source=organic&utm_medium=comparison_page&utm_campaign=myfitnesspal_alternative"); }}
+                onClick={() => { analytics.startSignup(); navigate("/auth?mode=signup&utm_source=organic&utm_medium=comparison_page&utm_campaign=myfitnesspal_alternative"); }}
                 className="btn-gradient btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-base md:text-lg h-12 md:h-14 px-8 md:px-10"
               >
                 Start Your First Habit Free

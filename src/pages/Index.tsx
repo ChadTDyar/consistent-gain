@@ -104,7 +104,7 @@ const Index = () => {
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
                   <Button 
                     size="lg" 
-                    onClick={() => { analytics.startSignup(); navigate("/auth"); }} 
+                    onClick={() => { analytics.startSignup(); navigate("/auth?mode=signup"); }} 
                     className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-base md:text-lg h-12 md:h-14 px-8 md:px-10 btn-gradient"
                   >
                     Track My First 3 Habits Free
@@ -171,7 +171,7 @@ const Index = () => {
               <a href="/story" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/story"); }}>Our Story</a>
               <a href="#faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</a>
             </div>
-            <Button size="sm" onClick={() => navigate("/auth")} className="btn-gradient">
+            <Button size="sm" onClick={() => navigate("/auth?mode=signup")} className="btn-gradient">
               Start Free
             </Button>
           </div>
@@ -298,7 +298,7 @@ const Index = () => {
             <Button
               size="lg"
               variant="secondary"
-              onClick={() => navigate("/auth")}
+              onClick={() => navigate("/auth?mode=signup")}
               className="btn-large shadow-2xl hover:shadow-[0_30px_60px_rgba(255,255,255,0.5)] bg-white text-primary hover:bg-white hover:scale-110 transition-all text-lg h-16 px-12 font-semibold slide-up"
               style={{animationDelay: '0.1s'}}
             >

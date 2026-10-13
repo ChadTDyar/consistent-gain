@@ -159,7 +159,7 @@ export function LandingPricing() {
                   ))}
                 </ul>
                 <Button
-                  onClick={() => tier.plan ? onCheckout(tier) : navigate("/auth")}
+                  onClick={() => tier.plan ? onCheckout(tier) : navigate("/auth?mode=signup")}
                   variant={tier.mostPopular ? "default" : "outline"}
                   className={tier.mostPopular ? "btn-gradient w-full" : "w-full"}
                   disabled={tier.plan ? loading === `${tier.plan}-${interval}` : false}
