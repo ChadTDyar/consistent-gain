@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
 import { analytics } from "@/lib/analytics";
 import { SEO } from "@/components/SEO";
+import { SocialProof } from "@/components/SocialProof";
 import { PLANS, type PlanTier, type BillingInterval, normalizePlan } from "@/lib/plans";
 import { handleCheckout } from "@/lib/checkout";
 import { isIOSNative } from "@/lib/platform";
@@ -208,7 +209,7 @@ export default function Pricing() {
                   variant="outline"
                   className="w-full border-2 min-h-[44px]"
                   size="lg"
-                  onClick={() => navigate("/auth")}
+                  onClick={() => navigate("/auth?mode=signup")}
                 >
                   Start free
                 </Button>
@@ -349,6 +350,8 @@ export default function Pricing() {
               </div>
             </Card>
           </div>
+
+          <SocialProof />
 
           {/* FAQ Section */}
           <div className="mt-20 max-w-3xl mx-auto">

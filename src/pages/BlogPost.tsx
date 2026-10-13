@@ -65,7 +65,7 @@ export default function BlogPost() {
               <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
               <span className="font-display font-bold text-lg text-gradient">Momentum</span>
             </div>
-            <Button size="sm" onClick={() => navigate("/auth")} className="btn-gradient">
+            <Button size="sm" onClick={() => navigate("/auth?mode=signup")} className="btn-gradient">
               Start Free
             </Button>
           </div>
@@ -132,7 +132,7 @@ export default function BlogPost() {
                 <h3 className="text-2xl font-display font-bold mb-3">Ready to build your own momentum?</h3>
                 <p className="text-white/90 mb-6">Start tracking your fitness habits today - free for up to 3 goals.</p>
                 <Button
-                  onClick={() => navigate("/auth")}
+                  onClick={() => navigate("/auth?mode=signup")}
                   size="lg"
                   variant="secondary"
                   className="bg-white text-primary hover:bg-white hover:scale-105 transition-all font-semibold"

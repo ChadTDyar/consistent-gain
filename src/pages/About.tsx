@@ -49,7 +49,7 @@ export default function About() {
               <a href="/blog" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/blog"); }}>Blog</a>
               <a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }}>Pricing</a>
             </div>
-            <Button size="sm" onClick={() => navigate("/auth")} className="btn-gradient">
+            <Button size="sm" onClick={() => navigate("/auth?mode=signup")} className="btn-gradient">
               Start Free
             </Button>
           </div>
@@ -212,7 +212,7 @@ export default function About() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
-                  onClick={() => navigate("/auth")}
+                  onClick={() => navigate("/auth?mode=signup")}
                   size="lg"
                   variant="secondary"
                   className="shadow-xl hover:shadow-2xl bg-white text-primary hover:bg-white hover:scale-105 transition-all text-lg h-14 px-10 font-semibold"

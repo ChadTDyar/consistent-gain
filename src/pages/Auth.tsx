@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +19,10 @@ import { Browser } from "@capacitor/browser";
 import * as Sentry from "@sentry/react";
 
 export default function Auth() {
-  const [isLogin, setIsLogin] = useState(true);
+  const location = useLocation();
+  const [isLogin, setIsLogin] = useState(
+    () => new URLSearchParams(location.search).get("mode") !== "signup"
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -392,7 +395,16 @@ export default function Auth() {
           <div className="mt-4 text-center">
             <button
               type="button"
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => {
+                const nextIsLogin = !isLogin;
+                setIsLogin(nextIsLogin);
+                setFieldErrors({});
+                const params = new URLSearchParams(location.search);
+                if (nextIsLogin) params.delete("mode");
+                else params.set("mode", "signup");
+                const qs = params.toString();
+                navigate({ pathname: location.pathname, search: qs ? `?${qs}` : "" }, { replace: true });
+              }}
               className="text-primary hover:text-primary-deep font-medium transition-colors"
             >
               {isLogin

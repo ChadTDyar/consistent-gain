@@ -88,7 +88,7 @@ const Features = () => {
           <div className="text-center mt-16">
             <Button
               size="lg"
-              onClick={() => navigate("/auth")}
+              onClick={() => navigate("/auth?mode=signup")}
               className="btn-gradient btn-large"
             >
               Start Free

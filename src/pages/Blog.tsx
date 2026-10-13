@@ -40,7 +40,7 @@ export default function Blog() {
               <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" />
               <span className="font-display font-bold text-lg text-gradient">Momentum</span>
             </div>
-            <Button size="sm" onClick={() => navigate("/auth")} className="btn-gradient">
+            <Button size="sm" onClick={() => navigate("/auth?mode=signup")} className="btn-gradient">
               Start Free
             </Button>
           </div>
