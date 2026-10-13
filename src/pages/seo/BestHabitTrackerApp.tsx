@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SEO } from "@/components/SEO";
-import { CheckCircle, ArrowRight, XCircle, Star, Zap, Brain, Shield } from "lucide-react";
+import { CheckCircle, ArrowRight, XCircle, Zap, Brain, Shield } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { premiumPlanLine, canShowWebPricing } from "@/lib/pricingDisplay";
 
