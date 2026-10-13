@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Star } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { handleCheckout } from "@/lib/checkout";
@@ -129,8 +129,8 @@ export function LandingPricing() {
               style={tier.mostPopular ? { borderColor: '#0d3b5e' } : undefined}
             >
               {tier.mostPopular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-3 py-1 rounded-full text-white flex items-center gap-1" style={{ background: '#0d3b5e' }}>
-                  <Star className="h-3 w-3" /> Most Popular
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-bold px-3 py-1 rounded-full text-white" style={{ background: '#0d3b5e' }}>
+                  Most Popular
                 </div>
               )}
               <CardHeader className="pb-2">

@@ -9,7 +9,7 @@ import groupRunning from "@/assets/group-running.png";
 import { SEO } from "@/components/SEO";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { analytics } from "@/lib/analytics";
-import { Star, LogIn, LogOut } from "lucide-react";
+import { LogIn, LogOut } from "lucide-react";
 import { KitSignupForm } from "@/components/KitSignupForm";
 import { supabase } from "@/integrations/supabase/client";
 import { AppStoreBadge } from "@/components/AppStoreBadge";
@@ -120,15 +120,7 @@ const Index = () => {
                     New: try the free 7-Day Readiness Reset
                   </a>
                 </p>
-                <div className="flex items-center gap-2 justify-center lg:justify-start text-xs md:text-sm text-muted-foreground pt-1">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-primary text-primary" />
-                    ))}
-                  </div>
-                  <span>Built for people who want consistency, not intensity.</span>
-                </div>
-                <p className="sm:hidden text-xs text-muted-foreground">Built for people who want consistency, not intensity.</p>
+                <p className="text-xs md:text-sm text-muted-foreground pt-1">Built for people who want consistency, not intensity.</p>
               </div>
 
               <div className="relative">
