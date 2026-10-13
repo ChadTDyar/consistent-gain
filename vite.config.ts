@@ -67,6 +67,11 @@ export default defineConfig(({ mode }) => ({
             if (chartsTreeMatchers.some((m) => id.includes(m))) {
               return "vendor";
             }
+            // Allow Sentry and PostHog to form separate lazy chunks when
+            // dynamically imported — they have no circular dependency on React.
+            if (id.includes("node_modules/@sentry") || id.includes("node_modules/posthog-js")) {
+              return undefined;
+            }
             // Never let shared third-party code fall into an app chunk such
             // as landing-below-fold; that creates vendor <-> app cycles.
             return "vendor";
