@@ -56,7 +56,7 @@ const Index = () => {
   return (
     <>
       <SEO 
-        title="MomentumFit — Daily Fitness Habit Tracker App | Build Streaks That Stick"
+        title="MomentumFit: Daily Fitness Habit Tracker"
         description="MomentumFit is a free daily fitness habit tracker app. Build streaks, track progress, and stay consistent. The streak tracker designed to keep you moving."
         keywords="habit tracker app, streak tracker, daily habit app, fitness habit tracker, build healthy habits, momentumfit, fitness habits over 40, workout consistency"
         ogImage="https://momentumfit.app/og-share.jpg"
