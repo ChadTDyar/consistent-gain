@@ -1,88 +1,79 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Cookie } from "lucide-react";
 
 const COOKIE_CONSENT_KEY = "momentum-cookie-consent";
 
 export function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
+  const { pathname } = useLocation();
+  const barRef = useRef<HTMLDivElement>(null);
+  const hidden = pathname.startsWith("/auth");
+  const visible = showBanner && !hidden;
 
   useEffect(() => {
     const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
-    if (!consent) {
-      setShowBanner(true);
-    }
+    if (!consent) setShowBanner(true);
   }, []);
+
+  // Reserve space at the bottom of the page equal to the banner height,
+  // so primary CTAs can always be scrolled above it.
+  useEffect(() => {
+    const body = document.body;
+    if (!visible || !barRef.current) {
+      body.style.paddingBottom = "";
+      return;
+    }
+    const el = barRef.current;
+    const apply = () => { body.style.paddingBottom = `${el.offsetHeight}px`; };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => { ro.disconnect(); body.style.paddingBottom = ""; };
+  }, [visible]);
 
   const handleAccept = () => {
     localStorage.setItem(COOKIE_CONSENT_KEY, "accepted");
     setShowBanner(false);
-    // Initialize analytics if user accepts
     if (typeof window.gtag !== "undefined") {
-      window.gtag("consent", "update", {
-        analytics_storage: "granted",
-      });
+      window.gtag("consent", "update", { analytics_storage: "granted" });
     }
   };
 
   const handleDecline = () => {
     localStorage.setItem(COOKIE_CONSENT_KEY, "declined");
     setShowBanner(false);
-    // Disable analytics if user declines
     if (typeof window.gtag !== "undefined") {
-      window.gtag("consent", "update", {
-        analytics_storage: "denied",
-      });
+      window.gtag("consent", "update", { analytics_storage: "denied" });
     }
   };
 
-  if (!showBanner) return null;
+  if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 slide-up">
-      <Card className="max-w-4xl mx-auto border-2 border-primary/20 shadow-2xl bg-card">
-        <div className="p-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Cookie className="h-6 w-6 text-primary" />
-              </div>
-            </div>
-            
-            <div className="flex-1 space-y-2">
-              <h3 className="font-display font-semibold text-lg text-foreground">
-                We value your privacy
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                We use essential cookies to keep you logged in and analytics cookies to understand how you use our app. 
-                You can choose to accept or decline non-essential cookies.{" "}
-                <a href="/privacy" className="text-primary hover:underline font-medium">
-                  Learn more
-                </a>
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-              <Button
-                onClick={handleDecline}
-                variant="outline"
-                className="border-2 font-semibold"
-                size="lg"
-              >
-                Decline
-              </Button>
-              <Button
-                onClick={handleAccept}
-                className="shadow-sm hover:shadow-md font-semibold"
-                size="lg"
-              >
-                Accept
-              </Button>
-            </div>
-          </div>
+    <div
+      ref={barRef}
+      role="region"
+      aria-label="Cookie consent"
+      className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card shadow-lg md:bottom-4 md:left-4 md:right-4 md:mx-auto md:max-w-3xl md:rounded-xl md:border"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
+      <div className="flex items-center gap-3 px-3 py-2 md:px-5 md:py-3">
+        <Cookie className="hidden md:block h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+        <p className="flex-1 text-xs md:text-sm text-muted-foreground leading-snug">
+          We use cookies for login and analytics.{" "}
+          <a href="/privacy" className="font-medium text-primary hover:underline">Learn more</a>
+        </p>
+        <div className="flex shrink-0 gap-2">
+          <Button onClick={handleDecline} variant="outline" size="sm" className="min-h-[44px] px-3">
+            Decline
+          </Button>
+          <Button onClick={handleAccept} size="sm" className="min-h-[44px] px-3">
+            Accept
+          </Button>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
