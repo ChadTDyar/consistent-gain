@@ -8,6 +8,25 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+async function isAuthorized(req: Request, supabase: any): Promise<boolean> {
+  const sr = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+  const bearer = (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
+  if (sr && bearer && safeEqual(bearer, sr)) return true;
+  const hdr = req.headers.get("x-agent-secret") ?? "";
+  if (hdr) {
+    const { data, error } = await supabase.rpc("verify_agent_secret", { p: hdr });
+    if (!error && data === true) return true;
+  }
+  return false;
+}
+
 const EMAIL = "vera-test@momentumfit.app";
 const PASSWORD = "VeraTest2026!MOM";
 
@@ -19,12 +38,19 @@ const HABITS = [
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  const admin = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    { auth: { persistSession: false } }
+  );
+
+  if (!(await isAuthorized(req, admin))) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
-    const admin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-      { auth: { persistSession: false } }
-    );
 
     const { data: existing, error: listErr } = await admin.auth.admin.listUsers();
     if (listErr) throw listErr;

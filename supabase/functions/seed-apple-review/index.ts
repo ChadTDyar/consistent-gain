@@ -20,6 +20,25 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-seed-token",
 };
 
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+async function isAuthorized(req: Request, supabase: any): Promise<boolean> {
+  const sr = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+  const bearer = (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
+  if (sr && bearer && safeEqual(bearer, sr)) return true;
+  const hdr = req.headers.get("x-agent-secret") ?? "";
+  if (hdr) {
+    const { data, error } = await supabase.rpc("verify_agent_secret", { p: hdr });
+    if (!error && data === true) return true;
+  }
+  return false;
+}
+
 const EMAIL = "apple-review@momentumfit.app";
 
 const HABITS = [
@@ -31,10 +50,17 @@ const HABITS = [
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
-  // --- Auth boundary: x-seed-token must match server-side env var ---
+  const admin = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    { auth: { persistSession: false } }
+  );
+
+  // --- Auth: accept agent-secret/service-role OR legacy x-seed-token ---
   const expectedToken = Deno.env.get("APPLE_REVIEW_SEED_TOKEN");
   const providedToken = req.headers.get("x-seed-token");
-  if (!expectedToken || !providedToken || providedToken !== expectedToken) {
+  const hasSeedToken = expectedToken && providedToken && safeEqual(providedToken, expectedToken);
+  if (!hasSeedToken && !(await isAuthorized(req, admin))) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 401,
@@ -50,12 +76,6 @@ serve(async (req) => {
   }
 
   try {
-    const admin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-      { auth: { persistSession: false } }
-    );
-
     // 1. Find or create the auth user (exact email, no suffix)
     const { data: existing, error: listErr } = await admin.auth.admin.listUsers();
     if (listErr) throw listErr;
