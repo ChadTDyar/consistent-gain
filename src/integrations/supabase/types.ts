@@ -260,6 +260,30 @@ export type Database = {
         }
         Relationships: []
       }
+      cron_job_backup_20261014: {
+        Row: {
+          backed_up_at: string | null
+          command: string | null
+          jobid: number | null
+          jobname: string | null
+          schedule: string | null
+        }
+        Insert: {
+          backed_up_at?: string | null
+          command?: string | null
+          jobid?: number | null
+          jobname?: string | null
+          schedule?: string | null
+        }
+        Update: {
+          backed_up_at?: string | null
+          command?: string | null
+          jobid?: number | null
+          jobname?: string | null
+          schedule?: string | null
+        }
+        Relationships: []
+      }
       daily_context: {
         Row: {
           created_at: string | null
@@ -677,6 +701,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      verify_agent_secret: { Args: { p: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
