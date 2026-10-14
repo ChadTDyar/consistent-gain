@@ -31,6 +31,9 @@ ios/App/build/
 ios/DerivedData/
 # Supabase CLI temp
 supabase/.temp/
+# Hub function copies that must not deploy to Momentum
+supabase/functions/content-publisher/
+supabase/functions/morning-digest/
 # Android build artifacts (if Android is added)
 android/build/
 android/app/build/
