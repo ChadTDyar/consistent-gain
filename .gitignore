@@ -43,5 +43,3 @@ ios/App/Pods/
 ios/App/App/public/assets/
 *.xcuserstate
 
-# Stale function copies
-supabase/functions/
