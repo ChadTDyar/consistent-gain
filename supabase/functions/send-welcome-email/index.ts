@@ -61,11 +61,9 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json().catch(() => null);
-    const email = typeof body?.email === 'string' ? body.email.trim() : '';
-    const name = typeof body?.name === 'string' ? body.name : '';
-    const userId = typeof body?.userId === 'string' ? body.userId : null;
+    const requestedEmail = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
 
-    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.length > 255) {
+    if (!requestedEmail || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(requestedEmail) || requestedEmail.length > 255) {
       return new Response(JSON.stringify({ error: 'A valid email is required' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -84,37 +82,55 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     );
 
-    // Server-side dedupe: one welcome email per user, ever.
-    if (userId) {
-      const { data: existing } = await admin
-        .from('email_sequence_log')
-        .select('id')
-        .eq('user_id', userId)
-        .eq('sequence_day', 0)
-        .eq('email_type', 'welcome')
-        .maybeSingle();
-
-      if (existing) {
-        return new Response(JSON.stringify({ success: true, skipped: 'already_sent' }), {
-          status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-
-      // Claim the send before calling the provider so concurrent invocations
-      // (multiple tabs/devices) cannot both send.
-      const { error: claimError } = await admin
-        .from('email_sequence_log')
-        .insert({ user_id: userId, sequence_day: 0, email_type: 'welcome', user_email: email });
-
-      if (claimError) {
-        return new Response(JSON.stringify({ success: true, skipped: 'already_claimed' }), {
-          status: 200,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
+    // Security: verify the email belongs to a real auth user created within the
+    // last 15 minutes. This prevents abuse as an arbitrary email sender.
+    const { data: usersData, error: listErr } = await admin.auth.admin.listUsers({ perPage: 1000 });
+    if (listErr) throw listErr;
+    const authUser = usersData.users.find(
+      (u: any) => u.email?.toLowerCase() === requestedEmail
+    );
+    if (!authUser) {
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const ageMs = Date.now() - new Date(authUser.created_at).getTime();
+    if (!Number.isFinite(ageMs) || ageMs > 15 * 60 * 1000) {
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
+    const email = authUser.email!;
+    const userId = authUser.id;
+    const name = typeof body?.name === 'string' ? body.name : (authUser.user_metadata?.name as string) || '';
+
+    // Server-side dedupe: one welcome email per user, ever.
+    const { data: existing } = await admin
+      .from('email_sequence_log')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('sequence_day', 0)
+      .eq('email_type', 'welcome')
+      .maybeSingle();
+
+    if (existing) {
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Claim the send before calling the provider so concurrent invocations
+    // (multiple tabs/devices) cannot both send.
+    const { error: claimError } = await admin
+      .from('email_sequence_log')
+      .insert({ user_id: userId, sequence_day: 0, email_type: 'welcome', user_email: email });
+
+    if (claimError) {
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -125,7 +141,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         from: 'Momentum <hello@momentumfit.app>',
         to: [email],
-        subject: "Welcome to Momentum! 🏋️ Let's build your first habit",
+        subject: "Welcome to Momentum! Let's build your first habit",
         html: buildHtml(name),
       }),
     });
@@ -134,14 +150,12 @@ Deno.serve(async (req) => {
       const details = await res.text();
       console.error(`Resend request failed [${res.status}]: ${details}`);
       // Release the claim so a later attempt can retry.
-      if (userId) {
-        await admin
-          .from('email_sequence_log')
-          .delete()
-          .eq('user_id', userId)
-          .eq('sequence_day', 0)
-          .eq('email_type', 'welcome');
-      }
+      await admin
+        .from('email_sequence_log')
+        .delete()
+        .eq('user_id', userId)
+        .eq('sequence_day', 0)
+        .eq('email_type', 'welcome');
       return new Response(JSON.stringify({ error: 'Email send failed', status: res.status, details }), {
         status: res.status,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -149,7 +163,6 @@ Deno.serve(async (req) => {
     }
 
     const sent = await res.json();
-
 
     return new Response(JSON.stringify({ success: true, id: sent?.id ?? null }), {
       status: 200,
