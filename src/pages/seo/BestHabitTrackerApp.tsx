@@ -143,7 +143,7 @@ export default function BestHabitTrackerApp() {
                   <p className="text-muted-foreground mb-6">Start free. Upgrade when you're ready.</p>
                   <div className="space-y-3">
                     {[
-                      "Free - 3 habits, 7-day streaks, daily check-ins",
+                      "Free - 3 habits, 7 days of history, daily check-ins",
                       premiumPlanLine("Unlimited habits, Streak Repair, unlimited history, AI Coach, data export"),
                     ].map((line) => (
                       <div key={line} className="flex items-start gap-3">

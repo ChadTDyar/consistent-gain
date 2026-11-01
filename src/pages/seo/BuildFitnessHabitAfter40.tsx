@@ -111,7 +111,7 @@ export default function BuildFitnessHabitAfter40() {
                   <p className="text-muted-foreground mb-6">Start free. Upgrade when you're ready.</p>
                   <div className="space-y-3">
                     {[
-                      "Free - 3 goals, 7-day streaks, daily check-ins",
+                      "Free - 3 goals, 7 days of history, daily check-ins",
                       premiumPlanLine("Unlimited goals, Streak Repair, unlimited history, AI Coach, data export"),
                     ].map((line) => (
                       <div key={line} className="flex items-start gap-3">
