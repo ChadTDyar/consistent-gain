@@ -14,7 +14,7 @@ const questions = [
   {
     question: "How many habits should I track?",
     answer:
-      "Start with 1 to 3. The app is deliberately constrained — three habits, five minutes a day. Research shows tracking fewer habits leads to higher adherence than tracking dozens.",
+      "Start with 1 to 3. The app is deliberately constrained — three habits, five minutes a day. Tracking fewer habits makes them easier to keep.",
   },
   {
     question: "What does the AI Coach actually do?",

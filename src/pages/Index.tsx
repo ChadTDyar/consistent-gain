@@ -329,6 +329,7 @@ const Index = () => {
                 <a href="/resources/habit-streaks-science" className="text-muted-foreground hover:text-primary transition-colors font-medium">Resources</a>
                 <a href="mailto:support@momentumfit.app" className="text-muted-foreground hover:text-primary transition-colors font-medium">Contact</a>
                 <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors font-medium">Privacy Policy</a>
+                <a href="/terms" className="text-muted-foreground hover:text-primary transition-colors font-medium">Terms of Service</a>
               </nav>
             </div>
           </div>

@@ -55,7 +55,7 @@ export const ComparisonTable = () => {
             What Makes Momentum Different
           </h2>
           <p className="text-xl text-muted-foreground">
-            Features built for busy professionals who need flexibility, not rigidity
+            Features built for adults 40+ who want consistency, not intensity
           </p>
         </div>
 

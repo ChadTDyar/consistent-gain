@@ -198,6 +198,7 @@ export default function MyFitnessPalAlternative() {
                 <a href="/resources/habit-streaks-science" className="text-muted-foreground hover:text-primary transition-colors font-medium" onClick={(e) => { e.preventDefault(); navigate("/resources/habit-streaks-science"); }}>Resources</a>
                 <a href="mailto:support@momentumfit.app" className="text-muted-foreground hover:text-primary transition-colors font-medium">Contact</a>
                 <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors font-medium" onClick={(e) => { e.preventDefault(); navigate("/privacy"); }}>Privacy Policy</a>
+                <a href="/terms" className="text-muted-foreground hover:text-primary transition-colors font-medium" onClick={(e) => { e.preventDefault(); navigate("/terms"); }}>Terms of Service</a>
               </nav>
             </div>
           </div>
