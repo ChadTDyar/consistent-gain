@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -152,6 +153,7 @@ export default function Terms() {
           </div>
         </div>
       </div>
+      <SiteFooter />
     </>
   );
 }

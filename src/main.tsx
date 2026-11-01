@@ -10,8 +10,13 @@ import("./lib/sentry").then(({ initSentry }) => initSentry());
 // Defer PostHog init to after first idle or ~4s
 function deferPostHog() {
   import("posthog-js").then(({ default: posthog }) => {
+    // Respect the cookie banner: no cookies until accepted, no capture if declined.
+    let consent: string | null = null;
+    try { consent = localStorage.getItem("momentum-cookie-consent"); } catch { /* storage blocked */ }
     posthog.init("phc_LARV0p468D0BoYSBVO8giU7HEyALPke2JlaUNnI6uuy", {
       api_host: "https://us.i.posthog.com",
+      persistence: consent === "accepted" ? "localStorage+cookie" : "memory",
+      opt_out_capturing_by_default: consent === "declined",
     });
     posthog.register({ app_name: "Momentum" });
   });
