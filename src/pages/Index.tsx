@@ -4,10 +4,7 @@ import { lazyWithRetry } from "@/lib/lazyWithRetry";
 
 import { Button } from "@/components/ui/button";
 import momentumLogo from "@/assets/momentum-logo.png";
-import heroRunnerPng from "@/assets/hero-runner.png";
-import heroRunner480 from "@/assets/hero-runner-480w.webp";
-import heroRunner800 from "@/assets/hero-runner-800w.webp";
-import heroRunner1024 from "@/assets/hero-runner-1024w.webp";
+import { HeroTodayPreview } from "@/components/HeroTodayPreview";
 import groupRunning from "@/assets/group-running.png";
 import { SEO } from "@/components/SEO";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
@@ -106,7 +103,15 @@ const Index = () => {
                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
                   <Button 
                     size="lg" 
-                    onClick={() => { analytics.startSignup(); navigate("/auth?mode=signup"); }} 
+                    onClick={() => {
+                      analytics.heroCtaClick();
+                      analytics.startSignup();
+                      const params = new URLSearchParams({ mode: "signup" });
+                      new URLSearchParams(window.location.search).forEach((v, k) => {
+                        if (k.startsWith("utm_")) params.set(k, v);
+                      });
+                      navigate(`/auth?${params.toString()}`);
+                    }} 
                     className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-base md:text-lg h-12 md:h-14 px-8 md:px-10 btn-gradient"
                   >
                     Track My First 3 Habits Free
@@ -125,28 +130,10 @@ const Index = () => {
                 <p className="text-xs md:text-sm text-muted-foreground pt-1">Built for people who want consistency, not intensity.</p>
               </div>
 
-              <div className="relative">
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-primary/10">
-                  <picture>
-                    <source
-                      type="image/webp"
-                      srcSet={`${heroRunner480} 480w, ${heroRunner800} 800w, ${heroRunner1024} 1024w`}
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
-                    <img
-                      src={heroRunnerPng}
-                      alt="Professional starting their morning routine"
-                      className="w-full h-auto object-cover"
-                      loading="eager"
-                      {...{ fetchpriority: "high" }}
-                      width="1024"
-                      height="768"
-                    />
-                  </picture>
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/10 via-transparent to-transparent" role="presentation" />
-                </div>
-                <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-primary/5 rounded-full blur-3xl" />
-                <div className="absolute -top-8 -left-8 w-56 h-56 bg-primary-warm/5 rounded-full blur-3xl" />
+              <div className="relative pt-3 lg:pt-0">
+                <HeroTodayPreview />
+                <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -top-8 -left-8 w-56 h-56 bg-primary-warm/5 rounded-full blur-3xl pointer-events-none" />
               </div>
             </div>
           </div>

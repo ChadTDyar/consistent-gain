@@ -258,4 +258,8 @@ export const analytics = {
   // 7-Day Readiness Reset landing page
   resetPageView: () => trackEvent('reset_page_view', 'acquisition'),
   resetCtaClick: (position: string) => trackEvent('reset_cta_click', 'acquisition', position),
+
+  // Landing hero: static Today-screen sample + primary CTA
+  heroSampleView: () => fireOnce('hero_sample_view', () => trackEvent('hero_sample_view', 'acquisition')),
+  heroCtaClick: () => trackEvent('hero_cta_click', 'acquisition'),
 };
