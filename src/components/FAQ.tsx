@@ -54,7 +54,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "Do I need any special equipment?",
-    answer: "No! Momentum tracks habits, not specific activities. Whether you read a book, meditate, go for a walk, or hit the gym, Momentum works for your lifestyle."
+    answer: "No. Each day a quick readiness check-in on sleep and energy suggests a full workout, a lighter session or mobility work, and you track your habits and streaks. A walk at home counts as much as a gym session."
   }
 ];
 

@@ -76,7 +76,6 @@ export default function MyFitnessPalAlternative() {
             <div className="hidden md:flex items-center gap-6 text-sm font-medium">
               <a href="/features" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/features"); }}>Features</a>
               <a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }}>Pricing</a>
-              <a href="/blog" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/blog"); }}>Blog</a>
             </div>
             <Button size="sm" onClick={() => { analytics.startSignup(); navigate("/auth?mode=signup"); }} className="btn-gradient">
               Start Free
@@ -172,7 +171,7 @@ export default function MyFitnessPalAlternative() {
               >
                 Start Your First Habit Free
               </Button>
-              <p className="text-sm text-muted-foreground mt-3">Free forever for three habits. No credit card required.</p>
+              <p className="text-sm text-muted-foreground mt-3">Free for up to 3 habits. No credit card required.</p>
             </section>
           </div>
         </main>

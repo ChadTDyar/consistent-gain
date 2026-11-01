@@ -2,14 +2,14 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const questions = [
   {
-    question: "Is Momentum really built for people over 50?",
+    question: "Is Momentum really built for adults 40+?",
     answer:
-      "Yes. The app accounts for the reality that bodies change — with body-map pain tracking, joint-safe exercise swaps, and an AI coach that adjusts suggestions based on your energy and sleep patterns. It's consistency over intensity.",
+      "Yes. The app accounts for the reality that bodies change — with a daily readiness check-in on sleep and energy, body-map pain logging when your check-in flags pain, an exercise library, and an AI Coach (Premium) that adjusts suggestions to today's check-in. It's consistency over intensity.",
   },
   {
     question: "What happens if I miss a day?",
     answer:
-      "You get a 48-hour streak repair window. One off day doesn't erase weeks of progress. Momentum is built around the idea that missing a day shouldn't end everything.",
+      "On Premium, Streak Repair gives you a 48-hour window to fix one missed day. One off day doesn't erase weeks of progress. Momentum is built around the idea that missing a day shouldn't end everything.",
   },
   {
     question: "How many habits should I track?",
