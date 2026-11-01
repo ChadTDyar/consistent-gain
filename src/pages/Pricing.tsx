@@ -102,7 +102,7 @@ export default function Pricing() {
   const faqData = [
     {
       question: "Is Momentum really free?",
-      answer: "Yes. The Free plan includes up to 3 habits, daily check-ins, and 7 days of history - forever free, no credit card required.",
+      answer: "Yes. The Free plan includes up to 3 habits, daily check-ins, and 7 days of history, no credit card required.",
     },
     {
       question: "What is Streak Repair?",

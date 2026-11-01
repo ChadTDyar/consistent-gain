@@ -307,14 +307,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Email Signup */}
-        <section className="py-12 px-6 text-center">
-          <h3 className="text-lg font-medium mb-2">Stay in the loop</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            Updates on new features and what's shipping next.
-          </p>
-        </section>
-
         {/* Footer */}
         <footer className="py-12 border-t border-primary/10 bg-card/50 backdrop-blur-sm">
           <div className="container mx-auto px-6">
