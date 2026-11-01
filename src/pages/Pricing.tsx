@@ -388,6 +388,7 @@ export default function Pricing() {
           </div>
         </div>
       </div>
+      {authStatus === 'signed_out' && <SiteFooter />}
     </>
   );
 }
