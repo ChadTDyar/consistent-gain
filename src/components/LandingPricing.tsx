@@ -42,6 +42,7 @@ const tiers = [
     features: [
       "AI Coach",
       "Unlimited history",
+      "Streak Repair",
       "Data export",
       "Everything in Free",
     ],
