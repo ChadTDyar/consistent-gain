@@ -183,7 +183,7 @@ export default function MyFitnessPalAlternative() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
               <div>
                 <p className="text-muted-foreground font-medium">Built by <a href="https://chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chad T. Dyar</a></p>
-                <p className="text-xs text-muted-foreground mt-1">&copy; 2026 MomentumFit. All rights reserved.</p>
+                <p className="text-xs text-muted-foreground mt-1">&copy; 2026 Momentum. All rights reserved.</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Also by Chad:{" "}
                   <a href="https://pawformance.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">tools for pets</a>,{" "}

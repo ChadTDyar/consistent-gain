@@ -30,7 +30,7 @@ export function DoctorReport() {
 
       // Generate text report
       const reportText = `
-MOMENTUM FITNESS - 3-MONTH ACTIVITY SUMMARY
+MOMENTUM - 3-MONTH ACTIVITY SUMMARY
 Generated: ${format(new Date(), "MMMM d, yyyy")}
 Patient: ${profile.data?.name || "User"}
 

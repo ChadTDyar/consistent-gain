@@ -59,8 +59,8 @@ const Index = () => {
   return (
     <>
       <SEO 
-        title="MomentumFit: Daily Fitness Habit Tracker"
-        description="MomentumFit is a free daily fitness habit tracker app. Build streaks, track progress, and stay consistent. The streak tracker designed to keep you moving."
+        title="Momentum: Daily Fitness Habit Tracker"
+        description="Momentum is a free daily fitness habit tracker app. Build streaks, track progress, and stay consistent. The streak tracker designed to keep you moving."
         keywords="habit tracker app, streak tracker, daily habit app, fitness habit tracker, build healthy habits, momentumfit, fitness habits over 40, workout consistency"
         ogImage="https://momentumfit.app/og-share.jpg"
       />
@@ -93,7 +93,7 @@ const Index = () => {
               <div className="space-y-4 md:space-y-5 text-center lg:text-left fade-in">
                 <div className="inline-flex items-center gap-3 mb-1 md:mb-2">
                   <img src={momentumLogo} alt="Momentum" className="h-10 md:h-12 w-auto drop-shadow-sm" width="56" height="56" />
-                  <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">MomentumFit</h2>
+                  <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</h2>
                 </div>
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground leading-[1.15] tracking-tight">
                   Consistency is harder at 40. <span className="text-gradient">Not because you know less. Because you have more.</span>
@@ -162,7 +162,7 @@ const Index = () => {
           <div className="container mx-auto px-6 md:px-8 max-w-7xl flex items-center justify-between py-3">
             <div className="flex items-center gap-2">
               <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" width="32" height="32" />
-              <span className="font-display font-bold text-lg text-gradient">MomentumFit</span>
+              <span className="font-display font-bold text-lg text-gradient">Momentum</span>
             </div>
             <div className="hidden md:flex items-center gap-6 text-sm font-medium">
               <a href="#how-it-works" className="text-muted-foreground hover:text-primary transition-colors">How It Works</a>
@@ -221,19 +221,19 @@ const Index = () => {
         <section className="py-16 md:py-24 bg-background-cream">
           <div className="container mx-auto px-6 md:px-8 max-w-5xl">
             <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground text-center mb-12">
-              Why MomentumFit?
+              Why Momentum?
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center space-y-3">
                 <h3 className="text-lg font-semibold text-foreground">Habit Tracker App, Simplified</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  MomentumFit is a fitness habit tracker app built for one thing: keeping you consistent. Log your activity in seconds and watch your streaks grow.
+                  Momentum is a fitness habit tracker app built for one thing: keeping you consistent. Log your activity in seconds and watch your streaks grow.
                 </p>
               </div>
               <div className="text-center space-y-3">
                 <h3 className="text-lg font-semibold text-foreground">Streak Tracker That Motivates</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  Your streak is your scoreboard. Every day you check in, MomentumFit counts it. Miss a day? The 48-hour streak repair window keeps you going.
+                  Your streak is your scoreboard. Every day you check in, Momentum counts it. Miss a day? The 48-hour streak repair window keeps you going.
                 </p>
               </div>
               <div className="text-center space-y-3">
@@ -244,13 +244,13 @@ const Index = () => {
               </div>
             </div>
 
-            {/* MomentumFit vs Competitors */}
+            {/* Momentum vs Competitors */}
             <div className="mt-16">
               <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground text-center mb-4">
-                MomentumFit vs Other Habit Trackers
+                Momentum vs Other Habit Trackers
               </h2>
               <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-10 text-sm">
-                Apps like Streaks, Habitify, and Loop are great general habit trackers. MomentumFit is different: it is built specifically for fitness habits with features like body-map pain tracking, joint-safe exercise swaps, and a 48-hour streak repair window.
+                Apps like Streaks, Habitify, and Loop are great general habit trackers. Momentum is different: it is built specifically for fitness habits with features like body-map pain tracking, joint-safe exercise swaps, and a 48-hour streak repair window.
               </p>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-card rounded-xl p-6 border border-border">
@@ -263,7 +263,7 @@ const Index = () => {
                   </ul>
                 </div>
                 <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
-                  <h3 className="font-semibold text-primary mb-2">MomentumFit</h3>
+                  <h3 className="font-semibold text-primary mb-2">Momentum</h3>
                   <ul className="text-sm text-foreground space-y-1.5">
                     <li>Purpose-built for fitness and workout habits</li>
                     <li>48-hour streak repair so one missed day does not erase your progress</li>
@@ -324,7 +324,7 @@ const Index = () => {
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
               <div>
                 <p className="text-muted-foreground font-medium">Built by <a href="https://chadtdyar.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Chad T. Dyar</a></p>
-                <p className="text-xs text-muted-foreground mt-1">&copy; 2026 MomentumFit. All rights reserved.</p>
+                <p className="text-xs text-muted-foreground mt-1">&copy; 2026 Momentum. All rights reserved.</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Also by Chad:{" "}
                   <a href="https://pawformance.app" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">tools for pets</a>,{" "}

@@ -39,8 +39,8 @@ export default function Support() {
   return (
     <>
       <SEO
-        title="Support — MomentumFit"
-        description="Get help with MomentumFit. Contact support, reset your password, manage your subscription, and find answers to common questions."
+        title="Support — Momentum"
+        description="Get help with Momentum. Contact support, reset your password, manage your subscription, and find answers to common questions."
         keywords="momentum support, momentumfit help, fitness app support, account help"
       />
       <div className="min-h-screen bg-background">
