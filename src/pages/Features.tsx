@@ -7,7 +7,7 @@ const features = [
   {
     icon: Flame,
     title: "Streak Tracking That Keeps You Going",
-    description: "Every day you check in, your streak grows. Momentum tracks your daily fitness habits and shows your longest streaks. Visual streak counters make consistency feel rewarding. Miss a day? Streak Repair (Premium) gives you 48 hours to you bounce back without starting over."
+    description: "Every day you check in, your streak grows. Momentum tracks your daily fitness habits and shows your longest streaks. Visual streak counters make consistency feel rewarding. Miss a day? Streak Repair (Premium) gives you 48 hours to bounce back without starting over."
   },
   {
     icon: BarChart3,

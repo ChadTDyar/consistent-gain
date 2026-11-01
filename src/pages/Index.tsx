@@ -267,7 +267,7 @@ const Index = () => {
                     <li>Purpose-built for fitness and workout habits</li>
                     <li>Streak Repair (Premium): a 48-hour window so one missed day does not erase your progress</li>
                     <li>Body-map pain logging when your check-in flags pain, plus an exercise library</li>
-                    <li>AI coach that adapts to your energy levels and schedule</li>
+                    <li>AI Coach (Premium) that adapts suggestions to your daily check-in</li>
                   </ul>
                 </div>
               </div>
