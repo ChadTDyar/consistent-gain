@@ -7,7 +7,7 @@ const features = [
   {
     icon: Flame,
     title: "Streak Tracking That Keeps You Going",
-    description: "Every day you check in, your streak grows. Momentum tracks your daily fitness habits and shows your longest streaks. Visual streak counters make consistency feel rewarding. Miss a day? The 48-hour streak repair feature helps you bounce back without starting over."
+    description: "Every day you check in, your streak grows. Momentum tracks your daily fitness habits and shows your longest streaks. Visual streak counters make consistency feel rewarding. Miss a day? Streak Repair (Premium) gives you 48 hours to you bounce back without starting over."
   },
   {
     icon: BarChart3,
@@ -22,7 +22,7 @@ const features = [
   {
     icon: Target,
     title: "Goal Setting for Any Fitness Habit",
-    description: "Track any fitness activity: walking, running, yoga, gym sessions, stretching, or custom goals. Set your target days per week and let Momentum measure your consistency. One goal is free forever."
+    description: "Track any fitness activity: walking, running, yoga, gym sessions, stretching, or custom goals. Set your target days per week and let Momentum measure your consistency. Free for up to 3 habits."
   },
   {
     icon: CheckCircle,
@@ -81,7 +81,7 @@ const Features = () => {
               Why Momentum Instead of a General Habit Tracker?
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-sm leading-relaxed">
-              Apps like Streaks, Habitify, Loop, and HabitNow are built for any habit. Momentum is purpose-built for fitness: body-map pain tracking, joint-safe exercise alternatives, AI coaching that adapts to your energy levels, and a 48-hour streak repair window so one missed day does not erase weeks of progress.
+              Apps like Streaks, Habitify, Loop, and HabitNow are built for any habit. Momentum is purpose-built for fitness: a daily readiness check-in, body-map pain logging when your check-in flags pain, an exercise library, AI coaching that adapts to your energy levels (Premium), and Streak Repair (Premium), a 48-hour window so one missed day does not erase weeks of progress.
             </p>
           </div>
 
@@ -93,7 +93,7 @@ const Features = () => {
             >
               Start Free
             </Button>
-            <p className="text-sm text-muted-foreground mt-3">Free forever for one activity. No credit card required.</p>
+            <p className="text-sm text-muted-foreground mt-3">Free for up to 3 habits. No credit card required.</p>
           </div>
         </div>
       </div>

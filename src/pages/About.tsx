@@ -46,7 +46,6 @@ export default function About() {
               <span className="font-display font-bold text-lg text-gradient">Momentum</span>
             </div>
             <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-              <a href="/blog" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/blog"); }}>Blog</a>
               <a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }}>Pricing</a>
             </div>
             <Button size="sm" onClick={() => navigate("/auth?mode=signup")} className="btn-gradient">
@@ -108,11 +107,15 @@ export default function About() {
                 <ul className="space-y-2 text-muted-foreground">
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span><strong className="text-foreground">Tracks daily fitness goals</strong> - walking, stretching, gym sessions, whatever you choose</span>
+                    <span><strong className="text-foreground">Starts each day with a readiness check-in</strong> - a few taps on sleep, energy and soreness suggest a full workout, a lighter session or mobility work</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span><strong className="text-foreground">Builds consistency through streaks</strong> - with a unique <a href="/blog/streak-repair-missing-workout-days" className="text-primary hover:underline font-semibold" onClick={(e) => { e.preventDefault(); navigate("/blog/streak-repair-missing-workout-days"); }}>Streak Repair</a> feature for missed days</span>
+                    <span><strong className="text-foreground">Tracks daily fitness habits</strong> - walking, stretching, gym sessions, whatever you choose</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span><strong className="text-foreground">Builds consistency through streaks</strong> - with <a href="/blog/streak-repair-missing-workout-days" className="text-primary hover:underline font-semibold" onClick={(e) => { e.preventDefault(); navigate("/blog/streak-repair-missing-workout-days"); }}>Streak Repair</a> for missed days (Premium)</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>

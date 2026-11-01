@@ -96,7 +96,7 @@ const Index = () => {
                   <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</h2>
                 </div>
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground leading-[1.15] tracking-tight">
-                  Consistency is harder at 40. <span className="text-gradient">Not because you know less. Because you have more.</span>
+                  Consistency is harder at 40+. <span className="text-gradient">Not because you know less. Because you have more.</span>
                 </h1>
                 <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
                   Three habits. Five minutes. Built for people who have everything except time.
@@ -169,7 +169,6 @@ const Index = () => {
               <a href="#features" className="text-muted-foreground hover:text-primary transition-colors">Features</a>
               <a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }}>Pricing</a>
               <a href="/resources/habit-streaks-science" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/resources/habit-streaks-science"); }}>Resources</a>
-              <a href="/blog" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/blog"); }}>Blog</a>
               <a href="/story" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/story"); }}>Our Story</a>
               <a href="#faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</a>
             </div>
@@ -233,7 +232,7 @@ const Index = () => {
               <div className="text-center space-y-3">
                 <h3 className="text-lg font-semibold text-foreground">Streak Tracker That Motivates</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  Your streak is your scoreboard. Every day you check in, Momentum counts it. Miss a day? The 48-hour streak repair window keeps you going.
+                  Your streak is your scoreboard. Every day you check in, Momentum counts it. Miss a day? Streak Repair (Premium) gives you a 48-hour window to keep it going.
                 </p>
               </div>
               <div className="text-center space-y-3">
@@ -250,7 +249,7 @@ const Index = () => {
                 Momentum vs Other Habit Trackers
               </h2>
               <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-10 text-sm">
-                Apps like Streaks, Habitify, and Loop are great general habit trackers. Momentum is different: it is built specifically for fitness habits with features like body-map pain tracking, joint-safe exercise swaps, and a 48-hour streak repair window.
+                Apps like Streaks, Habitify, and Loop are great general habit trackers. Momentum is different: it is built specifically for fitness habits with a daily readiness check-in, body-map pain logging when your check-in flags pain, an exercise library, and Streak Repair (Premium).
               </p>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-card rounded-xl p-6 border border-border">
@@ -266,8 +265,8 @@ const Index = () => {
                   <h3 className="font-semibold text-primary mb-2">Momentum</h3>
                   <ul className="text-sm text-foreground space-y-1.5">
                     <li>Purpose-built for fitness and workout habits</li>
-                    <li>48-hour streak repair so one missed day does not erase your progress</li>
-                    <li>Body-map pain tracking and joint-safe exercise alternatives</li>
+                    <li>Streak Repair (Premium): a 48-hour window so one missed day does not erase your progress</li>
+                    <li>Body-map pain logging when your check-in flags pain, plus an exercise library</li>
                     <li>AI coach that adapts to your energy levels and schedule</li>
                   </ul>
                 </div>
