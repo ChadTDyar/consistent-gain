@@ -11,6 +11,9 @@ import { SocialProof } from "@/components/SocialProof";
 import { PLANS, type PlanTier, type BillingInterval, normalizePlan } from "@/lib/plans";
 import { handleCheckout } from "@/lib/checkout";
 import { isIOSNative } from "@/lib/platform";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
+import { MarketingHeader } from "@/components/MarketingHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import {
   Accordion,
   AccordionContent,
@@ -24,6 +27,7 @@ export default function Pricing() {
   const [currentPlan, setCurrentPlan] = useState<PlanTier>('free');
   const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
   const [userEmail, setUserEmail] = useState<string | undefined>();
+  const authStatus = useAuthStatus();
 
   // Apple IAP compliance (3.1.1): redirect iOS native users away from web checkout pricing.
   useEffect(() => {
@@ -56,6 +60,12 @@ export default function Pricing() {
   };
 
   const onCheckout = async (plan: 'pro') => {
+    // Signed-out visitors create an account first and come back here.
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      navigate('/auth?mode=signup&redirect=/pricing');
+      return;
+    }
     const priceIds = {
       pro:  { monthly: 'price_1TFkM0L98dr6Pw0kXiu1hjbs', annual: 'price_1TNbD3L98dr6Pw0krnhh7i50' },
     };
@@ -129,6 +139,7 @@ export default function Pricing() {
         description="Start free with 3 habits. Upgrade to Premium ($7.99/mo) for unlimited habits, AI coaching, and unlimited history."
         keywords="habit tracker pricing, habit app cost, premium habit features, affordable habit tracker"
       />
+      {authStatus === 'signed_out' && <MarketingHeader />}
       <div className="min-h-screen bg-background-cream py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-8 max-w-6xl">
           {currentPlan !== 'free' && (
@@ -144,7 +155,7 @@ export default function Pricing() {
           )}
           <div className="text-center mb-12 md:mb-16">
             <p className="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
-              For busy professionals who need habits that stick
+              For adults 40+ who want habits that stick
             </p>
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-gradient">
               Pick the plan that fits your life
@@ -157,6 +168,7 @@ export default function Pricing() {
             <div className="inline-flex items-center gap-1 rounded-full bg-muted p-1">
               <button
                 onClick={() => setBillingInterval('monthly')}
+                aria-pressed={billingInterval === 'monthly'}
                 className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
                   billingInterval === 'monthly'
                     ? 'bg-primary text-primary-foreground shadow-md'
@@ -167,6 +179,7 @@ export default function Pricing() {
               </button>
               <button
                 onClick={() => setBillingInterval('annual')}
+                aria-pressed={billingInterval === 'annual'}
                 className={`px-5 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-2 ${
                   billingInterval === 'annual'
                     ? 'bg-primary text-primary-foreground shadow-md'
@@ -175,7 +188,7 @@ export default function Pricing() {
               >
                 Annual
                 <span className="inline-flex items-center rounded-full bg-success/20 text-success px-2 py-0.5 text-xs font-bold">
-                  Save 20%+
+                  Save 27%
                 </span>
               </button>
             </div>

@@ -66,6 +66,12 @@ export function LandingPricing() {
 
   const onCheckout = async (tier: typeof tiers[number]) => {
     if (!tier.plan || !tier.priceIds) return;
+    // Signed-out visitors create an account first, then land on /pricing.
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      navigate("/auth?mode=signup&redirect=/pricing");
+      return;
+    }
     const priceId = tier.priceIds[interval];
     const label = `${tier.plan}-${interval}`;
     setLoading(label);
@@ -94,6 +100,7 @@ export function LandingPricing() {
           <div className="inline-flex items-center gap-1 rounded-full bg-muted p-1">
             <button
               onClick={() => setInterval("monthly")}
+              aria-pressed={interval === "monthly"}
               className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
                 interval === "monthly"
                   ? "bg-primary text-primary-foreground shadow-md"
@@ -104,6 +111,7 @@ export function LandingPricing() {
             </button>
             <button
               onClick={() => setInterval("annual")}
+              aria-pressed={interval === "annual"}
               className={`px-5 py-2 rounded-full text-sm font-semibold transition-all flex items-center gap-2 ${
                 interval === "annual"
                   ? "bg-primary text-primary-foreground shadow-md"
@@ -112,7 +120,7 @@ export function LandingPricing() {
             >
               Annual
               <span className="inline-flex items-center rounded-full bg-success/20 text-success px-2 py-0.5 text-xs font-bold">
-                Save 20%+
+                Save 27%
               </span>
             </button>
           </div>
