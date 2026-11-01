@@ -107,7 +107,7 @@ export default function About() {
                 <ul className="space-y-2 text-muted-foreground">
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span><strong className="text-foreground">Starts each day with a readiness check-in</strong> - a few taps on sleep, energy and soreness suggest a full workout, a lighter session or mobility work</span>
+                    <span><strong className="text-foreground">Starts each day with a readiness check-in</strong> - a few taps on sleep, energy and pain suggest a full workout, a lighter session or mobility work</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
