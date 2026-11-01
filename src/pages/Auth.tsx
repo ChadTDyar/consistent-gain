@@ -329,7 +329,9 @@ export default function Auth() {
                   }
                 } else {
                   const { error } = await lovable.auth.signInWithOAuth("google", {
-                    redirect_uri: window.location.origin,
+                    redirect_uri: redirectPath
+                      ? `${window.location.origin}/auth?redirect=${encodeURIComponent(redirectPath)}`
+                      : window.location.origin,
                   });
                   if (error) throw error;
                 }
@@ -372,7 +374,9 @@ export default function Auth() {
                   }
                 } else {
                   const { error } = await lovable.auth.signInWithOAuth("apple", {
-                    redirect_uri: window.location.origin,
+                    redirect_uri: redirectPath
+                      ? `${window.location.origin}/auth?redirect=${encodeURIComponent(redirectPath)}`
+                      : window.location.origin,
                   });
                   if (error) throw error;
                 }
