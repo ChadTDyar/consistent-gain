@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Mail, Heart, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -274,6 +275,7 @@ export default function About() {
           </div>
         </div>
       </div>
+      <SiteFooter />
     </>
   );
 }

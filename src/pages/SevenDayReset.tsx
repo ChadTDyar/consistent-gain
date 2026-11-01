@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/components/SiteFooter";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -127,6 +128,7 @@ export default function SevenDayReset() {
           </div>
         </section>
       </div>
+      <SiteFooter />
     </>
   );
 }

@@ -39,6 +39,10 @@ export function CookieConsent() {
     if (typeof window.gtag !== "undefined") {
       window.gtag("consent", "update", { analytics_storage: "granted" });
     }
+    import("posthog-js").then(({ default: posthog }) => {
+      posthog.set_config({ persistence: "localStorage+cookie" });
+      posthog.opt_in_capturing();
+    });
   };
 
   const handleDecline = () => {
@@ -47,6 +51,7 @@ export function CookieConsent() {
     if (typeof window.gtag !== "undefined") {
       window.gtag("consent", "update", { analytics_storage: "denied" });
     }
+    import("posthog-js").then(({ default: posthog }) => posthog.opt_out_capturing());
   };
 
   if (!visible) return null;

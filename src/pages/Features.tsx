@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/components/SiteFooter";
 import { useNavigate } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
@@ -97,6 +98,7 @@ const Features = () => {
           </div>
         </div>
       </div>
+      <SiteFooter />
     </>
   );
 };
