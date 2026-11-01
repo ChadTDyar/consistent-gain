@@ -37,11 +37,11 @@ export const DemoPreview = () => {
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1 text-sm">
                 <Moon className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">4/5</span>
+                <span className="text-muted-foreground">Sleep 4/5</span>
               </div>
               <div className="flex items-center gap-1 text-sm">
                 <Zap className="h-4 w-4 text-muted-foreground" />
-                <span className="text-muted-foreground">3/5</span>
+                <span className="text-muted-foreground">Energy 3/5</span>
               </div>
             </div>
           </div>
@@ -50,7 +50,7 @@ export const DemoPreview = () => {
             {/* Welcome banner */}
             <div>
               <h3 className="text-xl md:text-2xl font-display font-bold text-foreground">
-                Welcome back, Chad!
+                Welcome back!
               </h3>
               <p className="text-sm text-muted-foreground">You have 3 active habits</p>
             </div>

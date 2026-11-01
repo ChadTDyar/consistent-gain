@@ -17,11 +17,11 @@ const storySchema = {
   publisher: {
     "@type": "Organization",
     name: "Momentum",
-    url: "https://consistent-gain.lovable.app"
+    url: "https://momentumfit.app"
   },
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": "https://consistent-gain.lovable.app/story"
+    "@id": "https://momentumfit.app/story"
   }
 };
 
@@ -34,7 +34,7 @@ export default function About() {
         title="Our Story - How Losing 100lbs Led to Momentum | Fitness Habits for Adults 40+"
         description="After losing 100 pounds at 30 and spending 20 years keeping it off, I built Momentum - a fitness habit tracker for adults 40+ who need consistency, not perfection."
         keywords="fitness journey after 40, weight loss maintenance, sustainable fitness habits, fitness app origin story, building habits over 40, fitness consistency, habit tracker for adults, midlife fitness, exercise motivation over 50"
-        canonical="https://consistent-gain.lovable.app/story"
+        canonical="https://momentumfit.app/story"
         schema={storySchema}
       />
       <div className="min-h-screen bg-background-cream">
