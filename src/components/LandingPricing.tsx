@@ -25,7 +25,7 @@ const tiers = [
     features: [
       "3 habits",
       "Daily check-ins",
-      "7-day streaks",
+      "7 days of history",
     ],
   },
   {

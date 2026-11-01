@@ -40,7 +40,7 @@ const comparisons = [
   },
   {
     feature: "Free tier with no time limit",
-    description: "3 habits, daily check-ins, 7-day streaks - forever free.",
+    description: "3 habits, daily check-ins, 7 days of history - forever free.",
     momentum: true,
     others: "Limited trials",
   },

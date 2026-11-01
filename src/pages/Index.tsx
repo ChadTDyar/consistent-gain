@@ -13,7 +13,6 @@ import { SEO } from "@/components/SEO";
 import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { analytics } from "@/lib/analytics";
 import { LogIn, LogOut } from "lucide-react";
-import { KitSignupForm } from "@/components/KitSignupForm";
 import { supabase } from "@/integrations/supabase/client";
 import { AppStoreBadge } from "@/components/AppStoreBadge";
 // Above-the-fold sections: bundled eagerly (main bundle) since they render
@@ -314,7 +313,6 @@ const Index = () => {
           <p className="text-sm text-muted-foreground mb-4">
             Updates on new features and what's shipping next.
           </p>
-          <KitSignupForm className="max-w-md mx-auto" />
         </section>
 
         {/* Footer */}

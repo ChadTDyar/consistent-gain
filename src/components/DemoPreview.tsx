@@ -26,6 +26,8 @@ export const DemoPreview = () => {
           </p>
         </div>
 
+        <p className="text-xs font-medium text-muted-foreground text-right mb-2">Sample data</p>
+
         {/* Mock dashboard */}
         <Card className="border-2 border-primary/20 shadow-2xl overflow-hidden">
           {/* Mock header */}

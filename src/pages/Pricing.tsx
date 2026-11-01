@@ -84,7 +84,7 @@ export default function Pricing() {
   const freeFeatures = [
     "Track up to 3 habits",
     "Daily check-ins",
-    "7-day streak tracking",
+    "7 days of history",
     "Basic progress graphs",
   ];
 
@@ -102,7 +102,7 @@ export default function Pricing() {
   const faqData = [
     {
       question: "Is Momentum really free?",
-      answer: "Yes. The Free plan includes up to 3 habits, daily check-ins, and 7-day streaks - forever free, no credit card required.",
+      answer: "Yes. The Free plan includes up to 3 habits, daily check-ins, and 7 days of history - forever free, no credit card required.",
     },
     {
       question: "What is Streak Repair?",
@@ -259,7 +259,11 @@ export default function Pricing() {
                   disabled={loading === `pro-${billingInterval}`}
                   onClick={() => onCheckout('pro')}
                 >
-                  {loading === `pro-${billingInterval}` ? 'Redirecting…' : 'Go Premium — $7.99/mo'}
+                  {loading === `pro-${billingInterval}`
+                    ? 'Redirecting…'
+                    : billingInterval === 'annual'
+                      ? `Go Premium — $${PLANS.pro.annualPrice}/yr`
+                      : 'Go Premium — $7.99/mo'}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
               </CardContent>
@@ -322,7 +326,7 @@ export default function Pricing() {
                     {[
                       { feature: "Habits", free: "Up to 3", pro: "Unlimited" },
                       { feature: "Daily check-ins", free: true, pro: true },
-                      { feature: "Streak tracking", free: "7 days", pro: "Unlimited" },
+                      { feature: "History", free: "7 days", pro: "Unlimited" },
                       { feature: "Progress graphs", free: "Basic", pro: "Full" },
                       { feature: "Streak Repair (48hr window)", free: false, pro: true },
                       { feature: "Weekly email summary", free: false, pro: true },
