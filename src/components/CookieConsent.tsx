@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Cookie } from "lucide-react";
 
-const COOKIE_CONSENT_KEY = "momentum-cookie-consent";
+import { COOKIE_CONSENT_KEY } from "@/lib/posthog";
 
 export function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
@@ -39,10 +39,7 @@ export function CookieConsent() {
     if (typeof window.gtag !== "undefined") {
       window.gtag("consent", "update", { analytics_storage: "granted" });
     }
-    import("posthog-js").then(({ default: posthog }) => {
-      posthog.set_config({ persistence: "localStorage+cookie" });
-      posthog.opt_in_capturing();
-    });
+    window.loadPostHog?.();
   };
 
   const handleDecline = () => {
@@ -51,7 +48,6 @@ export function CookieConsent() {
     if (typeof window.gtag !== "undefined") {
       window.gtag("consent", "update", { analytics_storage: "denied" });
     }
-    import("posthog-js").then(({ default: posthog }) => posthog.opt_out_capturing());
   };
 
   if (!visible) return null;

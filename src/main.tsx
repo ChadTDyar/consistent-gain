@@ -3,28 +3,21 @@ import App from "./App.tsx";
 import "./index.css";
 import { isNativeMobile } from "./lib/platform";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { hasAnalyticsConsent, initPostHog } from "./lib/posthog";
 
 // Lazy-init Sentry after first render
 import("./lib/sentry").then(({ initSentry }) => initSentry());
 
-// Defer PostHog init to after first idle or ~4s
-function deferPostHog() {
-  import("posthog-js").then(({ default: posthog }) => {
-    // Respect the cookie banner: no cookies until accepted, no capture if declined.
-    let consent: string | null = null;
-    try { consent = localStorage.getItem("momentum-cookie-consent"); } catch { /* storage blocked */ }
-    posthog.init("phc_LARV0p468D0BoYSBVO8giU7HEyALPke2JlaUNnI6uuy", {
-      api_host: "https://us.i.posthog.com",
-      persistence: consent === "accepted" ? "localStorage+cookie" : "memory",
-      opt_out_capturing_by_default: consent === "declined",
-    });
-    posthog.register({ app_name: "Momentum" });
-  });
-}
-if ("requestIdleCallback" in window) {
-  requestIdleCallback(deferPostHog, { timeout: 4000 });
-} else {
-  setTimeout(deferPostHog, 1);
+// PostHog: opt-out by default. Nothing loads from PostHog until the visitor
+// accepts the cookie banner (CookieConsent calls window.loadPostHog).
+// Returning visitors who already accepted load after first idle or ~4s.
+window.loadPostHog = initPostHog;
+if (hasAnalyticsConsent()) {
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(initPostHog, { timeout: 4000 });
+  } else {
+    setTimeout(initPostHog, 1);
+  }
 }
 
 // Register service worker for offline mode
