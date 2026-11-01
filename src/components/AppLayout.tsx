@@ -1,10 +1,14 @@
 import { useLocation } from "react-router-dom";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
+  const authStatus = useAuthStatus();
 
   const appPaths = ["/dashboard", "/library", "/insights", "/track", "/coach", "/settings", "/goal", "/progress", "/account", "/pricing", "/profile", "/admin"];
-  const isAppRoute = appPaths.some(p => location.pathname.startsWith(p));
+  // /pricing is public: only reserve sidebar space there once a session is confirmed.
+  const isPricing = location.pathname.startsWith("/pricing");
+  const isAppRoute = appPaths.some(p => location.pathname.startsWith(p)) && (!isPricing || authStatus === "signed_in");
 
   return (
     <div className={isAppRoute ? "md:ml-[200px]" : ""}>

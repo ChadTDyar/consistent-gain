@@ -18,7 +18,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "What makes Momentum different from other habit apps?",
-    answer: "Momentum is designed for busy professionals who want sustainable habits, not quick fixes. We focus on consistency over perfection, with no judgmental language or complicated metrics. It's about building momentum that lasts."
+    answer: "Momentum is designed for adults 40+ who want sustainable habits, not quick fixes. We focus on consistency over perfection, with no judgmental language or complicated metrics. It's about building momentum that lasts."
   },
   {
     question: "Do I need to be tech-savvy to use Momentum?",

@@ -17,6 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { Capacitor } from "@capacitor/core";
 import { Browser } from "@capacitor/browser";
 import * as Sentry from "@sentry/react";
+import { safeRedirectPath } from "@/lib/safeRedirect";
 
 export default function Auth() {
   const location = useLocation();
@@ -29,6 +30,8 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string; name?: string }>({});
   const navigate = useNavigate();
+  // Only same-site relative paths are honored; anything else falls back to defaults.
+  const redirectPath = safeRedirectPath(new URLSearchParams(location.search).get("redirect"));
 
   useEffect(() => {
     // Check if user is already logged in
@@ -36,7 +39,7 @@ export default function Auth() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       Sentry.addBreadcrumb({ category: 'init', message: 'finished auth-bootstrap getSession', level: 'info' });
       if (session) {
-        navigate("/dashboard");
+        navigate(redirectPath ?? "/dashboard");
       }
     });
 
@@ -66,7 +69,7 @@ export default function Auth() {
           initPurchases(user.id);
           Sentry.addBreadcrumb({ category: 'init', message: 'finished initPurchases (fire-and-forget)', level: 'info' });
         }
-        navigate("/dashboard");
+        navigate(redirectPath ?? "/dashboard");
       }
     });
 
@@ -109,7 +112,7 @@ export default function Auth() {
       subscription.unsubscribe();
       appUrlListener?.remove();
     };
-  }, [navigate]);
+  }, [navigate, redirectPath]);
 
   const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -169,7 +172,11 @@ export default function Auth() {
           password: formPassword,
           options: {
             data: { name: formName },
-            emailRedirectTo: `${window.location.origin}/dashboard`,
+            // With a redirect, the confirmation link returns to /auth, which
+            // forwards the confirmed session to the redirect path.
+            emailRedirectTo: redirectPath
+              ? `${window.location.origin}/auth?redirect=${encodeURIComponent(redirectPath)}`
+              : `${window.location.origin}/dashboard`,
           },
         });
 
@@ -181,8 +188,8 @@ export default function Auth() {
           })
           .catch((err) => console.warn('[welcome-email]', err));
         toast.success("Account created! Welcome to Momentum!");
-        // Redirect to welcome page for first-time users
-        navigate("/welcome");
+        // Redirect to welcome page for first-time users (or the requested page)
+        navigate(redirectPath ?? "/welcome");
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -322,7 +329,9 @@ export default function Auth() {
                   }
                 } else {
                   const { error } = await lovable.auth.signInWithOAuth("google", {
-                    redirect_uri: window.location.origin,
+                    redirect_uri: redirectPath
+                      ? `${window.location.origin}/auth?redirect=${encodeURIComponent(redirectPath)}`
+                      : window.location.origin,
                   });
                   if (error) throw error;
                 }
@@ -365,7 +374,9 @@ export default function Auth() {
                   }
                 } else {
                   const { error } = await lovable.auth.signInWithOAuth("apple", {
-                    redirect_uri: window.location.origin,
+                    redirect_uri: redirectPath
+                      ? `${window.location.origin}/auth?redirect=${encodeURIComponent(redirectPath)}`
+                      : window.location.origin,
                   });
                   if (error) throw error;
                 }
@@ -412,6 +423,14 @@ export default function Auth() {
                 : "Already have an account? Sign in"}
             </button>
           </div>
+          {!isLogin && (
+            <p className="mt-4 text-center text-xs text-muted-foreground">
+              By creating an account you agree to our{" "}
+              <a href="/terms" className="text-primary underline-offset-2 hover:underline">Terms</a>
+              {" "}and{" "}
+              <a href="/privacy" className="text-primary underline-offset-2 hover:underline">Privacy Policy</a>.
+            </p>
+          )}
         </CardContent>
       </Card>
     </div>

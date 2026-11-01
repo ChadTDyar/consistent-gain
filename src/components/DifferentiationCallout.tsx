@@ -9,7 +9,7 @@ export const DifferentiationCallout = () => {
             <ShieldCheck className="w-8 h-8 text-primary" />
           </div>
           <p className="text-lg md:text-xl text-foreground leading-relaxed font-medium">
-            Momentum uses streak psychology and adaptive coaching to keep busy professionals consistent, even when work, travel, or life gets in the way. Miss a day? You don't lose everything.
+            Momentum uses streak psychology and adaptive coaching to keep adults 40+ consistent, even when work, travel, or life gets in the way. Miss a day? You don't lose everything.
           </p>
         </div>
       </div>

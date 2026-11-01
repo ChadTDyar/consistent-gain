@@ -130,6 +130,7 @@ export default function Blog() {
                 <a href="/story" className="text-muted-foreground hover:text-primary transition-colors font-medium">Our Story</a>
                 <a href="mailto:support@momentumfit.app" className="text-muted-foreground hover:text-primary transition-colors font-medium">Contact</a>
                 <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors font-medium">Privacy</a>
+                <a href="/terms" className="text-muted-foreground hover:text-primary transition-colors font-medium">Terms</a>
               </nav>
             </div>
           </div>

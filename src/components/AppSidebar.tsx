@@ -6,12 +6,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { type PlanTier, normalizePlan } from "@/lib/plans";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
 
 
 export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [plan, setPlan] = useState<PlanTier>("free");
+  const authStatus = useAuthStatus();
 
   useEffect(() => {
     const loadPlan = async () => {
@@ -24,7 +26,9 @@ export function AppSidebar() {
   }, []);
 
   const showOnPaths = ["/dashboard", "/library", "/insights", "/track", "/coach", "/settings", "/goal", "/progress", "/account", "/pricing", "/profile"];
-  const shouldShow = showOnPaths.some(p => location.pathname.startsWith(p));
+  // /pricing is public: only show the app menu there once a session is confirmed.
+  const isPricing = location.pathname.startsWith("/pricing");
+  const shouldShow = showOnPaths.some(p => location.pathname.startsWith(p)) && (!isPricing || authStatus === "signed_in");
   if (!shouldShow) return null;
 
   // Gating reads real entitlement via normalized plan. No iOS bypass.
