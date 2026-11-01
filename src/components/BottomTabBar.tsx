@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Calendar, Activity, MessageCircle, TrendingUp, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
 
 const tabs = [
   { path: "/dashboard", label: "Habits", icon: Calendar },
@@ -14,10 +15,13 @@ const tabs = [
 export function BottomTabBar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const authStatus = useAuthStatus();
 
   // Only show on authenticated app pages, hide on desktop (md+)
   const showOnPaths = ["/dashboard", "/library", "/insights", "/track", "/coach", "/settings", "/goal", "/progress", "/account", "/pricing", "/profile"];
-  const shouldShow = showOnPaths.some(p => location.pathname.startsWith(p));
+  // /pricing is public: only show the app menu there once a session is confirmed.
+  const isPricing = location.pathname.startsWith("/pricing");
+  const shouldShow = showOnPaths.some(p => location.pathname.startsWith(p)) && (!isPricing || authStatus === "signed_in");
   if (!shouldShow) return null;
 
   return (
