@@ -57,7 +57,7 @@ export default function DailyFitnessCheckinApp() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">Why Daily Check-Ins Beat Detailed Logging</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              Detailed logging creates friction. Friction kills consistency. When your fitness app asks you to enter weight, reps, sets, rest time, RPE, and notes for every exercise, you're spending more energy on the app than on the workout. Studies show that the simpler a tracking system is, the higher the long-term compliance rate. A daily check-in removes all friction and focuses on the only metric that matters: did you show up?
+              Detailed logging creates friction. Friction kills consistency. When your fitness app asks you to enter weight, reps, sets, rest time, RPE, and notes for every exercise, you're spending more energy on the app than on the workout. A daily check-in removes all friction and focuses on the only metric that matters: did you show up?
             </p>
             <div className="grid sm:grid-cols-2 gap-4 my-8">
               {[

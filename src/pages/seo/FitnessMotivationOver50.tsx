@@ -77,7 +77,7 @@ export default function FitnessMotivationOver50() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">The Shift From Intensity to Consistency</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              The counterintuitive truth: 10 minutes every day beats 60 minutes twice a week. Research consistently shows that frequency of movement matters more than intensity for long-term health outcomes over 50. The goal is to move your body every single day, even if it's just a walk around the block.
+              The counterintuitive truth: 10 minutes every day beats 60 minutes twice a week. The goal is to move your body every single day, even if it's just a walk around the block.
             </p>
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">Building Your System in 3 Steps</h2>
