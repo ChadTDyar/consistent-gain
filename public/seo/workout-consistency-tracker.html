@@ -74,7 +74,7 @@ footer a{color:#0D9488}
 
 <div class="container">
 <h2>Why Consistency Beats Intensity</h2>
-<p class="body">Research shows that exercising 3-4 times per week consistently produces better long-term outcomes than intense bursts followed by weeks off. Your consistency percentage is the single best predictor of whether you'll still be active in 6 months.</p>
+<p class="body">Research shows that exercising 3-4 times per week consistently produces better long-term outcomes than intense bursts followed by weeks off.</p>
 
 <div class="tool-card">
 <h3>📊 Consistency Calculator</h3>
@@ -110,7 +110,7 @@ function calc(){
   var w=parseInt(document.getElementById('weeks-hit').value)||0;
   var score=Math.round((w/4)*100);
   document.getElementById('score').textContent='Your Consistency Score: '+score+'%';
-  var m=score>=90?'Outstanding! You\'re in the top 5% of exercisers. Keep protecting your streak.':score>=60?'Solid foundation. A daily check-in system can push you above 90%.':'You\'re not alone. Most people score here. The solution: simplify your goals and check in daily, even on rest days.';
+  var m=score>=90?'Outstanding! Keep protecting your streak.':score>=60?'Solid foundation. A daily check-in system can push you above 90%.':'You\'re not alone. Most people score here. The solution: simplify your goals and check in daily, even on rest days.';
   document.getElementById('msg').textContent=m;
   document.getElementById('res').style.display='block';
 }

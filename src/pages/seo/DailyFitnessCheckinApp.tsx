@@ -78,7 +78,7 @@ export default function DailyFitnessCheckinApp() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">What Momentum Tracks</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              Momentum doesn't track reps, calories, or body measurements. It tracks three things: whether you showed up today, how long your current streak is, and which goals you completed. That's it. Because the research shows that those three data points predict long-term success better than any amount of workout detail.
+              Momentum doesn't track reps, calories, or body measurements. It tracks three things: whether you showed up today, how long your current streak is, and which goals you completed. That's it.
             </p>
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">The 10-Second Check-In Flow</h2>
