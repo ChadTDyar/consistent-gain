@@ -95,7 +95,7 @@ export function HeroTodayPreview() {
             </p>
             <p className="text-sm font-semibold text-foreground">{result.headline}</p>
             <p className="text-sm text-muted-foreground">
-              Short sleep last night. {result.detail}
+              {result.detail}
             </p>
           </CardContent>
         </Card>
