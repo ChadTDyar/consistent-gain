@@ -24,6 +24,7 @@ export default function WorkoutStreakTracker() {
     <>
       <SEO
         title="Workout Streak Tracker | Build a 30, 60, 90-Day Fitness Streak"
+        canonical="https://momentumfit.app/workout-streak-tracker"
         description="Track your workout streak and never break the chain. Momentum's streak tracker is designed for real life - rest days count, and you can repair a missed day."
         keywords="workout streak tracker, fitness streak app, 30 day workout streak, don't break the chain fitness, streak tracking app"
         schema={structuredData}

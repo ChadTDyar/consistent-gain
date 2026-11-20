@@ -24,6 +24,7 @@ export default function DailyFitnessCheckinApp() {
     <>
       <SEO
         title="Daily Fitness Check-In App | 10 Seconds a Day to Build Lasting Habits"
+        canonical="https://momentumfit.app/daily-fitness-checkin-app"
         description="A daily fitness check-in app that takes 10 seconds. Momentum's check-in builds accountability, streaks, and habit identity - without logging every rep and calorie."
         keywords="daily fitness check-in app, daily workout check in, fitness accountability app, simple habit tracker, quick fitness log"
         schema={structuredData}

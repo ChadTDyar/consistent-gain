@@ -24,6 +24,7 @@ export default function FitnessMotivationOver50() {
     <>
       <SEO
         title="Fitness Motivation Over 50 | How to Stay Consistent When Life Is Full"
+        canonical="https://momentumfit.app/fitness-motivation-over-50"
         description="Fitness motivation over 50 comes down to systems, not willpower. The science-backed approach that works when your schedule, body, and priorities have changed."
         keywords="fitness motivation over 50, exercise over 50, staying fit after 50, workout motivation older adults, fitness habits over 50"
         schema={structuredData}

@@ -56,6 +56,7 @@ const Index = () => {
     <>
       <SEO 
         title="Momentum: Daily Fitness Habit Tracker"
+        canonical="https://momentumfit.app/"
         description="Momentum is a free daily fitness habit tracker app. Build streaks, track progress, and stay consistent. The streak tracker designed to keep you moving."
         keywords="habit tracker app, streak tracker, daily habit app, fitness habit tracker, build healthy habits, momentumfit, fitness habits over 40, workout consistency"
         ogImage="https://momentumfit.app/og-share.jpg"
@@ -92,8 +93,11 @@ const Index = () => {
                   <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</h2>
                 </div>
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground leading-[1.15] tracking-tight">
-                  Consistency is harder at 40+. <span className="text-gradient">Not because you know less. Because you have more.</span>
+                  Momentum: a daily fitness habit tracker for adults over 40
                 </h1>
+                <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                  Consistency is harder at 40+. Not because you know less. Because you have more.
+                </p>
                 <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
                   Three habits. Five minutes. Built for people who have everything except time.
                 </p>

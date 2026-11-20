@@ -1,0 +1,23 @@
+# Momentum
+> A daily fitness habit tracker for adults over 40. Pick up to three habits, check in once a day, and build a streak. Free: 3 habits. Premium: $7.99 per month or $69.99 per year. Independently built by Chad T. Dyar. https://momentumfit.app
+
+## Pages
+- [Home](https://momentumfit.app/): what Momentum is and how it works
+- [Pricing](https://momentumfit.app/pricing): free and Premium plans
+- [Features](https://momentumfit.app/features): what the app does
+- [Our Story](https://momentumfit.app/story): why Momentum was built and who built it
+- [The 7-Day Readiness Reset](https://momentumfit.app/7-day-reset): one small action per day for seven days
+- [Blog](https://momentumfit.app/blog): articles on building fitness habits after 40
+- [The Science of Habit Streaks](https://momentumfit.app/resources/habit-streaks-science): resource article
+- [How to Build a Fitness Habit That Sticks](https://momentumfit.app/resources/fitness-habit-guide): resource article
+- [Fitness Tracker Apps vs Habit Trackers](https://momentumfit.app/resources/fitness-tracker-vs-habit-tracker): resource article
+- [How to Build a Fitness Habit After 40](https://momentumfit.app/fitness-habit-after-40): guide
+- [Best Habit Tracker App](https://momentumfit.app/best-habit-tracker-app): guide
+- [Workout Streak Tracker](https://momentumfit.app/workout-streak-tracker): guide
+- [Fitness Motivation Over 50](https://momentumfit.app/fitness-motivation-over-50): guide
+- [How to Stay Consistent Working Out](https://momentumfit.app/how-to-stay-consistent-working-out): guide
+- [Daily Fitness Check-In App](https://momentumfit.app/daily-fitness-checkin-app): guide
+- [MyFitnessPal Alternative](https://momentumfit.app/myfitnesspal-alternative): how Momentum compares
+- [Support](https://momentumfit.app/support): help and contact
+- [Privacy Policy](https://momentumfit.app/privacy): how your data is handled
+- [Terms of Service](https://momentumfit.app/terms): terms of use

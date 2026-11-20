@@ -20,7 +20,7 @@ export const SEO = ({
 }: SEOProps) => {
   const location = useLocation();
   const currentUrl = `https://momentumfit.app${location.pathname}`;
-  const canonicalUrl = canonical || currentUrl;
+  const canonicalUrl = canonical;
 
   useEffect(() => {
     // Update title
@@ -57,14 +57,19 @@ export const SEO = ({
     updateMetaTag('twitter:description', description);
     updateMetaTag('twitter:image', ogImage);
 
-    // Update canonical link
+    // Canonical: only public pages pass one. Pages without it (private
+    // routes) get no canonical link at all.
     let canonicalElement = document.querySelector('link[rel="canonical"]');
-    if (!canonicalElement) {
-      canonicalElement = document.createElement('link');
-      canonicalElement.setAttribute('rel', 'canonical');
-      document.head.appendChild(canonicalElement);
+    if (canonicalUrl) {
+      if (!canonicalElement) {
+        canonicalElement = document.createElement('link');
+        canonicalElement.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonicalElement);
+      }
+      canonicalElement.setAttribute('href', canonicalUrl);
+    } else if (canonicalElement) {
+      canonicalElement.remove();
     }
-    canonicalElement.setAttribute('href', canonicalUrl);
 
     // Add or update schema markup
     if (schema) {

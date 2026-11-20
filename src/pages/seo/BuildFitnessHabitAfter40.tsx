@@ -24,6 +24,7 @@ export default function BuildFitnessHabitAfter40() {
     <>
       <SEO
         title="How to Build a Fitness Habit After 40 | Momentum"
+        canonical="https://momentumfit.app/fitness-habit-after-40"
         description="Science-backed strategies for building lasting fitness habits after 40. Learn why consistency beats intensity and how streak tracking changes behavior."
         keywords="fitness habit after 40, workout consistency over 40, build exercise habit, fitness for adults, sustainable fitness routine"
         schema={structuredData}

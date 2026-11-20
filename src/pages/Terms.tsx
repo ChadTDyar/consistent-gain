@@ -11,6 +11,7 @@ export default function Terms() {
     <>
       <SEO
         title="Terms of Service - Momentum | Fitness Habit Tracker"
+        canonical="https://momentumfit.app/terms"
         description="Read Momentum's Terms of Service. Clear terms covering subscriptions, auto-renewal, account use, and the Apple App Store distribution agreement."
         keywords="momentum terms of service, fitness app terms, user agreement, subscription terms, auto-renewal, apple eula"
       />

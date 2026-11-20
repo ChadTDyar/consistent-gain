@@ -32,6 +32,7 @@ export default function BestHabitTrackerApp() {
     <>
       <SEO
         title="Best Habit Tracker App 2026 | Momentum"
+        canonical="https://momentumfit.app/best-habit-tracker-app"
         description="Looking for the best habit tracker app? We compared 12 apps. Streak-based tracking beats everything else for long-term consistency."
         keywords="best habit tracker app, habit tracker 2026, streak tracker app, best fitness habit app, habit tracking app review"
         schema={structuredData}

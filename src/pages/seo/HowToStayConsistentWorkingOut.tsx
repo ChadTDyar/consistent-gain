@@ -24,6 +24,7 @@ export default function HowToStayConsistentWorkingOut() {
     <>
       <SEO
         title="How to Stay Consistent Working Out | The Only System That Works Long-Term"
+        canonical="https://momentumfit.app/how-to-stay-consistent-working-out"
         description="Can't stay consistent with working out? You need a better system, not more motivation. The exact 3-step framework used by people who never miss."
         keywords="how to stay consistent working out, workout consistency, exercise consistency tips, never miss a workout, consistent exercise habit"
         schema={structuredData}

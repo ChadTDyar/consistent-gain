@@ -45,6 +45,7 @@ export default function BlogPost() {
       {post && (
         <SEO
           title={post.meta_title || post.title}
+          canonical={`https://momentumfit.app/blog/${slug}`}
           description={post.meta_description || post.excerpt}
           keywords={post.meta_keywords || ""}
           schema={{

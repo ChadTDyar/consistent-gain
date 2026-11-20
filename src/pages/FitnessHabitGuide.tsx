@@ -11,6 +11,7 @@ const FitnessHabitGuide = () => {
     <>
       <SEO
         title="How to Build a Fitness Habit That Actually Sticks | Momentum"
+        canonical="https://momentumfit.app/resources/fitness-habit-guide"
         description="Actionable advice on building a lasting fitness habit: start small, anchor to existing routines, track visually, and build identity. No gym required."
         keywords="build fitness habit, fitness consistency, habit stacking, workout habit tips, exercise routine, fitness motivation tips"
       />

@@ -29,6 +29,7 @@ export default function Blog() {
     <>
       <SEO
         title="Momentum Blog - Fitness Tips for Adults 40+ | Build Lasting Habits"
+        canonical="https://momentumfit.app/blog"
         description="Expert fitness advice for adults over 40. Learn how to build sustainable habits, stay consistent, and maintain your health as you age. No gimmicks, just real talk."
         keywords="fitness blog over 40, exercise tips adults 50+, fitness habits, workout consistency, health after 40"
       />

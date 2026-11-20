@@ -11,6 +11,7 @@ export default function Privacy() {
     <>
       <SEO 
         title="Privacy Policy - Momentum | Your Data is Protected"
+        canonical="https://momentumfit.app/privacy"
         description="Learn how Momentum protects your privacy and handles your fitness data. We never sell your information. GDPR compliant and secure."
         keywords="momentum privacy policy, fitness app privacy, data protection, GDPR compliance, secure fitness tracking"
       />

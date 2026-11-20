@@ -40,6 +40,7 @@ export default function Support() {
     <>
       <SEO
         title="Support — Momentum"
+        canonical="https://momentumfit.app/support"
         description="Get help with Momentum. Contact support, reset your password, manage your subscription, and find answers to common questions."
         keywords="momentum support, momentumfit help, fitness app support, account help"
       />

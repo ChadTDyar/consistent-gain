@@ -11,6 +11,7 @@ const FitnessTrackerVsHabitTracker = () => {
     <>
       <SEO
         title="Fitness Tracker Apps vs Habit Trackers: Which One Works? | Momentum"
+        canonical="https://momentumfit.app/resources/fitness-tracker-vs-habit-tracker"
         description="Honest comparison: data-heavy fitness trackers like Strava vs behavior-focused habit trackers like Momentum. Which approach actually builds consistency?"
         keywords="fitness tracker vs habit tracker, Strava vs habit app, Apple Fitness alternative, workout consistency app, best habit tracker for fitness"
       />

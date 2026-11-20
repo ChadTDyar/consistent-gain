@@ -136,6 +136,7 @@ export default function Pricing() {
     <>
       <SEO
         title="Pricing - Momentum | Free & Premium Plans"
+        canonical="https://momentumfit.app/pricing"
         description="Start free with 3 habits. Upgrade to Premium ($7.99/mo) for unlimited habits, AI coaching, and unlimited history."
         keywords="habit tracker pricing, habit app cost, premium habit features, affordable habit tracker"
       />

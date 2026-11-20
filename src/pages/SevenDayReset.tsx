@@ -41,6 +41,7 @@ export default function SevenDayReset() {
     <>
       <SEO
         title="The 7-Day Readiness Reset | Momentum"
+        canonical="https://momentumfit.app/7-day-reset"
         description="A free 7-day reset for busy people. One small action per day: sleep, light, water, movement, shutdown, reflection, planning. All seven actions are listed on this page. Check in daily and track your streak in the app."
         keywords="7 day reset, readiness reset, habit reset challenge, busy professionals routine, daily habit challenge"
         schema={schema}

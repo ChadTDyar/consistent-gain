@@ -11,6 +11,7 @@ const HabitStreaksScience = () => {
     <>
       <SEO
         title="The Science of Habit Streaks: Why 30 Days Isn't Enough | Momentum"
+        canonical="https://momentumfit.app/resources/habit-streaks-science"
         description="Discover the real science behind habit formation. Learn why the 21-day myth is wrong and how Momentum's streak system aligns with behavioral research."
         keywords="habit streaks science, habit formation research, 66 day habit, UCL habit study, streak psychology, fitness habit science"
       />
