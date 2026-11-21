@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CheckCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { analytics } from "@/lib/analytics";
+import { priceAmountForPriceId } from "@/lib/plans";
+import { consumeCheckoutPriceId } from "@/lib/checkout";
 
 export default function Success() {
   const navigate = useNavigate();
@@ -17,25 +19,34 @@ export default function Success() {
 
   const checkSubscription = async () => {
     try {
-      // Track successful purchase
       analytics.checkoutSuccess();
-      analytics.purchaseCompleted(9.99);
-      
+      const amount = priceAmountForPriceId(consumeCheckoutPriceId());
+      if (amount !== null) {
+        analytics.purchaseCompleted(amount);
+      } else {
+        console.warn('Purchase amount unknown: no stored Momentum price ID');
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
-      
-      if (user) {
-        // Wait a moment for webhook to process
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
+      if (!user) return;
+
+      // Ask the backend to sync the subscription from Stripe, then read the
+      // profile. Retry up to 3 times, 2s apart, while Stripe catches up.
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        const { error: syncError } = await supabase.functions.invoke('check-subscription');
+        if (syncError) console.error('check-subscription failed:', syncError);
+
         const { data: profile } = await supabase
           .from('profiles')
           .select('is_premium')
           .eq('id', user.id)
           .single();
-        
-        if (profile) {
-          setIsPremium(profile.is_premium);
+
+        if (profile?.is_premium) {
+          setIsPremium(true);
+          break;
         }
+        if (attempt < 3) await new Promise(resolve => setTimeout(resolve, 2000));
       }
     } catch (error) {
       console.error('Error checking subscription:', error);

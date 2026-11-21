@@ -1,20 +1,12 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { resolveEntitlement, type SubLike } from "./entitlement.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
-
-// Must stay in sync with PLANS.pro.product_id in src/lib/plans.ts
-const PREMIUM_PRODUCT = 'prod_U3w9PqaaJVSOto';
-
-// Mirrors resolvePlanFromProductId() in src/lib/plans.ts
-function resolvePlanFromProductId(productId: string | null): string {
-  if (!productId) return 'free';
-  return productId === PREMIUM_PRODUCT ? 'pro' : 'plus'; // legacy products keep 'plus'
-}
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
@@ -49,81 +41,34 @@ serve(async (req) => {
     logStep("User authenticated", { userId: user.id, email: user.email });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    const customers = await stripe.customers.list({ email: user.email, limit: 10 });
+    logStep("Customers found", { count: customers.data.length });
 
-    if (customers.data.length === 0) {
-      logStep("No customer found");
-      // Ensure profile is set to free
-      await supabaseClient.from('profiles').update({
-        plan: 'free',
-        is_premium: false,
-        subscription_status: 'inactive',
-      }).eq('id', user.id);
-
-      return new Response(JSON.stringify({ subscribed: false, plan: 'free' }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
+    const allSubs: SubLike[] = [];
+    for (const customer of customers.data) {
+      const subs = await stripe.subscriptions.list({
+        customer: customer.id,
+        status: "all",
+        limit: 100,
       });
+      allSubs.push(...(subs.data as unknown as SubLike[]));
     }
 
-    const customerId = customers.data[0].id;
-    logStep("Found Stripe customer", { customerId });
+    const entitlement = resolveEntitlement(allSubs);
+    const plan = entitlement.plan;
+    const productId = entitlement.productId;
+    const subscriptionEnd = entitlement.periodEnd
+      ? new Date(entitlement.periodEnd * 1000).toISOString()
+      : null;
+    logStep("Entitlement resolved", { subscriptions: allSubs.length, ...entitlement });
 
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
-      status: "active",
-      limit: 1,
-    });
+    await supabaseClient.from('profiles').update({
+      plan,
+      is_premium: plan !== 'free',
+      subscription_status: entitlement.status,
+    }).eq('id', user.id);
 
-    const hasActiveSub = subscriptions.data.length > 0;
-    let productId: string | null = null;
-    let plan = 'free';
-    let subscriptionEnd: string | null = null;
-
-    if (hasActiveSub) {
-      const subscription = subscriptions.data[0];
-      subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
-      productId = subscription.items.data[0].price.product as string;
-      logStep("Active subscription found", { productId, subscriptionEnd });
-
-      plan = resolvePlanFromProductId(productId);
-
-      // Update profile
-      await supabaseClient.from('profiles').update({
-        plan,
-        is_premium: true,
-        subscription_status: 'active',
-      }).eq('id', user.id);
-    } else {
-      // Check for trialing subscriptions
-      const trialingSubs = await stripe.subscriptions.list({
-        customer: customerId,
-        status: "trialing",
-        limit: 1,
-      });
-
-      if (trialingSubs.data.length > 0) {
-        const subscription = trialingSubs.data[0];
-        subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
-        productId = subscription.items.data[0].price.product as string;
-
-        plan = resolvePlanFromProductId(productId);
-
-        await supabaseClient.from('profiles').update({
-          plan,
-          is_premium: true,
-          subscription_status: 'trialing',
-        }).eq('id', user.id);
-      } else {
-        await supabaseClient.from('profiles').update({
-          plan: 'free',
-          is_premium: false,
-          subscription_status: 'inactive',
-        }).eq('id', user.id);
-      }
-    }
-
-    logStep("Returning", { plan, subscribed: hasActiveSub || plan !== 'free' });
+    logStep("Returning", { plan, subscribed: plan !== 'free' });
 
     return new Response(JSON.stringify({
       subscribed: plan !== 'free',

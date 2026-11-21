@@ -32,6 +32,13 @@ export function normalizePlan(plan: string | null | undefined): PlanTier {
   return 'free';
 }
 
+/** Real charged amount for a Momentum Stripe price ID; null when unknown. */
+export function priceAmountForPriceId(priceId: string | null | undefined): number | null {
+  if (priceId === PLANS.pro.price_id) return PLANS.pro.price;
+  if (priceId === PLANS.pro.annual_price_id) return PLANS.pro.annualPrice;
+  return null;
+}
+
 export function getPaymentLink(plan: 'pro', interval: BillingInterval): string {
   return interval === 'annual' ? PLANS[plan].annual_payment_link : PLANS[plan].payment_link;
 }

@@ -4,6 +4,10 @@ import "./index.css";
 import { isNativeMobile } from "./lib/platform";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { hasAnalyticsConsent, initPostHog } from "./lib/posthog";
+import { captureAttribution } from "./lib/attribution";
+
+// Record first-landing UTM + path once per session (read by checkout).
+captureAttribution();
 
 // Lazy-init Sentry after first render
 import("./lib/sentry").then(({ initSentry }) => initSentry());
