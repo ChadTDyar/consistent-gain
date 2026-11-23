@@ -40,7 +40,8 @@ async function purchaseByInterval(interval: 'monthly' | 'annual') {
   if (!pkg) throw new Error(`Package not found: ${interval}`);
   const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
   const isActive = !!customerInfo.entitlements.active[ENTITLEMENT_ID]?.isActive;
-  if (isActive) await syncPremium(true);
+  // Not awaited: confirmation retries for a few seconds and must not delay the purchase result.
+  if (isActive) void syncPremium(true);
   return isActive;
 }
 
@@ -71,17 +72,46 @@ export async function restorePurchases() {
   if (!Capacitor.isNativePlatform()) return false;
   const { customerInfo } = await Purchases.restorePurchases();
   const isActive = !!customerInfo.entitlements.active[ENTITLEMENT_ID]?.isActive;
-  if (isActive) await syncPremium(true);
+  // Not awaited: confirmation retries for a few seconds and must not delay the purchase result.
+  if (isActive) void syncPremium(true);
   return isActive;
 }
 
+// The app may not write Premium fields itself (blocked by a database trigger
+// on purpose). Apple purchases are saved by the revenuecat-webhook function.
+// check-subscription is NOT called here: it only knows Stripe and would reset
+// an Apple buyer to Free. Instead, confirm the backend has saved Premium and
+// log loudly if it has not, so a purchase or restore never fails silently.
+const SYNC_ATTEMPTS = 3;
+const SYNC_DELAY_MS = 2000;
+
 async function syncPremium(isPremium: boolean) {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return;
-  // Note: subscription state is normally written server-side via webhooks.
-  // This client-side sync is a best-effort hint; RLS may restrict it.
-  await supabase
-    .from('profiles')
-    .update({ is_premium: isPremium })
-    .eq('id', user.id);
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user) {
+    console.error('[purchases] syncPremium: no signed-in user', userError);
+    return false;
+  }
+
+  let lastError: unknown = null;
+  for (let attempt = 1; attempt <= SYNC_ATTEMPTS; attempt++) {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('is_premium')
+      .eq('id', user.id)
+      .single();
+    if (error) {
+      lastError = error;
+    } else if (!!data?.is_premium === isPremium) {
+      return true;
+    }
+    if (attempt < SYNC_ATTEMPTS) {
+      await new Promise((resolve) => setTimeout(resolve, SYNC_DELAY_MS));
+    }
+  }
+
+  console.error(
+    '[purchases] syncPremium: backend has not saved Premium for this user',
+    { userId: user.id, expected: isPremium, error: lastError },
+  );
+  return false;
 }

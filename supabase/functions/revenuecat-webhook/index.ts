@@ -28,6 +28,29 @@ const LAPSED_EVENTS = new Set([
   "BILLING_ISSUE",
 ]);
 
+// Momentum's own entitlement. Saved straight to public.profiles (the only
+// place the app reads Premium from); user_conversion_state does not exist
+// in this database.
+const MOMENTUM_ENTITLEMENT = "momentum_premium";
+
+// subscription_status written to profiles for each handled event type.
+const MOMENTUM_STATUS_BY_EVENT: Record<string, string> = {
+  INITIAL_PURCHASE: "active",
+  RENEWAL: "active",
+  PRODUCT_CHANGE: "active",
+  CANCELLATION: "canceled",
+  EXPIRATION: "expired",
+  BILLING_ISSUE: "past_due",
+};
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const jsonResponse = (body: unknown, status: number) =>
+  new Response(JSON.stringify(body), {
+    headers: { "Content-Type": "application/json" },
+    status,
+  });
+
 const logStep = (step: string, details?: Record<string, unknown>) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : "";
   console.log(`[REVENUECAT-WEBHOOK] ${step}${detailsStr}`);
@@ -100,10 +123,14 @@ serve(async (req) => {
       });
     }
 
-    // Resolve the matched entitlement
-    const entitlementIds = Object.keys(
-      event.subscriber?.entitlements ?? {},
-    );
+    // Resolve the matched entitlement. RevenueCat webhook events carry
+    // entitlements in event.entitlement_ids (and the deprecated
+    // event.entitlement_id); event.subscriber is kept as a fallback.
+    const entitlementIds: string[] = [
+      ...(Array.isArray(event.entitlement_ids) ? event.entitlement_ids : []),
+      ...(typeof event.entitlement_id === "string" ? [event.entitlement_id] : []),
+      ...Object.keys(event.subscriber?.entitlements ?? {}),
+    ];
     const matchedEntitlement = entitlementIds.find(
       (id) => ENTITLEMENT_TIER_MAP[id],
     );
@@ -128,9 +155,50 @@ serve(async (req) => {
       { auth: { persistSession: false } },
     );
 
+    // --- Momentum: write Premium straight to public.profiles ---
+    if (matchedEntitlement === MOMENTUM_ENTITLEMENT) {
+      // RevenueCat is logged in with the Supabase user id, so app_user_id
+      // should be profiles.id. Fall back to original id / aliases.
+      const candidates: unknown[] = [
+        appUserId,
+        event.original_app_user_id,
+        ...(Array.isArray(event.aliases) ? event.aliases : []),
+      ];
+      const profileId = candidates.find(
+        (c): c is string => typeof c === "string" && UUID_RE.test(c),
+      );
+      if (!profileId) {
+        logStep("PROFILE UPDATE FAILED: no Supabase user id on event", { appUserId });
+        return jsonResponse({ error: "app_user_id is not a Momentum user id" }, 422);
+      }
+
+      const update = {
+        plan: isActive ? "pro" : "free",
+        is_premium: isActive,
+        subscription_status: MOMENTUM_STATUS_BY_EVENT[eventType],
+      };
+      const { data: updated, error } = await supabaseClient
+        .from("profiles")
+        .update(update)
+        .eq("id", profileId)
+        .select("id");
+
+      if (error) {
+        logStep("PROFILE UPDATE FAILED", { profileId, eventType, message: error.message });
+        return jsonResponse({ error: `Profile update failed: ${error.message}` }, 500);
+      }
+      if (!updated || updated.length === 0) {
+        logStep("PROFILE UPDATE FAILED: no matching profile", { profileId, eventType });
+        return jsonResponse({ error: "No profile found for app_user_id" }, 404);
+      }
+
+      logStep("Profile updated", { profileId, eventType, ...update });
+      return jsonResponse({ received: true, profile_id: profileId, ...update }, 200);
+    }
+
     const results: { write: string; success: boolean; error?: string }[] = [];
 
-    // --- Write 1: user_conversion_state (all entitlements) ---
+    // --- Write 1: user_conversion_state (other portfolio entitlements) ---
     try {
       const { error } = await supabaseClient
         .from("user_conversion_state")

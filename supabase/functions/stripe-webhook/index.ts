@@ -16,6 +16,16 @@ const logStep = (step: string, details?: any) => {
   console.log(`[STRIPE-WEBHOOK] ${step}${detailsStr}`);
 };
 
+// A failed profiles write means a paying user did not get (or lose) Premium.
+// Return non-2xx so Stripe retries the event instead of treating it as done.
+const profileWriteFailed = (eventType: string, userId: string, message: string) => {
+  logStep("PROFILE UPDATE FAILED", { eventType, userId, message });
+  return new Response(JSON.stringify({ error: `Profile update failed: ${message}` }), {
+    headers: { "Content-Type": "application/json" },
+    status: 500,
+  });
+};
+
 serve(async (req) => {
   try {
     logStep("Webhook received");
@@ -84,10 +94,9 @@ serve(async (req) => {
             .eq('id', customerData.user_id);
 
           if (profileError) {
-            logStep("Error updating profile", { error: profileError.message });
-          } else {
-            logStep("Profile updated", { plan, userId: customerData.user_id });
+            return profileWriteFailed(event.type, customerData.user_id, profileError.message);
           }
+          logStep("Profile updated", { plan, userId: customerData.user_id });
         }
         break;
       }
@@ -119,7 +128,7 @@ serve(async (req) => {
           })
           .eq('stripe_subscription_id', subscription.id);
 
-        await supabaseClient
+        const { error: profileError } = await supabaseClient
           .from('profiles')
           .update({
             subscription_status: subscription.status,
@@ -128,6 +137,9 @@ serve(async (req) => {
           })
           .eq('id', customerData.user_id);
 
+        if (profileError) {
+          return profileWriteFailed(event.type, customerData.user_id, profileError.message);
+        }
         logStep("Profile updated", { plan, isActive });
         break;
       }
@@ -156,7 +168,7 @@ serve(async (req) => {
           })
           .eq('stripe_subscription_id', subscription.id);
 
-        await supabaseClient
+        const { error: profileError } = await supabaseClient
           .from('profiles')
           .update({
             subscription_status: 'canceled',
@@ -165,6 +177,9 @@ serve(async (req) => {
           })
           .eq('id', customerData.user_id);
 
+        if (profileError) {
+          return profileWriteFailed(event.type, customerData.user_id, profileError.message);
+        }
         logStep("Profile reverted to free");
         break;
       }
