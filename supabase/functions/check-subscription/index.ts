@@ -62,11 +62,18 @@ serve(async (req) => {
       : null;
     logStep("Entitlement resolved", { subscriptions: allSubs.length, ...entitlement });
 
-    await supabaseClient.from('profiles').update({
+    const { error: updateError } = await supabaseClient.from('profiles').update({
       plan,
       is_premium: plan !== 'free',
       subscription_status: entitlement.status,
     }).eq('id', user.id);
+    if (updateError) {
+      logStep('PROFILE UPDATE FAILED', { message: updateError.message });
+      return new Response(JSON.stringify({ error: updateError.message }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
+    }
 
     logStep("Returning", { plan, subscribed: plan !== 'free' });
 
