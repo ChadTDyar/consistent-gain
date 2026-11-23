@@ -26,6 +26,57 @@ const profileWriteFailed = (eventType: string, userId: string, message: string) 
   });
 };
 
+// Find the Momentum user for a Stripe event. Primary path: stripe_customers.
+// Fallback (purchases through the shared checkout never write that row): match
+// the Stripe customer's email to an account, but ONLY for the Momentum Premium
+// product, because the Stripe account is shared with other apps. On a match the
+// missing stripe_customers row is added so later events resolve directly.
+// Apple/RevenueCat-only accounts never produce Stripe events, so they are unaffected.
+async function resolveUserId(
+  supabaseClient: any,
+  stripe: Stripe,
+  customerId: string | null,
+  subscriptionId: string,
+  productId: string | null,
+): Promise<string | null> {
+  const bySub = await supabaseClient
+    .from('stripe_customers').select('user_id')
+    .eq('stripe_subscription_id', subscriptionId).maybeSingle();
+  if (bySub.data?.user_id) return bySub.data.user_id;
+
+  if (!customerId) return null;
+  const byCustomer = await supabaseClient
+    .from('stripe_customers').select('user_id')
+    .eq('stripe_customer_id', customerId).maybeSingle();
+  if (byCustomer.data?.user_id) return byCustomer.data.user_id;
+
+  if (productId !== PREMIUM_PRODUCT) {
+    logStep("No stripe_customers row and not a Momentum product; skipping", { customerId, productId });
+    return null;
+  }
+
+  const customer = await stripe.customers.retrieve(customerId);
+  const email = (customer as Stripe.Customer).deleted ? null : (customer as Stripe.Customer).email?.toLowerCase();
+  if (!email) return null;
+
+  for (let page = 1; page <= 50; page++) {
+    const { data, error } = await supabaseClient.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) throw new Error(`listUsers failed: ${error.message}`);
+    const match = data.users.find((u: any) => u.email?.toLowerCase() === email);
+    if (match) {
+      const { error: insertError } = await supabaseClient.from('stripe_customers').insert({
+        user_id: match.id, stripe_customer_id: customerId, stripe_subscription_id: subscriptionId,
+      });
+      if (insertError) logStep("stripe_customers backfill failed", { message: insertError.message });
+      logStep("Resolved user by Stripe email fallback", { userId: match.id });
+      return match.id;
+    }
+    if (data.users.length < 1000) break;
+  }
+  logStep("No account matches Stripe customer email", { customerId });
+  return null;
+}
+
 serve(async (req) => {
   try {
     logStep("Webhook received");
@@ -60,21 +111,17 @@ serve(async (req) => {
           const customerId = session.customer as string;
           const subscriptionId = session.subscription as string;
 
-          const { data: customerData, error: customerError } = await supabaseClient
-            .from('stripe_customers')
-            .select('user_id')
-            .eq('stripe_customer_id', customerId)
-            .single();
-
-          if (customerError) {
-            logStep("Error finding customer", { error: customerError.message });
-            break;
-          }
-
           // Get the subscription to determine the plan
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
           const productId = subscription.items.data[0]?.price.product as string;
           const plan = resolvePlanFromProductId(productId);
+
+          const userId = await resolveUserId(supabaseClient, stripe, customerId, subscriptionId, productId);
+          if (!userId) {
+            logStep("Error finding customer", { customerId });
+            break;
+          }
+          const customerData = { user_id: userId };
 
           await supabaseClient
             .from('stripe_customers')
@@ -105,16 +152,15 @@ serve(async (req) => {
         const subscription = event.data.object as Stripe.Subscription;
         logStep("Subscription updated", { subscriptionId: subscription.id, status: subscription.status });
 
-        const { data: customerData, error: customerError } = await supabaseClient
-          .from('stripe_customers')
-          .select('user_id')
-          .eq('stripe_subscription_id', subscription.id)
-          .single();
-
-        if (customerError) {
-          logStep("Error finding customer", { error: customerError.message });
+        const eventProductId = (subscription.items.data[0]?.price.product as string) ?? null;
+        const resolvedUserId = await resolveUserId(
+          supabaseClient, stripe, subscription.customer as string, subscription.id, eventProductId,
+        );
+        if (!resolvedUserId) {
+          logStep("Error finding customer", { subscriptionId: subscription.id });
           break;
         }
+        const customerData = { user_id: resolvedUserId };
 
         const productId = subscription.items.data[0]?.price.product as string;
         const plan = resolvePlanFromProductId(productId);
@@ -148,16 +194,15 @@ serve(async (req) => {
         const subscription = event.data.object as Stripe.Subscription;
         logStep("Subscription deleted", { subscriptionId: subscription.id });
 
-        const { data: customerData, error: customerError } = await supabaseClient
-          .from('stripe_customers')
-          .select('user_id')
-          .eq('stripe_subscription_id', subscription.id)
-          .single();
-
-        if (customerError) {
-          logStep("Error finding customer", { error: customerError.message });
+        const eventProductId = (subscription.items.data[0]?.price.product as string) ?? null;
+        const resolvedUserId = await resolveUserId(
+          supabaseClient, stripe, subscription.customer as string, subscription.id, eventProductId,
+        );
+        if (!resolvedUserId) {
+          logStep("Error finding customer", { subscriptionId: subscription.id });
           break;
         }
+        const customerData = { user_id: resolvedUserId };
 
         await supabaseClient
           .from('stripe_customers')
