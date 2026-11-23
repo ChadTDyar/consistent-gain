@@ -44,6 +44,44 @@ serve(async (req) => {
     const customers = await stripe.customers.list({ email: user.email, limit: 10 });
     logStep("Customers found", { count: customers.data.length });
 
+    // No Stripe customer at all means Stripe has nothing to say about this
+    // account: it can be an Apple/RevenueCat buyer or a seeded review account.
+    // Stripe silence is not evidence of a downgrade, so report the stored
+    // profile state and write nothing. Accounts that do have a Stripe customer
+    // keep the full re-derivation below, including the 500 on update failure.
+    if (customers.data.length === 0) {
+      const { data: profile, error: profileError } = await supabaseClient
+        .from("profiles")
+        .select("plan, is_premium, subscription_status")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (profileError) {
+        logStep("PROFILE READ FAILED", { message: profileError.message });
+        return new Response(JSON.stringify({ error: profileError.message }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 500,
+        });
+      }
+
+      const storedPlan = profile?.plan ?? "free";
+      const storedSubscribed = profile ? (profile.is_premium ?? storedPlan !== "free") : false;
+      logStep("No Stripe customer; returning stored profile without writing", {
+        profileFound: Boolean(profile),
+        plan: storedPlan,
+      });
+
+      return new Response(JSON.stringify({
+        subscribed: storedSubscribed,
+        plan: storedPlan,
+        product_id: null,
+        subscription_end: null,
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
     const allSubs: SubLike[] = [];
     for (const customer of customers.data) {
       const subs = await stripe.subscriptions.list({
