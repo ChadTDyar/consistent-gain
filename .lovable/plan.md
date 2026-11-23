@@ -1,51 +1,29 @@
-# Feature and claims inventory (read-only, nothing changed)
+# Stripe cancellation does not remove Premium: findings and smallest fix
 
-## Features in the app today
+## 1. Where the app calls check-subscription
+Only two places. Neither runs on a timer or on page changes.
+- `src/pages/Dashboard.tsx:98` runs once when the page opens (`useEffect([])`, lines 91-104). Function at 120-130. Route `/dashboard` (`src/App.tsx:103`).
+- `src/pages/Success.tsx:17`, then 36: up to 3 tries, 2s apart, on `/success` only (`src/App.tsx:110`).
+- `/` (`src/App.tsx:100`, Index) and `/settings` (`src/App.tsx:106`) never call it. That is why reloading them changed nothing.
+- `src/lib/purchases.ts:82` does not call it on purpose (Apple restore).
 
-| Feature | Where | Plan |
-|---|---|---|
-| Habits (add, check in, streak per habit) | Dashboard, GoalCard | Free: 3 habits. Premium: unlimited |
-| Streak tracking | GoalCard, streakUtils | Free |
-| Daily readiness check-in (6 taps, gives full / lighter / mobility / rest plan) | ReadinessCheckIn | Free |
-| Workout suggestion (5/10/20-min "minimum viable day", follows the readiness plan) | MinimumViableDay, MicroblockSuggestion | Free |
-| Body-map pain logger | BodyMapPainReport, only opens from "Log location" when check-in pain is notable | Free |
-| Exercise library with "joint-safe" labels | /library (fixed list) | Free. No automatic swap based on pain was found |
-| Streak Repair (48h window, 1 missed day, grace tokens) | StreakRepairCard, StreakRepair | Card shows for everyone; the repair button is Premium ("Upgrade to Repair" on free) |
-| Progress / Consistency view | ProgressTab | Free sees 7 days of history (locked chart beyond). Premium unlimited (legacy Plus 30 days) |
-| Insights / Trends | /insights | Locked on free. AI section needs Premium |
-| AI Coach | /coach, CoachChat | Premium |
-| Accountability partner | Dashboard card | Premium-locked on free; says "Coming soon" for paying users |
-| CSV data export | Settings, DataExport | Premium |
-| Doctor PDF report, workout buddies | Settings | No plan check found |
-| Weather, cost tracker, calendar reminder, Apple Health card, referral prompt, onboarding checklist, photo upload | Dashboard / habit detail | No plan check found |
-| 7-Day Readiness Reset | /7-day-reset | Public info page only. No in-app challenge or tracking |
+## 2. Does anything else remove Premium for a user with no stripe_customers row?
+No.
+- `stripe-webhook/index.ts:147-183` (`customer.subscription.deleted`) finds the user only through `stripe_customers.stripe_subscription_id` (151-155). With no row, `.single()` errors, it logs "Error finding customer" and `break`s (157-160), then returns 200 (192). Stripe sees success and does not retry.
+- The same lookup blocks `checkout.session.completed` (63-72) and `customer.subscription.updated` (108-117). The profile became pro through check-subscription on /success, not through the webhook.
+- The stripe_customers row is only written by `create-checkout/index.ts:70-94`. A purchase through the shared checkout skips that, so no row exists.
+- `check-subscription/index.ts:44-81` (the earlier no-customer change) does not apply here. The email has a Stripe customer, so it takes the full path (85-113). `resolveEntitlement` returns free when nothing is active or trialing. So **opening /dashboard once should already make the account free.** Worth trying before any change.
+- `revenuecat-webhook` only handles Apple. No timed job revokes Stripe access.
 
-Free-tier limits: 3 habits, 7 days of history, no streak length limit, Streak Repair locked.
+## 3. Smallest fix (Apple accounts untouched)
+In `supabase/functions/stripe-webhook/index.ts` only, add a fallback for when the stripe_customers lookup finds nothing:
+1. Get the customer's email from Stripe (`stripe.customers.retrieve(subscription.customer)`).
+2. Find the account with that email.
+3. Apply the same profile update the branch already uses. Also add the missing stripe_customers row so later events find the user directly.
+Use it in the `deleted` and `updated` branches (also in `checkout.session.completed` for consistency). If no account matches, keep today's log-and-200.
 
-## Where the claims appear
+Why Apple accounts stay safe: this only runs on a real Stripe subscription event for a Stripe customer. Apple buyers do not create those events. An account that has both Apple and Stripe can only lose Premium when its own Stripe subscription ends. That is the same open question as before.
 
-- "one goal free forever": not found anywhere.
-- "free forever for one activity": src/pages/Features.tsx line 96, "Free forever for one activity. No credit card required." (wrong: free is 3 habits). Compare MyFitnessPalAlternative.tsx line 175, "Free forever for three habits."
-- "tracks habits, not specific activities": src/components/FAQ.tsx line 57, "No! Momentum tracks habits, not specific activities. Whether you read a book, meditate, go for a walk, or hit the gym..."
-- "body-map pain tracking" and "joint-safe exercise swaps":
-  - src/pages/Index.tsx line 253, "...features like body-map pain tracking, joint-safe exercise swaps, and a 48-hour streak repair window."
-  - src/pages/Index.tsx line 270, "Body-map pain tracking and joint-safe exercise alternatives"
-  - src/pages/Features.tsx line 84, "...body-map pain tracking, joint-safe exercise alternatives, AI coaching that adapts to your energy levels..."
-  - src/components/NotificationExplainer.tsx line 7, "...with body-map pain tracking, joint-safe exercise swaps, and an AI coach that adjusts suggestions..."
-- "over 50":
-  - src/components/NotificationExplainer.tsx line 5, "Is Momentum really built for people over 50?"
-  - src/pages/seo/FitnessMotivationOver50.tsx (headline, title, description, keywords, lines 12-50 and 102, e.g. "Fitness Motivation Over 50: Stop Relying on Willpower...")
-  - src/pages/Blog.tsx line 33 keywords "exercise tips adults 50+"
-  - src/pages/Library.tsx line 85 description "50+ joint-safe exercises for adults 40+." (count, not age)
-- "MomentumFit" (exact capitalization): not in visible copy anymore. index.html title now reads "Momentum: Daily Fitness Habit Tracker". Lowercase "momentumfit" only in keyword meta of Index.tsx line 64, Features.tsx line 47, Support.tsx line 44, plus momentumfit.app URLs.
+Another option (smaller code, weaker): make `/settings` also call check-subscription. It only fixes things when the user visits that page, so the webhook fix is better.
 
-## Blog link
-
-- Top nav: src/pages/Index.tsx line 172, About.tsx line 49, MyFitnessPalAlternative.tsx line 79.
-- Footer: src/pages/Index.tsx line 338, BlogPost.tsx line 157, MyFitnessPalAlternative.tsx line 197.
-- Buttons: About.tsx line 223, BlogPost.tsx lines 37 and 77 ("Back to Blog").
-- Not in the signed-in sidebar or bottom tab bar.
-
-## Next step
-
-Nothing to build. Approving this does not change anything; tell me which claims to fix.
+No edits or deploys in this step.
