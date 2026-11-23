@@ -172,9 +172,15 @@ serve(async (req) => {
         return jsonResponse({ error: "app_user_id is not a Momentum user id" }, 422);
       }
 
+      // Only EXPIRATION removes Premium. CANCELLATION (auto-renew turned off)
+      // and BILLING_ISSUE (grace period) leave the paid period running, so
+      // plan/is_premium stay as-is and only subscription_status records the
+      // billing state. check-subscription re-derives entitlement from Stripe
+      // and remains the authority on whether Premium is owed.
+      const premiumRemoved = eventType === "EXPIRATION";
       const update = {
-        plan: isActive ? "pro" : "free",
-        is_premium: isActive,
+        plan: premiumRemoved ? "free" : "pro",
+        is_premium: !premiumRemoved,
         subscription_status: MOMENTUM_STATUS_BY_EVENT[eventType],
       };
       const { data: updated, error } = await supabaseClient
