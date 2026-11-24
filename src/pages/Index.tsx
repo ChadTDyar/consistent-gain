@@ -140,7 +140,9 @@ const Index = () => {
                   </a>
                 </p>
                 <p className="text-xs md:text-sm text-muted-foreground">
-                  Free for up to 3 habits. No credit card. Tap a sample day to see the plan change.
+                  {isSignedIn
+                    ? "Tap a sample day to see the plan change."
+                    : "Free for up to 3 habits. No credit card. Tap a sample day to see the plan change."}
                 </p>
               </div>
 
@@ -201,10 +203,10 @@ const Index = () => {
             <Button
               size="lg"
               variant="secondary"
-              onClick={() => navigate("/auth?mode=signup")}
+              onClick={() => navigate(isSignedIn ? "/dashboard" : "/auth?mode=signup")}
               className="btn-large shadow-2xl bg-white text-primary hover:bg-white/90 transition-all text-base md:text-lg h-14 px-8 md:px-12 font-semibold"
             >
-              Start My Free Fitness Routine
+              {isSignedIn ? "Go to Dashboard" : "Start My Free Fitness Routine"}
             </Button>
           </div>
         </section>
