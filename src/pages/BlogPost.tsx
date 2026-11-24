@@ -156,7 +156,6 @@ export default function BlogPost() {
               </p>
               <nav className="flex gap-6 text-sm">
                 <a href="/blog" className="text-muted-foreground hover:text-primary transition-colors font-medium">Blog</a>
-                <a href="/story" className="text-muted-foreground hover:text-primary transition-colors font-medium">Our Story</a>
                 <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors font-medium">Privacy</a>
                 <a href="/terms" className="text-muted-foreground hover:text-primary transition-colors font-medium">Terms</a>
               </nav>

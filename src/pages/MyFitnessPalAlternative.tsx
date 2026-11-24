@@ -46,9 +46,9 @@ const schema = [
 const comparisonRows = [
   { feature: "Food/macro logging", momentumFree: "No", momentumPremium: "No", mfpPremium: "Yes", mfpPremiumPlus: "Yes" },
   { feature: "Habit & streak tracking", momentumFree: "3 habits, basic", momentumPremium: "Unlimited habits", mfpPremium: "No", mfpPremiumPlus: "No" },
-  { feature: "History retention", momentumFree: "Limited", momentumPremium: "Unlimited", mfpPremium: "N/A", mfpPremiumPlus: "N/A" },
+  { feature: "History retention", momentumFree: "7 days", momentumPremium: "Unlimited", mfpPremium: "N/A", mfpPremiumPlus: "N/A" },
   { feature: "AI coaching", momentumFree: "No", momentumPremium: "Yes", mfpPremium: "No", mfpPremiumPlus: "No" },
-  { feature: "Data export", momentumFree: "No", momentumPremium: "CSV", mfpPremium: "No", mfpPremiumPlus: "No" },
+  { feature: "Data export", momentumFree: "No", momentumPremium: "JSON", mfpPremium: "No", mfpPremiumPlus: "No" },
   { feature: "Meal planning / recipes", momentumFree: "No", momentumPremium: "No", mfpPremium: "No", mfpPremiumPlus: "Yes" },
 ];
 
@@ -100,7 +100,7 @@ export default function MyFitnessPalAlternative() {
             <section className="mt-12">
               <h2 className="text-2xl font-display font-bold text-foreground mb-4">What does Momentum actually track?</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Workouts and habits, day by day, with a streak that survives a missed day instead of resetting to zero. Free covers basic tracking, three habits. {premiumTierLabel()} adds unlimited habits, an AI Coach, unlimited history, and CSV export.
+                Workouts and habits, day by day, with a streak that survives a missed day instead of resetting to zero. Free covers basic tracking, three habits. {premiumTierLabel()} adds unlimited habits, an AI Coach chat, unlimited history, and data export.
               </p>
             </section>
 
@@ -194,7 +194,6 @@ export default function MyFitnessPalAlternative() {
               <nav className="flex flex-wrap gap-6 text-sm justify-center" aria-label="Footer navigation">
                 <a href="/features" className="text-muted-foreground hover:text-primary transition-colors font-medium" onClick={(e) => { e.preventDefault(); navigate("/features"); }}>Features</a>
                 <a href="/blog" className="text-muted-foreground hover:text-primary transition-colors font-medium" onClick={(e) => { e.preventDefault(); navigate("/blog"); }}>Blog</a>
-                <a href="/story" className="text-muted-foreground hover:text-primary transition-colors font-medium" onClick={(e) => { e.preventDefault(); navigate("/story"); }}>Our Story</a>
                 <a href="/resources/habit-streaks-science" className="text-muted-foreground hover:text-primary transition-colors font-medium" onClick={(e) => { e.preventDefault(); navigate("/resources/habit-streaks-science"); }}>Resources</a>
                 <a href="mailto:support@momentumfit.app" className="text-muted-foreground hover:text-primary transition-colors font-medium">Contact</a>
                 <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors font-medium" onClick={(e) => { e.preventDefault(); navigate("/privacy"); }}>Privacy Policy</a>

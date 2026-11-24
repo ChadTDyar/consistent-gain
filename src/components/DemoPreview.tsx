@@ -15,14 +15,14 @@ export const DemoPreview = () => {
   const [activeTab, setActiveTab] = useState<"goals" | "progress">("goals");
 
   return (
-    <section className="py-20 md:py-32 bg-background">
+    <section className="py-16 md:py-24 bg-background">
       <div className="container mx-auto px-6 md:px-8 max-w-5xl">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
-            See It in Action
+          <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4">
+            Your streaks and progress, at a glance
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            This is what your dashboard looks like - no account needed to explore
+            Each habit keeps its own streak and weekly target. Tap between Habits and Progress to look around.
           </p>
         </div>
 
@@ -65,7 +65,7 @@ export const DemoPreview = () => {
                   activeTab === "goals" ? "bg-card shadow-sm text-foreground" : "text-muted-foreground"
                 }`}
               >
-                Goals
+                Habits
               </button>
               <button
                 onClick={() => setActiveTab("progress")}
@@ -164,11 +164,11 @@ export const DemoPreview = () => {
           {/* Frosted overlay CTA */}
           <div className="relative">
             <div className="absolute inset-x-0 -top-16 h-16 bg-gradient-to-t from-card to-transparent pointer-events-none" />
-            <div className="border-t border-border bg-card/80 backdrop-blur-sm px-4 md:px-6 py-4 flex items-center justify-between">
+            <div className="border-t border-border bg-card/80 backdrop-blur-sm px-4 md:px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <p className="text-sm text-muted-foreground font-medium">
-                Ready to start your own journey?
+                This is sample data. Yours starts with the first check-in.
               </p>
-              <Button onClick={() => navigate("/auth?mode=signup")} className="btn-gradient shadow-lg">
+              <Button onClick={() => navigate("/auth?mode=signup")} className="btn-gradient shadow-lg shrink-0">
                 Create Free Account
               </Button>
             </div>

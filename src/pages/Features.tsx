@@ -2,38 +2,38 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { useNavigate } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, BarChart3, Bell, Target, Flame, Calendar } from "lucide-react";
+import { CheckCircle, BarChart3, ClipboardCheck, Target, Flame, MessageCircle } from "lucide-react";
 
 const features = [
   {
-    icon: Flame,
-    title: "Streak Tracking That Keeps You Going",
-    description: "Every day you check in, your streak grows. Momentum tracks your daily fitness habits and shows your longest streaks. Visual streak counters make consistency feel rewarding. Miss a day? Streak Repair (Premium) gives you 48 hours to bounce back without starting over."
-  },
-  {
-    icon: BarChart3,
-    title: "Progress Charts and Visual Reports",
-    description: "See your fitness journey on a clear timeline. Weekly and monthly progress charts show exactly how consistent you have been. Track completion rates, spot patterns, and celebrate milestones with data you can actually understand."
-  },
-  {
-    icon: Bell,
-    title: "Daily Reminders to Stay on Track",
-    description: "Set custom reminders for your daily habit check-ins. Momentum sends gentle nudges at the times you choose so you never forget to log your activity. Morning, evening, or any time that fits your routine."
+    icon: ClipboardCheck,
+    title: "Daily Readiness Check-In",
+    description: "Six taps, each on a 1 to 5 scale: sleep, energy, recovery, soreness, pain, and whether you want to train. It takes under a minute and it is free on every account."
   },
   {
     icon: Target,
-    title: "Goal Setting for Any Fitness Habit",
-    description: "Track any fitness activity: walking, running, yoga, gym sessions, stretching, or custom goals. Set your target days per week and let Momentum measure your consistency. Free for up to 3 habits."
+    title: "A Plan That Fits Today",
+    description: "Your answers return one of four plans: full workout, reduced workout, mobility and recovery, or rest day. Report notable pain and the app will not recommend a full workout. It is a simple score of your own answers, not a diagnosis."
+  },
+  {
+    icon: Flame,
+    title: "Streaks That Survive a Missed Day",
+    description: "Every day you check in or log a habit, your streak grows. Miss a single day and you get a 48-hour window to repair it with a 5, 10 or 20 minute makeup session or a grace token. You earn one token for every 7 days you log."
   },
   {
     icon: CheckCircle,
-    title: "Quick Daily Check-Ins",
-    description: "Logging your activity takes seconds. Tap to check in, add optional notes or photos, and you are done. No complicated forms or data entry. The fastest daily habit app for people with busy schedules."
+    title: "Fitness Habits, Logged in Seconds",
+    description: "Track walking, strength work, stretching, swimming, a class, or any activity you name. Set your target days per week and tick it off. Short on time? A 5, 10 or 20 minute session still counts. Free for up to 3 habits."
   },
   {
-    icon: Calendar,
-    title: "Calendar View and History",
-    description: "See your entire habit history on a calendar. Green days mean you showed up. Spot your best weeks, identify gaps, and use that insight to build healthy habits that stick month after month."
+    icon: BarChart3,
+    title: "Progress You Can Read",
+    description: "See streaks and weekly consistency for each habit. The Free plan shows the last 7 days. Premium shows your full history and adds the Weekly Insights report."
+  },
+  {
+    icon: MessageCircle,
+    title: "AI Coach (Premium)",
+    description: "A chat inside the app. The coach is given your current streak, how many habits you track, when you last logged and, right after you check in, today's plan. It keeps answers short and sends pain or medical questions to your doctor. It is an AI, not a trainer or a clinician."
   }
 ];
 
@@ -43,9 +43,9 @@ const Features = () => {
   return (
     <>
       <SEO
-        title="Momentum Features — Streak Tracking, Progress Charts & Daily Reminders"
-        description="Track daily fitness habits, build streaks, and visualize progress with Momentum. Free habit tracker app with reminders, charts, and streak repair."
-        keywords="streak tracking, progress charts, daily reminders, habit tracker app features, fitness habit tracker, daily habit app, momentumfit"
+        title="Momentum Features: Daily Readiness Check-In, Streak Repair and Progress"
+        description="What Momentum does for adults 40+: a daily readiness check-in, a plan that fits today, streaks with a 48-hour repair window, and progress tracking."
+        keywords="daily readiness check-in, streak repair, fitness habit tracker for adults over 40, workout consistency, momentumfit"
         canonical="https://momentumfit.app/features"
         ogImage="https://momentumfit.app/og-share.jpg"
       />
@@ -55,7 +55,7 @@ const Features = () => {
             What Can Momentum Do?
           </h1>
           <p className="text-lg text-muted-foreground text-center max-w-2xl mx-auto mb-16">
-            A fitness habit tracker app built for consistency. Here is everything Momentum offers to help you build streaks and stay on track.
+            Fitness consistency for adults 40+. Here is what the app does today, and which parts are Free or Premium.
           </p>
 
           <div className="space-y-12">
@@ -82,7 +82,7 @@ const Features = () => {
               Why Momentum Instead of a General Habit Tracker?
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-sm leading-relaxed">
-              Apps like Streaks, Habitify, Loop, and HabitNow are built for any habit. Momentum is purpose-built for fitness: a daily readiness check-in, body-map pain logging when your check-in flags pain, an exercise library, AI coaching that adapts to your energy levels (Premium), and Streak Repair (Premium), a 48-hour window so one missed day does not erase weeks of progress.
+              General habit trackers are built for any habit. Momentum is built for fitness after 40: a daily readiness check-in that sets how hard today should be, body-map pain logging when your check-in flags pain, an exercise library, and a 48-hour repair window so one missed day does not end a streak. Momentum is not medical advice. Talk to your doctor before changing your exercise routine.
             </p>
           </div>
 

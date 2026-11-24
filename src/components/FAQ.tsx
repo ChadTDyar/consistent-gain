@@ -14,47 +14,59 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     question: "Is Momentum really free to use?",
-    answer: "Yes! Our free plan allows you to track up to 3 habits with basic streak tracking and 7-day history. No credit card required to get started."
+    answer: "Yes. The Free plan has no time limit and needs no credit card. You get up to 3 habits, the daily readiness check-in with today's plan, streaks with the 48-hour repair window, and 7 days of history."
   },
   {
-    question: "What makes Momentum different from other habit apps?",
-    answer: "Momentum is designed for adults 40+ who want sustainable habits, not quick fixes. We focus on consistency over perfection, with no judgmental language or complicated metrics. It's about building momentum that lasts."
+    question: "Who is Momentum for?",
+    answer: "Adults 40 and over who want to keep exercising through busy weeks, short sleep and slower recovery. It suits people restarting a routine and people who prefer steady progress to hard programs."
   },
   {
-    question: "Do I need to be tech-savvy to use Momentum?",
-    answer: "Not at all! Momentum is intentionally simple. Just set your habits and check them off daily. The interface is clean, intuitive, and designed for ease of use."
+    question: "What does the daily check-in ask?",
+    answer: "Six things, each on a 1 to 5 scale: sleep quality, energy, recovery from your last session, soreness, pain or discomfort, and whether you want to train today. It takes under a minute."
   },
   {
-    question: "What kind of habits can I track?",
-    answer: "Any habit you want to build! Reading, meditation, walking, stretching, journaling, hydration - if you can do it daily or regularly, you can track it. You define what matters to you."
+    question: "How does the check-in change my plan?",
+    answer: "Your six answers are averaged into one of four plans: full workout, reduced workout, mobility and recovery, or rest day. If you report notable pain, the app will not recommend a full workout. It is a simple, fixed rule set. It is not a diagnosis."
   },
   {
-    question: "How does the AI Coach work on Premium?",
-    answer: "The AI Coach is a Premium feature that provides personalized suggestions based on your check-in patterns, habit types, and consistency data. It's like having a supportive accountability partner who adapts to your schedule and real life."
-  },
-  {
-    question: "Can I cancel my subscription anytime?",
-    answer: "Absolutely. Cancel anytime from your account settings. You'll retain access until the end of your billing period, and you can always reactivate later."
-  },
-  {
-    question: "Will Momentum work on my phone and computer?",
-    answer: "Yes! Momentum is a web app that works on any device with a browser - iPhone, Android, tablets, laptops, and desktops. Your data syncs automatically across all devices."
-  },
-  {
-    question: "Is my data private and secure?",
-    answer: "Yes. We use industry-standard encryption to protect your data. We never sell your information to third parties. Your habits are yours alone."
+    question: "Does Momentum write my workouts?",
+    answer: "No. Momentum tells you how hard today should be and tracks whether you showed up. You choose the session. The app includes an exercise library for ideas."
   },
   {
     question: "What if I miss a day? Will I lose my streak?",
-    answer: "Your streak doesn't reset on one bad day. Momentum uses a momentum score that rewards consistency over perfection. Plus, with Streak Repair (available on the Premium plan), you can acknowledge missed days within 48 hours without losing your progress."
+    answer: "Not right away. If you miss a single day, Momentum offers a repair the next day: a 5, 10 or 20 minute makeup session, or a grace token. You earn one token for every 7 days you log. The window closes 48 hours after the missed day begins. If you miss two days in a row, the streak restarts and you pick up from there."
   },
   {
-    question: "How does accountability actually work?",
-    answer: "You set your preferred reminder time. Momentum sends a daily nudge. If you miss a day, you get a supportive 'get back on track' message - not a guilt trip. Your momentum score tracks your overall consistency, so a single missed day doesn't erase weeks of effort."
+    question: "What kind of habits can I track?",
+    answer: "Momentum is built for fitness habits: walking, strength work, stretching, mobility, swimming, a class, or anything else you do to stay active. You name the habit and set how many days a week you are aiming for."
+  },
+  {
+    question: "What does the AI Coach do?",
+    answer: "The AI Coach is a chat inside the app, included with Premium. It is given your current streak, how many habits you track, when you last logged and, right after you check in, today's plan. It keeps answers short, supports a lighter day when that is your plan, and sends pain or medical questions to your doctor. It is an AI, not a trainer or a clinician."
+  },
+  {
+    question: "What do I get with Premium?",
+    answer: "Premium is $7.99 a month or $69.99 a year. It removes the 3-habit limit and the 7-day history limit, and adds the AI Coach chat, the Weekly Insights report, and JSON export of your data."
+  },
+  {
+    question: "Can I cancel my subscription anytime?",
+    answer: "Yes. Cancel anytime from your account settings. You keep access until the end of your billing period, and you can come back later."
+  },
+  {
+    question: "Will Momentum work on my phone and computer?",
+    answer: "Yes. Momentum runs in the browser on phones, tablets and computers. Sign in on any device to see the same habits and history."
+  },
+  {
+    question: "Is my data private?",
+    answer: "Your data is tied to your account and we do not sell it. You can delete your account from Settings at any time, and Premium members can export their data. The Privacy Policy has the details."
   },
   {
     question: "Do I need any special equipment?",
-    answer: "No. Each day a quick readiness check-in on sleep and energy suggests a full workout, a lighter session or mobility work, and you track your habits and streaks. A walk at home counts as much as a gym session."
+    answer: "No. A walk around the block counts as much as a gym session."
+  },
+  {
+    question: "Is this medical advice?",
+    answer: "No. Momentum is a general fitness and habit tool. It does not diagnose or treat anything. Talk to your doctor before you start or change an exercise routine, and stop if something hurts."
   }
 ];
 
@@ -91,14 +103,14 @@ export const FAQ = () => {
   }, []);
 
   return (
-    <section className="py-20 md:py-32 bg-background-cream">
+    <section className="py-16 md:py-24 bg-background-cream">
       <div className="container mx-auto px-6 md:px-8 max-w-4xl">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 text-foreground">
             Frequently Asked Questions
           </h2>
           <p className="text-lg text-muted-foreground">
-            Everything you need to know about Momentum
+            Straight answers about what Momentum does and does not do
           </p>
         </div>
         
@@ -125,7 +137,7 @@ export const FAQ = () => {
             href="mailto:support@momentumfit.app" 
             className="text-primary hover:underline font-semibold"
           >
-            Contact our support team
+            Email support
           </a>
         </div>
       </div>

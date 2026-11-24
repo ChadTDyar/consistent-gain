@@ -92,8 +92,9 @@ export default function Pricing() {
   };
 
   const freeFeatures = [
-    "Track up to 3 habits",
-    "Daily check-ins",
+    "Track up to 3 fitness habits",
+    "Daily readiness check-in and today's plan",
+    "Streaks, with a 48-hour repair window for one missed day",
     "7 days of history",
     "Basic progress graphs",
   ];
@@ -102,25 +103,24 @@ export default function Pricing() {
     "Everything in Free",
     "Unlimited habits",
     "Unlimited history",
-    "Streak Repair",
-    "AI Coach",
-    "CSV data export",
-    "Weekly progress email",
+    "AI Coach chat",
+    "Weekly Insights report",
+    "JSON data export",
     "Priority support",
   ];
 
   const faqData = [
     {
       question: "Is Momentum really free?",
-      answer: "Yes. The Free plan includes up to 3 habits, daily check-ins, and 7 days of history, no credit card required.",
+      answer: "Yes. The Free plan has no time limit and needs no credit card. It includes up to 3 habits, the daily readiness check-in with today's plan, streaks with the 48-hour repair window, and 7 days of history.",
     },
     {
       question: "What is Streak Repair?",
-      answer: "Life happens. Premium members can retroactively log missed days within 48 hours so one bad day doesn't reset weeks of progress.",
+      answer: "If you miss a single day, Momentum offers a repair the next day: a 5, 10 or 20 minute makeup session, or a grace token. You earn one token for every 7 days you log. The window closes 48 hours after the missed day begins. It is included on every plan.",
     },
     {
       question: "How does the AI Coach work?",
-      answer: "Premium members get personalized suggestions based on their check-in patterns, habit types, and consistency data. It learns what works for you and adjusts recommendations to your schedule.",
+      answer: "The AI Coach is a chat inside the app, included with Premium. It is given your current streak, how many habits you track, when you last logged and, right after you check in, today's plan. It keeps answers short and sends pain or medical questions to your doctor. It is an AI, not a trainer or a clinician.",
     },
     {
       question: "Can I cancel anytime?",
@@ -128,7 +128,7 @@ export default function Pricing() {
     },
     {
       question: "What happens in my first week?",
-      answer: "You'll set up 1-3 realistic habits, configure reminders that fit your schedule, and complete your first 7-day streak. Most users are set up in under 5 minutes.",
+      answer: "You set up 1 to 3 fitness habits, do a one-minute readiness check-in each day, and get a plan for the day: full workout, reduced workout, mobility and recovery, or rest. Log what you did and your streak builds from there.",
     },
   ];
 
@@ -137,8 +137,8 @@ export default function Pricing() {
       <SEO
         title="Pricing - Momentum | Free & Premium Plans"
         canonical="https://momentumfit.app/pricing"
-        description="Start free with 3 habits. Upgrade to Premium ($7.99/mo) for unlimited habits, AI coaching, and unlimited history."
-        keywords="habit tracker pricing, habit app cost, premium habit features, affordable habit tracker"
+        description="Start free with 3 fitness habits and the daily readiness check-in. Premium ($7.99/mo or $69.99/yr) adds unlimited habits, unlimited history, the AI Coach chat and data export."
+        keywords="fitness habit tracker pricing, momentum pricing, fitness app for adults over 40 cost"
       />
       {authStatus === 'signed_out' && <MarketingHeader />}
       <div className="min-h-screen bg-background-cream py-16 md:py-24">
@@ -156,13 +156,13 @@ export default function Pricing() {
           )}
           <div className="text-center mb-12 md:mb-16">
             <p className="text-sm font-semibold text-primary uppercase tracking-wide mb-3">
-              For adults 40+ who want habits that stick
+              For adults 40+ who want fitness habits that stick
             </p>
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-gradient">
               Pick the plan that fits your life
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Set up in under 5 minutes. Start building your streak today. Cancel anytime.
+              Free tracks the habit. Premium adds the coach and the long view. Cancel anytime.
             </p>
 
             {/* Billing Toggle */}
@@ -276,8 +276,8 @@ export default function Pricing() {
                   {loading === `pro-${billingInterval}`
                     ? 'Redirecting…'
                     : billingInterval === 'annual'
-                      ? `Go Premium — $${PLANS.pro.annualPrice}/yr`
-                      : 'Go Premium — $7.99/mo'}
+                      ? `Go Premium: $${PLANS.pro.annualPrice}/yr`
+                      : 'Go Premium: $7.99/mo'}
                 </Button>
                 <p className="text-xs text-center text-muted-foreground">Cancel anytime.</p>
               </CardContent>
@@ -298,11 +298,11 @@ export default function Pricing() {
             </Card>
             <Card className="border-primary/10 shadow-md">
               <CardContent className="pt-6">
-                <h3 className="font-semibold text-foreground mb-3">What you'll accomplish in week 1</h3>
+                <h3 className="font-semibold text-foreground mb-3">What your first week looks like</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1-3 realistic daily habits</li>
-                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Configure reminders that fit your schedule</li>
-                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Complete your first 7-day streak</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1 to 3 realistic fitness habits</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Do a one-minute readiness check-in each day</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Get a plan that fits how each day feels</li>
                   <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> See your consistency visualized</li>
                 </ul>
               </CardContent>
@@ -339,13 +339,13 @@ export default function Pricing() {
                   <tbody>
                     {[
                       { feature: "Habits", free: "Up to 3", pro: "Unlimited" },
-                      { feature: "Daily check-ins", free: true, pro: true },
+                      { feature: "Daily readiness check-in and today's plan", free: true, pro: true },
                       { feature: "History", free: "7 days", pro: "Unlimited" },
                       { feature: "Progress graphs", free: "Basic", pro: "Full" },
-                      { feature: "Streak Repair (48hr window)", free: false, pro: true },
-                      { feature: "Weekly email summary", free: false, pro: true },
+                      { feature: "Streak repair (48-hour window)", free: true, pro: true },
+                      { feature: "Weekly Insights report", free: false, pro: true },
                       { feature: "AI Coach", free: false, pro: true },
-                      { feature: "CSV data export", free: false, pro: true },
+                      { feature: "JSON data export", free: false, pro: true },
                       { feature: "Priority support", free: false, pro: true },
                     ].map((row, i) => (
                       <tr key={i} className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors">

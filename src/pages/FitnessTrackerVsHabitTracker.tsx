@@ -59,7 +59,7 @@ const FitnessTrackerVsHabitTracker = () => {
 
             <h2 className="text-2xl font-display font-bold text-foreground">Can You Use Both?</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Absolutely. Many Momentum users pair it with a fitness tracker. They use Strava or Apple Fitness for workout details and Momentum for the daily habit layer - the accountability, streaks, and AI coaching that keeps them coming back. The two approaches complement each other when used intentionally.
+              Absolutely. You can pair it with a fitness tracker: Strava or Apple Fitness for workout details and Momentum for the daily habit layer - the daily check-in and streaks that keep you coming back. The two approaches complement each other when used intentionally.
             </p>
 
             <div className="border-t border-border pt-8 mt-8 space-y-4">

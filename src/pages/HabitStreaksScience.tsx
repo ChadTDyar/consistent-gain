@@ -53,7 +53,7 @@ const HabitStreaksScience = () => {
 
             <h2 className="text-2xl font-display font-bold text-foreground">How Momentum Applies This Science</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Momentum's streak system is designed around the real research. Instead of a fragile all-or-nothing streak, Momentum uses a <strong className="text-foreground">momentum score</strong> that accounts for consistency over time. Miss a day? Your overall trajectory still matters. With the <Link to="/pricing" className="text-primary hover:underline font-semibold">Streak Repair</Link> feature, you can acknowledge missed days without losing everything - just like real life.
+              Momentum's streak system is designed around the real research. Instead of a fragile all-or-nothing streak, Momentum gives you a <strong className="text-foreground">48-hour repair window</strong>. Miss a single day and <Link to="/pricing" className="text-primary hover:underline font-semibold">Streak Repair</Link> lets you make it up with a short session or a grace token, so one bad day does not erase the weeks before it.
             </p>
             <p className="text-muted-foreground leading-relaxed">
               The goal isn't a perfect streak. The goal is building an identity as someone who shows up. That takes longer than 21 days - and Momentum is built for the long game.

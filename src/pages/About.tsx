@@ -116,7 +116,7 @@ export default function About() {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
-                    <span><strong className="text-foreground">Builds consistency through streaks</strong> - with <a href="/blog/streak-repair-missing-workout-days" className="text-primary hover:underline font-semibold" onClick={(e) => { e.preventDefault(); navigate("/blog/streak-repair-missing-workout-days"); }}>Streak Repair</a> for missed days (Premium)</span>
+                    <span><strong className="text-foreground">Builds consistency through streaks</strong> - with <a href="/blog/streak-repair-missing-workout-days" className="text-primary hover:underline font-semibold" onClick={(e) => { e.preventDefault(); navigate("/blog/streak-repair-missing-workout-days"); }}>Streak Repair</a> for a single missed day</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">•</span>
@@ -156,7 +156,7 @@ export default function About() {
                   Most fitness apps punish you for missing days. Momentum was built on the opposite philosophy: <strong className="text-foreground">showing up imperfectly is better than not showing up at all.</strong>
                 </p>
                 <p>
-                  That's why we built <a href="/blog/streak-repair-missing-workout-days" className="text-primary hover:underline font-semibold" onClick={(e) => { e.preventDefault(); navigate("/blog/streak-repair-missing-workout-days"); }}>Streak Repair</a> - a feature that lets you acknowledge missed days without losing your progress. Because real life has sick days, travel, and low-energy weeks. A good system expects that.
+                  That's why we built <a href="/blog/streak-repair-missing-workout-days" className="text-primary hover:underline font-semibold" onClick={(e) => { e.preventDefault(); navigate("/blog/streak-repair-missing-workout-days"); }}>Streak Repair</a> - a 48-hour window to make up a single missed day without losing your progress. Because real life has sick days, travel, and low-energy weeks. A good system expects that.
                 </p>
                 <p>
                   Read more about <a href="/blog/fitness-consistency-over-50" className="text-primary hover:underline" onClick={(e) => { e.preventDefault(); navigate("/blog/fitness-consistency-over-50"); }}>why consistency beats intensity after 50</a>.
