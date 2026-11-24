@@ -63,12 +63,21 @@ const Index = () => {
         {/* Skip-to-content link is rendered globally in App.tsx; targets the
             <main id="main-content"> wrapper in AppLayout. */}
 
-        {/* Hero Section */}
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 opacity-30" style={{background: 'var(--gradient-accent)'}} role="presentation" />
-           <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
-            {/* Auth buttons */}
-            <div className="flex justify-end pt-4 pb-2 gap-2">
+        {/* Navigation */}
+        <nav aria-label="Page sections" className="sticky top-0 z-20 bg-card/80 backdrop-blur-md border-b border-border shadow-sm">
+          <div className="container mx-auto px-6 md:px-8 max-w-7xl flex items-center justify-between py-3">
+            <div className="flex items-center gap-2">
+              <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" width="32" height="32" />
+              <span className="hidden md:inline font-display font-bold text-lg text-gradient">Momentum</span>
+            </div>
+            <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+              <a href="#how-it-works" className="text-muted-foreground hover:text-primary transition-colors">Daily Check-In</a>
+              <a href="#features" className="text-muted-foreground hover:text-primary transition-colors">Guidance</a>
+              <a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }}>Pricing</a>
+              <a href="/resources/habit-streaks-science" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/resources/habit-streaks-science"); }}>Resources</a>
+              <a href="#faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</a>
+            </div>
+            <div className="flex items-center gap-2">
               {isSignedIn ? (
                 <>
                   <Button variant="outline" size="sm" onClick={() => navigate("/dashboard")} className="border-2">
@@ -84,12 +93,15 @@ const Index = () => {
                 </Button>
               )}
             </div>
+          </div>
+        </nav>
+
+        {/* Hero Section */}
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0 opacity-30" style={{background: 'var(--gradient-accent)'}} role="presentation" />
+           <div className="container mx-auto px-6 md:px-8 max-w-7xl relative">
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center py-8 md:py-12 lg:py-14">
               <div className="space-y-4 md:space-y-5 text-center lg:text-left fade-in">
-                <div className="inline-flex items-center gap-3 mb-1 md:mb-2">
-                  <img src={momentumLogo} alt="Momentum" className="h-10 md:h-12 w-auto drop-shadow-sm" width="56" height="56" />
-                  <span className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</span>
-                </div>
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground leading-[1.15] tracking-tight">
                   Fitness consistency for the life you actually live.
                 </h1>
@@ -100,6 +112,10 @@ const Index = () => {
                   <Button
                     size="lg"
                     onClick={() => {
+                      if (isSignedIn) {
+                        navigate("/dashboard");
+                        return;
+                      }
                       analytics.heroCtaClick();
                       analytics.startSignup();
                       const params = new URLSearchParams({ mode: "signup" });
@@ -110,7 +126,7 @@ const Index = () => {
                     }}
                     className="btn-large shadow-xl hover:shadow-2xl transition-all text-base md:text-lg h-12 md:h-14 px-6 md:px-8 btn-gradient w-full sm:w-auto"
                   >
-                    Start My Free Fitness Routine
+                    {isSignedIn ? "Go to Dashboard" : "Start My Free Fitness Routine"}
                   </Button>
                   <AppStoreBadge />
                 </div>
@@ -138,25 +154,6 @@ const Index = () => {
         </section>
 
 
-        {/* Navigation */}
-        <nav aria-label="Page sections" className="sticky top-0 z-20 bg-card/80 backdrop-blur-md border-b border-border shadow-sm">
-          <div className="container mx-auto px-6 md:px-8 max-w-7xl flex items-center justify-between py-3">
-            <div className="flex items-center gap-2">
-              <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" width="32" height="32" />
-              <span className="font-display font-bold text-lg text-gradient">Momentum</span>
-            </div>
-            <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-              <a href="#how-it-works" className="text-muted-foreground hover:text-primary transition-colors">Daily Check-In</a>
-              <a href="#features" className="text-muted-foreground hover:text-primary transition-colors">Guidance</a>
-              <a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }}>Pricing</a>
-              <a href="/resources/habit-streaks-science" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/resources/habit-streaks-science"); }}>Resources</a>
-              <a href="#faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</a>
-            </div>
-            <Button size="sm" onClick={() => navigate("/auth?mode=signup")} className="btn-gradient">
-              Start Free
-            </Button>
-          </div>
-        </nav>
 
         {/* 2. The consistency problem after 40 */}
         <ConsistencyProblem />
