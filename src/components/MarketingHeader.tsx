@@ -23,7 +23,6 @@ export function MarketingHeader() {
           <a href="/#features" className={linkClass}>Features</a>
           <a href="/pricing" className={linkClass} onClick={go("/pricing")}>Pricing</a>
           <a href="/resources/habit-streaks-science" className={linkClass} onClick={go("/resources/habit-streaks-science")}>Resources</a>
-          <a href="/story" className={linkClass} onClick={go("/story")}>Our Story</a>
           <a href="/#faq" className={linkClass}>FAQ</a>
         </div>
         <Button size="sm" onClick={() => navigate("/auth?mode=signup")} className="btn-gradient">

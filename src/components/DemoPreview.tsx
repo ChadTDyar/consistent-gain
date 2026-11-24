@@ -164,11 +164,11 @@ export const DemoPreview = () => {
           {/* Frosted overlay CTA */}
           <div className="relative">
             <div className="absolute inset-x-0 -top-16 h-16 bg-gradient-to-t from-card to-transparent pointer-events-none" />
-            <div className="border-t border-border bg-card/80 backdrop-blur-sm px-4 md:px-6 py-4 flex items-center justify-between">
+            <div className="border-t border-border bg-card/80 backdrop-blur-sm px-4 md:px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <p className="text-sm text-muted-foreground font-medium">
                 This is sample data. Yours starts with the first check-in.
               </p>
-              <Button onClick={() => navigate("/auth?mode=signup")} className="btn-gradient shadow-lg">
+              <Button onClick={() => navigate("/auth?mode=signup")} className="btn-gradient shadow-lg shrink-0">
                 Create Free Account
               </Button>
             </div>

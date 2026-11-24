@@ -49,7 +49,7 @@ const tiers = [
       "Unlimited history",
       "AI Coach chat that is told your streak and today's plan",
       "Weekly Insights report",
-      "CSV and JSON export of your data",
+      "JSON export of your data",
     ],
   },
 ];

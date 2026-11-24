@@ -46,7 +46,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "What do I get with Premium?",
-    answer: "Premium is $7.99 a month or $69.99 a year. It removes the 3-habit limit and the 7-day history limit, and adds the AI Coach chat, the Weekly Insights report, and CSV and JSON export of your data."
+    answer: "Premium is $7.99 a month or $69.99 a year. It removes the 3-habit limit and the 7-day history limit, and adds the AI Coach chat, the Weekly Insights report, and JSON export of your data."
   },
   {
     question: "Can I cancel my subscription anytime?",

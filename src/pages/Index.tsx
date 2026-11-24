@@ -150,7 +150,6 @@ const Index = () => {
               <a href="#features" className="text-muted-foreground hover:text-primary transition-colors">Guidance</a>
               <a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }}>Pricing</a>
               <a href="/resources/habit-streaks-science" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/resources/habit-streaks-science"); }}>Resources</a>
-              <a href="/story" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/story"); }}>Our Story</a>
               <a href="#faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</a>
             </div>
             <Button size="sm" onClick={() => navigate("/auth?mode=signup")} className="btn-gradient">
@@ -231,7 +230,6 @@ const Index = () => {
               <nav className="flex flex-wrap gap-6 text-sm justify-center" aria-label="Footer navigation">
                 <a href="/features" className="text-muted-foreground hover:text-primary transition-colors font-medium">Features</a>
                 <a href="/blog" className="text-muted-foreground hover:text-primary transition-colors font-medium">Blog</a>
-                <a href="/story" className="text-muted-foreground hover:text-primary transition-colors font-medium">Our Story</a>
                 <a href="/resources/habit-streaks-science" className="text-muted-foreground hover:text-primary transition-colors font-medium">Resources</a>
                 <a href="mailto:support@momentumfit.app" className="text-muted-foreground hover:text-primary transition-colors font-medium">Contact</a>
                 <a href="/privacy" className="text-muted-foreground hover:text-primary transition-colors font-medium">Privacy Policy</a>

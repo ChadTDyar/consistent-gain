@@ -19,7 +19,6 @@ export function SiteFooter() {
           <nav className="flex flex-wrap gap-6 text-sm justify-center" aria-label="Footer navigation">
             <a href="/features" className={linkClass}>Features</a>
             <a href="/blog" className={linkClass}>Blog</a>
-            <a href="/story" className={linkClass}>Our Story</a>
             <a href="/resources/habit-streaks-science" className={linkClass}>Resources</a>
             <a href="mailto:support@momentumfit.app" className={linkClass}>Contact</a>
             <a href="/privacy" className={linkClass}>Privacy Policy</a>

@@ -5,7 +5,6 @@
 - [Home](https://momentumfit.app/): what Momentum is and how it works
 - [Pricing](https://momentumfit.app/pricing): free and Premium plans
 - [Features](https://momentumfit.app/features): what the app does
-- [Our Story](https://momentumfit.app/story): why Momentum was built and who built it
 - [The 7-Day Readiness Reset](https://momentumfit.app/7-day-reset): a free routine reset, one small action per day for seven days (not a workout program)
 - [Blog](https://momentumfit.app/blog): articles on building fitness habits after 40
 - [The Science of Habit Streaks](https://momentumfit.app/resources/habit-streaks-science): resource article
