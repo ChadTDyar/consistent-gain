@@ -68,7 +68,7 @@ const Index = () => {
           <div className="container mx-auto px-6 md:px-8 max-w-7xl flex items-center justify-between py-3">
             <div className="flex items-center gap-2">
               <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" width="32" height="32" />
-              <span className="font-display font-bold text-lg text-gradient">Momentum</span>
+              <span className="hidden md:inline font-display font-bold text-lg text-gradient">Momentum</span>
             </div>
             <div className="hidden md:flex items-center gap-6 text-sm font-medium">
               <a href="#how-it-works" className="text-muted-foreground hover:text-primary transition-colors">Daily Check-In</a>
@@ -112,6 +112,10 @@ const Index = () => {
                   <Button
                     size="lg"
                     onClick={() => {
+                      if (isSignedIn) {
+                        navigate("/dashboard");
+                        return;
+                      }
                       analytics.heroCtaClick();
                       analytics.startSignup();
                       const params = new URLSearchParams({ mode: "signup" });
@@ -122,7 +126,7 @@ const Index = () => {
                     }}
                     className="btn-large shadow-xl hover:shadow-2xl transition-all text-base md:text-lg h-12 md:h-14 px-6 md:px-8 btn-gradient w-full sm:w-auto"
                   >
-                    Start My Free Fitness Routine
+                    {isSignedIn ? "Go to Dashboard" : "Start My Free Fitness Routine"}
                   </Button>
                   <AppStoreBadge />
                 </div>
