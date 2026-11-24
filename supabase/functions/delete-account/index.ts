@@ -1,4 +1,14 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.58.0';
+import { cancelAppSubscriptions } from './stripe-cancel.ts';
+
+// Momentum Stripe products (verified against Stripe live, 2026-11-24).
+// Premium is current; the rest are retired but may still hold old subscriptions.
+const MOMENTUM_PRODUCT_IDS = new Set([
+  'prod_U3w9PqaaJVSOto', // Momentum Premium
+  'prod_U3w81PJvJRTiQQ', // Momentum Pro (legacy Plus, retired)
+  'prod_U3vT2StszUp7uL', // Momentum Pro (retired)
+  'prod_U3vSrPHBDq24U8', // Momentum Plus (retired)
+]);
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -47,33 +57,36 @@ Deno.serve(async (req) => {
     const userId = user.id;
     console.log('Deleting account for user:', userId);
 
-    // 0a. Cancel Stripe subscription (non-blocking)
-    try {
-      const stripeKey = Deno.env.get('STRIPE_SECRET_KEY');
-      if (stripeKey) {
-        const { data: stripeRow } = await supabase
-          .from('stripe_customers')
-          .select('stripe_subscription_id, stripe_customer_id')
-          .eq('user_id', userId)
-          .maybeSingle();
+    // 0a. Cancel Stripe subscriptions (must succeed before anything is deleted).
+    // Cancels every Momentum subscription that can still bill (active,
+    // trialing, past_due, unpaid, paused) on the stored customer and on any
+    // customer matching the user's email. If Stripe cannot confirm that, stop
+    // here: no data is deleted and the user can retry.
+    const { data: stripeRow, error: stripeRowLookupError } = await supabase
+      .from('stripe_customers')
+      .select('stripe_customer_id')
+      .eq('user_id', userId)
+      .maybeSingle();
+    if (stripeRowLookupError) {
+      console.error('stripe_customers lookup error (email lookup still runs):', stripeRowLookupError);
+    }
 
-        if (stripeRow?.stripe_subscription_id) {
-          const cancelRes = await fetch(
-            `https://api.stripe.com/v1/subscriptions/${stripeRow.stripe_subscription_id}`,
-            {
-              method: 'DELETE',
-              headers: { Authorization: `Bearer ${stripeKey}` },
-            }
-          );
-          console.log('Stripe subscription cancel status:', cancelRes.status);
-        } else {
-          console.log('No Stripe subscription found for user:', userId);
-        }
-      } else {
-        console.log('STRIPE_SECRET_KEY not configured, skipping Stripe cancel');
-      }
-    } catch (stripeErr) {
-      console.error('Non-blocking Stripe cancel error:', stripeErr);
+    const stripeResult = await cancelAppSubscriptions({
+      stripeKey: Deno.env.get('STRIPE_SECRET_KEY'),
+      email: user.email,
+      knownCustomerIds: [stripeRow?.stripe_customer_id],
+      productIds: MOMENTUM_PRODUCT_IDS,
+    });
+    console.log('Stripe cancel result:', JSON.stringify(stripeResult));
+    if (!stripeResult.ok) {
+      console.error('Stripe cancel failed, aborting deletion:', stripeResult.errors);
+      return new Response(
+        JSON.stringify({
+          error: 'Could not cancel your subscription, so your account was not deleted. Please try again or contact support.',
+          stripe: stripeResult,
+        }),
+        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // 0b. Delete RevenueCat subscriber (non-blocking)
