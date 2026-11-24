@@ -82,13 +82,10 @@ export default defineConfig(({ mode }) => ({
           // of one separate request per component.
           const belowFoldLandingSections = [
             "src/components/StreakRepairDemo",
-            "src/components/DifferentiationCallout",
-            "src/components/ProductShowcase",
+            "src/components/landing/Sections",
             "src/components/DemoPreview",
-            "src/components/NotificationExplainer",
             "src/components/Testimonials",
             "src/components/LandingPricing",
-            "src/components/ComparisonTable",
             "src/components/FAQ",
           ];
           if (belowFoldLandingSections.some((section) => id.includes(section))) {

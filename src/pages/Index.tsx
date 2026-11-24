@@ -5,9 +5,7 @@ import { lazyWithRetry } from "@/lib/lazyWithRetry";
 import { Button } from "@/components/ui/button";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { HeroTodayPreview } from "@/components/HeroTodayPreview";
-import groupRunning from "@/assets/group-running.png";
 import { SEO } from "@/components/SEO";
-import { SocialProofStrip } from "@/components/SocialProofStrip";
 import { analytics } from "@/lib/analytics";
 import { LogIn, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,20 +13,20 @@ import { AppStoreBadge } from "@/components/AppStoreBadge";
 // Above-the-fold sections: bundled eagerly (main bundle) since they render
 // immediately on load — no benefit to lazy-loading these.
 import { HowItWorks } from "@/components/HowItWorks";
-import { FeatureGrid } from "@/components/FeatureGrid";
+import { ConsistencyProblem } from "@/components/landing/ConsistencyProblem";
 
 // Lazy load below-the-fold sections (retry-aware: survives stale chunks after deploys).
 // These are grouped into a single "landing-below-fold" chunk via manualChunks
-// in vite.config.ts, so they still load on demand but as one request, not nine.
+// in vite.config.ts, so they still load on demand but as one request.
 const FAQ = lazyWithRetry(() => import("@/components/FAQ").then(m => ({ default: m.FAQ })));
 const Testimonials = lazyWithRetry(() => import("@/components/Testimonials").then(m => ({ default: m.Testimonials })));
-const ProductShowcase = lazyWithRetry(() => import("@/components/ProductShowcase").then(m => ({ default: m.ProductShowcase })));
-const ComparisonTable = lazyWithRetry(() => import("@/components/ComparisonTable").then(m => ({ default: m.ComparisonTable })));
 const DemoPreview = lazyWithRetry(() => import("@/components/DemoPreview").then(m => ({ default: m.DemoPreview })));
-const NotificationExplainer = lazyWithRetry(() => import("@/components/NotificationExplainer").then(m => ({ default: m.NotificationExplainer })));
-const DifferentiationCallout = lazyWithRetry(() => import("@/components/DifferentiationCallout").then(m => ({ default: m.DifferentiationCallout })));
 const LandingPricing = lazyWithRetry(() => import("@/components/LandingPricing").then(m => ({ default: m.LandingPricing })));
 const StreakRepairDemo = lazyWithRetry(() => import("@/components/StreakRepairDemo").then(m => ({ default: m.StreakRepairDemo })));
+const GuidanceSection = lazyWithRetry(() => import("@/components/landing/Sections").then(m => ({ default: m.GuidanceSection })));
+const ExampleDays = lazyWithRetry(() => import("@/components/landing/Sections").then(m => ({ default: m.ExampleDays })));
+const ResetTeaser = lazyWithRetry(() => import("@/components/landing/Sections").then(m => ({ default: m.ResetTeaser })));
+const LandingDisclaimer = lazyWithRetry(() => import("@/components/landing/Sections").then(m => ({ default: m.LandingDisclaimer })));
 
 
 const Index = () => {
@@ -54,11 +52,11 @@ const Index = () => {
 
   return (
     <>
-      <SEO 
-        title="Momentum: Daily Fitness Habit Tracker"
+      <SEO
+        title="Momentum: Fitness Consistency for Adults 40+"
         canonical="https://momentumfit.app/"
-        description="Momentum is a free daily fitness habit tracker app. Build streaks, track progress, and stay consistent. The streak tracker designed to keep you moving."
-        keywords="habit tracker app, streak tracker, daily habit app, fitness habit tracker, build healthy habits, momentumfit, fitness habits over 40, workout consistency"
+        description="Build sustainable fitness habits with a daily readiness check-in, guidance that fits how you feel today, and streaks that survive a missed day. Free to start."
+        keywords="fitness habit tracker for adults over 40, workout consistency, daily readiness check-in, recovery-aware fitness, streak repair, momentumfit"
         ogImage="https://momentumfit.app/og-share.jpg"
       />
       <div className="min-h-screen bg-background-cream">
@@ -90,23 +88,17 @@ const Index = () => {
               <div className="space-y-4 md:space-y-5 text-center lg:text-left fade-in">
                 <div className="inline-flex items-center gap-3 mb-1 md:mb-2">
                   <img src={momentumLogo} alt="Momentum" className="h-10 md:h-12 w-auto drop-shadow-sm" width="56" height="56" />
-                  <h2 className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</h2>
+                  <span className="text-xl md:text-2xl font-display font-bold text-gradient">Momentum</span>
                 </div>
                 <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground leading-[1.15] tracking-tight">
-                  Momentum: a daily fitness habit tracker for adults over 40
+                  Fitness consistency for the life you actually live.
                 </h1>
                 <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  Consistency is harder at 40+. Not because you know less. Because you have more.
+                  Build sustainable fitness habits with daily check-ins, recovery-aware guidance, and progress tracking designed for adults 40+.
                 </p>
-                <p className="text-base md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  Three habits. Five minutes. Built for people who have everything except time.
-                </p>
-                <p className="text-xs md:text-sm text-muted-foreground font-medium">
-                  Independently built by Chad Dyar. One developer, real support.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
-                  <Button 
-                    size="lg" 
+                <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center pt-2">
+                  <Button
+                    size="lg"
                     onClick={() => {
                       analytics.heroCtaClick();
                       analytics.startSignup();
@@ -115,10 +107,10 @@ const Index = () => {
                         if (k.startsWith("utm_")) params.set(k, v);
                       });
                       navigate(`/auth?${params.toString()}`);
-                    }} 
-                    className="btn-large shadow-xl hover:shadow-2xl transition-all hover:scale-105 text-base md:text-lg h-12 md:h-14 px-8 md:px-10 btn-gradient"
+                    }}
+                    className="btn-large shadow-xl hover:shadow-2xl transition-all text-base md:text-lg h-12 md:h-14 px-6 md:px-8 btn-gradient w-full sm:w-auto"
                   >
-                    Track My First 3 Habits Free
+                    Start My Free Fitness Routine
                   </Button>
                   <AppStoreBadge />
                 </div>
@@ -126,12 +118,14 @@ const Index = () => {
                   <a
                     href="/7-day-reset"
                     onClick={(e) => { e.preventDefault(); navigate("/7-day-reset"); }}
-                    className="text-primary font-semibold underline-offset-4 hover:underline inline-flex items-center min-h-[44px]"
+                    className="text-primary font-semibold underline underline-offset-4 inline-flex items-center min-h-[44px]"
                   >
-                    New: try the free 7-Day Readiness Reset
+                    Try the 7-Day Readiness Reset
                   </a>
                 </p>
-                <p className="text-xs md:text-sm text-muted-foreground pt-1">Built for people who want consistency, not intensity.</p>
+                <p className="text-xs md:text-sm text-muted-foreground">
+                  Free for up to 3 habits. No credit card. Tap a sample day to see the plan change.
+                </p>
               </div>
 
               <div className="relative pt-3 lg:pt-0">
@@ -144,19 +138,16 @@ const Index = () => {
         </section>
 
 
-        {/* Social Proof Strip */}
-        <SocialProofStrip />
-
         {/* Navigation */}
-        <nav className="sticky top-0 z-20 bg-card/80 backdrop-blur-md border-b border-border shadow-sm">
+        <nav aria-label="Page sections" className="sticky top-0 z-20 bg-card/80 backdrop-blur-md border-b border-border shadow-sm">
           <div className="container mx-auto px-6 md:px-8 max-w-7xl flex items-center justify-between py-3">
             <div className="flex items-center gap-2">
               <img src={momentumLogo} alt="Momentum" className="h-8 w-auto" width="32" height="32" />
               <span className="font-display font-bold text-lg text-gradient">Momentum</span>
             </div>
             <div className="hidden md:flex items-center gap-6 text-sm font-medium">
-              <a href="#how-it-works" className="text-muted-foreground hover:text-primary transition-colors">How It Works</a>
-              <a href="#features" className="text-muted-foreground hover:text-primary transition-colors">Features</a>
+              <a href="#how-it-works" className="text-muted-foreground hover:text-primary transition-colors">Daily Check-In</a>
+              <a href="#features" className="text-muted-foreground hover:text-primary transition-colors">Guidance</a>
               <a href="/pricing" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }}>Pricing</a>
               <a href="/resources/habit-streaks-science" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/resources/habit-streaks-science"); }}>Resources</a>
               <a href="/story" className="text-muted-foreground hover:text-primary transition-colors" onClick={(e) => { e.preventDefault(); navigate("/story"); }}>Our Story</a>
@@ -168,132 +159,56 @@ const Index = () => {
           </div>
         </nav>
 
-        {/* How It Works — above the fold, bundled eagerly */}
+        {/* 2. The consistency problem after 40 */}
+        <ConsistencyProblem />
+
+        {/* 3. Daily readiness check-in, with the try-it demo */}
         <HowItWorks />
 
         {/* Below-the-fold lazy-loaded sections (single grouped chunk) */}
         <Suspense fallback={<div className="py-16" />}>
-          {/* Streak Repair Demo */}
+          {/* 4. Adaptive guidance and AI Coach */}
+          <GuidanceSection />
+
+          {/* 5. Streak repair and progress tracking */}
           <StreakRepairDemo />
-
-          {/* Differentiation Callout */}
-          <DifferentiationCallout />
-
-          {/* Feature Grid — above the fold, bundled eagerly */}
-          <FeatureGrid />
-
-          {/* Product Showcase */}
-          <ProductShowcase />
-
-          {/* Interactive Demo */}
           <DemoPreview />
 
-          {/* Notification Explainer */}
-          <NotificationExplainer />
+          {/* 6. Realistic example days */}
+          <ExampleDays />
 
-          {/* Testimonials */}
-          <Testimonials />
-
-          {/* Pricing */}
+          {/* 7. Free versus Premium */}
           <LandingPricing />
 
-          {/* Comparison Table */}
-          <ComparisonTable />
+          {/* Real approved testimonials if any exist, otherwise plain trust facts */}
+          <Testimonials />
 
-          {/* FAQ */}
-          <div id="faq">
+          {/* 8. 7-Day Readiness Reset */}
+          <ResetTeaser />
+
+          {/* 9. FAQ and disclaimers */}
+          <div id="faq" className="scroll-mt-16">
             <FAQ />
           </div>
+          <LandingDisclaimer />
         </Suspense>
 
-        {/* Why Momentum */}
-        <section className="py-16 md:py-24 bg-background-cream">
-          <div className="container mx-auto px-6 md:px-8 max-w-5xl">
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground text-center mb-12">
-              Why Momentum?
-            </h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center space-y-3">
-                <h3 className="text-lg font-semibold text-foreground">Habit Tracker App, Simplified</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  Momentum is a fitness habit tracker app built for one thing: keeping you consistent. Log your activity in seconds and watch your streaks grow.
-                </p>
-              </div>
-              <div className="text-center space-y-3">
-                <h3 className="text-lg font-semibold text-foreground">Streak Tracker That Motivates</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  Your streak is your scoreboard. Every day you check in, Momentum counts it. Miss a day? Streak Repair (Premium) gives you a 48-hour window to keep it going.
-                </p>
-              </div>
-              <div className="text-center space-y-3">
-                <h3 className="text-lg font-semibold text-foreground">Build Healthy Habits for Life</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  This daily habit app uses proven consistency techniques to help you build healthy habits that last. Progress charts show exactly how far you have come.
-                </p>
-              </div>
-            </div>
-
-            {/* Momentum vs Competitors */}
-            <div className="mt-16">
-              <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground text-center mb-4">
-                Momentum vs Other Habit Trackers
-              </h2>
-              <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-10 text-sm">
-                Apps like Streaks, Habitify, and Loop are great general habit trackers. Momentum is different: it is built specifically for fitness habits with a daily readiness check-in, body-map pain logging when your check-in flags pain, an exercise library, and Streak Repair (Premium).
-              </p>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-card rounded-xl p-6 border border-border">
-                  <h3 className="font-semibold text-foreground mb-2">General habit trackers</h3>
-                  <ul className="text-sm text-muted-foreground space-y-1.5">
-                    <li>Track any habit (water, reading, meditation)</li>
-                    <li>Basic streak counting</li>
-                    <li>No fitness-specific insights</li>
-                    <li>Streak resets to zero when you miss a day</li>
-                  </ul>
-                </div>
-                <div className="bg-primary/5 rounded-xl p-6 border border-primary/20">
-                  <h3 className="font-semibold text-primary mb-2">Momentum</h3>
-                  <ul className="text-sm text-foreground space-y-1.5">
-                    <li>Purpose-built for fitness and workout habits</li>
-                    <li>Streak Repair (Premium): a 48-hour window so one missed day does not erase your progress</li>
-                    <li>Body-map pain logging when your check-in flags pain, plus an exercise library</li>
-                    <li>AI Coach (Premium) that adapts suggestions to your daily check-in</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="relative py-24 md:py-32 overflow-hidden">
-          <div className="absolute inset-0">
-            <img 
-              src={groupRunning} 
-              alt="Diverse group of professionals building habits together" 
-              className="w-full h-full object-cover"
-              loading="lazy"
-              width="1920"
-              height="600"
-              decoding="async"
-            />
-            <div className="absolute inset-0 backdrop-blur-[2px]" style={{background: 'linear-gradient(135deg, hsl(182 82% 26% / 0.9) 0%, hsl(184 90% 18% / 0.9) 100%)'}} role="presentation" />
-          </div>
+        {/* 10. Final CTA */}
+        <section className="relative py-20 md:py-28 overflow-hidden" style={{ background: 'var(--gradient-primary)' }}>
           <div className="container mx-auto px-6 md:px-8 text-center relative z-10">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-4 text-white drop-shadow-lg slide-up">
-              Your streak starts today.
+            <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-white">
+              Start with today, whatever kind of day it is.
             </h2>
-            <p className="text-lg text-white/80 mb-8 max-w-xl mx-auto">
-              Set up your habit plan in under 5 minutes. No credit card, no commitment.
+            <p className="text-lg text-white/90 mb-8 max-w-xl mx-auto">
+              Check in, get today's plan, log what you did. Free for up to 3 habits, no credit card.
             </p>
             <Button
               size="lg"
               variant="secondary"
               onClick={() => navigate("/auth?mode=signup")}
-              className="btn-large shadow-2xl hover:shadow-[0_30px_60px_rgba(255,255,255,0.5)] bg-white text-primary hover:bg-white hover:scale-110 transition-all text-lg h-16 px-12 font-semibold slide-up"
-              style={{animationDelay: '0.1s'}}
+              className="btn-large shadow-2xl bg-white text-primary hover:bg-white/90 transition-all text-base md:text-lg h-14 px-8 md:px-12 font-semibold"
             >
-              Start my habit plan - free
+              Start My Free Fitness Routine
             </Button>
           </div>
         </section>

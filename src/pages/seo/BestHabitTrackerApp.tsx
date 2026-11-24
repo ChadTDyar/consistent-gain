@@ -119,13 +119,13 @@ export default function BestHabitTrackerApp() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">Why Momentum Is Different</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              Momentum doesn't try to be everything. It does three things exceptionally well: 10-second daily check-ins that remove friction, visual streak tracking that taps into loss aversion, and Streak Repair so one bad day doesn't erase weeks of progress. Premium members get an AI coach that adapts to your patterns and nudges you when it matters.
+              Momentum doesn't try to be everything. It does three things exceptionally well: 10-second daily check-ins that remove friction, visual streak tracking that taps into loss aversion, and Streak Repair so one bad day doesn't erase weeks of progress. Premium members get an AI Coach chat that is given your streak and today's plan.
             </p>
             <div className="grid sm:grid-cols-3 gap-4 my-8">
               {[
                 { icon: Zap, title: "10-Second Check-Ins", desc: "Tap your goals, done. No logging reps or calories." },
-                { icon: Shield, title: "Streak Repair", desc: "Missed a day? Repair within 48h on Premium. Life happens." },
-                { icon: Brain, title: "AI Coach (Premium)", desc: "Personalized nudges based on your patterns and context." },
+                { icon: Shield, title: "Streak Repair", desc: "Missed a single day? Repair it within 48 hours. Life happens." },
+                { icon: Brain, title: "AI Coach (Premium)", desc: "A chat that is given your streak, your habit count and today's plan." },
               ].map(({ icon: Icon, title, desc }) => (
                 <Card key={title} className="border-none shadow-md">
                   <CardContent className="pt-6">
@@ -145,7 +145,7 @@ export default function BestHabitTrackerApp() {
                   <div className="space-y-3">
                     {[
                       "Free - 3 habits, 7 days of history, daily check-ins",
-                      premiumPlanLine("Unlimited habits, Streak Repair, unlimited history, AI Coach, data export"),
+                      premiumPlanLine("Unlimited habits, unlimited history, AI Coach chat, Weekly Insights report, data export"),
                     ].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />

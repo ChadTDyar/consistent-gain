@@ -22,10 +22,13 @@ const tiers = [
     cta: "Get Started Free",
     plan: null as null | 'pro',
     priceIds: null as null | { monthly: string; annual: string },
+    summary: "Everything you need to check in, get today's plan and keep a streak going.",
     features: [
-      "3 habits",
-      "Daily check-ins",
-      "7 days of history",
+      "Up to 3 fitness habits",
+      "Daily readiness check-in and today's plan",
+      "Streaks, with a 48-hour repair window for one missed day",
+      "5, 10 or 20 minute sessions that count",
+      "7 days of history and basic progress charts",
     ],
   },
   {
@@ -36,15 +39,17 @@ const tiers = [
     savingsLabel: "27%",
     highlight: false,
     mostPopular: false,
-    cta: "Go Premium — $7.99/mo",
+    cta: "Go Premium: $7.99/mo",
     plan: 'pro' as null | 'pro',
     priceIds: { monthly: 'price_1TFkM0L98dr6Pw0kXiu1hjbs', annual: 'price_1TNbD3L98dr6Pw0krnhh7i50' },
+    summary: "For when you want more habits, a coach to talk to and your full history.",
     features: [
-      "AI Coach",
-      "Unlimited history",
-      "Streak Repair",
-      "Data export",
       "Everything in Free",
+      "Unlimited habits",
+      "Unlimited history",
+      "AI Coach chat that is told your streak and today's plan",
+      "Weekly Insights report",
+      "CSV and JSON export of your data",
     ],
   },
 ];
@@ -86,13 +91,13 @@ export function LandingPricing() {
   };
 
   return (
-    <section id="pricing" className="py-20 md:py-28 bg-background-cream">
+    <section id="pricing" className="py-16 md:py-24 bg-background-cream scroll-mt-16">
       <div className="container mx-auto px-6 md:px-8 max-w-5xl">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-center text-foreground mb-4">
-          Simple, honest pricing
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-center text-foreground mb-4 max-w-3xl mx-auto">
+          Free tracks the habit. Premium adds the coach and the long view.
         </h2>
         <p className="text-center text-muted-foreground mb-12 max-w-xl mx-auto">
-          Start free. Upgrade when you're ready for more.
+          Start free and stay free as long as you like. Premium is $7.99 a month or $69.99 a year.
         </p>
 
         {/* Billing Toggle */}
@@ -153,12 +158,13 @@ export function LandingPricing() {
                   </div>
                   {interval === "annual" && tier.annualTotal && (
                     <p className="text-xs text-muted-foreground mt-1">
-                      Billed annually at {tier.annualTotal}/yr — Save {tier.savingsLabel}
+                      Billed annually at {tier.annualTotal}/yr. Save {tier.savingsLabel}.
                     </p>
                   )}
                 </div>
               </CardHeader>
               <CardContent className="flex flex-col flex-1 gap-4">
+                <p className="text-sm text-foreground">{tier.summary}</p>
                 <ul className="space-y-2 flex-1">
                   {tier.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
@@ -176,7 +182,7 @@ export function LandingPricing() {
                   {tier.plan && loading === `${tier.plan}-${interval}`
                     ? 'Redirecting…'
                     : tier.plan && interval === 'annual'
-                      ? `Go Premium — ${tier.annualTotal}/yr`
+                      ? `Go Premium: ${tier.annualTotal}/yr`
                       : tier.cta}
                 </Button>
                 {tier.plan && (

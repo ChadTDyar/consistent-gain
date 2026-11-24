@@ -87,7 +87,7 @@ export default function HowToStayConsistentWorkingOut() {
               {[
                 { step: "1", title: "Choose 1-3 small goals", body: "Not \"get ripped.\" Try \"move for 15 minutes\" or \"stretch after work.\" Momentum's free tier tracks up to 3 goals - enough to build a foundation." },
                 { step: "2", title: "Check in daily, no matter what", body: "Even if you didn't work out. Even on rest days. The habit is the check-in. It takes 10 seconds and it keeps the chain alive." },
-                { step: "3", title: "Never miss twice", body: "You will miss days. That's life. The rule is simple: never miss two in a row. Premium members can repair a missed day within 48 hours." },
+                { step: "3", title: "Never miss twice", body: "You will miss days. That's life. The rule is simple: never miss two in a row. Momentum gives you a 48-hour window to repair a single missed day." },
               ].map(({ step, title, body }) => (
                 <li key={step} className="flex gap-4">
                   <span className="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">{step}</span>
@@ -101,7 +101,7 @@ export default function HowToStayConsistentWorkingOut() {
 
             <h2 className="text-2xl font-display font-bold text-foreground mt-12 mb-4">What To Do When You Miss a Day</h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              First: don't panic. One missed day doesn't erase your progress. Your streak might break, but your identity doesn't. On Momentum Premium, you can repair a missed day within 48 hours - because real life happens. The important thing is getting back on track immediately. Show up the next day, even if it's just a 10-minute walk. The streak is recoverable. The habit is what matters.
+              First: don't panic. One missed day doesn't erase your progress. Your streak might break, but your identity doesn't. Momentum gives you a 48-hour window to repair a single missed day with a short makeup session or a grace token, because real life happens. The important thing is getting back on track immediately. Show up the next day, even if it's just a 10-minute walk. The streak is recoverable. The habit is what matters.
             </p>
 
             <div className="my-8">
@@ -110,7 +110,7 @@ export default function HowToStayConsistentWorkingOut() {
                   <h3 className="text-2xl font-display font-bold text-foreground mb-2">Plans that grow with you</h3>
                   <p className="text-muted-foreground mb-6">Start free. Upgrade when you're ready.</p>
                   <div className="space-y-3">
-                    {["Free - 3 habits, 7 days of history, daily check-ins", premiumPlanLine("Unlimited habits, Streak Repair, unlimited history, AI Coach, data export")].map((line) => (
+                    {["Free - 3 habits, daily readiness check-in, 48-hour streak repair, 7 days of history", premiumPlanLine("Unlimited habits, unlimited history, AI Coach chat, Weekly Insights report, data export")].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <span className="text-sm text-foreground">{line}</span>

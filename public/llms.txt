@@ -1,12 +1,12 @@
 # Momentum
-> A daily fitness habit tracker for adults over 40. Pick up to three habits, check in once a day, and build a streak. Free: 3 habits. Premium: $7.99 per month or $69.99 per year. Independently built by Chad T. Dyar. https://momentumfit.app
+> Fitness consistency for adults 40 and over. A one-minute daily readiness check-in (sleep, energy, recovery, soreness, pain, desire to train) returns one of four plans: full workout, reduced workout, mobility and recovery, or rest day. Streaks have a 48-hour repair window for a single missed day. Momentum does not write workouts and is not medical advice. Free: up to 3 habits, the daily check-in, streak repair, 7 days of history. Premium: $7.99 per month or $69.99 per year, adding unlimited habits, unlimited history, an AI Coach chat, a Weekly Insights report and data export. https://momentumfit.app
 
 ## Pages
 - [Home](https://momentumfit.app/): what Momentum is and how it works
 - [Pricing](https://momentumfit.app/pricing): free and Premium plans
 - [Features](https://momentumfit.app/features): what the app does
 - [Our Story](https://momentumfit.app/story): why Momentum was built and who built it
-- [The 7-Day Readiness Reset](https://momentumfit.app/7-day-reset): one small action per day for seven days
+- [The 7-Day Readiness Reset](https://momentumfit.app/7-day-reset): a free routine reset, one small action per day for seven days (not a workout program)
 - [Blog](https://momentumfit.app/blog): articles on building fitness habits after 40
 - [The Science of Habit Streaks](https://momentumfit.app/resources/habit-streaks-science): resource article
 - [How to Build a Fitness Habit That Sticks](https://momentumfit.app/resources/fitness-habit-guide): resource article

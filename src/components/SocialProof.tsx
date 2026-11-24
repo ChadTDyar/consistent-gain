@@ -18,10 +18,10 @@ interface Testimonial {
 const MIN_RATINGS_FOR_AGGREGATE = 3;
 
 const TRUST_FACTS = [
-  { icon: Gift, title: "Free to start", body: "The free plan covers up to three habits." },
+  { icon: Gift, title: "Free to start", body: "The free plan covers up to three habits, with no time limit." },
   { icon: CreditCard, title: "No credit card", body: "Sign up with just an email." },
-  { icon: ShieldCheck, title: "Your data, your call", body: "Export it or delete your account anytime from Settings." },
-  { icon: BookOpen, title: "Built by Chad T. Dyar", body: "Published author and Lean Six Sigma Black Belt." },
+  { icon: ShieldCheck, title: "Your data, your call", body: "Delete your account anytime from Settings. Premium adds data export." },
+  { icon: BookOpen, title: "Not medical advice", body: "A fitness habit tool. Check with your doctor before changing your routine." },
 ];
 
 export const SocialProof = () => {
