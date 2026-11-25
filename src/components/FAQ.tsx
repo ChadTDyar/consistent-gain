@@ -5,6 +5,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useEffect } from "react";
+import { getGoalLimit, getHistoryDays } from "@/lib/plans";
+
+const FREE_GOAL_LIMIT = getGoalLimit("free");
+const FREE_HISTORY_DAYS = getHistoryDays("free");
 
 interface FAQItem {
   question: string;
@@ -14,7 +18,7 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     question: "Is Momentum really free to use?",
-    answer: "Yes. The Free plan has no time limit and needs no credit card. You get up to 3 habits, the daily readiness check-in with today's plan, streaks with the 48-hour repair window, and 7 days of history."
+    answer: `Yes. The Free plan has no time limit and needs no credit card. You get up to ${FREE_GOAL_LIMIT} habits, the daily readiness check-in with today's plan, streaks with the 48-hour repair window, and ${FREE_HISTORY_DAYS} days of history.`
   },
   {
     question: "Who is Momentum for?",
@@ -46,7 +50,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: "What do I get with Premium?",
-    answer: "Premium is $7.99 a month or $69.99 a year. It removes the 3-habit limit and the 7-day history limit, and adds the AI Coach chat, the Weekly Insights report, and JSON export of your data."
+    answer: `Premium is $7.99 a month or $69.99 a year. It removes the ${FREE_GOAL_LIMIT}-habit limit and the ${FREE_HISTORY_DAYS}-day history limit, and adds the AI Coach chat, the Weekly Insights report, and JSON export of your data.`
   },
   {
     question: "Can I cancel my subscription anytime?",

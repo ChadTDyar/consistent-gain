@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { analytics } from "@/lib/analytics";
 import { SEO } from "@/components/SEO";
 import { SocialProof } from "@/components/SocialProof";
-import { PLANS, type PlanTier, type BillingInterval, normalizePlan } from "@/lib/plans";
+import { PLANS, type PlanTier, type BillingInterval, normalizePlan, getGoalLimit, getHistoryDays } from "@/lib/plans";
 import { handleCheckout } from "@/lib/checkout";
 import { isIOSNative } from "@/lib/platform";
 import { useAuthStatus } from "@/hooks/useAuthStatus";
@@ -20,6 +20,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+
+const FREE_GOAL_LIMIT = getGoalLimit("free");
+const FREE_HISTORY_DAYS = getHistoryDays("free");
 
 export default function Pricing() {
   const navigate = useNavigate();
@@ -92,10 +95,10 @@ export default function Pricing() {
   };
 
   const freeFeatures = [
-    "Track up to 3 fitness habits",
+    `Track up to ${FREE_GOAL_LIMIT} fitness habits`,
     "Daily readiness check-in and today's plan",
     "Streaks, with a 48-hour repair window for one missed day",
-    "7 days of history",
+    `${FREE_HISTORY_DAYS} days of history`,
     "Basic progress graphs",
   ];
 
@@ -112,7 +115,7 @@ export default function Pricing() {
   const faqData = [
     {
       question: "Is Momentum really free?",
-      answer: "Yes. The Free plan has no time limit and needs no credit card. It includes up to 3 habits, the daily readiness check-in with today's plan, streaks with the 48-hour repair window, and 7 days of history.",
+      answer: `Yes. The Free plan has no time limit and needs no credit card. It includes up to ${FREE_GOAL_LIMIT} habits, the daily readiness check-in with today's plan, streaks with the 48-hour repair window, and ${FREE_HISTORY_DAYS} days of history.`,
     },
     {
       question: "What is Streak Repair?",
@@ -128,7 +131,7 @@ export default function Pricing() {
     },
     {
       question: "What happens in my first week?",
-      answer: "You set up 1 to 3 fitness habits, do a one-minute readiness check-in each day, and get a plan for the day: full workout, reduced workout, mobility and recovery, or rest. Log what you did and your streak builds from there.",
+      answer: `You set up 1 to ${FREE_GOAL_LIMIT} fitness habits, do a one-minute readiness check-in each day, and get a plan for the day: full workout, reduced workout, mobility and recovery, or rest. Log what you did and your streak builds from there.`,
     },
   ];
 
@@ -137,7 +140,7 @@ export default function Pricing() {
       <SEO
         title="Pricing - Momentum | Free & Premium Plans"
         canonical="https://momentumfit.app/pricing"
-        description="Start free with 3 fitness habits and the daily readiness check-in. Premium ($7.99/mo or $69.99/yr) adds unlimited habits, unlimited history, the AI Coach chat and data export."
+        description={`Start free with ${FREE_GOAL_LIMIT} fitness habits and the daily readiness check-in. Premium ($7.99/mo or $69.99/yr) adds unlimited habits, unlimited history, the AI Coach chat and data export.`}
         keywords="fitness habit tracker pricing, momentum pricing, fitness app for adults over 40 cost"
       />
       {authStatus === 'signed_out' && <MarketingHeader />}
@@ -300,7 +303,7 @@ export default function Pricing() {
               <CardContent className="pt-6">
                 <h3 className="font-semibold text-foreground mb-3">What your first week looks like</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1 to 3 realistic fitness habits</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Set up 1 to {FREE_GOAL_LIMIT} realistic fitness habits</li>
                   <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Do a one-minute readiness check-in each day</li>
                   <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> Get a plan that fits how each day feels</li>
                   <li className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-success flex-shrink-0" /> See your consistency visualized</li>
@@ -338,9 +341,9 @@ export default function Pricing() {
                   </thead>
                   <tbody>
                     {[
-                      { feature: "Habits", free: "Up to 3", pro: "Unlimited" },
+                      { feature: "Habits", free: `Up to ${FREE_GOAL_LIMIT}`, pro: "Unlimited" },
                       { feature: "Daily readiness check-in and today's plan", free: true, pro: true },
-                      { feature: "History", free: "7 days", pro: "Unlimited" },
+                      { feature: "History", free: `${FREE_HISTORY_DAYS} days`, pro: "Unlimited" },
                       { feature: "Progress graphs", free: "Basic", pro: "Full" },
                       { feature: "Streak repair (48-hour window)", free: true, pro: true },
                       { feature: "Weekly Insights report", free: false, pro: true },

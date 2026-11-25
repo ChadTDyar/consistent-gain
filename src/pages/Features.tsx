@@ -3,6 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, BarChart3, ClipboardCheck, Target, Flame, MessageCircle } from "lucide-react";
+import { getGoalLimit, getHistoryDays } from "@/lib/plans";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
+
+const FREE_GOAL_LIMIT = getGoalLimit("free");
+const FREE_HISTORY_DAYS = getHistoryDays("free");
 
 const features = [
   {
@@ -23,12 +28,12 @@ const features = [
   {
     icon: CheckCircle,
     title: "Fitness Habits, Logged in Seconds",
-    description: "Track walking, strength work, stretching, swimming, a class, or any activity you name. Set your target days per week and tick it off. Short on time? A 5, 10 or 20 minute session still counts. Free for up to 3 habits."
+    description: `Track walking, strength work, stretching, swimming, a class, or any activity you name. Set your target days per week and tick it off. Short on time? A 5, 10 or 20 minute session still counts. Free for up to ${FREE_GOAL_LIMIT} habits.`
   },
   {
     icon: BarChart3,
     title: "Progress You Can Read",
-    description: "See streaks and weekly consistency for each habit. The Free plan shows the last 7 days. Premium shows your full history and adds the Weekly Insights report."
+    description: `See streaks and weekly consistency for each habit. The Free plan shows the last ${FREE_HISTORY_DAYS} days. Premium shows your full history and adds the Weekly Insights report.`
   },
   {
     icon: MessageCircle,
@@ -39,6 +44,7 @@ const features = [
 
 const Features = () => {
   const navigate = useNavigate();
+  const authStatus = useAuthStatus();
 
   return (
     <>
@@ -94,7 +100,9 @@ const Features = () => {
             >
               Start Free
             </Button>
-            <p className="text-sm text-muted-foreground mt-3">Free for up to 3 habits. No credit card required.</p>
+            {authStatus !== "signed_in" && (
+              <p className="text-sm text-muted-foreground mt-3">Free for up to {FREE_GOAL_LIMIT} habits. No credit card required.</p>
+            )}
           </div>
         </div>
       </div>
