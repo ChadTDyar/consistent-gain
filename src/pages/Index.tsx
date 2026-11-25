@@ -198,7 +198,9 @@ const Index = () => {
               Start with today, whatever kind of day it is.
             </h2>
             <p className="text-lg text-white/90 mb-8 max-w-xl mx-auto">
-              Check in, get today's plan, log what you did. Free for up to 3 habits, no credit card.
+              {isSignedIn
+                ? "Check in, get today's plan, log what you did."
+                : "Check in, get today's plan, log what you did. Free for up to 3 habits, no credit card."}
             </p>
             <Button
               size="lg"
