@@ -64,17 +64,17 @@ export default function Terms() {
 
               <h3 className="text-xl font-semibold mb-2">Managing and Cancelling</h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                You can manage your subscription and turn off auto-renewal in your Apple ID Account Settings on your device after purchase. Web subscriptions can be managed from Settings inside Momentum, using Manage Subscription. A normal cancellation stops future renewals and takes effect at the end of the current billing period, so you keep access to paid features until then. Deleting your account cancels right away.
+                You can manage your subscription and turn off auto-renewal in your Apple ID Account Settings on your device after purchase. Web subscriptions can be managed from Settings inside Momentum, using Manage Subscription.
               </p>
 
               <h3 className="text-xl font-semibold mb-2">Refunds</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Purchases made through the App Store are subject to Apple's refund policy and must be requested through Apple. Web purchases are non-refundable except where required by law. Good-faith refund requests for web purchases may be considered within 7 days of the original charge by writing to support@momentumfit.app.
+                7-day refund guarantee: if you are not satisfied, email support@momentumfit.app within 7 days of your first paid charge and we will refund it in full. After that, a normal cancellation stops future renewals at the end of the current billing period, and we do not refund partial periods. Purchases made through Apple are refunded under Apple's policy.
               </p>
 
               <h3 className="text-xl font-semibold mb-2 mt-4">Deleting Your Account</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Deleting your account cancels your subscription right away and removes your data. Deleting does not by itself refund past charges. If the subscription cannot be cancelled, the account is not deleted and you are asked to try again or contact support. Subscriptions bought through the App Store must be cancelled in your Apple ID settings. Some records held by our service providers, such as payment records, are kept under their own policies; see the Privacy Policy.
+                Deleting your account cancels your subscription right away and removes your data. Deleting does not by itself refund past charges. If you are within the 7-day refund window, email support@momentumfit.app and we will refund you. If the subscription cannot be cancelled, the account is not deleted and you are asked to try again or contact support. Subscriptions bought through the App Store must be cancelled in your Apple ID settings. Some records held by our service providers, such as payment records, are kept under their own policies; see the Privacy Policy.
               </p>
             </section>
 
