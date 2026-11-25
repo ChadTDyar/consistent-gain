@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { coachErrorAction } from "@/lib/coachErrors";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, X, Send, Loader2, Sparkles } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -113,25 +114,33 @@ export function CoachChat({ userContext, autoOpen = false, welcomeMessage, fullP
         }),
       });
 
-      if (resp.status === 429) {
-        const data = await resp.json();
-        if (data.limitReached) {
-          toast.error("Daily message limit reached!", {
-            description: isIOSNative()
-              ? "You've reached today's message limit. Try again tomorrow."
-              : "Upgrade to Premium for unlimited messages.",
-            ...(isIOSNative()
-              ? {}
-              : {
-                  action: {
-                    label: "Upgrade",
-                    onClick: () => navigate("/pricing"),
-                  },
-                }),
-          });
-        } else {
-          toast.error("Rate limit reached. Please try again in a moment.");
+      if (resp.status === 403 || resp.status === 503) {
+        const data = await resp.json().catch(() => null);
+        const action = coachErrorAction(resp.status, data);
+        if (action.kind === "upgrade") {
+          // Drop the message that was never sent to the Coach.
+          setMessages(messages);
+          setIsLoading(false);
+          if (onUpgradeWall) {
+            onUpgradeWall();
+          } else {
+            toast.error(action.message, {
+              ...(isIOSNative()
+                ? {}
+                : { action: { label: "Upgrade", onClick: () => navigate("/pricing") } }),
+            });
+          }
+          return;
         }
+        if (action.kind === "retry") {
+          toast.error(action.message);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      if (resp.status === 429) {
+        toast.error("Rate limit reached. Please try again in a moment.");
         setIsLoading(false);
         return;
       }

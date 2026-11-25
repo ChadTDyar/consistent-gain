@@ -5,6 +5,7 @@ import { SEO } from "@/components/SEO";
 import { CheckCircle, ArrowRight, XCircle, Zap, Brain, Shield } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { premiumPlanLine, canShowWebPricing } from "@/lib/pricingDisplay";
+import { PREMIUM_HISTORY_LABEL } from "@/lib/plans";
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -145,7 +146,7 @@ export default function BestHabitTrackerApp() {
                   <div className="space-y-3">
                     {[
                       "Free - 3 habits, 7 days of history, daily check-ins",
-                      premiumPlanLine("Unlimited habits, unlimited history, AI Coach chat, Weekly Insights report, data export"),
+                      premiumPlanLine(`Unlimited habits, ${PREMIUM_HISTORY_LABEL}, AI Coach chat, Weekly Insights report, data export`),
                     ].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />

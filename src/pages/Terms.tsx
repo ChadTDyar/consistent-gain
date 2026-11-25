@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { SEO } from "@/components/SEO";
+import { PREMIUM_HISTORY_LABEL } from "@/lib/plans";
 
 export default function Terms() {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ export default function Terms() {
             <section>
               <h2 className="text-2xl font-display font-semibold mb-4">Subscriptions and Billing</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Momentum offers a free tier and a Premium subscription. Premium unlocks additional features such as unlimited habits, unlimited history, data export, and AI Coach access.
+                Momentum offers a free tier and a Premium subscription. Premium unlocks additional features such as unlimited habits, {PREMIUM_HISTORY_LABEL}, data export, and AI Coach access.
               </p>
 
               <h3 className="text-xl font-semibold mb-2">Auto-Renewal</h3>
@@ -63,7 +64,7 @@ export default function Terms() {
 
               <h3 className="text-xl font-semibold mb-2">Managing and Cancelling</h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                You can manage your subscription and turn off auto-renewal in your Apple ID Account Settings on your device after purchase. Web subscriptions can be managed from Settings inside Momentum, using Manage Subscription. Cancelling stops future renewals. You retain access to paid features until the end of the current billing period.
+                You can manage your subscription and turn off auto-renewal in your Apple ID Account Settings on your device after purchase. Web subscriptions can be managed from Settings inside Momentum, using Manage Subscription. A normal cancellation stops future renewals and takes effect at the end of the current billing period, so you keep access to paid features until then. Deleting your account cancels right away.
               </p>
 
               <h3 className="text-xl font-semibold mb-2">Refunds</h3>
@@ -73,7 +74,7 @@ export default function Terms() {
 
               <h3 className="text-xl font-semibold mb-2 mt-4">Deleting Your Account</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Deleting your account from Settings cancels any active Momentum web subscription right away. Remaining time on the current billing period is not refunded. If the subscription cannot be cancelled, the account is not deleted and you are asked to try again or contact support. Subscriptions bought through the App Store must be cancelled in your Apple ID settings.
+                Deleting your account cancels your subscription right away and removes your data. Deleting does not by itself refund past charges. If the subscription cannot be cancelled, the account is not deleted and you are asked to try again or contact support. Subscriptions bought through the App Store must be cancelled in your Apple ID settings. Some records held by our service providers, such as payment records, are kept under their own policies; see the Privacy Policy.
               </p>
             </section>
 
@@ -135,7 +136,7 @@ export default function Terms() {
             <section>
               <h2 className="text-2xl font-display font-semibold mb-4">Governing Law</h2>
               <p className="text-muted-foreground leading-relaxed">
-                These Terms are governed by the laws of the State of Delaware, United States, without regard to conflict of law principles. Any dispute shall be resolved in the state or federal courts located in Delaware, except where local consumer protection law grants you a non-waivable right to pursue claims elsewhere.
+                These Terms are governed by the laws of the State of South Carolina, United States, without regard to conflict of law principles. Any dispute shall be resolved in the state or federal courts located in South Carolina, except where local consumer protection law grants you a non-waivable right to pursue claims elsewhere.
               </p>
             </section>
 

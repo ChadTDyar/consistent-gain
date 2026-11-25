@@ -1,3 +1,4 @@
+import { PREMIUM_HISTORY_DAYS, PREMIUM_HISTORY_LABEL } from "@/lib/plans";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -105,7 +106,7 @@ export default function Pricing() {
   const premiumFeatures = [
     "Everything in Free",
     "Unlimited habits",
-    "Unlimited history",
+    `${PREMIUM_HISTORY_DAYS} days of history`,
     "AI Coach chat",
     "Weekly Insights report",
     "JSON data export",
@@ -139,7 +140,7 @@ export default function Pricing() {
       <SEO
         title="Pricing - Momentum | Free & Premium Plans"
         canonical="https://momentumfit.app/pricing"
-        description={`Start free with ${FREE_GOAL_LIMIT} fitness habits and the daily readiness check-in. Premium ($7.99/mo or $69.99/yr) adds unlimited habits, unlimited history, the AI Coach chat and data export.`}
+        description={`Start free with ${FREE_GOAL_LIMIT} fitness habits and the daily readiness check-in. Premium ($7.99/mo or $69.99/yr) adds unlimited habits, ${PREMIUM_HISTORY_LABEL}, the AI Coach chat and data export.`}
         keywords="fitness habit tracker pricing, momentum pricing, fitness app for adults over 40 cost"
       />
       {authStatus === 'signed_out' && <MarketingHeader />}
@@ -342,7 +343,7 @@ export default function Pricing() {
                     {[
                       { feature: "Habits", free: `Up to ${FREE_GOAL_LIMIT}`, pro: "Unlimited" },
                       { feature: "Daily readiness check-in and today's plan", free: true, pro: true },
-                      { feature: "History", free: `${FREE_HISTORY_DAYS} days`, pro: "Unlimited" },
+                      { feature: "History", free: `${FREE_HISTORY_DAYS} days`, pro: `${PREMIUM_HISTORY_DAYS} days` },
                       { feature: "Progress graphs", free: "Basic", pro: "Full" },
                       { feature: "Streak repair (48-hour window)", free: true, pro: true },
                       { feature: "Weekly Insights report", free: false, pro: true },

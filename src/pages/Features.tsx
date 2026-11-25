@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, BarChart3, ClipboardCheck, Target, Flame, MessageCircle } from "lucide-react";
 import { getGoalLimit, getHistoryDays } from "@/lib/plans";
 import { useAuthStatus } from "@/hooks/useAuthStatus";
+import { PREMIUM_HISTORY_DAYS } from "@/lib/plans";
 
 const FREE_GOAL_LIMIT = getGoalLimit("free");
 const FREE_HISTORY_DAYS = getHistoryDays("free");
@@ -33,7 +34,7 @@ const features = [
   {
     icon: BarChart3,
     title: "Progress You Can Read",
-    description: `See streaks and weekly consistency for each habit. The Free plan shows the last ${FREE_HISTORY_DAYS} days. Premium shows your full history and adds the Weekly Insights report.`
+    description: `See streaks and weekly consistency for each habit. The Free plan shows the last ${FREE_HISTORY_DAYS} days. Premium shows ${PREMIUM_HISTORY_DAYS} days of history and adds the Weekly Insights report.`
   },
   {
     icon: MessageCircle,

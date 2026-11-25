@@ -143,7 +143,7 @@ export default function Privacy() {
           <section>
             <h2 className="text-2xl font-display font-semibold mb-4">Data Retention and Deleting Your Account</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              We keep your data for as long as your account is open. When you delete your account from Settings, we first cancel any active Momentum web subscription in Stripe. If that cancellation fails, the account is not deleted and you are asked to try again or contact support. Cancelling this way does not refund any remaining time on your current billing period. iOS subscriptions are managed by Apple; cancel those in your Apple ID settings.
+              We keep your data for as long as your account is open. Deleting your account cancels your subscription right away and removes your data. Deleting does not by itself refund past charges. If the subscription cannot be cancelled, the account is not deleted and you are asked to try again or contact support. iOS subscriptions are managed by Apple; cancel those in your Apple ID settings.
             </p>
             <p className="text-muted-foreground leading-relaxed">
               We then delete your profile, habits, check-ins, pain logs, workout logs, streak repairs, cost tracking, workout buddy links, AI Coach messages and your sign-in account from our database. Records held by our service providers, such as payment records at Stripe and Apple and analytics events at PostHog and Google Analytics, are not removed by deleting your account and are kept under their own policies. Email us if you want those removed too.
