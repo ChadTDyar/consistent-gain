@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
@@ -9,23 +9,22 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, Sparkles, Lock } from "lucide-react";
+import { Heart, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { isIOSNative } from "@/lib/platform";
-import { purchaseMonthly } from "@/lib/purchases";
 
 interface StreakRepairProps {
   daysMissed: number;
   open: boolean;
   onClose: () => void;
-  plan?: string;
 }
 
-export function StreakRepair({ daysMissed, open, onClose, plan = 'free' }: StreakRepairProps) {
+/**
+ * Check-in dialog shown after 3+ missed days. Streak Repair is a Free feature
+ * (decision 2026-11-25), so every plan gets the same "Let's go" action.
+ */
+export function StreakRepair({ daysMissed, open, onClose }: StreakRepairProps) {
   const [response, setResponse] = useState("");
   const [saving, setSaving] = useState(false);
-  const [purchasing, setPurchasing] = useState(false);
-  const [unlocked, setUnlocked] = useState(false);
 
   const getCompassionateMessage = (days: number) => {
     if (days <= 3) {
@@ -109,46 +108,13 @@ export function StreakRepair({ daysMissed, open, onClose, plan = 'free' }: Strea
             >
               Just browsing
             </Button>
-            {plan === 'free' && !unlocked ? (
-                <Button
-                  disabled={purchasing}
-                  onClick={async () => {
-                    if (isIOSNative()) {
-                      setPurchasing(true);
-                      try {
-                        const active = await purchaseMonthly();
-                        if (active) {
-                          setUnlocked(true);
-                          toast.success("You're all set. Repair your streak below.");
-                        } else {
-                          toast.info("Purchase not completed.");
-                        }
-                      } catch (error) {
-                        console.error("Purchase failed:", error);
-                        toast.error("Purchase failed. Please try again.");
-                      } finally {
-                        setPurchasing(false);
-                      }
-                    } else {
-                      onClose();
-                      window.location.href = '/pricing';
-                    }
-                  }}
-                  className="flex-1"
-                  variant="secondary"
-                >
-                  <Lock className="mr-2 h-4 w-4" />
-                  {purchasing ? "Processing..." : "Upgrade to Repair"}
-                </Button>
-            ) : (
-              <Button
-                onClick={handleSave}
-                disabled={saving}
-                className="flex-1"
-              >
-                {saving ? "Saving..." : "Let's go"}
-              </Button>
-            )}
+            <Button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex-1"
+            >
+              {saving ? "Saving..." : "Let's go"}
+            </Button>
           </div>
         </div>
       </DialogContent>

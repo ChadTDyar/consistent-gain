@@ -97,7 +97,6 @@ export default function PaywallModal({ open, onOpenChange, feature }: PaywallMod
 
   const featureMessages: Record<string, string> = {
     goals: "Unlock unlimited goals",
-    streak_repair: "Unlock Streak Repair",
     ai_coach: "Unlock AI Coach",
     history: "Unlock full history",
   };
