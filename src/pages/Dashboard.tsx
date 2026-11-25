@@ -638,7 +638,6 @@ export default function Dashboard() {
         daysMissed={daysSinceActivity}
         open={showStreakRepair}
         onClose={() => setShowStreakRepair(false)}
-        plan={plan}
       />
 
       <PaywallModal
@@ -655,7 +654,6 @@ export default function Dashboard() {
           cta={MOMENTUM.walls[upgradeWallType].cta}
           accentColor="#0d3b5e"
           coachPreview={upgradeWallType === 'ai_coach'}
-          streakRepairPreview={upgradeWallType === 'habit_limit'}
           gate={
             upgradeWallType === 'ai_coach'
               ? 'coach'

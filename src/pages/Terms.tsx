@@ -53,7 +53,7 @@ export default function Terms() {
             <section>
               <h2 className="text-2xl font-display font-semibold mb-4">Subscriptions and Billing</h2>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Momentum offers a free tier and a Premium subscription. Premium unlocks additional features such as unlimited habits, streak repair, unlimited history, data export, and AI Coach access.
+                Momentum offers a free tier and a Premium subscription. Premium unlocks additional features such as unlimited habits, unlimited history, data export, and AI Coach access.
               </p>
 
               <h3 className="text-xl font-semibold mb-2">Auto-Renewal</h3>

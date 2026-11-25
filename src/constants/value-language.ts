@@ -8,7 +8,7 @@ export const MOMENTUM = {
   premium: {
     price: 7.99,
     headline: "For people who want the full picture and a coach to go with it.",
-    desc: "Unlimited habits, AI Coach, unlimited history, Streak Repair, and CSV export.",
+    desc: "Unlimited habits, AI Coach, unlimited history, and CSV export.",
   },
   ctas: {
     hero: "Start Building Habits Free",
@@ -17,7 +17,7 @@ export const MOMENTUM = {
   walls: {
     habit_limit: {
       headline: "You've built your first 3 habits.",
-      body: "Premium gives you unlimited habits, Streak Repair so a missed day doesn't end your progress, unlimited history, and a weekly email that shows you what's actually working.",
+      body: "Premium gives you unlimited habits, unlimited history, and a weekly email that shows you what's actually working.",
       cta: "Upgrade to Premium →",
     },
     ai_coach: {
