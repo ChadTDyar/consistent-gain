@@ -107,8 +107,8 @@ export function DataExport({ plan = 'free' }: DataExportProps) {
             )}
             <p className="text-xs text-muted-foreground mt-2">
               {isIOSNative()
-                ? "CSV and JSON data export is available on the Premium plan."
-                : "CSV and JSON data export is available on the Premium plan."}
+                ? "JSON data export is available on the Premium plan."
+                : "JSON data export is available on the Premium plan."}
             </p>
           </>
         )}

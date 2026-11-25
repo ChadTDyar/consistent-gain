@@ -107,11 +107,7 @@ export default function Success() {
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span>Priority support</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    <span>Advanced analytics (coming soon)</span>
+                    <span>Weekly Insights report and JSON data export</span>
                   </li>
                 </ul>
               </div>

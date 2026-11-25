@@ -29,13 +29,13 @@ export default function Terms() {
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4 text-foreground">
             Terms of Service
           </h1>
-          <p className="text-muted-foreground mb-8">Last updated: 2026-05-09</p>
+          <p className="text-muted-foreground mb-8">Last updated: November 25, 2026</p>
 
           <div className="prose prose-lg max-w-none space-y-6 text-foreground">
             <section>
               <h2 className="text-2xl font-display font-semibold mb-4">Acceptance of Terms</h2>
               <p className="text-muted-foreground leading-relaxed">
-                By creating an account, downloading, or using Momentum ("the Service"), you agree to these Terms of Service. If you do not agree, do not use the Service. These Terms form a binding agreement between you and Momentum.
+                By creating an account, downloading, or using Momentum ("the Service"), you agree to these Terms of Service. If you do not agree, do not use the Service. These Terms form a binding agreement between you and Autonomous Revenue Labs, which operates Momentum.
               </p>
             </section>
 
@@ -63,12 +63,17 @@ export default function Terms() {
 
               <h3 className="text-xl font-semibold mb-2">Managing and Cancelling</h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                You can manage your subscription and turn off auto-renewal in your Apple ID Account Settings on your device after purchase. Web subscriptions can be managed from the Account page inside Momentum. Cancelling stops future renewals. You retain access to paid features until the end of the current billing period.
+                You can manage your subscription and turn off auto-renewal in your Apple ID Account Settings on your device after purchase. Web subscriptions can be managed from Settings inside Momentum, using Manage Subscription. Cancelling stops future renewals. You retain access to paid features until the end of the current billing period.
               </p>
 
               <h3 className="text-xl font-semibold mb-2">Refunds</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Purchases made through the App Store are subject to Apple's refund policy and must be requested through Apple. Web purchases are non-refundable except where required by law. Good-faith refund requests for web purchases may be considered within 7 days of the original charge by writing to support@momentumfit.app.
+              </p>
+
+              <h3 className="text-xl font-semibold mb-2 mt-4">Deleting Your Account</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Deleting your account from Settings cancels any active Momentum web subscription right away. Remaining time on the current billing period is not refunded. If the subscription cannot be cancelled, the account is not deleted and you are asked to try again or contact support. Subscriptions bought through the App Store must be cancelled in your Apple ID settings.
               </p>
             </section>
 
@@ -82,7 +87,7 @@ export default function Terms() {
             <section>
               <h2 className="text-2xl font-display font-semibold mb-4">Intellectual Property</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Momentum and its content, design, logos, and software are owned by us and protected by copyright, trademark, and other laws. We grant you a limited, non-exclusive, non-transferable, revocable license to use the Service for personal, non-commercial purposes. You retain ownership of the data you create within the Service (habits, logs, notes, photos).
+                Momentum and its content, design, logos, and software are owned by us and protected by copyright, trademark, and other laws. We grant you a limited, non-exclusive, non-transferable, revocable license to use the Service for personal, non-commercial purposes. You retain ownership of the data you create within the Service (habits, check-ins, logs and notes).
               </p>
             </section>
 
@@ -102,7 +107,7 @@ export default function Terms() {
             <section>
               <h2 className="text-2xl font-display font-semibold mb-4">Health Disclaimer</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Momentum is a fitness habit tracking tool. It is not medical advice, diagnosis, or treatment. The Service does not replace consultation with qualified healthcare professionals. Consult your physician before beginning any new exercise program, especially if you have existing health conditions, take medication, or are pregnant. You assume all risk for activities you choose to track. We are not responsible for injuries, health issues, or other adverse outcomes that may result from your use of the Service.
+                Momentum is a fitness habit tracking tool. It is not medical advice, diagnosis, or treatment. The Service does not replace consultation with qualified healthcare professionals. Consult your physician before beginning any new exercise program, especially if you have existing health conditions, take medication, or are pregnant. You assume all risk for activities you choose to track. We are not responsible for injuries, health issues, or other adverse outcomes that may result from your use of the Service. The daily plan from the readiness check-in is a simple rule-based suggestion from your own ratings, not a medical assessment. If you have pain that persists, check with a clinician.
               </p>
             </section>
 
@@ -148,7 +153,7 @@ export default function Terms() {
                 <a href="mailto:support@momentumfit.app" className="text-primary hover:underline">
                   support@momentumfit.app
                 </a>
-                .
+                . By mail: Autonomous Revenue Labs, PO Box 12185, Charleston, SC 29422.
               </p>
             </section>
           </div>

@@ -458,7 +458,7 @@ export default function Settings() {
                 const planBlurb =
                   planTier === 'free'
                     ? "Upgrade to unlock more features."
-                    : "You're on our top plan — full access including AI Coach, unlimited history, and CSV export.";
+                    : "You're on Premium: full access including AI Coach, unlimited history, and JSON data export.";
                 return (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border-l-4 border-l-primary">

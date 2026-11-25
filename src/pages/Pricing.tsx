@@ -109,7 +109,6 @@ export default function Pricing() {
     "AI Coach chat",
     "Weekly Insights report",
     "JSON data export",
-    "Priority support",
   ];
 
   const faqData = [
@@ -349,7 +348,6 @@ export default function Pricing() {
                       { feature: "Weekly Insights report", free: false, pro: true },
                       { feature: "AI Coach", free: false, pro: true },
                       { feature: "JSON data export", free: false, pro: true },
-                      { feature: "Priority support", free: false, pro: true },
                     ].map((row, i) => (
                       <tr key={i} className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors">
                         <td className="p-4 font-medium text-foreground">{row.feature}</td>
