@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PLANS, type BillingInterval } from "@/lib/plans";
 import { purchaseMonthly, purchaseAnnual, restorePurchases } from "@/lib/purchases";
 import { handleCheckout } from "@/lib/checkout";
+import { PREMIUM_HISTORY_LABEL } from "@/lib/plans";
 
 
 interface PaywallModalProps {
@@ -98,7 +99,7 @@ export default function PaywallModal({ open, onOpenChange, feature }: PaywallMod
   const featureMessages: Record<string, string> = {
     goals: "Unlock unlimited goals",
     ai_coach: "Unlock AI Coach",
-    history: "Unlock full history",
+    history: `Unlock ${PREMIUM_HISTORY_LABEL}`,
   };
 
   const subtitle = featureMessages[feature || ''] || "Unlock all premium features";

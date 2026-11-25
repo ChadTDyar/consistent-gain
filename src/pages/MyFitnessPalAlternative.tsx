@@ -7,6 +7,7 @@ import { analytics } from "@/lib/analytics";
 import { premiumTierLabel } from "@/lib/pricingDisplay";
 import { getGoalLimit, getHistoryDays } from "@/lib/plans";
 import { useAuthStatus } from "@/hooks/useAuthStatus";
+import { PREMIUM_HISTORY_DAYS, PREMIUM_HISTORY_LABEL } from "@/lib/plans";
 
 const schema = [
   {
@@ -51,7 +52,7 @@ const FREE_HISTORY_DAYS = getHistoryDays("free");
 const comparisonRows = [
   { feature: "Food/macro logging", momentumFree: "No", momentumPremium: "No", mfpPremium: "Yes", mfpPremiumPlus: "Yes" },
   { feature: "Habit & streak tracking", momentumFree: `${FREE_GOAL_LIMIT} habits, basic`, momentumPremium: "Unlimited habits", mfpPremium: "No", mfpPremiumPlus: "No" },
-  { feature: "History retention", momentumFree: `${FREE_HISTORY_DAYS} days`, momentumPremium: "Unlimited", mfpPremium: "N/A", mfpPremiumPlus: "N/A" },
+  { feature: "History retention", momentumFree: `${FREE_HISTORY_DAYS} days`, momentumPremium: `${PREMIUM_HISTORY_DAYS} days`, mfpPremium: "N/A", mfpPremiumPlus: "N/A" },
   { feature: "AI coaching", momentumFree: "No", momentumPremium: "Yes", mfpPremium: "No", mfpPremiumPlus: "No" },
   { feature: "Data export", momentumFree: "No", momentumPremium: "JSON", mfpPremium: "No", mfpPremiumPlus: "No" },
   { feature: "Meal planning / recipes", momentumFree: "No", momentumPremium: "No", mfpPremium: "No", mfpPremiumPlus: "Yes" },
@@ -106,7 +107,7 @@ export default function MyFitnessPalAlternative() {
             <section className="mt-12">
               <h2 className="text-2xl font-display font-bold text-foreground mb-4">What does Momentum actually track?</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Workouts and habits, day by day, with a streak that survives a missed day instead of resetting to zero. Free covers basic tracking, three habits. {premiumTierLabel()} adds unlimited habits, an AI Coach chat, unlimited history, and data export.
+                Workouts and habits, day by day, with a streak that survives a missed day instead of resetting to zero. Free covers basic tracking, three habits. {premiumTierLabel()} adds unlimited habits, an AI Coach chat, {PREMIUM_HISTORY_LABEL}, and data export.
               </p>
             </section>
 

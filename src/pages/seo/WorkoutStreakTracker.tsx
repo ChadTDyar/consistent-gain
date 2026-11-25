@@ -5,6 +5,7 @@ import { SEO } from "@/components/SEO";
 import { CheckCircle, ArrowRight, Flame, Calendar, TrendingUp, Heart } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { premiumPlanLine, canShowWebPricing } from "@/lib/pricingDisplay";
+import { PREMIUM_HISTORY_LABEL } from "@/lib/plans";
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -119,7 +120,7 @@ export default function WorkoutStreakTracker() {
                   <h3 className="text-2xl font-display font-bold text-foreground mb-2">Plans that grow with you</h3>
                   <p className="text-muted-foreground mb-6">Start free. Upgrade when you're ready.</p>
                   <div className="space-y-3">
-                    {["Free - 3 habits, daily readiness check-in, 48-hour streak repair, 7 days of history", premiumPlanLine("Unlimited habits, unlimited history, AI Coach chat, Weekly Insights report, data export")].map((line) => (
+                    {["Free - 3 habits, daily readiness check-in, 48-hour streak repair, 7 days of history", premiumPlanLine(`Unlimited habits, ${PREMIUM_HISTORY_LABEL}, AI Coach chat, Weekly Insights report, data export`)].map((line) => (
                       <div key={line} className="flex items-start gap-3">
                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                         <span className="text-sm text-foreground">{line}</span>

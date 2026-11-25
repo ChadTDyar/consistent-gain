@@ -67,15 +67,11 @@ export default function Account() {
                 </p>
                 <p className="flex items-center gap-3 text-base">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  AI coaching and adaptive programs
+                  AI Coach chat
                 </p>
                 <p className="flex items-center gap-3 text-base">
                   <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  Advanced analytics and insights
-                </p>
-                <p className="flex items-center gap-3 text-base">
-                  <CheckCircle className="h-5 w-5 text-success flex-shrink-0" />
-                  Priority support
+                  Weekly Insights report and JSON data export
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">

@@ -17,6 +17,10 @@ export interface ReadinessResult {
   painFlag: boolean;
 }
 
+/** Shown with the plan whenever pain or soreness is at its most severe answer. */
+export const SEVERE_BODY_NOTE =
+  "Go easy on it today. If the pain or soreness persists, check with a clinician.";
+
 const clamp = (n: number) => Math.min(5, Math.max(1, n));
 
 /**
@@ -38,6 +42,9 @@ export function scoreReadiness(inputs: ReadinessInputs): ReadinessResult {
 
 
   const painFlag = pain <= 2; // "notable" discomfort or worse
+  // The most severe answer on either body input ("Yes, notable" pain or
+  // "A lot" of soreness). No workout of any size is suggested on these days.
+  const severeBodySignal = pain === 1 || soreness === 1;
 
   let recommendation: Recommendation;
   if (rawScore >= 4.0) recommendation = "full";
@@ -48,6 +55,12 @@ export function scoreReadiness(inputs: ReadinessInputs): ReadinessResult {
   // Hard override: notable pain never returns a full workout, regardless of score.
   if (painFlag && recommendation === "full") {
     recommendation = "reduced";
+  }
+
+  // Hard override: the most severe pain or soreness answer caps the day at
+  // mobility. A lower score can still land on rest.
+  if (severeBodySignal && (recommendation === "full" || recommendation === "reduced")) {
+    recommendation = "mobility";
   }
 
   const COPY: Record<Recommendation, { headline: string; detail: string }> = {
@@ -77,9 +90,11 @@ export function scoreReadiness(inputs: ReadinessInputs): ReadinessResult {
     score: Math.round(rawScore * 10) / 10,
     recommendation,
     headline: copy.headline,
-    detail: painFlag
-      ? `${copy.detail} Sounds like today's a day to go easy on that discomfort. If it doesn't ease up, that's worth mentioning to a doctor, not an app.`
-      : copy.detail,
+    detail: severeBodySignal
+      ? `${copy.detail} ${SEVERE_BODY_NOTE}`
+      : painFlag
+        ? `${copy.detail} Sounds like today's a day to go easy on that discomfort. If it doesn't ease up, that's worth mentioning to a doctor, not an app.`
+        : copy.detail,
     painFlag,
   };
 }

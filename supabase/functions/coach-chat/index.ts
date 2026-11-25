@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.58.0";
 import { z } from "https://esm.sh/zod@3.22.4";
+import { coachAccessDenial } from "./premium-gate.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -73,29 +74,14 @@ serve(async (req) => {
       console.error("Error fetching profile:", profileError);
     }
 
-    // Check rate limiting for non-premium users
-    if (!profile?.is_premium) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const { data: messageCount, error: countError } = await supabase
-        .from("chat_messages")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", userId)
-        .eq("role", "user")
-        .gte("created_at", today.toISOString());
-
-      if (countError) {
-        console.error("Error checking rate limit:", countError);
-      } else if (messageCount && (messageCount as any).count >= 10) {
-        return new Response(
-          JSON.stringify({
-            error: "Daily message limit reached. Upgrade to Premium for unlimited messages!",
-            limitReached: true
-          }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
+    // The AI Coach is Premium only, on the server as well as in the UI.
+    // Free users get 0 messages. See premium-gate.ts.
+    const denial = coachAccessDenial(profile, profileError);
+    if (denial) {
+      return new Response(
+        JSON.stringify(denial.body),
+        { status: denial.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     // Save user message to database

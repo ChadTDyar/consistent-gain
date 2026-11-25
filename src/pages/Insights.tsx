@@ -88,7 +88,7 @@ export default function Insights() {
 
     // Gate the entire Insights page on Premium (pro).
     // Free users are redirected to /pricing — analytics are a paid feature
-    // per the Pricing page promise ("unlimited history" / "Weekly progress email").
+    // per the Pricing page promise (longer history and the Weekly Insights report).
     try {
       const { data: profile } = await supabase
         .from("profiles")

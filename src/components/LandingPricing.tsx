@@ -9,6 +9,7 @@ import { handleCheckout } from "@/lib/checkout";
 import { isIOSNative } from "@/lib/platform";
 
 import type { BillingInterval } from "@/lib/plans";
+import { PREMIUM_HISTORY_DAYS, PREMIUM_HISTORY_LABEL } from "@/lib/plans";
 
 const tiers = [
   {
@@ -42,11 +43,11 @@ const tiers = [
     cta: "Go Premium: $7.99/mo",
     plan: 'pro' as null | 'pro',
     priceIds: { monthly: 'price_1TFkM0L98dr6Pw0kXiu1hjbs', annual: 'price_1TNbD3L98dr6Pw0krnhh7i50' },
-    summary: "For when you want more habits, a coach to talk to and your full history.",
+    summary: "For when you want more habits, a coach to talk to and " + PREMIUM_HISTORY_LABEL + ".",
     features: [
       "Everything in Free",
       "Unlimited habits",
-      "Unlimited history",
+      `${PREMIUM_HISTORY_DAYS} days of history`,
       "AI Coach chat that is told your streak and today's plan",
       "Weekly Insights report",
       "JSON export of your data",

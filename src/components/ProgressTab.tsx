@@ -17,6 +17,7 @@ function parseLocalDate(value: string): Date {
 import { type PlanTier, getHistoryDays } from "@/lib/plans";
 import { UpgradeWall } from "@/components/UpgradeWall";
 import { MOMENTUM } from "@/constants/value-language";
+import { PREMIUM_HISTORY_DAYS } from "@/lib/plans";
 
 interface ActivityLog {
   id: string;
@@ -82,7 +83,7 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
         return;
       }
 
-      const historyDays = getHistoryDays(plan) ?? 365;
+      const historyDays = getHistoryDays(plan) ?? PREMIUM_HISTORY_DAYS;
       const daysAgo = subDays(new Date(), historyDays);
       const query = supabase
         .from("activity_logs")
@@ -364,7 +365,7 @@ export function ProgressTab({ plan = 'free' }: ProgressTabProps) {
       <Card className="border-none shadow-md">
         <CardHeader>
           <CardTitle className="text-2xl font-display font-semibold">
-            Wellness Ratings (Last {getHistoryDays(plan) ?? '∞'} Days)
+            Wellness Ratings (Last {getHistoryDays(plan) ?? PREMIUM_HISTORY_DAYS} Days)
             {plan === 'free' && <Lock className="inline ml-2 h-4 w-4 text-muted-foreground" />}
           </CardTitle>
           <CardDescription className="text-base">

@@ -21,6 +21,7 @@ import { localNotificationsService } from "@/services/localNotifications.service
 import { healthKitService } from "@/services/healthkit.service";
 import { isIOSNative } from "@/lib/platform";
 import { Heart } from "lucide-react";
+import { PREMIUM_HISTORY_LABEL } from "@/lib/plans";
 
 interface Profile {
   id: string;
@@ -458,7 +459,7 @@ export default function Settings() {
                 const planBlurb =
                   planTier === 'free'
                     ? "Upgrade to unlock more features."
-                    : "You're on our top plan — full access including AI Coach, unlimited history, and CSV export.";
+                    : `You're on Premium: full access including AI Coach, ${PREMIUM_HISTORY_LABEL}, and JSON data export.`;
                 return (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg border-l-4 border-l-primary">
@@ -555,7 +556,7 @@ export default function Settings() {
                           </span>
                           {profile?.is_premium && (
                             <span className="block rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm">
-                              <strong className="text-destructive">Heads up:</strong> Your Premium subscription will be cancelled. Any remaining time on your current billing period will not be refunded.
+                              <strong className="text-destructive">Heads up:</strong> Your Premium subscription will be cancelled right away. Deleting does not by itself refund past charges. If you are within the 7-day refund window, email support@momentumfit.app and we will refund you.
                             </span>
                           )}
                           <button

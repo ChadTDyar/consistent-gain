@@ -68,6 +68,16 @@ export function getGoalLimit(plan: PlanTier): number | null {
   return plan === 'free' ? 3 : null;
 }
 
+/**
+ * How far back the Progress tab reaches for Premium. getHistoryDays('pro')
+ * returns null (no plan limit); the view itself is capped here. All Premium
+ * history copy derives from this so the promise matches what users see.
+ */
+export const PREMIUM_HISTORY_DAYS = 365;
+
+/** "365 days of history", for plan copy. */
+export const PREMIUM_HISTORY_LABEL = `${PREMIUM_HISTORY_DAYS} days of history`;
+
 export function getHistoryDays(plan: PlanTier): number | null {
   if (plan === 'free') return 7;
   if (plan === 'plus') return 30;
