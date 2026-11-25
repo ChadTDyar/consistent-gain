@@ -5,6 +5,8 @@ import { Check, X } from "lucide-react";
 import momentumLogo from "@/assets/momentum-logo.png";
 import { analytics } from "@/lib/analytics";
 import { premiumTierLabel } from "@/lib/pricingDisplay";
+import { getGoalLimit, getHistoryDays } from "@/lib/plans";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
 
 const schema = [
   {
@@ -43,10 +45,13 @@ const schema = [
   }
 ];
 
+const FREE_GOAL_LIMIT = getGoalLimit("free");
+const FREE_HISTORY_DAYS = getHistoryDays("free");
+
 const comparisonRows = [
   { feature: "Food/macro logging", momentumFree: "No", momentumPremium: "No", mfpPremium: "Yes", mfpPremiumPlus: "Yes" },
-  { feature: "Habit & streak tracking", momentumFree: "3 habits, basic", momentumPremium: "Unlimited habits", mfpPremium: "No", mfpPremiumPlus: "No" },
-  { feature: "History retention", momentumFree: "7 days", momentumPremium: "Unlimited", mfpPremium: "N/A", mfpPremiumPlus: "N/A" },
+  { feature: "Habit & streak tracking", momentumFree: `${FREE_GOAL_LIMIT} habits, basic`, momentumPremium: "Unlimited habits", mfpPremium: "No", mfpPremiumPlus: "No" },
+  { feature: "History retention", momentumFree: `${FREE_HISTORY_DAYS} days`, momentumPremium: "Unlimited", mfpPremium: "N/A", mfpPremiumPlus: "N/A" },
   { feature: "AI coaching", momentumFree: "No", momentumPremium: "Yes", mfpPremium: "No", mfpPremiumPlus: "No" },
   { feature: "Data export", momentumFree: "No", momentumPremium: "JSON", mfpPremium: "No", mfpPremiumPlus: "No" },
   { feature: "Meal planning / recipes", momentumFree: "No", momentumPremium: "No", mfpPremium: "No", mfpPremiumPlus: "Yes" },
@@ -54,6 +59,7 @@ const comparisonRows = [
 
 export default function MyFitnessPalAlternative() {
   const navigate = useNavigate();
+  const authStatus = useAuthStatus();
 
   return (
     <>
@@ -171,7 +177,9 @@ export default function MyFitnessPalAlternative() {
               >
                 Start Your First Habit Free
               </Button>
-              <p className="text-sm text-muted-foreground mt-3">Free for up to 3 habits. No credit card required.</p>
+              {authStatus !== "signed_in" && (
+                <p className="text-sm text-muted-foreground mt-3">Free for up to {FREE_GOAL_LIMIT} habits. No credit card required.</p>
+              )}
             </section>
           </div>
         </main>
