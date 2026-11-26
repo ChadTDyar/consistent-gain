@@ -22,6 +22,7 @@ import { healthKitService } from "@/services/healthkit.service";
 import { isIOSNative } from "@/lib/platform";
 import { Heart } from "lucide-react";
 import { PREMIUM_HISTORY_LABEL } from "@/lib/plans";
+import { exportUserData } from "@/lib/exportUserData";
 
 interface Profile {
   id: string;
@@ -44,6 +45,7 @@ export default function Settings() {
   const [saving, setSaving] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [exported, setExported] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [pendingCount, setPendingCount] = useState(0);
@@ -202,39 +204,8 @@ export default function Settings() {
     
     setExporting(true);
     try {
-      const { data: goalsData } = await supabase
-        .from("goals")
-        .select("*")
-        .eq("user_id", profile.id);
-      
-      const { data: logsData } = await supabase
-        .from("activity_logs")
-        .select("*")
-        .eq("user_id", profile.id);
-
-      const { data: messagesData } = await supabase
-        .from("chat_messages")
-        .select("*")
-        .eq("user_id", profile.id);
-      
-      const exportData = {
-        profile,
-        goals: goalsData,
-        activity_logs: logsData,
-        chat_messages: messagesData,
-        exported_at: new Date().toISOString()
-      };
-      
-      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `momentum-data-${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
+      await exportUserData(profile.id);
+      setExported(true);
       toast.success("Data exported successfully");
     } catch (error) {
       console.error('Export error:', error);
@@ -559,12 +530,19 @@ export default function Settings() {
                               <strong className="text-destructive">Heads up:</strong> Your Premium subscription will be cancelled right away. Deleting does not by itself refund past charges. If you are within the 7-day refund window, email support@momentumfit.app and we will refund you.
                             </span>
                           )}
+                          {/* Every plan can export here before deleting (Privacy page, "Your Choices").
+                              The dialog stays open so the user can continue to delete. */}
                           <button
                             type="button"
-                            onClick={() => { setDeleteStep(0); handleExportData(); }}
-                            className="block w-full text-left text-sm text-primary underline underline-offset-2 hover:text-primary/80"
+                            onClick={handleExportData}
+                            disabled={exporting}
+                            className="block w-full text-left text-sm text-primary underline underline-offset-2 hover:text-primary/80 disabled:opacity-60"
                           >
-                            ⬇ Export your data first (recommended)
+                            {exporting
+                              ? "Exporting your data..."
+                              : exported
+                                ? "✓ Your data was downloaded. Export again"
+                                : "⬇ Export your data first (recommended)"}
                           </button>
                         </AlertDialogDescription>
                       </AlertDialogHeader>
