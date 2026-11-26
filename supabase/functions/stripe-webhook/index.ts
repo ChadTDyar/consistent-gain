@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { ConfigError, processOnce, stripeFor, verifyStripeEvent } from "./webhook-guard.ts";
 
 // Must stay in sync with PLANS.pro.product_id in src/lib/plans.ts
 const PREMIUM_PRODUCT = 'prod_U3w9PqaaJVSOto';
@@ -154,184 +155,241 @@ async function syncProfileByStripeEmail(
   return ok200();
 }
 
+async function handleEvent(db: any, stripe: Stripe, event: Stripe.Event): Promise<Response> {
+  switch (event.type) {
+    case 'checkout.session.completed': {
+      const session = event.data.object as Stripe.Checkout.Session;
+      logStep("Checkout completed", { sessionId: session.id, customerId: session.customer });
+
+      if (session.mode === 'subscription' && session.customer) {
+        const customerId = session.customer as string;
+        const subscriptionId = session.subscription as string;
+
+        const { data: customerData, error: customerError } = await db
+          .from('stripe_customers')
+          .select('user_id')
+          .eq('stripe_customer_id', customerId)
+          .single();
+
+        if (customerError || !customerData) {
+          logStep("No stripe_customers row; using email fallback", { error: customerError?.message });
+          return await syncProfileByStripeEmail(db, stripe, customerId, event.type);
+        }
+
+        // Get the subscription to determine the plan
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        const productId = subscription.items.data[0]?.price.product as string;
+        // Shared Stripe account: a Momentum customer can also buy another
+        // app's product. Only Momentum products touch Momentum data.
+        if (!(productId in MOMENTUM_PRODUCT_PLANS)) {
+          logStep("Not a Momentum product; ignoring", { subscriptionId, productId });
+          return ok200();
+        }
+        const plan = resolvePlanFromProductId(productId);
+
+        await db
+          .from('stripe_customers')
+          .update({
+            stripe_subscription_id: subscriptionId,
+            updated_at: new Date().toISOString()
+          })
+          .eq('stripe_customer_id', customerId);
+
+        const { error: profileError } = await db
+          .from('profiles')
+          .update({
+            subscription_status: subscription.status,
+            is_premium: true,
+            plan,
+          })
+          .eq('id', customerData.user_id);
+
+        if (profileError) {
+          return profileWriteFailed(event.type, customerData.user_id, profileError.message);
+        }
+        logStep("Profile updated", { plan, userId: customerData.user_id });
+      }
+      break;
+    }
+
+    case 'customer.subscription.created':
+    case 'customer.subscription.updated': {
+      const subscription = event.data.object as Stripe.Subscription;
+      logStep("Subscription updated", { subscriptionId: subscription.id, status: subscription.status });
+
+      const { data: customerData, error: customerError } = await db
+        .from('stripe_customers')
+        .select('user_id')
+        .eq('stripe_subscription_id', subscription.id)
+        .single();
+
+      if (customerError || !customerData) {
+        logStep("No stripe_customers row; using email fallback", { error: customerError?.message });
+        return await syncProfileByStripeEmail(db, stripe, subscription.customer as string, event.type);
+      }
+
+      const productId = subscription.items.data[0]?.price.product as string;
+      const plan = resolvePlanFromProductId(productId);
+      const isActive = subscription.status === 'active' || subscription.status === 'trialing';
+
+      await db
+        .from('stripe_customers')
+        .update({
+          current_period_end: periodEndIso(subscription),
+          updated_at: new Date().toISOString()
+        })
+        .eq('stripe_subscription_id', subscription.id);
+
+      const { error: profileError } = await db
+        .from('profiles')
+        .update({
+          subscription_status: subscription.status,
+          is_premium: isActive,
+          plan: isActive ? plan : 'free',
+        })
+        .eq('id', customerData.user_id);
+
+      if (profileError) {
+        return profileWriteFailed(event.type, customerData.user_id, profileError.message);
+      }
+      logStep("Profile updated", { plan, isActive });
+      break;
+    }
+
+    case 'customer.subscription.deleted': {
+      const subscription = event.data.object as Stripe.Subscription;
+      logStep("Subscription deleted", { subscriptionId: subscription.id });
+
+      const { data: customerData, error: customerError } = await db
+        .from('stripe_customers')
+        .select('user_id')
+        .eq('stripe_subscription_id', subscription.id)
+        .single();
+
+      if (customerError || !customerData) {
+        logStep("No stripe_customers row; using email fallback", { error: customerError?.message });
+        return await syncProfileByStripeEmail(db, stripe, subscription.customer as string, event.type);
+      }
+
+      await db
+        .from('stripe_customers')
+        .update({
+          stripe_subscription_id: null,
+          current_period_end: null,
+          updated_at: new Date().toISOString()
+        })
+        .eq('stripe_subscription_id', subscription.id);
+
+      const { error: profileError } = await db
+        .from('profiles')
+        .update({
+          subscription_status: 'canceled',
+          is_premium: false,
+          plan: 'free',
+        })
+        .eq('id', customerData.user_id);
+
+      if (profileError) {
+        return profileWriteFailed(event.type, customerData.user_id, profileError.message);
+      }
+      logStep("Profile reverted to free");
+      break;
+    }
+
+    case 'invoice.payment_failed': {
+      // Stripe retries a failed renewal. Mark it past_due and keep Premium;
+      // the subscription.updated/deleted events that follow decide the downgrade.
+      const invoice = event.data.object as any;
+      const subRef = invoice.parent?.subscription_details?.subscription ?? invoice.subscription;
+      const subscriptionId = typeof subRef === 'string' ? subRef : subRef?.id;
+      if (!subscriptionId) {
+        logStep("Invoice has no subscription; ignoring", { invoiceId: invoice.id });
+        break;
+      }
+
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      const isMomentum = subscription.metadata?.app_name === 'momentum' ||
+        subscription.items.data.some((item: any) => {
+          const product = itemProductId(item);
+          return product ? product in MOMENTUM_PRODUCT_PLANS : false;
+        });
+      if (!isMomentum) {
+        logStep("Not a Momentum subscription; ignoring", { subscriptionId });
+        break;
+      }
+
+      const { data: customerData } = await db
+        .from('stripe_customers')
+        .select('user_id')
+        .eq('stripe_subscription_id', subscriptionId)
+        .maybeSingle();
+      let userId: string | null = customerData?.user_id ?? subscription.metadata?.user_id ?? null;
+      if (!userId) {
+        const customer = await stripe.customers.retrieve(subscription.customer as string);
+        const email = (customer as any).deleted ? null : (customer as Stripe.Customer).email;
+        userId = email ? await findUserIdByEmail(db, email) : null;
+      }
+      if (!userId) {
+        logStep("No Momentum account for this subscription; ignoring", { subscriptionId });
+        break;
+      }
+
+      const { error: profileError } = await db
+        .from('profiles')
+        .update({ subscription_status: 'past_due' })
+        .eq('id', userId);
+      if (profileError) {
+        return profileWriteFailed(event.type, userId, profileError.message);
+      }
+      logStep("Marked past_due", { userId, attemptCount: invoice.attempt_count });
+      break;
+    }
+
+    default:
+      logStep("Unhandled event type", { type: event.type });
+  }
+
+  return ok200();
+}
+
 serve(async (req) => {
+  logStep("Webhook received");
+  const signature = req.headers.get("stripe-signature");
+  if (!signature) {
+    return new Response(JSON.stringify({ error: "No stripe-signature header" }), {
+      headers: { "Content-Type": "application/json" },
+      status: 400,
+    });
+  }
+
+  const body = await req.text();
+  let event: Stripe.Event;
   try {
-    logStep("Webhook received");
+    event = await verifyStripeEvent(body, signature);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logStep("ERROR verifying signature", { message: errorMessage });
+    return new Response(JSON.stringify({ error: errorMessage }), {
+      headers: { "Content-Type": "application/json" },
+      status: error instanceof ConfigError ? 500 : 400,
+    });
+  }
+  logStep("Event verified", { type: event.type, id: event.id, livemode: event.livemode });
 
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
-
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
-    if (!webhookSecret) throw new Error("STRIPE_WEBHOOK_SECRET is not set");
-
-    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const signature = req.headers.get("stripe-signature");
-
-    if (!signature) throw new Error("No stripe-signature header");
-
-    const body = await req.text();
-    const event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-    logStep("Event verified", { type: event.type, id: event.id });
-
+  try {
+    const stripe = stripeFor(event.livemode);
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { persistSession: false } }
     );
-
-    switch (event.type) {
-      case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session;
-        logStep("Checkout completed", { sessionId: session.id, customerId: session.customer });
-
-        if (session.mode === 'subscription' && session.customer) {
-          const customerId = session.customer as string;
-          const subscriptionId = session.subscription as string;
-
-          const { data: customerData, error: customerError } = await supabaseClient
-            .from('stripe_customers')
-            .select('user_id')
-            .eq('stripe_customer_id', customerId)
-            .single();
-
-          if (customerError || !customerData) {
-            logStep("No stripe_customers row; using email fallback", { error: customerError?.message });
-            return await syncProfileByStripeEmail(supabaseClient, stripe, customerId, event.type);
-          }
-
-          // Get the subscription to determine the plan
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-          const productId = subscription.items.data[0]?.price.product as string;
-          // Shared Stripe account: a Momentum customer can also buy another
-          // app's product. Only Momentum products touch Momentum data.
-          if (!(productId in MOMENTUM_PRODUCT_PLANS)) {
-            logStep("Not a Momentum product; ignoring", { subscriptionId, productId });
-            return ok200();
-          }
-          const plan = resolvePlanFromProductId(productId);
-
-          await supabaseClient
-            .from('stripe_customers')
-            .update({
-              stripe_subscription_id: subscriptionId,
-              updated_at: new Date().toISOString()
-            })
-            .eq('stripe_customer_id', customerId);
-
-          const { error: profileError } = await supabaseClient
-            .from('profiles')
-            .update({
-              subscription_status: subscription.status,
-              is_premium: true,
-              plan,
-            })
-            .eq('id', customerData.user_id);
-
-          if (profileError) {
-            return profileWriteFailed(event.type, customerData.user_id, profileError.message);
-          }
-          logStep("Profile updated", { plan, userId: customerData.user_id });
-        }
-        break;
-      }
-
-      case 'customer.subscription.updated': {
-        const subscription = event.data.object as Stripe.Subscription;
-        logStep("Subscription updated", { subscriptionId: subscription.id, status: subscription.status });
-
-        const { data: customerData, error: customerError } = await supabaseClient
-          .from('stripe_customers')
-          .select('user_id')
-          .eq('stripe_subscription_id', subscription.id)
-          .single();
-
-        if (customerError || !customerData) {
-          logStep("No stripe_customers row; using email fallback", { error: customerError?.message });
-          return await syncProfileByStripeEmail(supabaseClient, stripe, subscription.customer as string, event.type);
-        }
-
-        const productId = subscription.items.data[0]?.price.product as string;
-        const plan = resolvePlanFromProductId(productId);
-        const isActive = subscription.status === 'active' || subscription.status === 'trialing';
-
-        await supabaseClient
-          .from('stripe_customers')
-          .update({
-            current_period_end: periodEndIso(subscription),
-            updated_at: new Date().toISOString()
-          })
-          .eq('stripe_subscription_id', subscription.id);
-
-        const { error: profileError } = await supabaseClient
-          .from('profiles')
-          .update({
-            subscription_status: subscription.status,
-            is_premium: isActive,
-            plan: isActive ? plan : 'free',
-          })
-          .eq('id', customerData.user_id);
-
-        if (profileError) {
-          return profileWriteFailed(event.type, customerData.user_id, profileError.message);
-        }
-        logStep("Profile updated", { plan, isActive });
-        break;
-      }
-
-      case 'customer.subscription.deleted': {
-        const subscription = event.data.object as Stripe.Subscription;
-        logStep("Subscription deleted", { subscriptionId: subscription.id });
-
-        const { data: customerData, error: customerError } = await supabaseClient
-          .from('stripe_customers')
-          .select('user_id')
-          .eq('stripe_subscription_id', subscription.id)
-          .single();
-
-        if (customerError || !customerData) {
-          logStep("No stripe_customers row; using email fallback", { error: customerError?.message });
-          return await syncProfileByStripeEmail(supabaseClient, stripe, subscription.customer as string, event.type);
-        }
-
-        await supabaseClient
-          .from('stripe_customers')
-          .update({
-            stripe_subscription_id: null,
-            current_period_end: null,
-            updated_at: new Date().toISOString()
-          })
-          .eq('stripe_subscription_id', subscription.id);
-
-        const { error: profileError } = await supabaseClient
-          .from('profiles')
-          .update({
-            subscription_status: 'canceled',
-            is_premium: false,
-            plan: 'free',
-          })
-          .eq('id', customerData.user_id);
-
-        if (profileError) {
-          return profileWriteFailed(event.type, customerData.user_id, profileError.message);
-        }
-        logStep("Profile reverted to free");
-        break;
-      }
-
-      default:
-        logStep("Unhandled event type", { type: event.type });
-    }
-
-    return new Response(JSON.stringify({ received: true }), {
-      headers: { "Content-Type": "application/json" },
-      status: 200,
-    });
+    return await processOnce(supabaseClient, event, () => handleEvent(supabaseClient, stripe, event));
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message: errorMessage });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { "Content-Type": "application/json" },
-      status: 400,
+      status: 500,
     });
   }
 });
