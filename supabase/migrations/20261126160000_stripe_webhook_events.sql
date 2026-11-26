@@ -11,6 +11,8 @@ create table if not exists public.stripe_webhook_events (
   processed_at timestamptz
 );
 
+GRANT ALL ON public.stripe_webhook_events TO service_role;
+
 alter table public.stripe_webhook_events enable row level security;
 revoke all on public.stripe_webhook_events from anon, authenticated;
 
