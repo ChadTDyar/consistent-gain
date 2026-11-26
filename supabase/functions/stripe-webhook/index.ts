@@ -202,6 +202,12 @@ serve(async (req) => {
           // Get the subscription to determine the plan
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
           const productId = subscription.items.data[0]?.price.product as string;
+          // Shared Stripe account: a Momentum customer can also buy another
+          // app's product. Only Momentum products touch Momentum data.
+          if (!(productId in MOMENTUM_PRODUCT_PLANS)) {
+            logStep("Not a Momentum product; ignoring", { subscriptionId, productId });
+            return ok200();
+          }
           const plan = resolvePlanFromProductId(productId);
 
           await supabaseClient
