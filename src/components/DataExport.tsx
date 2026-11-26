@@ -6,6 +6,7 @@ import { Download, Loader2, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { type PlanTier, canAccessFeature } from "@/lib/plans";
 import { isIOSNative } from "@/lib/platform";
+import { exportUserData } from "@/lib/exportUserData";
 
 interface DataExportProps {
   plan?: PlanTier;
@@ -25,35 +26,7 @@ export function DataExport({ plan = 'free' }: DataExportProps) {
         return;
       }
 
-      const [goals, activities, painReports, costs, profile] = await Promise.all([
-        supabase.from("goals").select("*").eq("user_id", user.id),
-        supabase.from("activity_logs").select("*").eq("user_id", user.id),
-        supabase.from("pain_reports").select("*").eq("user_id", user.id),
-        supabase.from("cost_tracking").select("*").eq("user_id", user.id),
-        supabase.from("profiles").select("*").eq("id", user.id).single(),
-      ]);
-
-      const data = {
-        exported_at: new Date().toISOString(),
-        user_id: user.id,
-        profile: profile.data,
-        goals: goals.data || [],
-        activity_logs: activities.data || [],
-        pain_reports: painReports.data || [],
-        cost_tracking: costs.data || [],
-      };
-
-      const blob = new Blob([JSON.stringify(data, null, 2)], {
-        type: "application/json",
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `momentum-data-${new Date().toISOString().split("T")[0]}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      await exportUserData(user.id);
 
       toast.success("Data exported successfully");
     } catch (error) {
@@ -90,7 +63,7 @@ export function DataExport({ plan = 'free' }: DataExportProps) {
               Export All Data
             </Button>
             <p className="text-xs text-muted-foreground mt-2">
-              Includes goals, activity logs, wellness reports, and cost tracking
+              Includes goals, activity logs, wellness reports, cost tracking, and coach chat
             </p>
           </>
         ) : (
@@ -106,9 +79,7 @@ export function DataExport({ plan = 'free' }: DataExportProps) {
               </Button>
             )}
             <p className="text-xs text-muted-foreground mt-2">
-              {isIOSNative()
-                ? "JSON data export is available on the Premium plan."
-                : "JSON data export is available on the Premium plan."}
+              JSON data export is available on the Premium plan. On any plan, you can download your data from Delete Account before you delete.
             </p>
           </>
         )}
