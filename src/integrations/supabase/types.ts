@@ -598,6 +598,36 @@ export type Database = {
         }
         Relationships: []
       }
+      stripe_webhook_events: {
+        Row: {
+          event_id: string
+          event_type: string
+          livemode: boolean
+          outcome: string | null
+          processed_at: string | null
+          received_at: string
+          status: string
+        }
+        Insert: {
+          event_id: string
+          event_type: string
+          livemode: boolean
+          outcome?: string | null
+          processed_at?: string | null
+          received_at?: string
+          status?: string
+        }
+        Update: {
+          event_id?: string
+          event_type?: string
+          livemode?: boolean
+          outcome?: string | null
+          processed_at?: string | null
+          received_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
       testimonials: {
         Row: {
           achievement: string | null
